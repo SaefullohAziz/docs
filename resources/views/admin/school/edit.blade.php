@@ -59,7 +59,7 @@
 
 							{{ Form::bsSelect(null, __('ISO Certificate'), 'iso_certificate', $isoCertificates, $school->iso_certificate, __('Select'), ['placeholder' => __('Select'), 'required' => '']) }}
 
-							{{ Form::bsInlineRadio(null, __('Mikrotik Academy'), 'mikrotik_academy', ['Sudah', 'Belum'], $school->mikrotik_academy, ['required' => '']) }}
+							{{ Form::bsInlineRadio(null, __('Mikrotik Academy'), 'mikrotik_academy', ['Sudah' => 'Sudah', 'Belum' => 'Belum'], $school->mikrotik_academy, ['required' => '']) }}
 						</fieldset>
 						<div class="col-sm-6">
 							<fieldset>
@@ -94,7 +94,7 @@
 							</fieldset>
 							<fieldset>
 								<legend>{{ __('Other Data') }}</legend>
-								{{ Form::bsInlineRadio(null, 'Apakah Kepala Sekolah telah mempelajari proposal ACP?', 'proposal', ['Sudah', 'Belum'], $school->mikrotik_academy, ['required' => '']) }}
+								{{ Form::bsInlineRadio(null, 'Apakah Kepala Sekolah telah mempelajari proposal ACP?', 'proposal', ['Sudah' => 'Sudah', 'Belum' => 'Belum'], $school->mikrotik_academy, ['required' => '']) }}
 
 								{{ Form::bsFile(null, __('Requirement Document'), 'document', old('document'), [], [__('File must have extension *.ZIP/*.RAR with size 5 MB or less.')]) }}
 
@@ -145,7 +145,7 @@
 				$('.dealer-data input').prop('required', true).val('');
 				$('.dealer-data').removeClass('d-none').addClass('d-block');
 			} else {
-				$('.dealer-data input').prop('required', true).val('');
+				$('.dealer-data input').prop('required', false).val('');
 				$('.dealer-data').removeClass('d-block').addClass('d-none');
 			}
 		});

@@ -16,6 +16,10 @@
     <script src="{{ asset('modules/jquery-ui/jquery-ui.min.js') }}"></script>
     <script src="{{ asset('modules/sweetalert/sweetalert.min.js') }}"></script>
     <script src="{{ asset('modules/bootstrap-filestyle/src/bootstrap-filestyle.min.js') }}"></script>
+    <script src="{{ asset('modules/bootstrap-timepicker/js/bootstrap-timepicker.min.js') }}"></script>
+    <script src="{{ asset('modules/bootstrap-daterangepicker/daterangepicker.js') }}"></script>
+    <script src="{{ asset('modules/cleave-js/dist/cleave.min.js') }}"></script>
+    <script src="{{ asset('modules/cleave-js/dist/addons/cleave-phone.id.js') }}"></script>
     <script src="{{ asset('modules/chocolat/dist/js/jquery.chocolat.min.js') }}"></script>
     <script src="{{ asset('modules/summernote/summernote-bs4.js') }}"></script>
 

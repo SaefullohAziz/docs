@@ -59,7 +59,7 @@
 
 							{{ Form::bsSelect(null, 'ISO Certificate:', 'iso_certificate', $isoCertificates, $school->iso_certificate, 'Select', ['placeholder' => 'Select', 'disabled' => '']) }}
 
-							{{ Form::bsInlineRadio(null, 'Mikrotik Academy:', 'mikrotik_academy', ['Sudah', 'Belum'], $school->mikrotik_academy, ['disabled' => '']) }}
+							{{ Form::bsInlineRadio(null, 'Mikrotik Academy:', 'mikrotik_academy', ['Sudah' => 'Sudah', 'Belum' => 'Belum'], $school->mikrotik_academy, ['disabled' => '']) }}
 						</fieldset>
 						<div class="col-sm-6">
 							<fieldset>
@@ -96,7 +96,7 @@
 							@endif
 							<fieldset>
 								<legend>Other Data</legend>
-								{{ Form::bsInlineRadio(null, 'Apakah Kepala Sekolah telah mempelajari proposal ACP?', 'proposal', ['Sudah', 'Belum'], $school->mikrotik_academy, ['disabled' => '']) }}
+								{{ Form::bsInlineRadio(null, 'Apakah Kepala Sekolah telah mempelajari proposal ACP?', 'proposal', ['Sudah' => 'Sudah', 'Belum' => 'Belum'], $school->mikrotik_academy, ['disabled' => '']) }}
 
 								<div class="form-group">
 									{{ Form::label(null, 'Requirement Document', ['class' => 'd-block']) }}

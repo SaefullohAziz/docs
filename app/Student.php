@@ -24,6 +24,22 @@ class Student extends Model
     }
 
     /**
+     * Get the subsidy student for the student.
+     */
+    public function sspStudent()
+    {
+        return $this->hasMany('App\SspStudent');
+    }
+
+    /**
+     * The subsidy that belong to the student.
+     */
+    public function subsidy()
+    {
+        return $this->belongsToMany('App\Subsidy', 'ssp_students');
+    }
+
+    /**
      * Main query for listing
      * 
      * @param  \Illuminate\Http\Request  $request
@@ -40,8 +56,8 @@ class Student extends Model
             	$query->where('school_levels.id', $request->level);
             })->when( ! empty($request->school), function ($query) use ($request) {
             	$query->where('schools.id', $request->school);
-            })->when( ! empty($request->school_year), function ($query) use ($request) {
-            	$query->where('students.school_year', $request->school_year);
+            })->when( ! empty($request->schoolYear), function ($query) use ($request) {
+            	$query->where('students.school_year', $request->schoolYear);
             })->when( ! empty($request->generation), function ($query) use ($request) {
             	$query->where('students.generation', $request->generation);
             })->when( ! empty($request->department), function ($query) use ($request) {
@@ -56,6 +72,72 @@ class Student extends Model
      */
     public static function list(Request $request)
     {
-        return self::get($request)->select('students.name', 'schools.name AS school', 'provinces.abbreviation AS province_abbreviation');
+        return self::get($request)->select('students.*', 'schools.name AS school', 'provinces.abbreviation AS province_abbreviation');
+    }
+
+    /**
+     * Scope a query to only include specific student's generation of given school.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeGenerationBySchool($query, $school)
+    {
+        return $query->where('school_id', $school)->distinct()->get(['generation']);
+    }
+
+    /**
+     * Scope a query to only include specific student's school year of given school.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeSchoolYearBySchool($query, $school)
+    {
+        return $query->where('school_id', $school)->distinct()->get(['school_year']);
+    }
+
+    /**
+     * Scope a query to only include specific student's department of given school.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeDepartmentBySchool($query, $school)
+    {
+        return $query->where('school_id', $school)->distinct()->get(['department']);
+    }
+
+    /**
+     * Scope a query to only include specific student of given school.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeBySchool($query, $school)
+    {
+        return $query->where('school_id', $school);
+    }
+
+    /**
+     * Scope a query to only include specific student of given generation.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeByGeneration($query, $generation)
+    {
+        return $query->where('generation', $generation);
+    }
+
+    /**
+     * Scope a query to only include specific student of given grade.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeByGrade($query, $grade)
+    {
+        return $query->where('grade', $grade);
     }
 }

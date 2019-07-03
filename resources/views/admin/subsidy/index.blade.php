@@ -28,8 +28,8 @@
 
 		<div class="card card-primary">
 			<div class="card-header">
-				@if(auth()->guard('admin')->user()->can('create schools'))
-					<a href="{{ route('admin.school.create') }}" class="btn btn-icon btn-success" title="{{ __('Create') }}"><i class="fa fa-plus"></i></a>
+				@if(auth()->guard('admin')->user()->can('create subsidies'))
+					<a href="{{ route('admin.subsidy.create') }}" class="btn btn-icon btn-success" title="{{ __('Create') }}"><i class="fa fa-plus"></i></a>
 				@endif
 				<button class="btn btn-icon btn-secondary" title="{{ __('Filter') }}" data-toggle="modal" data-target="#filterModal"><i class="fa fa-filter"></i></button>
             	<button class="btn btn-icon btn-secondary" onclick="reloadTable()" title="{{ __('Refresh') }}"><i class="fa fa-sync"></i></i></button>
@@ -43,15 +43,11 @@
 									<div class="checkbox icheck"><label><input type="checkbox" name="selectData"></label></div>
 								</th>
 								<th>{{ __('Created At') }}</th>
+								<th>{{ __('School') }}</th>
 								<th>{{ __('Type') }}</th>
-								<th>{{ __('Level') }}</th>
-								<th>{{ __('Name') }}</th>
-								<th>{{ __('Province') }}</th>
-								<th>{{ __('Regency') }}</th>
-								<th>{{ __('Headmaster') }}</th>
-								<th>{{ __('PIC') }}</th>
+								<th>{{ __('Submission Letter') }}</th>
+								<th>{{ __('Report') }}</th>
 								<th>{{ __('Status') }}</th>
-								<th>{{ __('Code') }}</th>
 								<th>{{ __('Action') }}</th>
 							</tr>
 						</thead>
@@ -61,7 +57,7 @@
 				</div>
 			</div>
 			<div class="card-footer bg-whitesmoke">
-				@if (auth()->guard('admin')->user()->can('delete schools'))
+				@if (auth()->guard('admin')->user()->can('delete subsidies'))
 					<button class="btn btn-danger btn-sm" name="deleteData" title="{{ __('Delete') }}">{{ __('Delete') }}</button>
 				@endif
 			</div>
@@ -79,29 +75,24 @@
 			processing: true,
 			serverSide: true,
 			"ajax": {
-				"url": "{{ route('admin.school.list') }}",
+				"url": "{{ route('admin.subsidy.list') }}",
 				"type": "POST",
 				"data": function (d) {
 		          d._token = "{{ csrf_token() }}";
-		          d.province = $('select[name="province[]"]').val();
-		          d.regency = $('select[name="regency[]"]').val();
-		          d.level = $('select[name="level[]"]').val();
+		          d.school = $('select[name="school"]').val();
+		          d.type = $('select[name="type"]').val();
 		          d.status = $('select[name="status"]').val();
 		        }
 			},
 			columns: [
 				{ data: 'DT_RowIndex', name: 'DT_RowIndex', 'searchable': false },
 				{ data: 'created_at', name: 'created_at' },
-				{ data: 'type', name: 'schools.type' },
-				{ data: 'level_name', name: 'school_levels.name' },
-				{ data: 'name', name: 'schools.name' },
-				{ data: 'province', name: 'schools.province' },
-				{ data: 'regency', name: 'schools.regency' },
-				{ data: 'headmaster_name', name: 'schools.headmaster_name' },
-				{ data: 'pic_name', name: 'pics.name' },
-				{ data: 'status_name', name: 'school_statuses.name' },
-				{ data: 'code', name: 'schools.code' },
-				{ data: 'action', name: 'action' }
+                { data: 'school', name: 'schools.name' },
+				{ data: 'type', name: 'subsidies.type' },
+				{ data: 'submission_letter', name: 'subsidies.submission_letter' },
+				{ data: 'report', name: 'subsidies.report' },
+				{ data: 'status', name: 'statuses.name' },
+				{ data: 'action', name: 'action', 'searchable': false },
 			],
 			"columnDefs": [
 			{   
@@ -123,28 +114,6 @@
       		},
   		});
 
-  		$('select[name="province[]"]').change(function() {
-			if ($(this).val() != '') {
-				$.ajax({
-					url : "{{ route('get.regencyByProvince') }}",
-					type: "POST",
-					dataType: "JSON",
-					cache: false,
-					data: {'_token' : '{{ csrf_token() }}', 'province' : $(this).val()},
-					success: function(data)
-					{
-						$.each(data.result, function(key, value) {
-							$('select[name="regency[]"]').append('<option value="'+value+'">'+value+'</option>');
-						});
-					},
-					error: function (jqXHR, textStatus, errorThrown)
-					{
-						$('select[name="regency[]"]').html('<option value="">Select</option>');
-					}
-				});
-			}
-		});
-
 		$('[name="deleteData"]').click(function(event) {
 			if ($('[name="selectedData[]"]:checked').length > 0) {
 				event.preventDefault();
@@ -161,7 +130,7 @@
 			    .then((willDelete) => {
 			      	if (willDelete) {
 			      		$.ajax({
-							url : "{{ route('admin.school.destroy') }}",
+							url : "{{ route('admin.subsidy.destroy') }}",
 							type: "DELETE",
 							dataType: "JSON",
 							data: {"selectedData" : selectedData, "_token" : "{{ csrf_token() }}"},
@@ -207,14 +176,13 @@
 					<span aria-hidden="true">&times;</span>
 				</button>
 			</div>
-			{{ Form::open(['route' => 'admin.school.export', 'files' => true]) }}
+			{{ Form::open(['route' => 'admin.subsidy.export', 'files' => true]) }}
 				<div class="modal-body">
 					<div class="container-fluid">
 						<div class="row">
-							{{ Form::bsSelect('col-sm-4', __('Province'), 'province[]', $provinces, null, __('Select'), ['multiple' => '']) }}
-							{{ Form::bsSelect('col-sm-4', __('Regency'), 'regency[]', [], null, __('Select'), ['multiple' => '']) }}
-							{{ Form::bsSelect('col-sm-4', __('Level'), 'level[]', $levels, null, __('Select'), ['multiple' => '']) }}
-							{{ Form::bsSelect('col-sm-4', __('Status'), 'status', [], null, __('Select'), ['placeholder' => __('Select')]) }}
+							{{ Form::bsSelect('col-sm-4', __('School'), 'school', $schools, null, __('Select'), ['placeholder' => __('Select')]) }}
+							{{ Form::bsSelect('col-sm-4', __('Type'), 'type', $types, null, __('Select'), ['placeholder' => __('Select')]) }}
+							{{ Form::bsSelect('col-sm-4', __('Status'), 'status', $statuses, null, __('Select'), ['placeholder' => __('Select')]) }}
 						</div>
 					</div>
 				</div>

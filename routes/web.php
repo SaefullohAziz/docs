@@ -30,56 +30,78 @@ Route::resource('account', 'AccountController', ['parameters' => [
 ]]);
 
 // Custom
-Route::prefix('get')->name('get.')->group(function () {
-    Route::post('regency/by/province', 'Admin\SchoolController@regencyByProvince')->name('regencyByProvince');
+Route::prefix('get')->name('get.')->middleware(['auth:admin', 'web'])->group(function () {
+	Route::post('regency/by/province', 'GetController@regencyByProvince')->name('regencyByProvince');
+	Route::post('school/by/level', 'GetController@schoolByLevel')->name('schoolByLevel');
+	Route::post('generation/by/school', 'GetController@generationBySchool')->name('generationBySchool');
+	Route::post('schoolYear/by/school', 'GetController@schoolYearBySchool')->name('schoolYearBySchool');
+	Route::post('department/by/school', 'GetController@departmentBySchool')->name('departmentBySchool');
+	Route::post('pic/by/school', 'GetController@picBySchool')->name('picBySchool');
+	Route::prefix('student')->name('student.')->group(function () {
+		Route::post('by/school', 'GetController@studentBySchool')->name('bySchool');
+		Route::post('by/generation', 'GetController@studentByGeneration')->name('byGeneration');
+		Route::post('by/grade', 'GetController@studentByGrade')->name('byGrade');
+		Route::post('by', 'GetController@studentBy')->name('by');
+	});
 });
 
 /**
  * Admin
  */
-Route::prefix('admin')->name('admin.')->group(function () {
+Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
 	// Home
-    Route::get('/', 'Admin\HomeController@index')->name('home');
+    Route::get('/', 'HomeController@index')->name('home');
 
     // Auth
-    Route::get('login', 'Admin\Auth\LoginController@showLoginForm')->name('login');
-    Route::post('login', 'Admin\Auth\LoginController@login');
-    Route::post('logout', 'Admin\Auth\LoginController@logout')->name('logout');
+    Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
+    Route::post('login', 'Auth\LoginController@login');
+    Route::post('logout', 'Auth\LoginController@logout')->name('logout');
 
     // School
     Route::prefix('school')->name('school.')->group(function () {
-    	Route::post('list', 'Admin\SchoolController@list')->name('list');
-    	Route::post('export', 'Admin\SchoolController@export')->name('export');
-    	Route::delete('destroy', 'Admin\SchoolController@destroy')->name('destroy');
+    	Route::post('list', 'SchoolController@list')->name('list');
+    	Route::post('export', 'SchoolController@export')->name('export');
+    	Route::delete('destroy', 'SchoolController@destroy')->name('destroy');
     	// School: comment
     	Route::prefix('comment')->name('comment.')->group(function () {
-	    	Route::post('{school}', 'Admin\SchoolCommentController@store')->name('store');
+	    	Route::post('{school}', 'SchoolCommentController@store')->name('store');
 	    });
     	/**
-    	Route::resource('comment', 'Admin\SchoolCommentController', ['only' => [
+    	Route::resource('comment', 'SchoolCommentController', ['only' => [
 			'index',
 		]]);
 		**/
     });
-    Route::resource('school', 'Admin\SchoolController', ['except' => [
+    Route::resource('school', 'SchoolController', ['except' => [
 		'destroy',
 	]]);
 
 	// Student
 	Route::prefix('student')->name('student.')->group(function () {
-    	Route::post('list', 'Admin\StudentController@list')->name('list');
-    	Route::delete('destroy', 'Admin\StudentController@destroy')->name('destroy');
+    	Route::post('list', 'StudentController@list')->name('list');
+    	Route::post('export', 'StudentController@export')->name('export');
+    	Route::delete('destroy', 'StudentController@destroy')->name('destroy');
     });
-	Route::resource('student', 'Admin\StudentController', ['except' => [
+	Route::resource('student', 'StudentController', ['except' => [
+		'destroy',
+	]]);
+
+	// Subsidy
+	Route::prefix('subsidy')->name('subsidy.')->group(function () {
+    	Route::post('list', 'SubsidyController@list')->name('list');
+    	Route::post('export', 'SubsidyController@export')->name('export');
+    	Route::delete('destroy', 'SubsidyController@destroy')->name('destroy');
+    });
+	Route::resource('subsidy', 'SubsidyController', ['except' => [
 		'destroy',
 	]]);
 
     // Account
     Route::prefix('account')->name('account.')->group(function () {
-    	Route::post('list', 'Admin\AccountController@list')->name('list');
-    	Route::delete('destroy', 'Admin\AccountController@destroy')->name('destroy');
+    	Route::post('list', 'AccountController@list')->name('list');
+    	Route::delete('destroy', 'AccountController@destroy')->name('destroy');
     });
-    Route::resource('account', 'Admin\AccountController', ['parameters' => [
+    Route::resource('account', 'AccountController', ['parameters' => [
 	    'account' => 'user'
 	], 'except' => [
 		'destroy',
@@ -96,5 +118,5 @@ Route::get('download/{dir}/{file}', function ($dir, $file) {
 })->name('download');
 
 Route::get('check', function () {
-	dd(App\User::all());
+	dd(App\Student::distinct()->get(['generation'])->toArray());
 });

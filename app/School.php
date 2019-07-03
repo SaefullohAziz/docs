@@ -75,6 +75,14 @@ class School extends Model
     }
 
     /**
+     * Get the subsidy for the school.
+     */
+    public function subsidy()
+    {
+        return $this->hasMany('App\Subsidy');
+    }
+
+    /**
      * Get the user for the school.
      */
     public function user()
@@ -122,5 +130,18 @@ class School extends Model
     public static function list(Request $request)
     {
         return self::get($request)->select('schools.*', 'provinces.abbreviation', 'pics.name AS pic_name', 'pics.position AS pic_position', 'pics.phone_number AS pic_phone_number', 'pics.email AS pic_email', 'school_statuses.id AS school_status_id', 'school_statuses.order_by AS status_order', 'school_statuses.name AS status_name', 'school_statuses.alias AS status_alias', DB::raw('(CASE WHEN status_staff.name IS NULL THEN status_user.name WHEN status_user.name IS NULL THEN status_staff.name ELSE status_staff.name END) AS status_by'), 'school_status_updates.created_at AS status_at', 'school_levels.id AS school_level_id', 'school_levels.name AS level_name');
+    }
+
+    /**
+     * Scope a query to only include specific school of given level.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeByLevel($query, $level)
+    {
+        return $query->whereHas('status', function ($subQuery) use ($level) {
+            $subQuery->where('school_statuses.school_level_id', $level);
+        });
     }
 }

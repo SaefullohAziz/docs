@@ -15,6 +15,8 @@
     <link rel="stylesheet" href="{{ asset('modules/datatables/datatables.min.css') }}">
     <link rel="stylesheet" href="{{ asset('modules/datatables/DataTables-1.10.16/css/dataTables.bootstrap4.min.css') }}">
     <link rel="stylesheet" href="{{ asset('modules/datatables/Select-1.2.4/css/select.bootstrap4.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('modules/bootstrap-timepicker/css/bootstrap-timepicker.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('modules/bootstrap-daterangepicker/daterangepicker.css') }}">
     <link rel="stylesheet" href="{{ asset('modules/chocolat/dist/css/chocolat.css') }}">
     <link rel="stylesheet" href="{{ asset('modules/summernote/summernote-bs4.css') }}">
 

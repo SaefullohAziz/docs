@@ -59,7 +59,7 @@
 
 							{{ Form::bsSelect(null, __('ISO Certificate'), 'iso_certificate', $isoCertificates, $school->iso_certificate, __('Select'), ['placeholder' => __('Select'), 'disabled' => '']) }}
 
-							{{ Form::bsInlineRadio(null, __('Mikrotik Academy'), 'mikrotik_academy', ['Sudah', 'Belum'], $school->mikrotik_academy, ['disabled' => '']) }}
+							{{ Form::bsInlineRadio(null, __('Mikrotik Academy'), 'mikrotik_academy', ['Sudah' => 'Sudah', 'Belum' => 'Belum'], $school->mikrotik_academy, ['disabled' => '']) }}
 						</fieldset>
 						<div class="col-sm-6">
 							<fieldset>
@@ -96,11 +96,11 @@
 							@endif
 							<fieldset>
 								<legend>{{ __('Other Data') }}</legend>
-								{{ Form::bsInlineRadio(null, 'Apakah Kepala Sekolah telah mempelajari proposal ACP?', 'proposal', ['Sudah', 'Belum'], $school->mikrotik_academy, ['disabled' => '']) }}
+								{{ Form::bsInlineRadio(null, 'Apakah Kepala Sekolah telah mempelajari proposal ACP?', 'proposal', ['Sudah' => 'Sudah', 'Belum' => 'Belum'], $school->mikrotik_academy, ['disabled' => '']) }}
 
 								<div class="form-group">
 									{{ Form::label(null, __('Requirement Document'), ['class' => 'd-block']) }}
-									{{ link_to_route('download', __('Download'), ['dir' => encrypt('school/document'), 'file' => encrypt($school->document)], ['class' => 'btn btn-primary '.(isset($school->document)?'disabled':''), 'title' => __('Download'), 'target' => '_blank']) }}
+									{{ link_to_route('download', __('Download'), ['dir' => encrypt('school/document'), 'file' => encrypt($school->document)], ['class' => 'btn btn-primary '.( ! isset($school->document)?'disabled':''), 'title' => __('Download'), 'target' => '_blank']) }}
 									<small class="form-text text-muted">
 										{{ __('File must have extension *.ZIP/*.RAR with size 5 MB or less.') }}
 									</small>
@@ -113,7 +113,7 @@
 
 		</div>
 
-		<div class="card">
+		<div class="card card-primary">
 			<div class="card-header">
 				<h4>{{ __('Gallery') }}</h4>
 			</div>
@@ -126,7 +126,7 @@
 			</div>
 		</div>
 
-		<div class="card chat-box" id="mychatbox">
+		<div class="card card-primary chat-box" id="mychatbox">
 			<div class="card-header">
 				<h4>{{ __('Comments') }}</h4>
 			</div>

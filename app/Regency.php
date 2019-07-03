@@ -24,7 +24,7 @@ class Regency extends Model
     }
 
     /**
-     * Scope a query to only include specific status of given name.
+     * Scope a query to only include specific province of given name.
      *
      * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder

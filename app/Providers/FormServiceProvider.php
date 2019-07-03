@@ -86,6 +86,16 @@ class FormServiceProvider extends ServiceProvider
             'attributes' => [], 
             'helpTexts' => []
         ]);
+        Form::component('bsCheckbox', 'layouts.components.form.checkbox', [
+            'class' => null, 
+            'label', 
+            'name', 
+            'option' => null, 
+            'text' => null, 
+            'value' => null,
+            'attributes' => [], 
+            'helpTexts' => []
+        ]);
         Form::component('bsCheckboxList', 'layouts.components.form.checkboxList', [
             'class' => null, 
             'label', 

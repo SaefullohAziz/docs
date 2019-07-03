@@ -90,7 +90,7 @@ class SchoolController extends Controller
                     return (date('d-m-Y h:m:s', strtotime($data->created_at)));
                 })
                 ->addColumn('action', function($data) {
-                    return '<a class="btn btn-sm btn-success" href="'.route('admin.school.show', $data->id).'" title="{{ __("See detail") }}"><i class="fa fa-eye"></i> {{ __("See") }}</a> <a class="btn btn-sm btn-warning" href="'.route('admin.school.edit', $data->id).'" title="{{ __("Edit") }}"><i class="fa fa-edit"></i> {{ __("Edit") }}</a>';
+                    return '<a class="btn btn-sm btn-success" href="'.route('admin.school.show', $data->id).'" title="'.__("See detail").'"><i class="fa fa-eye"></i> '.__("See").'</a> <a class="btn btn-sm btn-warning" href="'.route('admin.school.edit', $data->id).'" title="'.__("Edit").'"><i class="fa fa-edit"></i> '.__("Edit").'</a>';
                 })
                 ->rawColumns(['DT_RowIndex', 'action'])
                 ->make(true);
@@ -312,22 +312,10 @@ class SchoolController extends Controller
      */
     public function destroy(Request $request)
     {
-        if ( ! Auth::guard('admin')->user()->can('delete ' . $this->school)) {
+        if ( ! Auth::guard('admin')->user()->can('delete ' . $this->table)) {
             return response()->json(['status' => false, 'message' => $this->noPermission], 422);
         }
         School::destroy($request->selectedData);
         return response()->json(['status' => true, 'message' => $this->deletedMessage]);
-    }
-
-    /**
-     * Custom method
-     */
-    
-    public function regencyByProvince(Request $request)
-    {
-        if ($request->ajax()) {
-            $regencies = Regency::getByProvinceName($request->province)->pluck('name')->toArray();
-            return response()->json(['status' => true, 'result' => $regencies]);
-        }
     }
 }

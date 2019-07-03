@@ -82,6 +82,11 @@
 				"type": "POST",
 				"data": function (d) {
 		          d._token = "{{ csrf_token() }}";
+				  d.school = $('select[name="school"]').val();
+				  d.generation = $('select[name="generation"]').val();
+				  d.schoolYear = $('select[name="school_year"]').val();
+				  d.department = $('select[name="department"]').val();
+				  d.sspStatus = $('select[name="ssp_status"]').val();
 		        }
 			},
 			columns: [
@@ -116,6 +121,86 @@
       			});
       		},
   		});
+
+		$('select[name="level"]').change(function() {
+			if ($(this).val() != '') {
+				$('select[name="school"]').html('<option value="">Select</option>');
+				$.ajax({
+					url : "{{ route('get.schoolByLevel') }}",
+					type: "POST",
+					dataType: "JSON",
+					cache: false,
+					data: {'_token' : '{{ csrf_token() }}', 'level' : $(this).val()},
+					success: function(data)
+					{
+						$.each(data.result, function(key, value) {
+							$('select[name="school"]').append('<option value="'+key+'">'+value+'</option>');
+						});
+					},
+					error: function (jqXHR, textStatus, errorThrown)
+					{
+						$('select[name="school"]').html('<option value="">Select</option>');
+					}
+				});
+			}
+		});
+
+		$('select[name="school"]').change(function() {
+			if ($(this).val() != '') {
+				$('select[name="generation"], select[name="school_year"], select[name="department"]').html('<option value="">Select</option>');
+				$.ajax({
+					url : "{{ route('get.generationBySchool') }}",
+					type: "POST",
+					dataType: "JSON",
+					cache: false,
+					data: {'_token' : '{{ csrf_token() }}', 'school' : $(this).val()},
+					success: function(data)
+					{
+						$.each(data.result, function(key, value) {
+							$('select[name="generation"]').append('<option value="'+key+'">'+value+'</option>');
+						});
+					},
+					error: function (jqXHR, textStatus, errorThrown)
+					{
+						$('select[name="generation"]').html('<option value="">Select</option>');
+					}
+				});
+				$.ajax({
+					url : "{{ route('get.schoolYearBySchool') }}",
+					type: "POST",
+					dataType: "JSON",
+					cache: false,
+					data: {'_token' : '{{ csrf_token() }}', 'school' : $(this).val()},
+					success: function(data)
+					{
+						$.each(data.result, function(key, value) {
+							$('select[name="school_year"]').append('<option value="'+key+'">'+value+'</option>');
+						});
+					},
+					error: function (jqXHR, textStatus, errorThrown)
+					{
+						$('select[name="school_year"]').html('<option value="">Select</option>');
+					}
+				});
+				$.ajax({
+					url : "{{ route('get.departmentBySchool') }}",
+					type: "POST",
+					dataType: "JSON",
+					cache: false,
+					data: {'_token' : '{{ csrf_token() }}', 'school' : $(this).val()},
+					success: function(data)
+					{
+						$.each(data.result, function(key, value) {
+							$('select[name="department"]').append('<option value="'+key+'">'+value+'</option>');
+						});
+					},
+					error: function (jqXHR, textStatus, errorThrown)
+					{
+						$('select[name="department"]').html('<option value="">Select</option>');
+					}
+				});
+			}
+		});
 
 		$('[name="deleteData"]').click(function(event) {
 			if ($('[name="selectedData[]"]:checked').length > 0) {
@@ -179,11 +264,16 @@
 					<span aria-hidden="true">&times;</span>
 				</button>
 			</div>
-			{{ Form::open(['route' => 'admin.school.export', 'files' => true]) }}
+			{{ Form::open(['route' => 'admin.student.export', 'files' => true]) }}
 				<div class="modal-body">
 					<div class="container-fluid">
 						<div class="row">
-
+							{{ Form::bsSelect('col-sm-4', __('Level'), 'level', $levels, null, __('Select'), ['placeholder' => __('Select')]) }}
+							{{ Form::bsSelect('col-sm-4', __('School'), 'school', $schools, null, __('Select'), ['placeholder' => __('Select')]) }}
+							{{ Form::bsSelect('col-sm-4', __('Generation'), 'generation', [], null, __('Select'), ['placeholder' => __('Select')]) }}
+							{{ Form::bsSelect('col-sm-4', __('School Year'), 'school_year', [], null, __('Select'), ['placeholder' => __('Select')]) }}
+							{{ Form::bsSelect('col-sm-4', __('Department'), 'department', [], null, __('Select'), ['placeholder' => __('Select')]) }}
+							{{ Form::bsSelect('col-sm-4', __('SSP Status'), 'ssp_status', ['1' => 'Ya', '0' => 'Tidak'], null, __('Select'), ['placeholder' => __('Select')]) }}
 						</div>
 					</div>
 				</div>
