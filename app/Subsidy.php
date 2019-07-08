@@ -16,7 +16,7 @@ class Subsidy extends Model
     protected $fillable = ['school_id', 'type', 'submission_letter'];
 
     /**
-     * Get the school that owns the comment.
+     * Get the school that owns the subsidy.
      */
     public function school()
     {
@@ -100,7 +100,7 @@ class Subsidy extends Model
     }
 
     /**
-     * Show school list for datatable
+     * Show subsidy list for datatable
      * 
      * @param  \Illuminate\Http\Request  $request
      */

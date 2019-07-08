@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Regency;
 use App\School;
+use App\Teacher;
 use App\Pic;
 use App\Student;
 use Illuminate\Http\Request;
@@ -24,6 +25,23 @@ class GetController extends Controller
         if ($request->ajax()) {
             $schools = School::byLevel($request->level)->pluck('name', 'id')->toArray();
             return response()->json(['status' => true, 'result' => $schools]);
+        }
+    }
+
+    // Teacher
+    public function teacherBySchool(Request $request)
+    {
+        if ($request->ajax()) {
+            $teachers = Teacher::bySchool($request->school)->get()->toArray();
+            return response()->json(['status' => true, 'result' => $teachers]);
+        }
+    }
+
+    public function teacherBy(Request $request)
+    {
+        if ($request->ajax()) {
+            $teacher = Teacher::find($request->teacher)->toArray();
+            return response()->json(['status' => true, 'result' => $teacher]);
         }
     }
 

@@ -30,7 +30,7 @@ class Pic extends Model
     }
 
     /**
-     * Get the subsidy status for the subsidy.
+     * Get the subsidy status for the pic.
      */
     public function subsidyPic()
     {
@@ -43,6 +43,22 @@ class Pic extends Model
     public function subsidy()
     {
         return $this->belongsToMany('App\Subsidy', 'subsidy_pics');
+    }
+
+    /**
+     * Get the training status for the pic.
+     */
+    public function trainingPic()
+    {
+        return $this->hasMany('App\TrainingPic');
+    }
+
+    /**
+     * The training that belong to the pic.
+     */
+    public function training()
+    {
+        return $this->belongsToMany('App\Training', 'training_pics');
     }
 
     /**

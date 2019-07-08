@@ -30,6 +30,22 @@ class Status extends Model
     }
 
     /**
+     * Get the training status for the status.
+     */
+    public function trainingStatus()
+    {
+        return $this->hasMany('App\TrainingStatus');
+    }
+
+    /**
+     * The training that belong to the status.
+     */
+    public function training()
+    {
+        return $this->belongsToMany('App\Training', 'training_statuses');
+    }
+
+    /**
      * Scope a query to only include specific status of given names.
      *
      * @param  \Illuminate\Database\Eloquent\Builder  $query

@@ -36,6 +36,10 @@ Route::prefix('get')->name('get.')->middleware(['auth:admin', 'web'])->group(fun
 	Route::post('generation/by/school', 'GetController@generationBySchool')->name('generationBySchool');
 	Route::post('schoolYear/by/school', 'GetController@schoolYearBySchool')->name('schoolYearBySchool');
 	Route::post('department/by/school', 'GetController@departmentBySchool')->name('departmentBySchool');
+	Route::prefix('teacher')->name('teacher.')->group(function () {
+		Route::post('by/school', 'GetController@teacherBySchool')->name('bySchool');
+		Route::post('by', 'GetController@teacherBy')->name('by');
+	});
 	Route::post('pic/by/school', 'GetController@picBySchool')->name('picBySchool');
 	Route::prefix('student')->name('student.')->group(function () {
 		Route::post('by/school', 'GetController@studentBySchool')->name('bySchool');
@@ -96,6 +100,16 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
 		'destroy',
 	]]);
 
+	// Training
+	Route::prefix('training')->name('training.')->group(function () {
+    	Route::post('list', 'TrainingController@list')->name('list');
+    	Route::post('export', 'TrainingController@export')->name('export');
+    	Route::delete('destroy', 'TrainingController@destroy')->name('destroy');
+    });
+	Route::resource('training', 'TrainingController', ['except' => [
+		'destroy',
+	]]);
+
     // Account
     Route::prefix('account')->name('account.')->group(function () {
     	Route::post('list', 'AccountController@list')->name('list');
@@ -118,5 +132,5 @@ Route::get('download/{dir}/{file}', function ($dir, $file) {
 })->name('download');
 
 Route::get('check', function () {
-	dd(App\Student::distinct()->get(['generation'])->toArray());
+	dd(App\Training::get());
 });

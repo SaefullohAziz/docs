@@ -18,6 +18,14 @@ class ActivityLog extends Model
      */
     public function subsidyStatus()
     {
-        return $this->hasMany('App\SubsidyStatus');
+        return $this->hasMany('App\SubsidyStatus', 'log_id');
+    }
+
+    /**
+     * Get the training status for the activity log.
+     */
+    public function trainingStatus()
+    {
+        return $this->hasMany('App\TrainingStatus', 'log_id');
     }
 }

@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreSubsidy extends FormRequest
+class StoreTraining extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -26,29 +26,59 @@ class StoreSubsidy extends FormRequest
     {
         $rules = [
             'type' => ['required'],
-            'student_id' => [
+            'implementation' => [
                 Rule::requiredIf(function () {
                     if ( ! empty($this->get('type'))) {
-                        return $this->get('type') == 'Student Starter Pack (SSP)';
+                        return $this->get('type') == 'Basic (ToT)' || $this->get('type') == 'Adobe Photoshop';
+                    }
+                }),
+            ],
+            'approval_code' => [
+                Rule::requiredIf(function () {
+                    if ( ! empty($this->get('type'))) {
+                        return $this->get('type') == 'Basic (ToT)';
+                    }
+                }),
+            ],
+            'room_type' => [
+                Rule::requiredIf(function () {
+                    if ( ! empty($this->get('type'))) {
+                        return $this->get('type') == 'Basic (ToT)';
                     }
                 }),
                 'array',
                 'min:1'
             ],
-            'student_id.*' => [
+            'room_type.*' => [
                 Rule::requiredIf(function () {
                     if ( ! empty($this->get('type'))) {
-                        return $this->get('type') == 'Student Starter Pack (SSP)';
+                        return $this->get('type') == 'Basic (ToT)';
                     }
                 }),
                 'min:1'
             ],
-            'student_year' => [
+            'room_size' => [
                 Rule::requiredIf(function () {
                     if ( ! empty($this->get('type'))) {
-                        return $this->get('type') == 'Axioo Next Year Support';
+                        return $this->get('type') == 'Basic (ToT)';
                     }
                 }),
+            ],
+            'has_asset' => [
+                Rule::requiredIf(function () {
+                    if ( ! empty($this->get('type'))) {
+                        return $this->get('type') == 'Elektronika Dasar';
+                    }
+                }),
+            ],
+            'participant_id' => [
+                'required',
+                'array',
+                'min:2'
+            ],
+            'participant_id.*' => [
+                'required',
+                'min:1'
             ],
             'pic_name' => [
                 'required',
@@ -121,8 +151,8 @@ class StoreSubsidy extends FormRequest
     {
         return [
             'school_id.required' => 'The school field is required.',
-            'student_id.required' => 'Choose at least one student.',
-            'student_id.*.required' => 'Choose at least one student.',
+            'participant_id.required' => 'Participant is required for every training registration.',
+            'participant_id.min' => 'Choose at least two participant.',
         ];
     }
 }
