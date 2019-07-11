@@ -72,6 +72,22 @@ class Training extends Model
     }
 
     /**
+     * Get the training payment for the training.
+     */
+    public function trainingPayment()
+    {
+        return $this->hasOne('App\TrainingPayment');
+    }
+
+    /**
+     * The payment that belong to the training.
+     */
+    public function payment()
+    {
+        return $this->belongsToMany('App\Payment', 'training_payments');
+    }
+
+    /**
      * Main query for listing
      * 
      * @param  \Illuminate\Http\Request  $request

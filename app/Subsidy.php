@@ -72,6 +72,22 @@ class Subsidy extends Model
     }
 
     /**
+     * Get the subsidy payment for the subsidy.
+     */
+    public function subsidyPayment()
+    {
+        return $this->hasOne('App\SubsidyPayment');
+    }
+
+    /**
+     * The payment that belong to the subsidy.
+     */
+    public function payment()
+    {
+        return $this->belongsToMany('App\Payment', 'subsidy_payments');
+    }
+
+    /**
      * Main query for listing
      * 
      * @param  \Illuminate\Http\Request  $request

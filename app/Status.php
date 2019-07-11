@@ -46,6 +46,22 @@ class Status extends Model
     }
 
     /**
+     * Get the payment status for the status.
+     */
+    public function paymentStatus()
+    {
+        return $this->hasMany('App\PaymentStatus');
+    }
+
+    /**
+     * The payment that belong to the status.
+     */
+    public function payment()
+    {
+        return $this->belongsToMany('App\Payment', 'payment_statuses');
+    }
+
+    /**
      * Scope a query to only include specific status of given names.
      *
      * @param  \Illuminate\Database\Eloquent\Builder  $query

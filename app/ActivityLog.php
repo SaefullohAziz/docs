@@ -18,7 +18,7 @@ class ActivityLog extends Model
      */
     public function subsidyStatus()
     {
-        return $this->hasMany('App\SubsidyStatus', 'log_id');
+        return $this->hasOne('App\SubsidyStatus', 'log_id');
     }
 
     /**
@@ -26,6 +26,14 @@ class ActivityLog extends Model
      */
     public function trainingStatus()
     {
-        return $this->hasMany('App\TrainingStatus', 'log_id');
+        return $this->hasOne('App\TrainingStatus', 'log_id');
+    }
+
+    /**
+     * Get the payment status for the activity log.
+     */
+    public function paymentStatus()
+    {
+        return $this->hasOne('App\PaymentStatus', 'log_id');
     }
 }

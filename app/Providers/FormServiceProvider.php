@@ -42,6 +42,15 @@ class FormServiceProvider extends ServiceProvider
             'attributes' => [], 
             'helpTexts' => []
         ]);
+        Form::component('bsCurrency', 'layouts.components.form.currency', [
+            'class' => null, 
+            'label', 
+            'name', 
+            'value' => null, 
+            'placeholder', 
+            'attributes' => [], 
+            'helpTexts' => []
+        ]);
         Form::component('bsEmail', 'layouts.components.form.email', [
             'class' => null, 
             'label', 
@@ -83,6 +92,15 @@ class FormServiceProvider extends ServiceProvider
             'label', 
             'name', 
             'value' => null, 
+            'attributes' => [], 
+            'helpTexts' => []
+        ]);
+        Form::component('bsUploadedFile', 'layouts.components.form.uploadedFile', [
+            'class' => null, 
+            'label', 
+            'name', 
+            'dir' => null,
+            'file' => null, 
             'attributes' => [], 
             'helpTexts' => []
         ]);

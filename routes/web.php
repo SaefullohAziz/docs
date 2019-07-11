@@ -110,6 +110,16 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
 		'destroy',
 	]]);
 
+	// Payment
+	Route::prefix('payment')->name('payment.')->group(function () {
+    	Route::post('list', 'PaymentController@list')->name('list');
+    	Route::post('export', 'PaymentController@export')->name('export');
+    	Route::delete('destroy', 'PaymentController@destroy')->name('destroy');
+    });
+	Route::resource('payment', 'PaymentController', ['except' => [
+		'destroy',
+	]]);
+
     // Account
     Route::prefix('account')->name('account.')->group(function () {
     	Route::post('list', 'AccountController@list')->name('list');

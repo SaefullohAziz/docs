@@ -77,6 +77,14 @@
     "Do you have assets?": "Sudah memiliki aset?",
     "Participant have been selected.": "Peserta sudah dipilih.",
 
+    "Payment Confirmation": "Konfirmasi Pembayaran",
+    "Payment": "Pembayaran",
+    "Create Payment Confirmation": "Tambah Konfirmasi Pembayaran",
+    "Edit Payment Confirmation": "Edit Konfirmasi Pembayaran",
+    "Payment Confirmation Detail": "Detail Konfirmasi Pembayaran",
+    "Payment Receipt": "Bukti Pembayaran",
+    "Bank Account Book": "Buku Tabungan",
+
     "User": "Pengguna",
     "Account": "Akun",
 
@@ -172,6 +180,10 @@
     "Approval Code": "Approval Code",
     "Room Type": "Tipe Ruangan",
     "Room Size": "Ukuran Ruangan",
+    "Payment Date": "Tanggal Pembayaran",
+    "Payment Ammount": "Jumlah Pembayaran",
+    "Method": "Metode",
+    "Bank Sender": "Bank Pengirim",
 
     "Enter phone number without country code.": "Masukkan nomor handphone tanpa kode negara.",
     "Complete with an academic degree and or degree of expertise.": "Lengkapi dengan gelar akademi atau keahlian.",
