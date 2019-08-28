@@ -45,8 +45,8 @@ class SchoolStatus extends Model
      * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeGetByName($query, $name)
+    public function scopeByName($query, $name)
     {
-        return $query->where('name', $name)->first();
+        return $query->where('name', $name);
     }
 }

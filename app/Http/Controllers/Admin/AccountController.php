@@ -37,9 +37,9 @@ class AccountController extends Controller
      */
     public function index()
     {
-        if (Auth::guard('admin')->user()->hasRole('user')) {
+        if (auth()->guard('admin')->user()->hasRole('user')) {
             return $this->me();
-        } if ( ! Auth::guard('admin')->user()->can('access accounts')) {
+        } if ( ! auth()->guard('admin')->user()->can('access accounts')) {
             return redirect()->route('admin.home')->with('alert-danger', $this->noPermission);
         }
         $view = [
@@ -70,7 +70,8 @@ class AccountController extends Controller
                     return (date('d-m-Y h:m:s', strtotime($data->created_at)));
                 })
                 ->editColumn('avatar', function($data) {
-                    return '<img src="'.asset('storage/admin/avatar/'.$data->avatar).'" height="30" width="auto" alt="">';
+                    $user = User::find($data->id);
+                    return '<img src="'.asset($user->avatar).'" height="30" width="auto" alt="">';
                 })
                 ->addColumn('action', function($data) {
                     return '<a class="btn btn-sm btn-success" href="'.route('admin.account.show', $data->id).'" title="See detail"><i class="fa fa-eye"></i> See</a> <a class="btn btn-sm btn-warning" href="'.route('admin.account.edit', $data->id).'" title="Edit"><i class="fa fa-edit"></i> Edit</a>';
@@ -87,7 +88,7 @@ class AccountController extends Controller
      */
     public function create()
     {
-        if ( ! Auth::guard('admin')->user()->can('create accounts')) {
+        if ( ! auth()->guard('admin')->user()->can('create accounts')) {
             return redirect()->route('admin.account.index')->with('alert-danger', $this->noPermission);
         }
         $view = [
@@ -108,14 +109,13 @@ class AccountController extends Controller
      */
     public function store(Request $request)
     {
-        if ( ! Auth::guard('admin')->user()->can('create accounts')) {
+        if ( ! auth()->guard('admin')->user()->can('create accounts')) {
             return redirect()->route('admin.account.index')->with('alert-danger', $this->noPermission);
         }
         Validator::make($request->all(), User::rules())->validate();
         $request->merge(['password' => bcrypt($request->password)]);
         $user = User::create($request->all());
-        $user->avatar = $this->uploadPhoto($user, $request);
-        $user->save();
+        $this->uploadPhoto($user, $request);
         $user->assignRole('user');
         return redirect(url()->previous())->with('alert-success', $this->createdMessage);
     }
@@ -126,20 +126,25 @@ class AccountController extends Controller
      * @param  \App\Admin\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function show(User $user)
+    public function show(Request $request, User $user)
     {
-        // if ( ! Auth::guard('admin')->user()->can('read accounts'))
+        // if ( ! auth()->guard('admin')->user()->can('read accounts'))
         // return redirect()->route('account.index')->with('alert-danger', $this->noPermission);
         $view = [
             'title' => 'Account Detail',
-            'subtitle' => 'Hi, ' . $user->name . '!',
-            'description' => 'Change information about yourself on this page.',
             'breadcrumbs' => [
                 route('admin.account.index') => 'Account',
                 null => 'Detail'
             ],
             'user' => $user
         ];
+        if ($request->is('admin/account/me/*')) {
+            $addonView = [
+                'subtitle' => 'Hi, ' . $user->name . '!',
+                'description' => 'Change information about yourself on this page.',
+            ];
+            $view = array_merge($view, $addonView);
+        }
         return view('admin.account.show', $view);
     }
 
@@ -148,9 +153,9 @@ class AccountController extends Controller
      * 
      * @return @show()
      */
-    public function me()
+    public function me(Request $request)
     {
-        return $this->show(Auth::guard('admin')->user());
+        return $this->show($request, auth()->guard('admin')->user());
     }
 
     /**
@@ -161,7 +166,7 @@ class AccountController extends Controller
      */
     public function edit(User $user)
     {
-        if ( ! Auth::guard('admin')->user()->can('update accounts')) {
+        if ( ! auth()->guard('admin')->user()->can('update accounts')) {
             return redirect()->route('account.index')->with('alert-danger', $this->noPermission);
         }
         $view = [
@@ -184,7 +189,7 @@ class AccountController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        // if ( ! Auth::guard('admin')->user()->can('update accounts'))
+        // if ( ! auth()->guard('admin')->user()->can('update accounts'))
         // return redirect()->route('account.index')->with('alert-danger', $this->noPermission);
         Validator::make($request->all(), User::rules('update'))->validate();
         if ($request->filled('password')) {
@@ -193,8 +198,7 @@ class AccountController extends Controller
             $request->merge(['password' => $user->password]);
         }
         $user->fill($request->all());
-        $user->avatar = $this->uploadPhoto($user, $request, $user->avatar);
-        $user->save();
+        $this->uploadPhoto($user, $request);
         return redirect(url()->previous())->with('alert-success', $this->updatedMessage);
     }
 
@@ -206,18 +210,11 @@ class AccountController extends Controller
      * @param  string  $oldFile
      * @return string
      */
-    public function uploadPhoto($user, Request $request, $oldFile = 'default.png')
+    public function uploadPhoto($user, Request $request)
     {
         if ($request->hasFile('photo')) {
-            Image::load($request->photo)
-                ->fit(Manipulations::FIT_CROP, 150, 150)
-                ->optimize()
-                ->save();
-            $filename = 'photo_'.date('d_m_y_h_m_s_').md5(uniqid(rand(), true)).'.'.$request->photo->extension();
-            $path = $request->photo->storeAs('public/admin/avatar/'.$user->id, $filename);
-            return $user->id.'/'.$filename;
+            $user->addMediaFromRequest('photo')->usingFileName('photo-'.date('d-m-Y-h-m-s-').md5(uniqid(rand(), true)))->toMediaCollection('photos');
         }
-        return $oldFile;
     }
 
     /**
@@ -228,7 +225,7 @@ class AccountController extends Controller
      */
     public function destroy(Request $request)
     {
-        if ( ! Auth::guard('admin')->user()->can('delete accounts')) {
+        if ( ! auth()->guard('admin')->user()->can('delete accounts')) {
             return response()->json(['status' => false, 'message' => $this->noPermission], 422);
         }
         User::destroy($request->selectedData);

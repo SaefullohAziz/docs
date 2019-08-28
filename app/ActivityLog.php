@@ -14,6 +14,14 @@ class ActivityLog extends Model
     protected $fillable = ['description', 'created_by', 'staff_id', 'user_id', 'school_id'];
 
     /**
+     * Get the staff that owns the activity log.
+     */
+    public function staff()
+    {
+        return $this->belongsTo('App\Admin\User');
+    }
+
+    /**
      * Get the subsidy status for the activity log.
      */
     public function subsidyStatus()

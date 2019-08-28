@@ -1,0 +1,107 @@
+<?php
+
+namespace App\Policies;
+
+use App\User;
+use App\Training;
+use Illuminate\Auth\Access\HandlesAuthorization;
+
+class TrainingPolicy
+{
+    use HandlesAuthorization;
+
+    /** 
+     * Authorizing specific user to perform any action.
+     * 
+     * @param  \App\User  $user
+     * @return mixed
+     */
+    public function before($user, $ability)
+    {
+        if (auth()->guard('web')->check()) {
+            return true;
+        }
+    }
+    
+    /**
+     * Determine whether the user can view any trainings.
+     *
+     * @param  \App\User  $user
+     * @return mixed
+     */
+    public function viewAny(User $user)
+    {
+        //
+    }
+
+    /**
+     * Determine whether the user can view the training.
+     *
+     * @param  \App\User  $user
+     * @param  \App\Training  $training
+     * @return mixed
+     */
+    public function view(User $user, Training $training)
+    {
+        return $user->school_id === $training->school_id;
+    }
+
+    /**
+     * Determine whether the user can create trainings.
+     *
+     * @param  \App\User  $user
+     * @return mixed
+     */
+    public function create(User $user)
+    {
+        //
+    }
+
+    /**
+     * Determine whether the user can update the training.
+     *
+     * @param  \App\User  $user
+     * @param  \App\Training  $training
+     * @return mixed
+     */
+    public function update(User $user, Training $training)
+    {
+        return $user->school_id === $training->school_id;
+    }
+
+    /**
+     * Determine whether the user can delete the training.
+     *
+     * @param  \App\User  $user
+     * @param  \App\Training  $training
+     * @return mixed
+     */
+    public function delete(User $user, Training $training)
+    {
+        return $user->school_id === $training->school_id;
+    }
+
+    /**
+     * Determine whether the user can restore the training.
+     *
+     * @param  \App\User  $user
+     * @param  \App\Training  $training
+     * @return mixed
+     */
+    public function restore(User $user, Training $training)
+    {
+        return $user->school_id === $training->school_id;
+    }
+
+    /**
+     * Determine whether the user can permanently delete the training.
+     *
+     * @param  \App\User  $user
+     * @param  \App\Training  $training
+     * @return mixed
+     */
+    public function forceDelete(User $user, Training $training)
+    {
+        return $user->school_id === $training->school_id;
+    }
+}

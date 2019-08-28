@@ -28,7 +28,7 @@
 
 		<div class="card card-primary">
 
-			{{ Form::open(['route' => ['admin.training.update', $training->id], 'files' => true, 'method' => 'put']) }}
+			{{ Form::open(['url' => '#', 'files' => true, 'method' => 'put']) }}
 				<div class="card-body">
 					<fieldset class="requirement-for-basic d-none">
 						<legend>{{ __('Registration Requirements') }}</legend>
@@ -147,15 +147,13 @@
 							</fieldset>
 							<fieldset class="{{ (old('type')=='IoT'?'d-block':'d-none') }}">
 								<legend>{{ __('IoT') }}</legend>
-                                {{ Form::label(null, __('Selection Result'), ['class' => 'd-block']) }}
-								{{ link_to_route('download', __('Download'), ['dir' => encrypt('training/selection-result'), 'file' => encrypt($training->selection_result)], ['class' => 'btn btn-primary '.( ! isset($training->selection_result)?'disabled':''), 'title' => __('Download'), 'target' => '_blank']) }}
+								{{ Form::bsUploadedFile(null, __('Selection Result'), 'selection_result', 'training/selection-result', $training->selection_result) }}
 							</fieldset>
                         </div>
                         <div class="col-sm-6">
 							<fieldset>
 								<legend>{{ __('Other Data') }}</legend>
-                                {{ Form::label(null, __('Commitment Letter'), ['class' => 'd-block']) }}
-								{{ link_to_route('download', __('Download'), ['dir' => encrypt('training/commitment-letter'), 'file' => encrypt($training->approval_letter_of_commitment_fee)], ['class' => 'btn btn-primary '.( ! isset($training->approval_letter_of_commitment_fee)?'disabled':''), 'title' => __('Download'), 'target' => '_blank']) }}
+								{{ Form::bsUploadedFile(null, __('Commitment Letter'), 'commitment_letter', 'training/commitment-letter', $training->approval_letter_of_commitment_fee) }}
 							</fieldset>
 							<fieldset>
 								<legend>{{ __('Person in Charge (PIC)') }}</legend>

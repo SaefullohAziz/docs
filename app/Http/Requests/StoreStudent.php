@@ -76,7 +76,10 @@ class StoreStudent extends FormRequest
             $rules = array_merge($rules, $addonRules);
         }
         if ($this->isMethod('put')) {
-            $rules['nisn'] = ['required', 'digits:10'];
+            $addonRules = [
+                'nisn' => ['required', 'digits:10']
+            ];
+            $rules = array_merge($rules, $addonRules);
         }
         return $rules;
     }

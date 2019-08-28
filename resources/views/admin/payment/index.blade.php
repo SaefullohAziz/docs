@@ -58,6 +58,12 @@
 				</div>
 			</div>
 			<div class="card-footer bg-whitesmoke">
+				@if (auth()->guard('admin')->user()->can('approval payments'))
+					<button class="btn btn-light btn-sm" name="processData" title="{{ __('Process') }}">{{ __('Process') }}</button>
+					<button class="btn btn-light btn-sm" name="approveData" title="{{ __('Approve') }}">{{ __('Approve') }}</button>
+					<button class="btn btn-light btn-sm" name="sendData" title="{{ __('Send') }}">{{ __('Send') }}</button>
+					<button class="btn btn-light btn-sm" name="refundData" title="{{ __('Refund') }}">{{ __('Refund') }}</button>
+				@endif
 				@if (auth()->guard('admin')->user()->can('delete payments'))
 					<button class="btn btn-danger btn-sm" name="deleteData" title="{{ __('Delete') }}">{{ __('Delete') }}</button>
 				@endif
@@ -143,7 +149,7 @@
 							error: function (jqXHR, textStatus, errorThrown)
 							{
 								if (JSON.parse(jqXHR.responseText).status) {
-									swal("{{ __('Failed!') }}", '{{ __("Data can't be deleted.") }}', "warning");
+									swal("{{ __('Failed!') }}", '{{ __("Data cannot be deleted.") }}', "warning");
 								} else {
 									swal(JSON.parse(jqXHR.responseText).message, "", "error");
 								}

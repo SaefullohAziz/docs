@@ -136,7 +136,7 @@
 							error: function (jqXHR, textStatus, errorThrown)
 							{
 								if (JSON.parse(jqXHR.responseText).status) {
-									swal("Failed!", "Data can't be deleted.", "warning");
+									swal("Failed!", "Data cannot be deleted.", "warning");
 								} else {
 									swal(JSON.parse(jqXHR.responseText).message, "", "error");
 								}

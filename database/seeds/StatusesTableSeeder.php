@@ -26,7 +26,8 @@ class StatusesTableSeeder extends Seeder
             ['name' => 'Sent'],
             ['name' => 'Rescheduled'],
             ['name' => 'Refunded'],
-            ['name' => 'Expired']
+            ['name' => 'Expired'],
+            ['name' => 'Published'],
         ];
         foreach ($data as $status) {
             Status::firstOrCreate($status);

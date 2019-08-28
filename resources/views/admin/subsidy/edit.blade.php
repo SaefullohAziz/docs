@@ -38,7 +38,7 @@
 
                                 {{ Form::bsSelect(null, __('Type'), 'type', $types, $subsidy->type, __('Select'), ['placeholder' => __('Select'), 'required' => '']) }}
 
-                                {{ Form::bsFile(null, __('Submission Letter'), 'submission_letter', old('submission_letter'), ['required' => ''], [__('File with PDF/JPG/PNG format up to 5MB.')]) }}
+                                {{ Form::bsFile(null, __('Submission Letter'), 'submission_letter', old('submission_letter'), [], [__('File with PDF/JPG/PNG format up to 5MB.')]) }}
                             </fieldset>
                             <fieldset class="{{ ($subsidy->type=='Student Starter Pack (SSP)'?'d-block':'d-none') }}">
                                 <legend>{{ __('Student Starter Pack (SSP)') }}</legend>
@@ -101,13 +101,6 @@
 @section('script')
 <script>
 	$(document).ready(function () {
-		$('select[name="school_id"]').change(function () {
-			$('input[name="pic"]').prop('disabled', true);
-			if ($(this).val() != '') {
-				$('input[name="pic"]').prop('disabled', false);
-			}
-		});
-
         $('select[name="type"]').change(function () {
 			if ($(this).val() == 'Student Starter Pack (SSP)') {
 	    		$('select[name="student"]').closest('fieldset').removeClass('d-none').addClass('d-block');

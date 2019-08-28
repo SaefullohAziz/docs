@@ -35,7 +35,7 @@ class AccountController extends Controller
      */
     public function index()
     {
-        $user = User::find(Auth::user()->id);
+        $user = User::find(auth()->user()->id);
         $view = [
             'title' => 'Account Detail',
             'subtitle' => 'Hi, ' . $user->name . '!',
@@ -99,17 +99,17 @@ class AccountController extends Controller
      * @param  \App\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, User $user)
+    public function update(Request $request)
     {
-        Validator::make($request->all(), User::rules('update'))->validate();
+        Validator::make($request->all(), User::rules())->validate();
+        $user = User::find(auth()->user()->id);
         if ($request->filled('password')) {
             $request->merge(['password' => bcrypt($request->password)]);
         } else {
             $request->merge(['password' => $user->password]);
         }
         $user->fill($request->except(['username', 'name']));
-        $user->avatar = $this->uploadPhoto($user, $request, $user->avatar);
-        $user->save();
+        $this->uploadPhoto($user, $request);
         return redirect(url()->previous())->with('alert-success', $this->updatedMessage);
     }
 
@@ -121,18 +121,11 @@ class AccountController extends Controller
      * @param  string  $oldFile
      * @return string
      */
-    public function uploadPhoto($user, Request $request, $oldFile = 'default.png')
+    public function uploadPhoto($user, Request $request)
     {
         if ($request->hasFile('photo')) {
-            Image::load($request->photo)
-                ->fit(Manipulations::FIT_CROP, 150, 150)
-                ->optimize()
-                ->save();
-            $filename = 'photo_'.date('d_m_y_h_m_s_').md5(uniqid(rand(), true)).'.'.$request->photo->extension();
-            $path = $request->photo->storeAs('public/avatar/'.$user->id, $filename);
-            return $user->id.'/'.$filename;
+            $user->addMediaFromRequest('photo')->usingFileName('photo-'.date('d-m-Y-h-m-s-').md5(uniqid(rand(), true)))->toMediaCollection('photos');
         }
-        return $oldFile;
     }
 
     /**

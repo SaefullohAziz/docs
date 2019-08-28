@@ -39,7 +39,7 @@
 
 								{{ Form::bsText(($payment->type!='Biaya Pengiriman Mikrotik'?'d-block':'d-none'), __('Invoice'), 'invoice', $payment->invoice, __('Invoice'), []) }}
 
-								{{ Form::bsText(null, __('Payment Date'), 'date', date('d-m-Y', strtotime($payment->date)), __('DD-MM-YYYY'), ['required' => '']) }}
+								{{ Form::bsText(null, __('Payment Date'), 'date', (empty($payment->date)?null:date('d-m-Y', strtotime($payment->date))), ['required' => '']) }}
                             </fieldset>
                         </div>
                         <div class="col-sm-6">

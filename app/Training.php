@@ -48,6 +48,14 @@ class Training extends Model
     }
 
     /**
+     * Get the latest training status for the training.
+     */
+    public function latestTrainingStatus()
+    {
+        return $this->hasOne('App\TrainingStatus')->orderBy('id', 'desc')->limit(1);
+    }
+
+    /**
      * The status that belong to the training.
      */
     public function status()
@@ -105,14 +113,14 @@ class Training extends Model
             ->join('schools', 'trainings.school_id', '=', 'schools.id')
             ->leftJoin('provinces', 'schools.province', '=', 'provinces.name')
             ->when(auth()->guard('web')->check(), function ($query) use ($request) {
-                $query->where('schools.id', auth()->user()->school_id);
+                $query->where('schools.id', auth()->user()->school->id);
             })->when( ! empty($request->school), function ($query) use ($request) {
                 $query->where('schools.id', $request->school);
             })->when( ! empty($request->type), function ($query) use ($request) {
                 $query->where('trainings.type', $request->type);
             })->when( ! empty($request->status), function ($query) use ($request) {
                 $query->where('statuses.id', $request->status);
-            });
+            })->whereNull('schools.deleted_at');
     }
 
     /**

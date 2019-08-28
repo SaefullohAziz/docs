@@ -8,6 +8,9 @@ use App\Pic;
 use App\School;
 use App\Status;
 use Illuminate\Http\Request;
+use App\Events\SubsidyCanceled;
+use App\Events\SubsidyRejected;
+use App\Events\SubsidyApproved;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreSubsidy;
 use DataTables;
@@ -157,7 +160,6 @@ class SubsidyController extends Controller
         $subsidy->save();
         $this->saveSspStudent($subsidy, $request);
         $this->savePic($subsidy, $request);
-        $this->saveStatus($subsidy, 'Created', 'Membuat pengajuan program bantuan.');
         return redirect(url()->previous())->with('alert-success', $this->createdMessage);
     }
 
@@ -233,7 +235,6 @@ class SubsidyController extends Controller
         $subsidy->save();
         $this->saveSspStudent($subsidy, $request);
         $this->savePic($subsidy, $request);
-        $this->saveStatus($subsidy, 'Edited', 'Mengubah pengajuan program bantuan.');
         return redirect(url()->previous())->with('alert-success', $this->updatedMessage);
     }
 
@@ -328,21 +329,51 @@ class SubsidyController extends Controller
     }
 
     /**
-     * Save status
+     * Cancel subsidy
      * 
-     * @param  \App\Subsidy  $subsidy
-     * @param  string  $status
-     * @param  string  $desc
+     * @param  \Illuminate\Http\Request  $request
      */
-    public function saveStatus($subsidy, $status, $desc)
+    public function cancel(Request $request)
     {
-        $log = actlog($desc);
-        $status = Status::byName($status)->first();
-        $subsidy->status()->attach($status->id, [
-            'log_id' => $log,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
+        if ($request->ajax()) {
+            if ( ! auth()->guard('admin')->user()->can('approval ' . $this->table)) {
+                return response()->json(['status' => false, 'message' => $this->noPermission], 422);
+            }
+            event(new SubsidyCanceled($request));
+            return response()->json(['status' => true, 'message' => $this->updatedMessage]);
+        }
+    }
+
+    /**
+     * Reject subsidy
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     */
+    public function reject(Request $request)
+    {
+        if ($request->ajax()) {
+            if ( ! auth()->guard('admin')->user()->can('approval ' . $this->table)) {
+                return response()->json(['status' => false, 'message' => $this->noPermission], 422);
+            }
+            event(new SubsidyRejected($request));
+            return response()->json(['status' => true, 'message' => $this->updatedMessage]);
+        }
+    }
+
+    /**
+     * Approve subsidy
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     */
+    public function approve(Request $request)
+    {
+        if ($request->ajax()) {
+            if ( ! auth()->guard('admin')->user()->can('approval ' . $this->table)) {
+                return response()->json(['status' => false, 'message' => $this->noPermission], 422);
+            }
+            event(new SubsidyApproved($request));
+            return response()->json(['status' => true, 'message' => $this->updatedMessage]);
+        }
     }
 
     /**
@@ -363,10 +394,12 @@ class SubsidyController extends Controller
      */
     public function destroy(Request $request)
     {
-        if ( ! auth()->guard('admin')->user()->can('delete ' . $this->table)) {
-            return response()->json(['status' => false, 'message' => $this->noPermission], 422);
+        if ($request->ajax()) {
+            if ( ! auth()->guard('admin')->user()->can('delete ' . $this->table)) {
+                return response()->json(['status' => false, 'message' => $this->noPermission], 422);
+            }
+            Subsidy::destroy($request->selectedData);
+            return response()->json(['status' => true, 'message' => $this->deletedMessage]);
         }
-        Subsidy::destroy($request->selectedData);
-        return response()->json(['status' => true, 'message' => $this->deletedMessage]);
     }
 }

@@ -47,6 +47,14 @@ class Subsidy extends Model
         return $this->hasMany('App\SubsidyStatus');
     }
 
+     /**
+     * Get the latest subsidy status for the subsidy.
+     */
+    public function latestSubsidyStatus()
+    {
+        return $this->hasOne('App\SubsidyStatus')->orderBy('id', 'desc')->limit(1);
+    }
+
     /**
      * The status that belong to the subsidy.
      */
@@ -105,14 +113,14 @@ class Subsidy extends Model
             ->join('schools', 'subsidies.school_id', '=', 'schools.id')
             ->leftJoin('provinces', 'schools.province', '=', 'provinces.name')
             ->when(auth()->guard('web')->check(), function ($query) use ($request) {
-                $query->where('schools.id', auth()->user()->school_id);
+                $query->where('schools.id', auth()->user()->school->id);
             })->when( ! empty($request->school), function ($query) use ($request) {
                 $query->where('schools.id', $request->school);
             })->when( ! empty($request->type), function ($query) use ($request) {
                 $query->where('subsidies.type', $request->type);
             })->when( ! empty($request->status), function ($query) use ($request) {
                 $query->where('statuses.id', $request->status);
-            });
+            })->whereNull('schools.deleted_at');
     }
 
     /**

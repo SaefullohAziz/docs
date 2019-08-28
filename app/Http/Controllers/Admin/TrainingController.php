@@ -9,6 +9,9 @@ use App\Status;
 use App\Pic;
 use App\Teacher as Participant;
 use Illuminate\Http\Request;
+use App\Events\TrainingCanceled;
+use App\Events\TrainingProcessed;
+use App\Events\TrainingApproved;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreTraining;
 use Illuminate\Support\Str;
@@ -85,6 +88,7 @@ class TrainingController extends Controller
             'schools' => School::pluck('name', 'id')->toArray(),
             'types' => $this->types,
             'statuses' => Status::byNames(['Processed', 'Canceled', 'Approved', 'Participant'])->pluck('name', 'id')->toArray(),
+            'batches' => range(0, 100)
         ];
         return view('admin.training.index', $view);
     }
@@ -165,7 +169,6 @@ class TrainingController extends Controller
         $training->save();
         $this->saveParticipant($training, $request);
         $this->savePic($training, $request);
-        $this->saveStatus($training, 'Created', 'Mendaftar program training.');
         return redirect(url()->previous())->with('alert-success', $this->createdMessage);
     }
 
@@ -242,7 +245,6 @@ class TrainingController extends Controller
         $training->save();
         $this->saveParticipant($training, $request);
         $this->savePic($training, $request);
-        $this->saveStatus($training, 'Edited', 'Mengubah pendaftaran training.');
         return redirect(url()->previous())->with('alert-success', $this->createdMessage);
     }
 
@@ -335,21 +337,51 @@ class TrainingController extends Controller
     }
 
     /**
-     * Save status
+     * Cancel training
      * 
-     * @param  \App\Training  $training
-     * @param  string  $status
-     * @param  string  $desc
+     * @param  \Illuminate\Http\Request  $request
      */
-    public function saveStatus($training, $status, $desc)
+    public function cancel(Request $request)
     {
-        $log = actlog($desc);
-        $status = Status::byName($status)->first();
-        $training->status()->attach($status->id, [
-            'log_id' => $log,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
+        if ($request->ajax()) {
+            if ( ! auth()->guard('admin')->user()->can('approval ' . $this->table)) {
+                return response()->json(['status' => false, 'message' => $this->noPermission], 422);
+            }
+            event(new TrainingCanceled($request));
+            return response()->json(['status' => true, 'message' => $this->updatedMessage]);
+        }
+    }
+
+    /**
+     * process training
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     */
+    public function process(Request $request)
+    {
+        if ($request->ajax()) {
+            if ( ! auth()->guard('admin')->user()->can('approval ' . $this->table)) {
+                return response()->json(['status' => false, 'message' => $this->noPermission], 422);
+            }
+            event(new TrainingProcessed($request));
+            return response()->json(['status' => true, 'message' => $this->updatedMessage]);
+        }
+    }
+
+    /**
+     * Approve training
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     */
+    public function approve(Request $request)
+    {
+        if ($request->ajax()) {
+            if ( ! auth()->guard('admin')->user()->can('approval ' . $this->table)) {
+                return response()->json(['status' => false, 'message' => $this->noPermission], 422);
+            }
+            event(new TrainingApproved($request));
+            return response()->json(['status' => true, 'message' => $this->updatedMessage]);
+        }
     }
 
     /**

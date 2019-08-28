@@ -9,10 +9,15 @@ use Illuminate\Contracts\Auth\CanResetPassword;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Spatie\MediaLibrary\HasMedia\HasMedia;
+use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
+use Spatie\MediaLibrary\File;
+use Spatie\MediaLibrary\Models\Media;
+use Spatie\Image\Manipulations;
 
-class User extends Authenticatable
+class User extends Authenticatable implements HasMedia
 {
-	use Notifiable, HasRoles;
+	use Notifiable, HasRoles, HasMediaTrait;
 
     protected $table = 'staffs';
     protected $guard = 'admin';
@@ -46,11 +51,56 @@ class User extends Authenticatable
     ];
 
     /**
+     * Get the log for the staff.
+     */
+    public function log()
+    {
+        return $this->hasMany('App\ActivityLog', 'log_id')->where('created_by', 'admin');
+    }
+
+    /**
      * Get the school comment for the staff.
      */
     public function schoolComment()
     {
         return $this->hasMany('App\SchoolComment');
+    }
+
+    /**
+     * Register media collection
+     */
+    public function registerMediaCollections()
+    {
+        $this->addMediaCollection('photos')
+            // ->withFallbackUrl('/img/avatar/default.png')
+            // ->withFallbackPath(public_path('/img/avatar/default.png'))
+            ->singleFile();
+    }
+
+    /**
+     * Register media conversion
+     * 
+     * @param \Spatie\MediaLibrary\Models\Media $media
+     */
+    public function registerMediaConversions(Media $media = null)
+    {
+        $this->addMediaConversion('avatar')
+            ->fit(Manipulations::FIT_CROP, 150, 150)
+            ->optimize();
+    }
+
+    /**
+     * Get the user's avatar.
+     *
+     * @param  string  $value
+     * @return string
+     */
+    public function getAvatarAttribute()
+    {
+        if ($this->getMedia('photos')->count() > 0) {
+            return $this->getFirstMediaUrl('photos', 'avatar');
+        }
+        return '/img/avatar/default.png';
     }
 
     /**

@@ -32,6 +32,9 @@ class GetController extends Controller
     public function teacherBySchool(Request $request)
     {
         if ($request->ajax()) {
+            if (auth()->guard('web')->check()) {
+                $request->request->add(['school' => auth()->user()->school->id]);
+            }
             $teachers = Teacher::bySchool($request->school)->get()->toArray();
             return response()->json(['status' => true, 'result' => $teachers]);
         }
@@ -50,7 +53,7 @@ class GetController extends Controller
     {
         if ($request->ajax()) {
             if (auth()->guard('web')->check()) {
-                $request->request->add(['school' => auth()->guard('web')->user()->school_id]);
+                $request->request->add(['school' => auth()->user()->school->id]);
             }
             $pic = Pic::bySchool($request->school)->select('pics.*')->first()->toArray();
             return response()->json(['status' => true, 'result' => $pic]);
@@ -61,6 +64,9 @@ class GetController extends Controller
     public function generationBySchool(Request $request)
     {
         if ($request->ajax()) {
+            if (auth()->guard('web')->check()) {
+                $request->request->add(['school' => auth()->user()->school->id]);
+            }
             $generations = Student::generationBySchool($request->school)->pluck('generation', 'generation')->toArray();
             return response()->json(['status' => true, 'result' => $generations]);
         }
@@ -69,6 +75,9 @@ class GetController extends Controller
     public function schoolYearBySchool(Request $request)
     {
         if ($request->ajax()) {
+            if (auth()->guard('web')->check()) {
+                $request->request->add(['school' => auth()->user()->school->id]);
+            }
             $schoolYears = Student::schoolYearBySchool($request->school)->pluck('school_year', 'school_year')->toArray();
             return response()->json(['status' => true, 'result' => $schoolYears]);
         }
@@ -77,6 +86,9 @@ class GetController extends Controller
     public function departmentBySchool(Request $request)
     {
         if ($request->ajax()) {
+            if (auth()->guard('web')->check()) {
+                $request->request->add(['school' => auth()->user()->school->id]);
+            }
             $departments = Student::departmentBySchool($request->school)->pluck('department', 'department')->toArray();
             return response()->json(['status' => true, 'result' => $departments]);
         }
@@ -85,6 +97,9 @@ class GetController extends Controller
     public function studentBySchool(Request $request)
     {
         if ($request->ajax()) {
+            if (auth()->guard('web')->check()) {
+                $request->request->add(['school' => auth()->user()->school->id]);
+            }
             $students = Student::bySchool($request->school)->pluck('name', 'id')->toArray();
             return response()->json(['status' => true, 'result' => $students]);
         }
@@ -93,6 +108,9 @@ class GetController extends Controller
     public function studentByGeneration(Request $request)
     {
         if ($request->ajax()) {
+            if (auth()->guard('web')->check()) {
+                $request->request->add(['school' => auth()->user()->school->id]);
+            }
             $students = Student::when( ! empty($request->school), function ($query) use ($request) {
                 $query->bySchool($request->school);
             })->byGeneration($request->generation)->pluck('name', 'id')->toArray();
@@ -103,6 +121,9 @@ class GetController extends Controller
     public function studentByGrade(Request $request)
     {
         if ($request->ajax()) {
+            if (auth()->guard('web')->check()) {
+                $request->request->add(['school' => auth()->user()->school->id]);
+            }
             $students = Student::when( ! empty($request->school), function ($query) use ($request) {
                 $query->bySchool($request->school);
             })->byGrade($request->grade)->pluck('name', 'id')->toArray();

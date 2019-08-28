@@ -169,7 +169,6 @@ class PaymentController extends Controller
         $payment = Payment::create($request->all());
         $payment->payment_receipt = $this->uploadPaymentReceipt($payment, $request);
         $payment->save();
-        $this->saveStatus($payment, 'Created', 'Membuat konfirmasi pembayaran.');
         return redirect(url()->previous())->with('alert-success', $this->createdMessage);
     }
 
@@ -246,7 +245,6 @@ class PaymentController extends Controller
         $payment->fill($request->all());
         $payment->payment_receipt = $this->uploadPaymentReceipt($payment, $request, $payment->payment_receipt);
         $payment->save();
-        $this->saveStatus($payment, 'Edited', 'Mengubah konfirmasi pembayaran.');
         return redirect(url()->previous())->with('alert-success', $this->updatedMessage);
     }
 
@@ -266,24 +264,6 @@ class PaymentController extends Controller
             return $payment->id.'/'.$filename;
         }
         return $oldFile;
-    }
-
-    /**
-     * Save status
-     * 
-     * @param  \App\Payment  $payment
-     * @param  string  $status
-     * @param  string  $desc
-     */
-    public function saveStatus($payment, $status, $desc)
-    {
-        $log = actlog($desc);
-        $status = Status::byName($status)->first();
-        $payment->status()->attach($status->id, [
-            'log_id' => $log,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
     }
 
     /**

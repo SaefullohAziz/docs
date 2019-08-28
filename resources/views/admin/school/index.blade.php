@@ -172,7 +172,7 @@
 							error: function (jqXHR, textStatus, errorThrown)
 							{
 								if (JSON.parse(jqXHR.responseText).status) {
-									swal("{{ __('Failed!') }}", '{{ __("Data can't be deleted.") }}', "warning");
+									swal("{{ __('Failed!') }}", '{{ __("Data cannot be deleted.") }}', "warning");
 								} else {
 									swal(JSON.parse(jqXHR.responseText).message, "", "error");
 								}

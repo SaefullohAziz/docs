@@ -97,14 +97,8 @@
 							<fieldset>
 								<legend>{{ __('Other Data') }}</legend>
 								{{ Form::bsInlineRadio(null, 'Apakah Kepala Sekolah telah mempelajari proposal ACP?', 'proposal', ['Sudah' => 'Sudah', 'Belum' => 'Belum'], $school->mikrotik_academy, ['disabled' => '']) }}
-
-								<div class="form-group">
-									{{ Form::label(null, __('Requirement Document'), ['class' => 'd-block']) }}
-									{{ link_to_route('download', __('Download'), ['dir' => encrypt('school/document'), 'file' => encrypt($school->document)], ['class' => 'btn btn-primary '.( ! isset($school->document)?'disabled':''), 'title' => __('Download'), 'target' => '_blank']) }}
-									<small class="form-text text-muted">
-										{{ __('File must have extension *.ZIP/*.RAR with size 5 MB or less.') }}
-									</small>
-								</div>
+								
+								{{ Form::bsUploadedFile(null, __('Requirement Document'), 'document', 'school/document', $school->document, [], [__('File must have extension *.ZIP/*.RAR with size 5 MB or less.')]) }}
 							</fieldset>
 						</div>
 					</div>
@@ -122,6 +116,9 @@
 					@foreach ($school->photo as $photo)
 						<div class="gallery-item" data-image="{{ asset('storage/school/photo/'.$photo->name) }}" data-title="Image {{ $loop->iteration }}"></div>
 					@endforeach
+					@if ($school->photo->count() == 0)
+						<div class="text-center">{{ __('There is no photo.') }}</div>
+					@endif
 				</div>
 			</div>
 		</div>

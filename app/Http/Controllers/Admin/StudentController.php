@@ -95,7 +95,7 @@ class StudentController extends Controller
      */
     public function index()
     {
-        if ( ! Auth::guard('admin')->user()->can('access ' . $this->table)) {
+        if ( ! auth()->guard('admin')->user()->can('access ' . $this->table)) {
             return redirect()->route('admin.home')->with('alert-danger', $this->noPermission);
         }
         $view = [
@@ -142,7 +142,7 @@ class StudentController extends Controller
      */
     public function create()
     {
-        if ( ! Auth::guard('admin')->user()->can('create ' . $this->table)) {
+        if ( ! auth()->guard('admin')->user()->can('create ' . $this->table)) {
             return redirect()->route('admin.student.index')->with('alert-danger', $this->noPermission);
         }
         for ($i=3; $i >= -1; $i--) { 
@@ -201,7 +201,7 @@ class StudentController extends Controller
      */
     public function store(StoreStudent $request)
     {
-        if ( ! Auth::guard('admin')->user()->can('create ' . $this->table)) {
+        if ( ! auth()->guard('admin')->user()->can('create ' . $this->table)) {
             return redirect()->route('admin.student.index')->with('alert-danger', $this->noPermission);
         }
         $request->merge([
@@ -221,7 +221,7 @@ class StudentController extends Controller
      */
     public function show(Student $student)
     {
-        if ( ! Auth::guard('admin')->user()->can('update ' . $this->table)) {
+        if ( ! auth()->guard('admin')->user()->can('update ' . $this->table)) {
             return redirect()->route('admin.student.index')->with('alert-danger', $this->noPermission);
         }
         for ($i=3; $i >= -1; $i--) { 
@@ -281,7 +281,7 @@ class StudentController extends Controller
      */
     public function edit(Student $student)
     {
-        if ( ! Auth::guard('admin')->user()->can('update ' . $this->table)) {
+        if ( ! auth()->guard('admin')->user()->can('update ' . $this->table)) {
             return redirect()->route('admin.student.index')->with('alert-danger', $this->noPermission);
         }
         for ($i=3; $i >= -1; $i--) { 
@@ -342,7 +342,7 @@ class StudentController extends Controller
      */
     public function update(StoreStudent $request, Student $student)
     {
-        if ( ! Auth::guard('admin')->user()->can('update ' . $this->table)) {
+        if ( ! auth()->guard('admin')->user()->can('update ' . $this->table)) {
             return redirect()->route('admin.student.index')->with('alert-danger', $this->noPermission);
         }
         $request->merge([
@@ -394,7 +394,7 @@ class StudentController extends Controller
      */
     public function destroy(Request $request)
     {
-        if ( ! Auth::guard('admin')->user()->can('delete ' . $this->school)) {
+        if ( ! auth()->guard('admin')->user()->can('delete ' . $this->school)) {
             return response()->json(['status' => false, 'message' => $this->noPermission], 422);
         }
         Student::destroy($request->selectedData);

@@ -38,10 +38,7 @@
 
                                 {{ Form::bsSelect(null, __('Type'), 'type', $types, $subsidy->type, __('Select'), ['placeholder' => __('Select'), 'disabled' => '']) }}
 
-                                <div class="form-group">
-									{{ Form::label(null, __('Submission Letter'), ['class' => 'd-block']) }}
-									{{ link_to_route('download', __('Download'), ['dir' => encrypt('subsidy/submission-letter'), 'file' => encrypt($subsidy->submission_letter)], ['class' => 'btn btn-primary '.( ! isset($subsidy->submission_letter)?'disabled':''), 'title' => __('Download'), 'target' => '_blank']) }}
-								</div>
+								{{ Form::bsUploadedFile(null, __('Submission Letter'), 'submission_letter', 'subsidy/submission-letter', $subsidy->submission_letter) }}
                             </fieldset>
                             <fieldset class="{{ ($subsidy->type=='Student Starter Pack (SSP)'?'d-block':'d-none') }}">
                                 <legend>{{ __('Student Starter Pack (SSP)') }}</legend>
@@ -60,11 +57,8 @@
 							<fieldset class="{{ ($subsidy->type=='Axioo Next Year Support'?'d-block':'d-none') }}">
 								<legend>{{ __('Axioo Next Year Support') }}</legend>
 								{{ Form::bsSelect('null', __('Student Year'), 'student_year', $studentYears, $subsidy->student_year, __('Select'), ['placeholder' => __('Select'), 'disabled' => '']) }}
-
-                                <div class="form-group">
-									{{ Form::label(null, __('Report'), ['class' => 'd-block']) }}
-									{{ link_to_route('download', __('Download'), ['dir' => encrypt('subsidy/report'), 'file' => encrypt($subsidy->report)], ['class' => 'btn btn-primary '.( ! isset($subsidy->report)?'disabled':''), 'title' => __('Download'), 'target' => '_blank']) }}
-								</div>
+								
+								{{ Form::bsUploadedFile(null, __('Report'), 'report', 'subsidy/report', $subsidy->report) }}
 							</fieldset>
                         </div>
                         <div class="col-sm-6">

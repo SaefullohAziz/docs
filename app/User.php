@@ -5,10 +5,15 @@ namespace App;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Spatie\MediaLibrary\HasMedia\HasMedia;
+use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
+use Spatie\MediaLibrary\File;
+use Spatie\MediaLibrary\Models\Media;
+use Spatie\Image\Manipulations;
 
-class User extends Authenticatable
+class User extends Authenticatable implements HasMedia
 {
-    use Notifiable;
+    use Notifiable, HasMediaTrait;
 
     /**
      * The attributes that are mass assignable.
@@ -16,7 +21,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'school_id', 'username', 'name', 'email', 'password',
     ];
 
     /**
@@ -46,40 +51,67 @@ class User extends Authenticatable
     }
 
     /**
+     * Route notifications for the mail channel.
+     *
+     * @param  \Illuminate\Notifications\Notification  $notification
+     * @return string
+     */
+    public function routeNotificationForMail($notification)
+    {
+        return $this->school->email;
+    }
+
+    /**
+     * Register media collection
+     */
+    public function registerMediaCollections()
+    {
+        $this->addMediaCollection('photos')
+            // ->withFallbackUrl('/img/avatar/default.png')
+            // ->withFallbackPath(public_path('/img/avatar/default.png'))
+            ->singleFile();
+    }
+
+    /**
+     * Register media conversion
+     * 
+     * @param \Spatie\MediaLibrary\Models\Media $media
+     */
+    public function registerMediaConversions(Media $media = null)
+    {
+        $this->addMediaConversion('avatar')
+            ->fit(Manipulations::FIT_CROP, 150, 150)
+            ->optimize();
+    }
+
+    /**
+     * Get the user's avatar.
+     *
+     * @param  string  $value
+     * @return string
+     */
+    public function getAvatarAttribute()
+    {
+        if ($this->getMedia('photos')->count() > 0) {
+            return $this->getFirstMediaUrl('photos', 'avatar');
+        }
+        return '/img/avatar/default.png';
+    }
+
+    /**
      * Rules for form validation
      * 
      * @param  string $type Type of form. Create or edit.
      */
-    public static function rules($type = null)
+    public static function rules()
     {
         $rules = [
-            'username' => [
-                'required',
-                'unique:users,username'
-            ],
-            'name' => [
-                'required',
-            ],
             'email' => [
                 'required',
                 'email',
-                'unique:users,email'
-            ],
-            'password' => [
-                'required',
-            ],
-            'password_confirmation' => [
-                'required',
-                'same:password'
+                // 'unique:users,email'
             ],
         ];
-
-        if ($type == 'update') {
-            $rules['username'] = ['required'];
-            $rules['email'] = ['required', 'email'];
-            $rules['password'] = [];
-            $rules['password_confirmation'] = [];
-        }
 
         return $rules;
     }

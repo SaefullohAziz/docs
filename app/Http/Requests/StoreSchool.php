@@ -109,27 +109,32 @@ class StoreSchool extends FormRequest
                     }
                 }),
             ],
+            'dealer_phone_number' => [
+                Rule::requiredIf(function () {
+                    if ( ! empty($this->get('reference'))) {
+                        return in_array('Dealer', $this->get('reference'));
+                    }
+                }),
+                'numeric'
+            ],
+            'dealer_email' => [
+                Rule::requiredIf(function () {
+                    if ( ! empty($this->get('reference'))) {
+                        return in_array('Dealer', $this->get('reference'));
+                    }
+                }),
+                'email',
+                'different:school_email',
+                'different:headmaster_email',
+                'different:pic_email'
+            ],
             'proposal' => ['required'],
         ];
-        if ( ! empty($this->get('reference'))) {
-            if (in_array('Dealer', $this->get('reference'))) {
-                $rules['dealer_phone_number'] = [
-                    'required',
-                    'numeric',
-                ];
-                $rules['dealer_email'] = [
-                    'required',
-                    'email',
-                    'different:school_email',
-                    'different:headmaster_email',
-                    'different:pic_email'
-                ];
-            }
-        }
         if ($this->isMethod('put')) {
-            $rules['name'] = [
-                'required',
+            $addonRules = [
+                'name' => ['required']
             ];
+            $rules = array_merge($rules, $addonRules);
         }
         return $rules;
     }

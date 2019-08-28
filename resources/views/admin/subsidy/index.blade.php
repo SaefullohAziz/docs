@@ -57,6 +57,11 @@
 				</div>
 			</div>
 			<div class="card-footer bg-whitesmoke">
+				@if (auth()->guard('admin')->user()->can('approval subsidies'))
+					<button class="btn btn-light btn-sm" name="cancelData" title="{{ __('Cancel') }}">{{ __('Cancel') }}</button>
+					<button class="btn btn-light btn-sm" name="rejectData" title="{{ __('Reject') }}">{{ __('Reject') }}</button>
+					<button class="btn btn-light btn-sm" name="approveData" title="{{ __('Approve') }}">{{ __('Approve') }}</button>
+				@endif
 				@if (auth()->guard('admin')->user()->can('delete subsidies'))
 					<button class="btn btn-danger btn-sm" name="deleteData" title="{{ __('Delete') }}">{{ __('Delete') }}</button>
 				@endif
@@ -114,6 +119,124 @@
       		},
   		});
 
+		$('[name="cancelData"]').click(function(event) {
+	      	if ($('[name="selectedData[]"]:checked').length > 0) {
+		        $('#cancel-form [name="description"]').val('');
+		        $("#cancel-form input").keypress(function (e) {
+		          	if(e.which == 13)  // the enter key code
+		          	{
+		            	$('[name="saveCancel"]').click();
+		            	return false;  
+		          	}
+		        });
+				$('#cancelModal').modal('show');
+	      	} else {
+	        	swal("{{ __('Please select a data..') }}", "", "warning");
+	      	}
+	    });
+
+	    $('[name="saveCancel"]').click(function(event) {
+	        event.preventDefault();
+	        var selectedData = $('[name="selectedData[]"]:checked').map(function(){
+	          	return $(this).val();
+	        }).get();
+	        $.ajax({
+	        	url : "{{ route('admin.subsidy.cancel') }}",
+	        	type: "POST",
+	        	dataType: "JSON",
+	        	data: {"_token" : "{{ csrf_token() }}", "selectedData" : selectedData, "description" : $('#cancel-form [name="description"]').val()},
+	        	success: function(data)
+	        	{
+	        		$('#cancelModal').modal('hide');
+	        		reloadTable();
+	        	},
+	        	error: function (jqXHR, textStatus, errorThrown)
+	        	{
+	        		reloadTable();
+	        	}
+	        });
+	    });
+
+		$('[name="rejectData"]').click(function(event) {
+	    	if ($('[name="selectedData[]"]:checked').length > 0) {
+	    		event.preventDefault();
+	    		var selectedData = $('[name="selectedData[]"]:checked').map(function(){
+	    			return $(this).val();
+	    		}).get();
+				swal({
+			      	title: '{{ __("Are you sure you want to reject selected data?") }}',
+			      	text: '',
+			      	icon: 'warning',
+			      	buttons: true,
+			      	dangerMode: true,
+			    })
+			    .then((willReject) => {
+			      	if (willReject) {
+			      		$.ajax({
+							url : "{{ route('admin.subsidy.reject') }}",
+							type: "POST",
+							dataType: "JSON",
+							data: {"_token" : "{{ csrf_token() }}", "selectedData" : selectedData},
+							success: function(data)
+							{
+								reloadTable();
+							},
+							error: function (jqXHR, textStatus, errorThrown)
+							{
+								if (JSON.parse(jqXHR.responseText).status) {
+									swal("{{ __('Failed!') }}", '{{ __("Data cannot be updated.") }}', "warning");
+								} else {
+									swal(JSON.parse(jqXHR.responseText).message, "", "error");
+								}
+							}
+						});
+			      	}
+    			});
+	    	} else {
+	    		swal("{{ __('Please select a data..') }}", "", "warning");
+	    	}
+	    });
+
+		$('[name="approveData"]').click(function(event) {
+	    	if ($('[name="selectedData[]"]:checked').length > 0) {
+	    		event.preventDefault();
+	    		var selectedData = $('[name="selectedData[]"]:checked').map(function(){
+	    			return $(this).val();
+	    		}).get();
+				swal({
+			      	title: '{{ __("Are you sure you want to approve selected data?") }}',
+			      	text: '',
+			      	icon: 'warning',
+			      	buttons: true,
+			      	dangerMode: true,
+			    })
+			    .then((willReject) => {
+			      	if (willReject) {
+			      		$.ajax({
+							url : "{{ route('admin.subsidy.approve') }}",
+							type: "POST",
+							dataType: "JSON",
+							data: {"_token" : "{{ csrf_token() }}", "selectedData" : selectedData},
+							success: function(data)
+							{
+								reloadTable();
+							},
+							error: function (jqXHR, textStatus, errorThrown)
+							{
+								if (JSON.parse(jqXHR.responseText).status) {
+									swal("{{ __('Failed!') }}", '{{ __("Data cannot be updated.") }}', "warning");
+								} else {
+									swal(JSON.parse(jqXHR.responseText).message, "", "error");
+								}
+							}
+						});
+			      	}
+    			});
+	    	} else {
+	    		swal("{{ __('Please select a data..') }}", "", "warning");
+	    	}
+	    });
+
 		$('[name="deleteData"]').click(function(event) {
 			if ($('[name="selectedData[]"]:checked').length > 0) {
 				event.preventDefault();
@@ -133,7 +256,7 @@
 							url : "{{ route('admin.subsidy.destroy') }}",
 							type: "DELETE",
 							dataType: "JSON",
-							data: {"selectedData" : selectedData, "_token" : "{{ csrf_token() }}"},
+							data: {"_token" : "{{ csrf_token() }}", "selectedData" : selectedData},
 							success: function(data)
 							{
 								reloadTable();
@@ -141,7 +264,7 @@
 							error: function (jqXHR, textStatus, errorThrown)
 							{
 								if (JSON.parse(jqXHR.responseText).status) {
-									swal("{{ __('Failed!') }}", '{{ __("Data can't be deleted.") }}', "warning");
+									swal("{{ __('Failed!') }}", '{{ __("Data cannot be deleted.") }}', "warning");
 								} else {
 									swal(JSON.parse(jqXHR.responseText).message, "", "error");
 								}
@@ -189,6 +312,33 @@
 				<div class="modal-footer bg-whitesmoke d-flex justify-content-center">
 					{{ Form::submit(__('Export'), ['class' => 'btn btn-primary']) }}
 					{{ Form::button(__('Filter'), ['class' => 'btn btn-primary', 'onclick' => 'filter()']) }}
+					{{ Form::button(__('Cancel'), ['class' => 'btn btn-secondary', ' data-dismiss' => 'modal']) }}
+				</div>
+			{{ Form::close() }}
+		</div>
+	</div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="cancelModal" tabindex="-1" role="dialog" aria-labelledby="cancelModalLabel" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="cancelModallLabel">{{ __('Cancel') }}</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			{{ Form::open(['url' => '#', 'files' => true, 'id' => 'cancel-form']) }}
+				<div class="modal-body">
+					<div class="container-fluid">
+						<div class="row">
+							{{ Form::bsTextarea(null, __('Description (Optional)'), 'description', old('description'), __('Description'), []) }}
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer bg-whitesmoke d-flex justify-content-center">
+					{{ Form::button(__('Save'), ['class' => 'btn btn-primary', 'name' => 'saveCancel']) }}
 					{{ Form::button(__('Cancel'), ['class' => 'btn btn-secondary', ' data-dismiss' => 'modal']) }}
 				</div>
 			{{ Form::close() }}

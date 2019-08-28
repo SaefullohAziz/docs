@@ -39,7 +39,7 @@
 
 								{{ Form::bsText(($payment->type!='Biaya Pengiriman Mikrotik'?'d-block':'d-none'), __('Invoice'), 'invoice', $payment->invoice, __('Invoice'), ['disabled' => '']) }}
 
-								{{ Form::bsText(null, __('Payment Date'), 'date', date('d-m-Y', strtotime($payment->date)), __('DD-MM-YYYY'), ['disabled' => '']) }}
+								{{ Form::bsText(null, __('Payment Date'), 'date', (empty($payment->date)?null:date('d-m-Y', strtotime($payment->date))), __('DD-MM-YYYY'), ['disabled' => '']) }}
                             </fieldset>
                         </div>
                         <div class="col-sm-6">
@@ -54,6 +54,35 @@
 							</fieldset>
                         </div>
 					</div>
+					@if ($payment->installment()->count() > 0)
+						<div class="row">
+							<fieldset class="col-12">
+								<legend>{{ __('Installment') }}</legend>
+								<table class="table table-sm">
+									<thead>
+										<tr>
+											<th>{{ __('No.')}}</th>
+											<th>{{ __('Date') }}</th>
+											<th>{{ __('Nominal') }}</th>
+											<th>{{ __('Method') }}</th>
+											<th>{{ __('Bank Sender') }}</th>
+										</tr>
+									</thead>
+									<tbody>
+										@foreach ($payment->installment as $installment)
+											<tr>
+												<td>{{ $loop->iteration }}</td>
+												<td>{{ date('d-m-Y', strtotime($installment->date)) }}</td>
+												<td>Rp. {{ $installment->total }}</td>
+												<td>{{ $installment->method }}</td>
+												<td>{{ $installment->bank_sender }}</td>
+											</tr>
+										@endforeach
+									</tbody>
+								</table>
+							</fieldset>
+						</div>
+					@endif
 				</div>
 			{{ Form::close() }}
 

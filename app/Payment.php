@@ -23,12 +23,28 @@ class Payment extends Model
         return $this->belongsTo('App\School');
     }
 
+     /**
+     * Get the installment for the payment.
+     */
+    public function installment()
+    {
+        return $this->hasMany('App\PaymentInstallment');
+    }
+
     /**
      * Get the payment status for the payment.
      */
     public function paymentStatus()
     {
         return $this->hasMany('App\PaymentStatus');
+    }
+
+    /**
+     * Get the latest payment status for the payment.
+     */
+    public function latestPaymentStatus()
+    {
+        return $this->hasOne('App\PaymentStatus')->orderBy('id', 'desc')->limit(1);
     }
 
     /**
@@ -91,14 +107,16 @@ class Payment extends Model
             ->leftJoin('training_payments', 'payments.id', '=', 'training_payments.payment_id')
             ->leftJoin('trainings', 'training_payments.training_id', '=', 'trainings.id')
             ->when(auth()->guard('web')->check(), function ($query) use ($request) {
-                $query->where('schools.id', auth()->user()->school_id);
+                $query->where('schools.id', auth()->user()->school->id);
+                $query->where('statuses.name', '!=', 'Published');
             })->when( ! empty($request->school), function ($query) use ($request) {
                 $query->where('schools.id', $request->school);
             })->when( ! empty($request->type), function ($query) use ($request) {
                 $query->where('payments.type', $request->type);
             })->when( ! empty($request->status), function ($query) use ($request) {
                 $query->where('statuses.id', $request->status);
-            });
+            })->whereNull('schools.deleted_at')
+            ->where('statuses.name', '!=', 'Published');
     }
 
     /**

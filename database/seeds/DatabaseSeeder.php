@@ -21,5 +21,6 @@ class DatabaseSeeder extends Seeder
         $this->call(SubsidyPermissionsTableSeeder::class);
         $this->call(TrainingPermissionsTableSeeder::class);
         $this->call(PaymentPermissionsTableSeeder::class);
+        $this->call(DummyDatasSeeder::class);
     }
 }

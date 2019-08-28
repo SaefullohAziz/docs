@@ -84,7 +84,7 @@
 								<legend>{{ __('Reference') }}</legend>
 								{{ Form::bsCheckboxList(null, __('Reference'), 'reference[]', $references, explode(', ', $school->reference)) }}
 							</fieldset>
-							<fieldset class="dealer-data">
+							<fieldset class="dealer-data {{ (in_array('Dealer', explode(', ', $school->reference))?'d-block':'d-none') }}">
 								<legend>{{ __('Dealer Data') }}</legend>
 								{{ Form::bsText(null, __('Dealer Name'), 'dealer_name', $school->dealer_name, __('Dealer Name')) }}
 

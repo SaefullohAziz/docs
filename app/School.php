@@ -6,10 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Notifications\Notifiable;
 
 class School extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -91,6 +92,17 @@ class School extends Model
     }
 
     /**
+     * Route notifications for the mail channel.
+     *
+     * @param  \Illuminate\Notifications\Notification  $notification
+     * @return string
+     */
+    public function routeNotificationForMail($notification)
+    {
+        return $this->email;
+    }
+
+    /**
      * Main query for listing
      * 
      * @param  \Illuminate\Http\Request  $request
@@ -119,7 +131,7 @@ class School extends Model
                 $query->whereIn('school_levels.id', $request->level);
             })->when( ! empty($request->status), function ($query) use ($request) {
                 $query->where('school_statuses.id', $request->status);
-            });
+            })->whereNull('schools.deleted_at');
     }
 
     /**

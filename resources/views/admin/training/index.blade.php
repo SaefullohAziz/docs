@@ -58,6 +58,11 @@
 				</div>
 			</div>
 			<div class="card-footer bg-whitesmoke">
+				@if (auth()->guard('admin')->user()->can('approval trainings'))
+					<button class="btn btn-light btn-sm" name="cancelData" title="{{ __('Cancel') }}">{{ __('Cancel') }}</button>
+					<button class="btn btn-light btn-sm" name="processData" title="{{ __('Process') }}">{{ __('Process') }}</button>
+					<button class="btn btn-light btn-sm" name="approveData" title="{{ __('Approve') }}">{{ __('Approve') }}</button>
+				@endif
 				@if (auth()->guard('admin')->user()->can('delete trainings'))
 					<button class="btn btn-danger btn-sm" name="deleteData" title="{{ __('Delete') }}">{{ __('Delete') }}</button>
 				@endif
@@ -114,7 +119,118 @@
       				$('[name="selectedData[]"]').iCheck('uncheck');
       			});
       		},
-  		});
+		});
+
+		$('[name="cancelData"]').click(function(event) {
+	    	if ($('[name="selectedData[]"]:checked').length > 0) {
+	    		event.preventDefault();
+	    		var selectedData = $('[name="selectedData[]"]:checked').map(function(){
+	    			return $(this).val();
+	    		}).get();
+				swal({
+			      	title: '{{ __("Are you sure you want to cancel selected data?") }}',
+			      	text: '',
+			      	icon: 'warning',
+			      	buttons: true,
+			      	dangerMode: true,
+			    })
+			    .then((willReject) => {
+			      	if (willReject) {
+			      		$.ajax({
+							url : "{{ route('admin.training.cancel') }}",
+							type: "POST",
+							dataType: "JSON",
+							data: {"_token" : "{{ csrf_token() }}", "selectedData" : selectedData},
+							success: function(data)
+							{
+								reloadTable();
+							},
+							error: function (jqXHR, textStatus, errorThrown)
+							{
+								if (JSON.parse(jqXHR.responseText).status) {
+									swal("{{ __('Failed!') }}", '{{ __("Data cannot be updated.") }}', "warning");
+								} else {
+									swal(JSON.parse(jqXHR.responseText).message, "", "error");
+								}
+							}
+						});
+			      	}
+    			});
+	    	} else {
+	    		swal("{{ __('Please select a data..') }}", "", "warning");
+	    	}
+	    });
+		  
+		$('[name="processData"]').click(function(event) {
+	    	if ($('[name="selectedData[]"]:checked').length > 0) {
+	    		event.preventDefault();
+	    		var selectedData = $('[name="selectedData[]"]:checked').map(function(){
+	    			return $(this).val();
+	    		}).get();
+				swal({
+			      	title: '{{ __("Are you sure you want to process selected data?") }}',
+			      	text: '',
+			      	icon: 'warning',
+			      	buttons: true,
+			      	dangerMode: true,
+			    })
+			    .then((willReject) => {
+			      	if (willReject) {
+			      		$.ajax({
+							url : "{{ route('admin.training.process') }}",
+							type: "POST",
+							dataType: "JSON",
+							data: {"_token" : "{{ csrf_token() }}", "selectedData" : selectedData},
+							success: function(data)
+							{
+								reloadTable();
+							},
+							error: function (jqXHR, textStatus, errorThrown)
+							{
+								if (JSON.parse(jqXHR.responseText).status) {
+									swal("{{ __('Failed!') }}", '{{ __("Data cannot be updated.") }}', "warning");
+								} else {
+									swal(JSON.parse(jqXHR.responseText).message, "", "error");
+								}
+							}
+						});
+			      	}
+    			});
+	    	} else {
+	    		swal("{{ __('Please select a data..') }}", "", "warning");
+	    	}
+	    });
+
+		$('[name="approveData"]').click(function(event) {
+	      	if ($('[name="selectedData[]"]:checked').length > 0) {
+		        $('#approve-form [name="batch"]').val(null).trigger('change');
+				$('#approveModal').modal('show');
+	      	} else {
+	        	swal("{{ __('Please select a data..') }}", "", "warning");
+	      	}
+	    });
+
+		$('[name="saveApprove"]').click(function(event) {
+	        event.preventDefault();
+	        var selectedData = $('[name="selectedData[]"]:checked').map(function(){
+	          	return $(this).val();
+	        }).get();
+	        $.ajax({
+	        	url : "{{ route('admin.training.approve') }}",
+	        	type: "POST",
+	        	dataType: "JSON",
+	        	data: {"_token" : "{{ csrf_token() }}", "selectedData" : selectedData, "batch" : $('#approve-form select[name="batch"]').val()},
+	        	success: function(data)
+	        	{
+	        		$('#approveModal').modal('hide');
+	        		reloadTable();
+	        	},
+	        	error: function (jqXHR, textStatus, errorThrown)
+	        	{
+	        		reloadTable();
+	        	}
+	        });
+	    });
 
 		$('[name="deleteData"]').click(function(event) {
 			if ($('[name="selectedData[]"]:checked').length > 0) {
@@ -143,7 +259,7 @@
 							error: function (jqXHR, textStatus, errorThrown)
 							{
 								if (JSON.parse(jqXHR.responseText).status) {
-									swal("{{ __('Failed!') }}", '{{ __("Data can't be deleted.") }}', "warning");
+									swal("{{ __('Failed!') }}", '{{ __("Data cannot be deleted.") }}', "warning");
 								} else {
 									swal(JSON.parse(jqXHR.responseText).message, "", "error");
 								}
@@ -191,6 +307,33 @@
 				<div class="modal-footer bg-whitesmoke d-flex justify-content-center">
 					{{ Form::submit(__('Export'), ['class' => 'btn btn-primary']) }}
 					{{ Form::button(__('Filter'), ['class' => 'btn btn-primary', 'onclick' => 'filter()']) }}
+					{{ Form::button(__('Cancel'), ['class' => 'btn btn-secondary', ' data-dismiss' => 'modal']) }}
+				</div>
+			{{ Form::close() }}
+		</div>
+	</div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="approveModal" tabindex="-1" role="dialog" aria-labelledby="approveModalLabel" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="approveModallLabel">{{ __('Approve') }}</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			{{ Form::open(['url' => '#', 'files' => true, 'id' => 'approve-form']) }}
+				<div class="modal-body">
+					<div class="container-fluid">
+						<div class="row">
+							{{ Form::bsSelect('col', __('Batch'), 'batch', $batches, null, __('Select'), ['placeholder' => __('Select')]) }}
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer bg-whitesmoke d-flex justify-content-center">
+					{{ Form::button(__('Save'), ['class' => 'btn btn-primary', 'name' => 'saveApprove']) }}
 					{{ Form::button(__('Cancel'), ['class' => 'btn btn-secondary', ' data-dismiss' => 'modal']) }}
 				</div>
 			{{ Form::close() }}
