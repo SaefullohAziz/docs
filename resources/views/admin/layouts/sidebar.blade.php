@@ -20,7 +20,7 @@
       <li><a class="nav-link" href="{{ route('admin.account.index') }}"><i class="fa fa-user"></i> <span>{{ __('Account') }}</span></a></li>
       <li class="menu-header">{{ __('Logout') }}</li>
       <li>
-        <a class="nav-link text-danger" href="{{ route('admin.logout') }}"
+        <a class="nav-link text-danger" href="{{ route('logout') }}"
           onclick="event.preventDefault();
           document.getElementById('logout-form').submit();">
           <i class="fas fa-sign-out-alt"></i> <span>{{ __('Logout') }}</span>

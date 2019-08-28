@@ -32,13 +32,13 @@
           <i class="fas fa-cog"></i> {{ __('Setting') }}
         </a>
         <div class="dropdown-divider"></div>
-        <a class="dropdown-item has-icon text-danger" href="{{ route('admin.logout') }}"
+        <a class="dropdown-item has-icon text-danger" href="{{ route('logout') }}"
           onclick="event.preventDefault();
           document.getElementById('logout-form').submit();">
           <i class="fas fa-sign-out-alt"></i> {{ __('Logout') }}
         </a>
 
-        <form id="logout-form" action="{{ route('admin.logout') }}" method="POST" style="display: none;">
+        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
           @csrf
         </form>
       </div>

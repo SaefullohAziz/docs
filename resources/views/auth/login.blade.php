@@ -18,7 +18,7 @@
                 @csrf
 
                 <div class="form-group">
-                  <label for="username">{{ __('Username') }}</label>
+                  <label for="username">{{ __('Username') }} / {{ __('E-Mail') }}</label>
                   <input id="username" type="text" class="form-control{{ $errors->has('username') ? ' is-invalid' : '' }}" name="username" tabindex="1" value="{{ old('username') }}" required autofocus>
 
                   @if ($errors->has('username'))
