@@ -26,6 +26,11 @@ Route::resource('school', 'SchoolController', ['only' => [
 	'index'
 ]]);
 
+// Document
+Route::resource('document', 'DocumentController', ['except' => [
+	'destroy',
+]]);
+
 // Student
 Route::prefix('student')->name('student.')->group(function () {
 	Route::post('list', 'StudentController@list')->name('list');
@@ -106,6 +111,11 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
 		**/
     });
     Route::resource('school', 'SchoolController', ['except' => [
+		'destroy',
+	]]);
+
+	// Document
+    Route::resource('document', 'DocumentController', ['except' => [
 		'destroy',
 	]]);
 
