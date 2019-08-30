@@ -2,9 +2,11 @@
 
 namespace App\Providers;
 
+use App\Document;
 use App\Subsidy;
 use App\Training;
 use App\Payment;
+use App\Observers\DocumentObserver;
 use App\Observers\SubsidyObserver;
 use App\Observers\TrainingObserver;
 use App\Observers\PaymentObserver;
@@ -31,6 +33,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Schema::defaultStringLength(191);
+        Document::observe(DocumentObserver::class);
         Subsidy::observe(SubsidyObserver::class);
         Training::observe(TrainingObserver::class);
         Payment::observe(PaymentObserver::class);
