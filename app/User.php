@@ -97,22 +97,4 @@ class User extends Authenticatable implements HasMedia
         }
         return '/img/avatar/default.png';
     }
-
-    /**
-     * Rules for form validation
-     * 
-     * @param  string $type Type of form. Create or edit.
-     */
-    public static function rules()
-    {
-        $rules = [
-            'email' => [
-                'required',
-                'email',
-                // 'unique:users,email'
-            ],
-        ];
-
-        return $rules;
-    }
 }

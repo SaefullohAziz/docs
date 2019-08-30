@@ -25,7 +25,7 @@ class ConfirmPayment extends FormRequest
     public function rules()
     {
         $payment = $this->route('payment');
-        $remainingPayment = $payment->total-$payment->installment->sum('total');
+        $remainingPayment = ($payment->total)-($payment->installment->sum('total'));
         $rules = [
             'repayment' => [
                 Rule::requiredIf(function () use ($payment) {
@@ -62,6 +62,21 @@ class ConfirmPayment extends FormRequest
                         $fail($attribute.' is invalid.');
                     }
                 }
+            ],
+            'npwp_number' => [
+                Rule::requiredIf(function () use ($payment) {
+                    return $payment->installment()->count() == 0;
+                }),
+            ],
+            'npwp_on_behalf_of' => [
+                Rule::requiredIf(function () use ($payment) {
+                    return $payment->installment()->count() == 0;
+                }),
+            ],
+            'npwp_address' => [
+                Rule::requiredIf(function () use ($payment) {
+                    return $payment->installment()->count() == 0;
+                }),
             ],
         ];
         return $rules;

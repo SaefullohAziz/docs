@@ -21,10 +21,6 @@ use App\Exports\TrainingsExport;
 
 class TrainingController extends Controller
 {
-    private $createdMessage;
-    private $updatedMessage;
-    private $deletedMessage;
-    private $noPermission;
     private $table;
     private $types;
     private $implementations;
@@ -37,11 +33,8 @@ class TrainingController extends Controller
      */
     public function __construct()
     {
+        parent::__construct();
         $this->middleware('auth:admin');
-        $this->createdMessage = __('Data successfully created.');
-        $this->updatedMessage = __('Data successfully updated.');
-        $this->deletedMessage = __('Data successfully deleted.');
-        $this->noPermission = __('You have no related permission.');
         $this->table = 'trainings';
         $this->types = [
             'Basic (ToT)' => 'Basic (ToT)', 

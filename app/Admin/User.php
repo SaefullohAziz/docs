@@ -104,45 +104,6 @@ class User extends Authenticatable implements HasMedia
     }
 
     /**
-     * Rules for form validation
-     * 
-     * @param  string $type Type of form. Create or edit.
-     */
-    public static function rules($type = null)
-    {
-        $rules = [
-            'username' => [
-                'required',
-                'unique:users,username'
-            ],
-            'name' => [
-                'required',
-            ],
-            'email' => [
-                'required',
-                'email',
-                'unique:users,email'
-            ],
-            'password' => [
-                'required',
-            ],
-            'password_confirmation' => [
-                'required',
-                'same:password'
-            ],
-        ];
-
-        if ($type == 'update') {
-            $rules['username'] = ['required'];
-            $rules['email'] = ['required', 'email'];
-            $rules['password'] = [];
-            $rules['password_confirmation'] = [];
-        }
-
-        return $rules;
-    }
-
-    /**
      * Main query for listing
      * 
      * @param  \Illuminate\Http\Request  $request

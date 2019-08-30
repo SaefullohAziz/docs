@@ -5,16 +5,13 @@ namespace App\Http\Controllers;
 use Auth;
 use App\User;
 use Illuminate\Http\Request;
+use App\Http\Requests\StoreUser;
 use Validator;
 use Spatie\Image\Image;
 use Spatie\Image\Manipulations;
 
 class AccountController extends Controller
 {
-    private $createdMessage;
-    private $updatedMessage;
-    private $noPermission;
-
     /**
      * Create a new controller instance.
      *
@@ -22,10 +19,8 @@ class AccountController extends Controller
      */
     public function __construct()
     {
+        parent::__construct();
         $this->middleware('auth');
-        $this->createdMessage = 'Data successfully created.';
-        $this->updatedMessage = 'Data successfully updated';
-        $this->noPermission = 'You have no related permission.';
     }
 
     /**
@@ -99,14 +94,12 @@ class AccountController extends Controller
      * @param  \App\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request)
+    public function update(StoreUser $request)
     {
-        Validator::make($request->all(), User::rules())->validate();
         $user = User::find(auth()->user()->id);
+        $request->merge(['password' => $user->password]);
         if ($request->filled('password')) {
             $request->merge(['password' => bcrypt($request->password)]);
-        } else {
-            $request->merge(['password' => $user->password]);
         }
         $user->fill($request->except(['username', 'name']));
         $this->uploadPhoto($user, $request);

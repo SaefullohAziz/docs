@@ -6,6 +6,7 @@ use Auth;
 use App\Admin\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreUser;
 use DataTables;
 use Validator;
 use Spatie\Image\Image;
@@ -13,9 +14,7 @@ use Spatie\Image\Manipulations;
 
 class AccountController extends Controller
 {
-    private $createdMessage;
-    private $updatedMessage;
-    private $noPermission;
+    private $table;
 
     /**
      * Create a new controller instance.
@@ -24,10 +23,9 @@ class AccountController extends Controller
      */
     public function __construct()
     {
+        parent::__construct();
         $this->middleware('auth:admin');
-        $this->createdMessage = 'Data successfully created.';
-        $this->updatedMessage = 'Data successfully updated';
-        $this->noPermission = 'You have no related permission.';
+        $this->table = 'accounts';
     }
 
     /**
@@ -39,7 +37,7 @@ class AccountController extends Controller
     {
         if (auth()->guard('admin')->user()->hasRole('user')) {
             return $this->me();
-        } if ( ! auth()->guard('admin')->user()->can('access accounts')) {
+        } if ( ! auth()->guard('admin')->user()->can('access ' . $this->table)) {
             return redirect()->route('admin.home')->with('alert-danger', $this->noPermission);
         }
         $view = [
@@ -88,7 +86,7 @@ class AccountController extends Controller
      */
     public function create()
     {
-        if ( ! auth()->guard('admin')->user()->can('create accounts')) {
+        if ( ! auth()->guard('admin')->user()->can('create ' . $this->table)) {
             return redirect()->route('admin.account.index')->with('alert-danger', $this->noPermission);
         }
         $view = [
@@ -107,9 +105,9 @@ class AccountController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreUser $request)
     {
-        if ( ! auth()->guard('admin')->user()->can('create accounts')) {
+        if ( ! auth()->guard('admin')->user()->can('create ' . $this->table)) {
             return redirect()->route('admin.account.index')->with('alert-danger', $this->noPermission);
         }
         Validator::make($request->all(), User::rules())->validate();
@@ -128,8 +126,11 @@ class AccountController extends Controller
      */
     public function show(Request $request, User $user)
     {
-        // if ( ! auth()->guard('admin')->user()->can('read accounts'))
-        // return redirect()->route('account.index')->with('alert-danger', $this->noPermission);
+        if ( ! $request->is('admin/account/me')) {
+            if ( ! auth()->guard('admin')->user()->can('read ' . $this->table)) {
+                return redirect()->route('account.index')->with('alert-danger', $this->noPermission);
+            }
+        }
         $view = [
             'title' => 'Account Detail',
             'breadcrumbs' => [
@@ -166,7 +167,7 @@ class AccountController extends Controller
      */
     public function edit(User $user)
     {
-        if ( ! auth()->guard('admin')->user()->can('update accounts')) {
+        if ( ! auth()->guard('admin')->user()->can('update ' . $this->table)) {
             return redirect()->route('account.index')->with('alert-danger', $this->noPermission);
         }
         $view = [
@@ -187,15 +188,16 @@ class AccountController extends Controller
      * @param  \App\Admin\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, User $user)
+    public function update(StoreUser $request, User $user)
     {
-        // if ( ! auth()->guard('admin')->user()->can('update accounts'))
-        // return redirect()->route('account.index')->with('alert-danger', $this->noPermission);
-        Validator::make($request->all(), User::rules('update'))->validate();
+        if ( ! $request->is('admin/account/me')) {
+            if ( ! auth()->guard('admin')->user()->can('update ' . $this->table)) {
+                return redirect()->route('account.index')->with('alert-danger', $this->noPermission);
+            }
+        }
+        $request->merge(['password' => $user->password]);
         if ($request->filled('password')) {
             $request->merge(['password' => bcrypt($request->password)]);
-        } else {
-            $request->merge(['password' => $user->password]);
         }
         $user->fill($request->all());
         $this->uploadPhoto($user, $request);
@@ -225,7 +227,7 @@ class AccountController extends Controller
      */
     public function destroy(Request $request)
     {
-        if ( ! auth()->guard('admin')->user()->can('delete accounts')) {
+        if ( ! auth()->guard('admin')->user()->can('delete ' . $this->table)) {
             return response()->json(['status' => false, 'message' => $this->noPermission], 422);
         }
         User::destroy($request->selectedData);

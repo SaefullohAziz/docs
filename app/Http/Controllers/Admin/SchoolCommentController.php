@@ -10,9 +10,6 @@ use App\Http\Controllers\Controller;
 
 class SchoolCommentController extends Controller
 {
-    private $createdMessage;
-    private $updatedMessage;
-    private $noPermission;
     private $table;
 
     /**
@@ -22,10 +19,8 @@ class SchoolCommentController extends Controller
      */
     public function __construct()
     {
+        parent::__construct();
         $this->middleware('auth:admin');
-        $this->createdMessage = __('Data successfully created.');
-        $this->updatedMessage = 'Data successfully updated';
-        $this->noPermission = 'You have no related permission.';
         $this->table = 'school_comments';
     }
 

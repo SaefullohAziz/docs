@@ -17,10 +17,6 @@ use Illuminate\Support\Facades\DB;
 
 class PaymentController extends Controller
 {
-    private $createdMessage;
-    private $updatedMessage;
-    private $deletedMessage;
-    private $noPermission;
     private $table;
     private $types;
     private $methods;
@@ -34,11 +30,8 @@ class PaymentController extends Controller
      */
     public function __construct()
     {
+        parent::__construct();
         $this->middleware('auth');
-        $this->createdMessage = __('Data successfully created.');
-        $this->updatedMessage = __('Data successfully updated.');
-        $this->deletedMessage = __('Data successfully deleted.');
-        $this->noPermission = __('You have no related permission.');
         $this->table = 'payments';
         $this->types = [
             // 'Subsidi' => 'Subsidi', 
