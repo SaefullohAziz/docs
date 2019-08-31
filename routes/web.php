@@ -41,6 +41,15 @@ Route::resource('student', 'StudentController', ['except' => [
 	'destroy',
 ]]);
 
+// Activity
+Route::prefix('activity')->name('activity.')->group(function () {
+	// Route::post('list', 'ActivityController@list')->name('list');
+	Route::delete('destroy', 'ActivityController@destroy')->name('destroy');
+});
+Route::resource('activity', 'ActivityController', ['except' => [
+	'destroy',
+]]);
+
 // Subsidy
 Route::prefix('subsidy')->name('subsidy.')->group(function () {
 	Route::post('list', 'SubsidyController@list')->name('list');
@@ -128,6 +137,15 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
     	Route::delete('destroy', 'StudentController@destroy')->name('destroy');
     });
 	Route::resource('student', 'StudentController', ['except' => [
+		'destroy',
+	]]);
+
+	// Activity
+	Route::prefix('activity')->name('activity.')->group(function () {
+    	// Route::post('list', 'ActivityController@list')->name('list');
+    	Route::delete('destroy', 'ActivityController@destroy')->name('destroy');
+    });
+	Route::resource('activity', 'ActivityController', ['except' => [
 		'destroy',
 	]]);
 
