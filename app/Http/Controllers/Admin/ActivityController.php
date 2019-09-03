@@ -25,7 +25,8 @@ class ActivityController extends Controller
             'Kunjungan Industri' => 'Kunjungan Industri',
             'MoU' => 'MoU',
             'Pendampingan SSP' => 'Pendampingan SSP',
-            'Evaluasi Tahunan (AYR)' => 'Evaluasi Tahunan (AYR)'
+            'Evaluasi Tahunan (AYR)' => 'Evaluasi Tahunan (AYR)',
+            'Axioo Mengajar' => 'Axioo Mengajar'
         ];
     }
 

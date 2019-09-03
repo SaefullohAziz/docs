@@ -2,11 +2,29 @@
 
 namespace App\Http\Controllers;
 
+use Auth;
 use App\Activity;
+use App\School;
 use Illuminate\Http\Request;
 
 class ActivityController extends Controller
 {
+    private $table;
+    private $types;
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->middleware('auth');
+        $this->table = 'subsidies';
+        $this->types = [
+                'MOU' => 'M.O.U',
+                'Kunjungan_industri' => 'Kunjungan Industri',
+                'SSP Pendampingan' => 'SSP Pendampingan',
+                'AYR' => 'AYR',
+                'Axioo_Mengajar' => 'Axioo Mengajar'
+            ];
+    }
     /**
      * Display a listing of the resource.
      *
@@ -14,7 +32,15 @@ class ActivityController extends Controller
      */
     public function index()
     {
-        //
+        $view = [
+            'title' => __('Activity Submission'),
+            'breadcrumbs' => [
+                null => __('Activity')
+            ],
+            'types' => $this->types,
+            'schools' => School::where('id', Auth::user()->school_id)->pluck('name', 'id')->toArray(),
+        ];
+        return view('activity_submission.index', $view);
     }
 
     /**
@@ -24,7 +50,16 @@ class ActivityController extends Controller
      */
     public function create()
     {
-        //
+        $view = [
+            'title' => __('Activity_Submission'),
+            'breadcrumbs' => [
+                route('activity.index') => __('Activity'),
+                null => 'Data'
+            ],
+            'types' => $this->types,
+            'schools' => School::where('id', Auth::user()->school_id)->pluck('name', 'id')->toArray(),
+        ];
+        return view('activity_submission.create', $view);
     }
 
     /**

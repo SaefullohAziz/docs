@@ -109,16 +109,50 @@
 
 		<div class="card card-primary">
 			<div class="card-header">
-				<h4>{{ __('Gallery') }}</h4>
+				<h4>{{ __('Document') }}</h4>
 			</div>
 			<div class="card-body">
-				<div class="gallery gallery-md">
-					@foreach ($school->photo as $photo)
-						<div class="gallery-item" data-image="{{ asset('storage/school/photo/'.$photo->name) }}" data-title="Image {{ $loop->iteration }}"></div>
-					@endforeach
-					@if ($school->photo->count() == 0)
-						<div class="text-center">{{ __('There is no photo.') }}</div>
-					@endif
+
+			</div>
+		</div>
+
+		<div class="card card-primary" id="school-photos">
+			<div class="card-header">
+				<h4>{{ __('Gallery') }}</h4>
+				<div class="card-header-action">
+                    <div class="btn-group">
+						<div class="dropdown">
+							<a href="#" data-toggle="dropdown" class="btn btn-sm btn-warning dropdown-toggle">{{ (session('photoCategory')?session('photoCategory'):__('All Categories')) }}</a>
+							<div class="dropdown-menu">
+								@foreach ($photoCategories as $key => $category)
+									<a href="{{ route('admin.school.photo.filter', ['school' => $school->id, 'token' => base64_encode($category)]) }}" class="dropdown-item">{{ $category }}</a>
+								@endforeach
+								<div class="dropdown-divider"></div>
+								<a href="{{ route('admin.school.photo.filter', ['school' => $school->id, 'token' => base64_encode('')]) }}" class="dropdown-item">{{ __('All Categories') }}</a>
+							</div>
+						</div>
+                    	<button class="btn btn-sm btn-warning" data-toggle="modal" data-target="#addPhotoModal">{{ __('Add') }}</button>
+						<button class="btn btn-warning btn-sm" name="deletePhoto" title="{{ __('Delete') }}">{{ __('Delete') }}</button>
+                    </div>
+                </div>
+			</div>
+			<div class="card-body">
+				<div class="gallery-block cards-gallery">
+					<div class="row">
+						@foreach ($schoolPhoto as $photo)
+							<div class="col-md-6 col-lg-4">
+								<div class="card border-0 transform-on-hover">
+									<input type="checkbox" class="position-absolute mt-1 ml-1" name="photoGallery[]" value="{{ $photo->id }}" id="photo-{{ $loop->iteration }}">
+									<a class="lightbox" href="{{ asset('storage/school/photo/'.$photo->name) }}">
+										<img src="{{ asset('storage/school/photo/'.$photo->name) }}" alt="{{ $photo->description }}" class="card-img-top">
+									</a>
+								</div>
+							</div>
+						@endforeach
+						@if ($schoolPhoto->count() == 0)
+							<div class="col-12 text-center">{{ __('There is no photo.') }}</div>
+						@endif
+					</div>
 				</div>
 			</div>
 		</div>
@@ -159,6 +193,131 @@
 					</div>
 				{{ Form::close() }}
 			</div>
+		</div>
+	</div>
+</div>
+@endsection
+
+@section('script')
+<script>
+	$(document).ready(function () {
+		baguetteBox.run('.cards-gallery', { 
+			animation: 'slideIn',
+			captions: function(element) {
+				return element.getElementsByTagName('img')[0].alt;
+			}
+		});
+
+		$('[name="savePhoto"]').click(function(event) {
+			$('#add-photo-form [name="category"], #add-photo-form [name="photos[]"]').removeClass('is-invalid');
+			event.preventDefault();
+			var formData = new FormData($('#add-photo-form')[0]);
+			$.ajax({
+				url : "{{ route('admin.school.photo.store', $school->id) }}",
+				type: "POST",
+				contentType: false, // The content type used when sending data to the server.
+				cache: false, // To unable request pages to be cached
+				processData: false,
+				dataType: "JSON",
+				data: formData,
+				success: function(data)
+				{
+					if (data.status == true) {
+						$('#addPhotoModal').modal('hide');
+						window.location.reload();
+					}
+				},
+				error: function (jqXHR, textStatus, errorThrown)
+				{
+					$.each(JSON.parse(jqXHR.responseText).errors, function(name, value) {
+						$('#add-photo-form [name="'+name+'"]').addClass('is-invalid');
+						$('#add-photo-form [name="'+name+'"]').parent().find('.invalid-feedback strong').html(value[0]);
+						if (name == 'photos') {
+							$('#add-photo-form [name="photos[]"]').addClass('is-invalid');
+							$('#add-photo-form [name="photos[]"]').parent().find('.invalid-feedback strong').html(value[0]);
+						}
+						for (i = 0; i < name.length; i++) { 
+							if (name == 'photos.'+i) {
+								$('#add-photo-form [name="photos[]"]').addClass('is-invalid');
+								$('#add-photo-form [name="photos[]"]').parent().find('.invalid-feedback strong').html(value[0]);
+							}
+						}
+					});
+				}
+			});
+		});
+
+		$('[name="deletePhoto"]').click(function(event) {
+			if ($('[name="photoGallery[]"]:checked').length > 0) {
+				event.preventDefault();
+				var selectedData = $('[name="photoGallery[]"]:checked').map(function(){
+					return $(this).val();
+				}).get();
+				swal({
+			      	title: '{{ __("Are you sure want to delete this data?") }}',
+			      	text: '',
+			      	icon: 'warning',
+			      	buttons: true,
+			      	dangerMode: true,
+			    })
+			    .then((willDelete) => {
+			      	if (willDelete) {
+			      		$.ajax({
+							url : "{{ route('admin.school.photo.destroy') }}",
+							type: "DELETE",
+							dataType: "JSON",
+							data: {"selectedData" : selectedData, "_token" : "{{ csrf_token() }}"},
+							success: function(data)
+							{
+								if (data.status == true) {
+									window.location.reload();
+								}
+							},
+							error: function (jqXHR, textStatus, errorThrown)
+							{
+								if (JSON.parse(jqXHR.responseText).status) {
+									swal("{{ __('Failed!') }}", '{{ __("Data cannot be deleted.") }}', "warning");
+								} else {
+									swal(JSON.parse(jqXHR.responseText).message, "", "error");
+								}
+							}
+						});
+			      	}
+    			});
+			} else {
+				swal("{{ __('Please select a data..') }}", "", "warning");
+			}
+		});
+	});
+</script>
+
+<!-- Modal -->
+<div class="modal fade" id="addPhotoModal" tabindex="-1" role="dialog" aria-labelledby="addPhotoModalLabel" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="addPhotoModallLabel">{{ __('Add Photo') }}</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			{{ Form::open(['url' => '#', 'files' => true, 'id' => 'add-photo-form']) }}
+				<div class="modal-body">
+					<div class="container-fluid">
+						<div class="row">
+							{{ Form::bsSelect('col-12', __('Category'), 'category', $photoCategories, old('category'), __('Select'), ['placeholder' => __('Select')], [], true) }}
+
+							{{ Form::bsFile('col-12', __('School Photo'), 'photos[]', old('photos[]'), [], [__("Photo with JPG/PNG format up to 5MB.")], true) }}
+
+							{{ Form::bsTextarea('col-12', __('Description'), 'description[]', old('description'), __('Description')) }}
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer bg-whitesmoke d-flex justify-content-center">
+					{{ Form::button(__('Save'), ['class' => 'btn btn-primary', 'name' => 'savePhoto']) }}
+					{{ Form::button(__('Cancel'), ['class' => 'btn btn-secondary', ' data-dismiss' => 'modal']) }}
+				</div>
+			{{ Form::close() }}
 		</div>
 	</div>
 </div>

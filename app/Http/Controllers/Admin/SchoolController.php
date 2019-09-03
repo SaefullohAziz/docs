@@ -5,10 +5,13 @@ namespace App\Http\Controllers\Admin;
 use Auth;
 use App\Province;
 use App\Regency;
+use App\Department;
+use App\PoliceNumber;
 use App\School;
 use App\Pic;
 use App\SchoolLevel;
 use App\SchoolStatus;
+use App\SchoolPhoto;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreSchool;
@@ -22,8 +25,6 @@ use Illuminate\Support\Str;
 class SchoolController extends Controller
 {
     private $table;
-    private $policeNumbers;
-    private $departments;
     private $isoCertificates;
     private $references;
 
@@ -37,8 +38,6 @@ class SchoolController extends Controller
         parent::__construct();
         $this->middleware('auth:admin');
         $this->table = 'schools';
-        $this->policeNumbers = ['A' => 'A', 'AA' => 'AA', 'AB' => 'AB', 'AD' => 'AD', 'AE' => 'AE', 'AG' => 'AG', 'B' => 'B', 'BA' => 'BA', 'BB' => 'BB', 'BD' => 'BD', 'BE' => 'BE', 'BG' => 'BG', 'BH' => 'BH', 'BK' => 'BK', 'BL' => 'BL', 'BM' => 'BM', 'BN' => 'BN', 'BP' => 'BP', 'D' => 'D', 'DA' => 'DA', 'DB' => 'DB', 'DC' => 'DC', 'DD' => 'DD', 'DE' => 'DE', 'DF' => 'DF', 'DG' => 'DG', 'DH' => 'DH', 'DK' => 'DK', 'DL' => 'DL', 'DM' => 'DM', 'DN' => 'DN', 'DP' => 'DP', 'DR' => 'DR', 'DS' => 'DS', 'DT' => 'DT', 'DW' => 'DW', 'E' => 'E', 'EA' => 'EA', 'EB' => 'EB', 'ED' => 'ED', 'F' => 'F', 'G' => 'G', 'H' => 'H', 'K' => 'K', 'KB' => 'KB', 'KH' => 'KH', 'KT' => 'KT', 'KU' => 'KU', 'L' => 'L', 'M' => 'M', 'N' => 'N', 'P' => 'P', 'PB' => 'PB', 'R' => 'R', 'S' => 'S', 'T' => 'T', 'V' => 'V', 'W' => 'W', 'X' => 'X', 'Z' => 'Z'];
-        $this->departments = ['Teknik Komputer dan Jaringan', 'Rekayasa Perangkat Lunak', 'Multimedia', 'Animasi', 'Broadcasting', 'Teknik Audio dan Video', 'Teknik Elektronika', 'Teknik Elektronika dan Industri', 'Teknik Sepeda Motor', 'Teknik Kendaraan Ringan', 'Teknik Gambar Bangunan', 'Administrasi Perkantoran', 'Pemasaran', 'Keuangan/Perbankan', 'Farmasi', 'Akuntansi', __('Other')];
         $this->isoCertificates = ['Sudah' => 'Sudah', 'Dalam Proses (persiapan dokumen / pembentukan team audit internal / pendampingan)' => 'Dalam Proses (persiapan dokumen / pembentukan team audit internal / pendampingan)', 'Belum' => 'Belum'];
         $this->references = ['Sekolah Peserta / Sekolah Binaan', 'Dealer', 'Internet (Facebook Page/Web)', 'Lain-Lain'];
     }
@@ -108,8 +107,8 @@ class SchoolController extends Controller
             ],
             'provinces' => Province::pluck('name', 'name')->toArray(),
             'regencies' => Regency::pluck('name', 'name')->toArray(),
-            'policeNumbers' => $this->policeNumbers,
-            'departments' => $this->departments,
+            'policeNumbers' => PoliceNumber::pluck('name', 'name')->toArray(),
+            'departments' => array_merge(Department::pluck('name')->toArray(), [__('Other')]),
             'isoCertificates' => $this->isoCertificates,
             'references' => $this->references
         ];
@@ -175,12 +174,23 @@ class SchoolController extends Controller
             ],
             'provinces' => Province::pluck('name', 'name')->toArray(),
             'regencies' => Regency::getByProvinceName($school->province)->pluck('name', 'name')->toArray(),
-            'policeNumbers' => $this->policeNumbers,
-            'departments' => $this->departments,
+            'policeNumbers' => PoliceNumber::pluck('name', 'name')->toArray(),
+            'departments' => array_merge(Department::pluck('name')->toArray(), [__('Other')]),
             'isoCertificates' => $this->isoCertificates,
             'references' => $this->references,
-            'school' => $school
+            'school' => $school,
+            'photoCategories' => [
+                'Kegiatan' => 'Kegiatan',
+                'Dokumentasi' => 'Dokumentasi'
+            ],
+            'schoolPhoto' => $school->photo,
         ];
+        if (session('photoCategory')) {
+            $addonView = [
+                'schoolPhoto' => SchoolPhoto::where('school_id', $school->id)->where('category', session('photoCategory'))->get(),
+            ];
+            $view = array_merge($view, $addonView);
+        }
         return view('admin.school.show', $view);
     }
 
@@ -203,8 +213,8 @@ class SchoolController extends Controller
             ],
             'provinces' => Province::pluck('name', 'name')->toArray(),
             'regencies' => Regency::getByProvinceName($school->province)->pluck('name', 'name')->toArray(),
-            'policeNumbers' => $this->policeNumbers,
-            'departments' => $this->departments,
+            'policeNumbers' => PoliceNumber::pluck('name', 'name')->toArray(),
+            'departments' => array_merge(Department::pluck('name')->toArray(), [__('Other')]),
             'isoCertificates' => $this->isoCertificates,
             'references' => $this->references,
             'school' => $school

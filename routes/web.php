@@ -110,7 +110,17 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
     Route::prefix('school')->name('school.')->group(function () {
     	Route::post('list', 'SchoolController@list')->name('list');
     	Route::post('export', 'SchoolController@export')->name('export');
-    	Route::delete('destroy', 'SchoolController@destroy')->name('destroy');
+		Route::delete('destroy', 'SchoolController@destroy')->name('destroy');
+		
+		// School: photo
+		Route::prefix('photo')->name('photo.')->group(function () {
+			Route::get('{school}/filter/{token?}', 'SchoolPhotoController@filter')->name('filter');
+			Route::delete('destroy', 'SchoolPhotoController@destroy')->name('destroy');
+		});
+		Route::resource('{school}/photo', 'SchoolPhotoController', ['only' => [
+			'store',
+		]]);
+
     	// School: comment
     	Route::prefix('comment')->name('comment.')->group(function () {
 	    	Route::post('{school}', 'SchoolCommentController@store')->name('store');
