@@ -31,7 +31,8 @@ class FormServiceProvider extends ServiceProvider
             'value' => null, 
             'placeholder', 
             'attributes' => [], 
-            'helpTexts' => []
+            'helpTexts' => [],
+            'ajax' => false
         ]);
         Form::component('bsPhoneNumber', 'layouts.components.form.phoneNumber', [
             'class' => null, 
@@ -68,7 +69,8 @@ class FormServiceProvider extends ServiceProvider
             'value' => null, 
             'dataPlaceholder', 
             'attributes' => [], 
-            'helpTexts' => []
+            'helpTexts' => [],
+            'ajax' => false
         ]);
         Form::component('bsPassword', 'layouts.components.form.password', [
             'class' => null, 
@@ -93,7 +95,8 @@ class FormServiceProvider extends ServiceProvider
             'name', 
             'value' => null, 
             'attributes' => [], 
-            'helpTexts' => []
+            'helpTexts' => [],
+            'ajax' => false
         ]);
         Form::component('bsUploadedFile', 'layouts.components.form.uploadedFile', [
             'class' => null, 

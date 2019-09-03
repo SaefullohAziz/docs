@@ -12,7 +12,7 @@ class SchoolPhoto extends Model
      * @var array
      */
     protected $fillable = [
-        'school_id', 'name',
+        'school_id', 'category', 'name', 'description'
     ];
 
     /**

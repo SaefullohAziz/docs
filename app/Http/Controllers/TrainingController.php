@@ -163,7 +163,7 @@ class TrainingController extends Controller
      */
     public function show(Training $training)
     {
-        if (auth()->user()->cant('view', $training)) {
+        if ( ! auth()->user()->can('view', $training)) {
             return redirect()->route('training.index')->with('alert-danger', $this->noPermission);
         }
         $view = [

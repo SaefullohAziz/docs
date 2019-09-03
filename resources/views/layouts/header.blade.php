@@ -19,10 +19,13 @@
     <link rel="stylesheet" href="{{ asset('modules/bootstrap-daterangepicker/daterangepicker.css') }}">
     <link rel="stylesheet" href="{{ asset('modules/chocolat/dist/css/chocolat.css') }}">
     <link rel="stylesheet" href="{{ asset('modules/summernote/summernote-bs4.css') }}">
+    <link rel="stylesheet" href="{{ asset('modules/baguetteBox/baguetteBox.min.css') }}">
 
     <!-- Template CSS -->
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     <link rel="stylesheet" href="{{ asset('css/components.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/compact-gallery.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/cards-gallery.css') }}">
     <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
   </head>
   <body>

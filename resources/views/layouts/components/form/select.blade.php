@@ -11,4 +11,9 @@
 	    	<strong>{{ $errors->first($name) }}</strong>
 	    </div>
     @endif
+	@if ($ajax)
+	    <div class="invalid-feedback" role="alert">
+	    	<strong></strong>
+	    </div>
+    @endif
 </div>

@@ -22,6 +22,7 @@
     <script src="{{ asset('modules/cleave-js/dist/addons/cleave-phone.id.js') }}"></script>
     <script src="{{ asset('modules/chocolat/dist/js/jquery.chocolat.min.js') }}"></script>
     <script src="{{ asset('modules/summernote/summernote-bs4.js') }}"></script>
+    <script src="{{ asset('modules/baguetteBox/baguetteBox.min.js') }}"></script>
 
     <!-- Template JS File -->
     <script src="{{ asset('js/scripts.js') }}"></script>
