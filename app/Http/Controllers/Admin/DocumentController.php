@@ -8,11 +8,11 @@ use App\Http\Controllers\Controller;
 
 class DocumentController extends Controller
 {
-    private $createdMessage;
-    private $updatedMessage;
-    private $deletedMessage;
-    private $noPermission;
-    private $table;
+    protected $createdMessage;
+    protected $updatedMessage;
+    protected $deletedMessage;
+    protected $noPermission;
+    protected $table;
 
     /**
      * Create a new class instance.
