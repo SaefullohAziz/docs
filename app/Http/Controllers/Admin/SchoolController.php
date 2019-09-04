@@ -11,6 +11,7 @@ use App\School;
 use App\Pic;
 use App\SchoolLevel;
 use App\SchoolStatus;
+use App\Document;
 use App\SchoolPhoto;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -179,15 +180,26 @@ class SchoolController extends Controller
             'isoCertificates' => $this->isoCertificates,
             'references' => $this->references,
             'school' => $school,
+            'documentCategories' => [
+                'Update Dokumen Persyaratan' => 'Update Dokumen Persyaratan', 
+                'Form Aplikasi & Komitmen' => 'Form Aplikasi & Komitmen', 
+                'MikroTik Academy' => 'MikroTik Academy'
+            ],
+            'schoolDocuments' => $school->documents,
             'photoCategories' => [
                 'Kegiatan' => 'Kegiatan',
                 'Dokumentasi' => 'Dokumentasi'
             ],
-            'schoolPhoto' => $school->photo,
+            'schoolPhotos' => $school->photo,
         ];
         if (session('photoCategory')) {
             $addonView = [
-                'schoolPhoto' => SchoolPhoto::where('school_id', $school->id)->where('category', session('photoCategory'))->get(),
+                'schoolPhotos' => SchoolPhoto::where('school_id', $school->id)->where('category', session('photoCategory'))->get(),
+            ];
+            $view = array_merge($view, $addonView);
+        } if (session('documentCategory')) {
+            $addonView = [
+                'schoolDocuments' => Document::where('school_id', $school->id)->where('category', session('documentCategory'))->get(),
             ];
             $view = array_merge($view, $addonView);
         }

@@ -8,6 +8,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Document extends Model
 {
     use SoftDeletes;
+
+    /**
+     * The attributes that aren't mass assignable.
+     *
+     * @var array
+     */
+    protected $guarded = ['notif'];
     
     /**
      * Get the school that owns the document.

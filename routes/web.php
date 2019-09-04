@@ -112,6 +112,15 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
     	Route::post('export', 'SchoolController@export')->name('export');
 		Route::delete('destroy', 'SchoolController@destroy')->name('destroy');
 		
+		// School: document
+		Route::prefix('document')->name('document.')->group(function () {
+			Route::get('{school}/filter/{token?}', 'DocumentController@filter')->name('filter');
+			Route::delete('destroy', 'DocumentController@destroy')->name('destroy');
+		});
+		Route::resource('{school}/document', 'DocumentController', ['only' => [
+			'store',
+		]]);
+
 		// School: photo
 		Route::prefix('photo')->name('photo.')->group(function () {
 			Route::get('{school}/filter/{token?}', 'SchoolPhotoController@filter')->name('filter');
@@ -132,11 +141,6 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
 		**/
     });
     Route::resource('school', 'SchoolController', ['except' => [
-		'destroy',
-	]]);
-
-	// Document
-    Route::resource('document', 'DocumentController', ['except' => [
 		'destroy',
 	]]);
 
