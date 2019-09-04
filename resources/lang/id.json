@@ -64,6 +64,7 @@
     "Add Photo": "Tambah Foto",
 
     "Document": "Dokumen",
+    "Add Document": "Tambah Dokumen",
 
     "Student": "Siswa",
     "Create Student": "Tambah Siswa",
@@ -216,6 +217,7 @@
     "Date": "Tanggal",
     "Remaining payment": "Pembayaran tersisa",
     "All Categories": "Semua Kategori",
+    "There is no document.": "Tidak ada dokumen.",
 
     "Enter phone number without country code.": "Masukkan nomor handphone tanpa kode negara.",
     "Complete with an academic degree and or degree of expertise.": "Lengkapi dengan gelar akademi atau keahlian.",

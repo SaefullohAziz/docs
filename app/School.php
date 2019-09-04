@@ -52,6 +52,14 @@ class School extends Model
     }
 
     /**
+     * Get the document for the school.
+     */
+    public function documents()
+    {
+        return $this->hasMany('App\Document');
+    }
+
+    /**
      * Get the photo for the school.
      */
     public function photo()
