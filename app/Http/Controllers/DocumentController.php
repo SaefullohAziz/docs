@@ -2,11 +2,27 @@
 
 namespace App\Http\Controllers;
 
+use App\School;
 use App\Document;
+use Validator;
 use Illuminate\Http\Request;
 
 class DocumentController extends Controller
 {
+    private $table;
+
+    /**
+     * Create a new class instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        parent::__construct();
+        $this->middleware('auth');
+        $this->table = 'documents';
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -15,6 +31,18 @@ class DocumentController extends Controller
     public function index()
     {
         //
+    }
+
+    /**
+     * Filter resource
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\School  $school
+     * @return \Illuminate\Http\Response
+     */
+    public function filter(Request $request, $token = null)
+    {
+        return redirect(url()->previous() . '#school-documents')->with('documentCategory', base64_decode($token));
     }
 
     /**
@@ -35,7 +63,23 @@ class DocumentController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        if ($request->ajax()) {
+            Validator::make($request->all(), 
+                [
+                    'category' => ['required'],
+                    'filename' => [
+                        'required',
+                        'mimes:png,jpg,jpeg,pdf',
+                        'max:5000'
+                    ]
+                ]
+            )->validate();
+            $school = School::find(auth()->user()->school->id);
+            $document = $school->documents()->create($request->all());
+            $document->filename = $this->uploadDocument($document, $request);
+            $document->save();
+            return response()->json(['status' => true]);
+        }
     }
 
     /**
@@ -73,13 +117,36 @@ class DocumentController extends Controller
     }
 
     /**
+     * Upload document for school
+     * 
+     * @param  \App\School  $school
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string  $oldFile
+     * @return string
+     */
+    public function uploadDocument($document, $request, $oldFile = null)
+    {
+        if ($request->hasFile('filename')) {
+            $filename = 'document_'.date('d_m_y_h_m_s_').md5(uniqid(rand(), true)).'.'.$request->filename->extension();
+            $path = $request->filename->storeAs('public/document/'.$document->id, $filename);
+            return $document->id.'/'.$filename;
+        }
+        return $oldFile;
+    }
+
+    /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Document  $document
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Document $document)
+    public function destroy(Request $request)
     {
-        //
+        foreach ($request->selectedData as $id) {
+            $document = Document::find($id);
+            unlink(storage_path('app/public/document/'.$document->filename));
+        }
+        Document::destroy($request->selectedData);
+        return response()->json(['status' => true, 'message' => $this->deletedMessage]);
     }
 }

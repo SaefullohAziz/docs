@@ -9,7 +9,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreSchoolPhoto;
 use Spatie\Image\Image;
 use Spatie\Image\Manipulations;
-use Illuminate\Support\Facades\Storage;
 
 class SchoolPhotoController extends Controller
 {
