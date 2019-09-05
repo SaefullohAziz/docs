@@ -6,8 +6,11 @@ use Auth;
 use App\Province;
 use App\Regency;
 use App\Department;
+use App\PoliceNumber;
 use App\School;
 use App\Pic;
+use App\Document;
+use App\SchoolPhoto;
 use App\SchoolLevel;
 use App\SchoolStatus;
 use Illuminate\Http\Request;
@@ -56,8 +59,30 @@ class SchoolController extends Controller
             'departments' => array_merge(Department::pluck('name')->toArray(), [__('Other')]),
             'isoCertificates' => $this->isoCertificates,
             'references' => $this->references,
-            'school' => $school
+            'school' => $school,
+            'documentCategories' => [
+                'Update Dokumen Persyaratan' => 'Update Dokumen Persyaratan', 
+                'Form Aplikasi & Komitmen' => 'Form Aplikasi & Komitmen', 
+                'MikroTik Academy' => 'MikroTik Academy'
+            ],
+            'schoolDocuments' => $school->documents,
+            'photoCategories' => [
+                'Kegiatan' => 'Kegiatan',
+                'Dokumentasi' => 'Dokumentasi'
+            ],
+            'schoolPhotos' => $school->photo,
         ];
+        if (session('photoCategory')) {
+            $addonView = [
+                'schoolPhotos' => SchoolPhoto::where('school_id', $school->id)->where('category', session('photoCategory'))->get(),
+            ];
+            $view = array_merge($view, $addonView);
+        } if (session('documentCategory')) {
+            $addonView = [
+                'schoolDocuments' => Document::where('school_id', $school->id)->where('category', session('documentCategory'))->get(),
+            ];
+            $view = array_merge($view, $addonView);
+        }
         return view('school.show', $view);
     }
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\School;
 use App\SchoolPhoto;
 use Illuminate\Foundation\Http\FormRequest;
 

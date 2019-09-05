@@ -21,6 +21,24 @@ Route::get('/', 'HomeController@index')->name('home');
 Route::prefix('school')->name('school.')->group(function () {
 	Route::get('edit', 'SchoolController@edit')->name('edit');
 	Route::put('update', 'SchoolController@update')->name('update');
+
+	// School: document
+	Route::prefix('document')->name('document.')->group(function () {
+		Route::get('filter/{token?}', 'DocumentController@filter')->name('filter');
+		Route::delete('destroy', 'DocumentController@destroy')->name('destroy');
+	});
+	Route::resource('document', 'DocumentController', ['only' => [
+		'store',
+	]]);
+
+	// School: photo
+	Route::prefix('photo')->name('photo.')->group(function () {
+		Route::get('filter/{token?}', 'SchoolPhotoController@filter')->name('filter');
+		Route::delete('destroy', 'SchoolPhotoController@destroy')->name('destroy');
+	});
+	Route::resource('photo', 'SchoolPhotoController', ['only' => [
+		'store',
+	]]);
 });
 Route::resource('school', 'SchoolController', ['only' => [
 	'index'
