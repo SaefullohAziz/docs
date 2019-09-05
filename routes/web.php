@@ -156,7 +156,7 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
 
 	// Activity
 	Route::prefix('activity')->name('activity.')->group(function () {
-    	// Route::post('list', 'ActivityController@list')->name('list');
+    	Route::post('list', 'ActivityController@list')->name('list');
     	Route::delete('destroy', 'ActivityController@destroy')->name('destroy');
     });
 	Route::resource('activity', 'ActivityController', ['except' => [
