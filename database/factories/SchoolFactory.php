@@ -14,14 +14,15 @@ $factory->define(School::class, function (Faker $faker) {
     $gender = $faker->randomElement(['male', 'female']);
     $province = $faker->randomElement(Province::pluck('name')->toArray());
     $regencies = Regency::join('provinces', 'regencies.province_id', '=', 'provinces.id')->where('provinces.name', $province)->pluck('regencies.name')->toArray();
+    $regency = $faker->randomElement($regencies);
     $policeNumbers = PoliceNumber::pluck('name')->toArray();
     $departments = Department::pluck('name')->toArray();
     return [
         'type' => $faker->randomElement(['Negeri', 'Swasta']),
-        'name' => $faker->unique()->company,
+        'name' => 'SMK Negeri ' . $faker->numberBetween(1, 99) . ' ' . $regency,
         'address' => $faker->address,
         'province' => $province, 
-        'regency' => $faker->randomElement($regencies), 
+        'regency' => $regency, 
         'police_number' => $faker->randomElement($policeNumbers), 
         'since' => $faker->year('1998'), 
         'school_phone_number' => $faker->unique()->phoneNumber,
