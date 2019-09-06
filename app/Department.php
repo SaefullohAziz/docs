@@ -20,4 +20,12 @@ class Department extends Model
     {
         return $this->hasMany('App\SchoolImplementation');
     }
+
+    /**
+     * Get the student class for the department.
+     */
+    public function studentClass()
+    {
+        return $this->hasMany('App\StudentClass');
+    }
 }

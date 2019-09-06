@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
         $this->call(PaymentPermissionsTableSeeder::class);
         $this->call(DepartmentsTableSeeder::class);
         $this->call(PoliceNumbersTableSeeder::class);
+        $this->call(StudentClassPermissionsSeeder::class);
         $this->call(DummyDatasSeeder::class);
     }
 }

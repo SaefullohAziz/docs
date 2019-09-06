@@ -162,13 +162,24 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
 		'destroy',
 	]]);
 
-	// Student
-	Route::prefix('student')->name('student.')->group(function () {
-    	Route::post('list', 'StudentController@list')->name('list');
-    	Route::post('export', 'StudentController@export')->name('export');
-    	Route::delete('destroy', 'StudentController@destroy')->name('destroy');
+	// Class
+	Route::prefix('class')->name('class.')->group(function () {
+    	Route::post('list', 'StudentClassController@list')->name('list');
+    	Route::post('export', 'StudentClassController@export')->name('export');
+		Route::delete('destroy', 'StudentClassController@destroy')->name('destroy');
+		// Student
+		Route::prefix('{class}/student')->name('student.')->group(function () {
+			Route::post('list', 'StudentController@list')->name('list');
+			Route::post('export', 'StudentController@export')->name('export');
+			Route::delete('destroy', 'StudentController@destroy')->name('destroy');
+		});
+		Route::resource('{studentClass}/student', 'StudentController', ['except' => [
+			'destroy',
+		]]);
     });
-	Route::resource('student', 'StudentController', ['except' => [
+	Route::resource('class', 'StudentClassController', ['parameters' => [
+	    'class' => 'studentClass'
+	], 'except' => [
 		'destroy',
 	]]);
 
@@ -235,6 +246,7 @@ Route::prefix('get')->name('get.')->middleware(['auth:web,admin'])->group(functi
 	Route::post('regency/by/province', 'GetController@regencyByProvince')->name('regencyByProvince');
 	Route::post('school/by/level', 'GetController@schoolByLevel')->name('schoolByLevel');
 	Route::post('generation/by/school', 'GetController@generationBySchool')->name('generationBySchool');
+	Route::post('generation/from/class', 'GetController@generationFromClass')->name('generationFromClass');
 	Route::post('schoolYear/by/school', 'GetController@schoolYearBySchool')->name('schoolYearBySchool');
 	Route::post('department/by/school', 'GetController@departmentBySchool')->name('departmentBySchool');
 	Route::prefix('teacher')->name('teacher.')->group(function () {
@@ -260,11 +272,9 @@ Route::get('download/{dir}/{file}', function ($dir, $file) {
 })->name('download');
 
 Route::get('check', function () {
-	$user = App\User::find(1);
-	// $user->clearMediaCollection('photos');
-	// $media = $user->getMedia('photos');
-	$media = $user->getFirstMediaUrl('photos');
-	dd($media);
+	$school = App\School::find(497);
+	$department = App\Department::find(7);
+	return studentGeneration($school, $department);
 });
 
 Route::get('mailable', function () {

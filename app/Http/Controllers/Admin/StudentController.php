@@ -113,8 +113,7 @@ class StudentController extends Controller
         if ($request->ajax()) {
             $students = Student::list($request);
             return DataTables::of($students)
-                ->addColumn('DT_RowIndex', function ($data)
-                {
+                ->addColumn('DT_RowIndex', function ($data) {
                     return '<div class="checkbox icheck"><label><input type="checkbox" name="selectedData[]" value="'.$data->id.'"></label></div>';
                 })
                 ->editColumn('created_at', function($data) {
@@ -214,7 +213,7 @@ class StudentController extends Controller
      */
     public function show(Student $student)
     {
-        if ( ! auth()->guard('admin')->user()->can('update ' . $this->table)) {
+        if ( ! auth()->guard('admin')->user()->can('read ' . $this->table)) {
             return redirect()->route('admin.student.index')->with('alert-danger', $this->noPermission);
         }
         for ($i=3; $i >= -1; $i--) { 

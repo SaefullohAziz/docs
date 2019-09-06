@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreStudent extends FormRequest
@@ -23,61 +24,67 @@ class StoreStudent extends FormRequest
      */
     public function rules()
     {
+        $student = $this->route('student');
         $rules = [
             'name' => ['required'],
             'nickname' => ['required'],
             'province' => ['required'],
-            'school_year' => ['required'],
             'nisn' => ['required', 'digits:10', 'unique:students,nisn'],
-            'department' => ['required'],
-            'email' => ['required', 'email'],
+            'email' => ['required', 'email', 'unique:students,email'],
             'gender' => ['required'],
-            'grade' => ['required'],
-            'generation' => ['required'],
-            'father_name' => ['required'],
-            'father_education' => ['required'],
-            'father_earning' => ['required'],
-            'father_earning_nominal' => ['required', 'numeric'],
+            'father_name' => [],
+            'father_education' => [],
+            'father_earning' => [],
+            'father_earning_nominal' => ['numeric'],
             'mother_name' => ['required'],
-            'mother_education' => ['required'],
-            'mother_earning' => ['required'],
-            'mother_earning_nominal' => ['required', 'numeric'],
-            'trustee_name' => ['required'],
-            'trustee_education' => ['required'],
-            'economy_status' => ['required'],
+            'mother_education' => [],
+            'mother_earning' => [],
+            'mother_earning_nominal' => ['numeric'],
+            'trustee_name' => [],
+            'trustee_education' => [],
+            'economy_status' => [],
             'religion' => ['required'],
             'blood_type' => ['required'],
-            'special_need' => ['required'],
-            'mileage' => ['required'],
-            'distance' => ['required', 'numeric'],
-            'diploma_number' => ['required'],
+            'special_need' => [],
+            'mileage' => [],
+            'distance' => ['numeric'],
+            'diploma_number' => [],
             'height' => ['required', 'integer'],
             'weight' => ['required', 'integer'],
-            'child_order' => ['required'],
-            'sibling_number' => ['required'],
-            'stepbrother_number' => ['required'],
-            'step_sibling_number' => ['required'],
+            'child_order' => [],
+            'sibling_number' => [],
+            'stepbrother_number' => [],
+            'step_sibling_number' => [],
             'dateofbirth' => ['required'],
             'address' => ['required'],
-            'father_address' => ['required'],
-            'trustee_address' => ['required'],
-            'phone_number' => ['required', 'numeric', 'digits_between:8,11'],
-            'computer_basic_score' => ['required', 'integer'],
-            'intelligence_score' => ['required', 'integer'],
-            'reasoning_score' => ['required', 'integer'],
-            'analogy_score' => ['required', 'integer'],
-            'numerical_score' => ['required', 'integer'],
+            'father_address' => [],
+            'trustee_address' => [],
+            'phone_number' => ['required', 'numeric', 'digits_between:8,11', 'unique:students,phone_number'],
+            'computer_basic_score' => ['integer'],
+            'intelligence_score' => ['integer'],
+            'reasoning_score' => ['integer'],
+            'analogy_score' => ['integer'],
+            'numerical_score' => ['integer'],
             'terms' => ['required']
         ];
-        if (auth()->guard('admin')->check()) {
-            $addonRules = [
-              'school_id' => ['required']  
-            ];
-            $rules = array_merge($rules, $addonRules);
-        }
         if ($this->isMethod('put')) {
             $addonRules = [
-                'nisn' => ['required', 'digits:10']
+                'nisn' => [
+                    'required', 
+                    'digits:10',
+                    Rule::unique('students')->ignore($student),
+                ],
+                'email' => [
+                    'required', 
+                    'email', 
+                    Rule::unique('students')->ignore($student),
+                ],
+                'phone_number' => [
+                    'required', 
+                    'numeric', 
+                    'digits_between:8,11', 
+                    Rule::unique('students')->ignore($student),
+                ],
             ];
             $rules = array_merge($rules, $addonRules);
         }
