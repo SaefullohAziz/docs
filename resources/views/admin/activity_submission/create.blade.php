@@ -27,12 +27,14 @@
 		@endif
 
 		<div class="card card-primary">
-			{{ Form::open(['route' => 'activity.store', 'files' => true]) }}
+			{{ Form::open(['route' => 'admin.activity.store', 'files' => true]) }}
 			<div class="card-body">
 				<div class="row">
                     <div class="col-sm-6">
                         <fieldset>
                         	<legend>{{ __('Activity') }}</legend>
+                        	{{ Form::bsSelect(null, __('school'), 'school_id', $schools, old('school_id'), __('Select'), ['placeholder' => __('Select'), 'required' => '']) }}
+
                         	{{ Form::bsSelect(null, __('Type'), 'type', $types, old('type'), __('Select'), ['placeholder' => __('Select'), 'required' => '']) }}
 
                             {{ Form::bsText(null, __('Date'), 'date', old('date'), __('DD-MM-YYYY'), ['required' => '']) }}
@@ -60,7 +62,7 @@
                     <div class="col-sm-6">
                 		<fieldset>
 							<legend>{{ __('Person in Charge (PIC)') }}</legend>
-							{{ Form::bsInlineRadio(null, __('Person in Charge?'), 'pic', ['2' => __('Yes'), '1' => __('Not')], old('pic'), ['required' => '']) }}
+							{{ Form::bsInlineRadio(null, __('Person in Charge?'), 'pic', ['2' => __('Yes'), '1' => __('Not')], old('pic'), ['disabled' => '', 'required' => '']) }}
 							<div class="{{ ( ! empty(old('type'))?'d-block':'d-none') }}">
 								{{ Form::bsText(null, __('PIC Name'), 'pic_name', old('pic_name'), __('PIC Name')) }}
 
@@ -93,6 +95,14 @@
 <script>
 	$(document).ready(function () {
 		$('[name="amount_of_teacher"], [name="amount_of_acp_student"], [name="amount_of_reguler_student"], [name="activity"], [name="participant"]').closest('.form-group').removeClass('d-block').addClass('d-none');
+		$('[name="school_id"]').change(function (){
+			if ($(this).val() != '') {
+				$('input[name="pic"]').prop('disabled', false).prop('required', true);
+			}
+			else{
+				$('input[name="pic"]').prop('disabled', true).prop('required', true);
+			}
+		});
 
 		$('[name="date"], [name="until_date"]').keypress(function(e) {
             e.preventDefault();
@@ -111,7 +121,7 @@
 			    break;
 			  case 'Axioo_Mengajar':
 			    	$('[name="amount_of_teacher"], [name="amount_of_acp_student"], [name="amount_of_reguler_student"], [name="participant"]').closest('.form-group').removeClass('d-block').addClass('d-none');
-			    	$('[name="amount_of_teacher"], [name="amount_of_acp_student"], [name="amount_of_reguler_student"], [name="participant"]').prop('required', true).prop('disabled', false);
+			    	$('[name="amount_of_teacher"], [name="amount_of_acp_student"], [name="amount_of_reguler_student"], [name="participant"]').prop('required', false).prop('disabled', true);
 			    	$('[name="activity"], [name="until_date"], [name="period"]').closest('.form-group').removeClass('d-none').addClass('d-block');
 			    	$('[name="activity"], [name="until_date"], [name="period"]').prop('disabled', false).prop('required', true);
 			    break;
@@ -139,7 +149,7 @@
 			url : "{{ route('get.picBySchool') }}",
 			type: "POST",
 			dataType: "JSON",
-			data: {'_token' : '{{ csrf_token() }}'},
+			data: {'_token' : '{{ csrf_token() }}', 'school' : $('[name="school_id"]').val()},
 			success: function(data)
 			{
 			    $('[name="pic_name"]').val(data.result.name);

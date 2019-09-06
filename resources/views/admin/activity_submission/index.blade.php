@@ -28,7 +28,7 @@
 
 		<div class="card card-primary">
 			<div class="card-header">
-				<a href="{{ route('activity.create') }}" class="btn btn-icon btn-success" title="{{ __('Create') }}"><i class="fa fa-plus"></i></a>
+				<a href="{{ route('admin.activity.create') }}" class="btn btn-icon btn-success" title="{{ __('Create') }}"><i class="fa fa-plus"></i></a>
 				<button class="btn btn-icon btn-secondary" title="{{ __('Filter') }}" data-toggle="modal" data-target="#filterModal"><i class="fa fa-filter"></i></button>
             	<button class="btn btn-icon btn-secondary" onclick="reloadTable()" title="{{ __('Refresh') }}"><i class="fa fa-sync"></i></i></button>
 			</div>
@@ -41,6 +41,7 @@
 									<div class="checkbox icheck"><label><input type="checkbox" name="selectData"></label></div>
 								</th>
 								<th>{{ __('Created At') }}</th>
+								<th>{{ __('School') }}</th>
 								<th>{{ __('Type') }}</th>
 								<th>{{ __('Submission Letter') }}</th>
 								<th>{{ __('P.I.C') }}</th>
@@ -77,17 +78,19 @@
 			processing: true,
 			serverSide: true,
 			"ajax": {
-				"url": "{{ route('activity.list') }}",
+				"url": "{{ route('admin.activity.list') }}",
 				"type": "POST",
 				"data": function (d) {
 		          d._token = "{{ csrf_token() }}";
 		          d.type = $('select[name="type"]').val();
 		          d.status = $('select[name="status"]').val();
+		          d.school = $('select[name="school"]').val();
 		        }
 			},
 			columns: [
 				{ data: 'DT_RowIndex', name: 'DT_RowIndex', 'searchable': false },
 				{ data: 'created_at', name: 'created_at' },
+				{ data: 'school', name: 'school' },
 				{ data: 'type', name: 'type' },
                 { data: 'submission_letter', name: 'submission_letter' },
                 { data: 'pic_name', name: 'pics.name' },
@@ -144,6 +147,7 @@
 						<div class="row">
 							{{ Form::bsSelect('col-sm-4', __('Type'), 'type', $types, null, __('Select'), ['placeholder' => __('Select')]) }}
 							{{ Form::bsSelect('col-sm-4', __('Status'), 'status', $statuses, null, __('Select'), ['placeholder' => __('Select')]) }}
+							{{ Form::bsSelect('col-sm-4', __('school'), 'school', $schools, null, __('Select'), ['placeholder' => __('Select')]) }}
 						</div>
 					</div>
 				</div>

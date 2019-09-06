@@ -2,34 +2,44 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Auth;
+use DataTables;
+use App\School;
+use App\Status;
 use App\Activity;
+use App\Pic;
 use Illuminate\Http\Request;
+use App\Http\Requests\StoreActivity;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 
 class ActivityController extends Controller
 {
-    private $table;
-    private $types;
+    protected $createdMessage;
+    protected $updatedMessage;
+    protected $deletedMessage;
+    protected $noPermission;
+    protected $table;
+    protected $types;
+    protected $statuses;
 
-    /**
-     * Create a new class instance.
-     *
-     * @return void
-     */
     public function __construct()
     {
-        parent::__construct();
         $this->middleware('auth:admin');
-        $this->table = 'activities';
+        $this->createdMessage = __('Data successfully created.');
+        $this->updatedMessage = __('Data successfully updated.');
+        $this->deletedMessage = __('Data successfully deleted.');
+        $this->noPermission = __('You have no related permission.');
+        $this->table = 'subsidies';
         $this->types = [
-            'Kunjungan Industri' => 'Kunjungan Industri',
-            'MoU' => 'MoU',
-            'Pendampingan SSP' => 'Pendampingan SSP',
-            'Evaluasi Tahunan (AYR)' => 'Evaluasi Tahunan (AYR)',
-            'Axioo Mengajar' => 'Axioo Mengajar'
-        ];
+                'MOU' => 'M.O.U',
+                'Kunjungan_industri' => 'Kunjungan Industri',
+                'SSP Pendampingan' => 'SSP Pendampingan',
+                'AYR' => 'AYR',
+                'Axioo_Mengajar' => 'Axioo Mengajar'
+            ];
+        $this->statuses = Status::pluck('name', 'id')->toArray();
     }
-
     /**
      * Display a listing of the resource.
      *
@@ -37,7 +47,44 @@ class ActivityController extends Controller
      */
     public function index()
     {
-        //
+        $view = [
+            'title' => __('Activity Submission'),
+            'breadcrumbs' => [
+                null => __('Activity')
+            ],
+            'types' => $this->types,
+            'statuses' => $this->statuses,
+            'schools' => School::pluck('name', 'id')->toArray(),
+        ];
+        return view('admin.activity_submission.index', $view);
+    }
+
+    /**
+     * Show a listing of the resource for datatable.
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     */
+    public function list(Request $request)
+    {
+        if ($request->ajax()) {
+            $activity = Activity::list($request);
+            return DataTables::of($activity)
+                ->addColumn('DT_RowIndex', function ($data)
+                {
+                    return '<div class="checkbox icheck"><label><input type="checkbox" name="selectedData[]" value="'.$data->id.'"></label></div>';
+                })
+                ->editColumn('created_at', function($data) {
+                    return (date('d-m-Y h:m:s', strtotime($data->created_at)));
+                })
+                ->editColumn('submission_letter', function($data) {
+                    return '<a href="'.route('download', ['dir' => encrypt('subsidy/submission-letter'), 'file' => encrypt($data->submission_letter)]).'" class="btn btn-sm btn-success '.( ! isset($data->submission_letter)?'disabled':'').'" title="'.__('Download').'" target="_blank"><i class="fa fa-file"></i>  '.__('Download').'</a>';
+                })
+                ->addColumn('action', function($data) {
+                    return '<a class="btn btn-sm btn-success" href="'.route('admin.activity.show', $data->id).'" title="'.__("See detail").'"><i class="fa fa-eye"></i>';
+                })
+                ->rawColumns(['DT_RowIndex', 'submission_letter', 'action'])
+                ->make(true);
+        }
     }
 
     /**
@@ -47,7 +94,16 @@ class ActivityController extends Controller
      */
     public function create()
     {
-        //
+        $view = [
+            'title' => __('Activity_Submission'),
+            'breadcrumbs' => [
+                route('activity.index') => __('Activity'),
+                null => 'Data'
+            ],
+            'types' => $this->types,
+            'schools' => School::pluck('name', 'id')->toArray(),
+        ];
+        return view('admin.activity_submission.create', $view);
     }
 
     /**
@@ -56,9 +112,22 @@ class ActivityController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreActivity $request)
     {
-        //
+        $request->merge([
+            'date' => date('Y-m-d', strtotime($request->date)),
+        ]);
+        if ($request->until_date) {
+            $request->merge([
+                'until_date' => date('Y-m-d', strtotime($request->until_date)),
+            ]);
+        }
+        $activity = activity::create($request->all());
+        $activity->submission_letter = $this->uploadSubmissionLetter($activity, $request);
+        $activity->participant = $this->uploadParticipant($activity, $request);
+        $activity->save();
+        $this->savePic($activity, $request);
+        return redirect(url()->previous())->with('alert-success', $this->createdMessage);
     }
 
     /**
@@ -69,7 +138,20 @@ class ActivityController extends Controller
      */
     public function show(Activity $activity)
     {
-        //
+        // if (auth()->user()->cant('view', $activity)) {
+        //     return redirect()->route('activity.index')->with('alert-danger', $this->noPermission);
+        // }
+        $view = [
+            'title' => __('Activity Detail'),
+            'breadcrumbs' => [
+                route('activity.index') => __('Activity'),
+                null => __('Detail')
+            ],
+            'types' => $this->types,
+            'activity' => $activity,
+            'statuses' => $this->statuses,
+        ];
+        return view('admin.activity_submission.show', $view);
     }
 
     /**
@@ -96,6 +178,18 @@ class ActivityController extends Controller
     }
 
     /**
+     * Approve some activity submission on admin.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Activity  $activity
+     * @return \Illuminate\Http\Response
+     */
+    public function Approve(Activity $activity)
+    {
+        //
+    }
+
+    /**
      * Remove the specified resource from storage.
      *
      * @param  \App\Activity  $activity
@@ -104,5 +198,73 @@ class ActivityController extends Controller
     public function destroy(Activity $activity)
     {
         //
+    }
+
+    /**
+     * Upload participant
+     * 
+     * @param  \App\Subsidy  $subsidy
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string  $oldFile
+     * @return string
+     */
+    public function uploadParticipant($activity, Request $request, $oldFile = null)
+    {
+        if ($request->hasFile('participant')) {
+            $filename = 'participant_'.date('d_m_y_h_m_s_').md5(uniqid(rand(), true)).'.'.$request->participant->extension();
+            $path = $request->participant->storeAs('public/activity/participant/'.$activity->id, $filename);
+            return $activity->id.'/'.$filename;
+        }
+        return $oldFile;
+    }
+
+
+    /**
+     * Upload submission letter
+     * 
+     * @param  \App\Subsidy  $subsidy
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string  $oldFile
+     * @return string
+     */
+    public function uploadSubmissionLetter($activity, Request $request, $oldFile = null)
+    {
+        if ($request->hasFile('submission_letter')) {
+            $filename = 'submission_letter_'.date('d_m_y_h_m_s_').md5(uniqid(rand(), true)).'.'.$request->submission_letter->extension();
+            $path = $request->submission_letter->storeAs('public/activity/submission-letter/'.$activity->id, $filename);
+            return $activity->id.'/'.$filename;
+        }
+        return $oldFile;
+    }
+
+    /**
+     * Save pic
+     * 
+     * @param  \App\Subsidy  $subsidy
+     * @param  \Illuminate\Http\Request  $request
+     */
+    public function savePic($activity, Request $request)
+    {
+        $pic = Pic::bySchool($request->school_id)->first();
+        if ($request->isMethod('put')) {
+            $schoolPic = Pic::bySchool($activity->school_id)->where('id', $activity->activityPic->pic->id)->first();
+            if ( ! $schoolPic) {
+                Pic::destroy($activity->activityPic->pic->id);
+            }
+            $activity->pic()->detach();
+            $request->request->add(['pic' => 1]);
+        }
+        if ($request->pic == 1) {
+            $pic = Pic::firstOrCreate([
+                'name' => $request->pic_name,
+                'position' => $request->pic_position,
+                'phone_number' => $request->pic_phone_number,
+                'email' => $request->pic_email
+            ]);
+        }
+        $activity->pic()->attach($pic->id, [
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
     }
 }

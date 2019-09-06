@@ -3,6 +3,7 @@
 namespace App\Observers;
 
 use App\Activity;
+use App\Status; 
 
 class ActivityObserver
 {
@@ -14,7 +15,13 @@ class ActivityObserver
      */
     public function created(Activity $activity)
     {
-        //
+        $log = actlog('Membuat pengajuan aktivitas.');
+        $status = Status::byName('Created')->first();
+        $activity->status()->attach($status->id, [
+            'log_id' => $log,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
     }
 
     /**
