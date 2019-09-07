@@ -10,7 +10,7 @@ use App\Http\Controllers\Controller;
 
 class DocumentController extends Controller
 {
-    private $table;
+    protected $table;
 
     /**
      * Create a new class instance.
