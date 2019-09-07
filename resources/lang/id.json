@@ -72,6 +72,7 @@
     "Edit Class": "Edit Kelas",
     "Class Detail": "Detail Kelas",
     "This class already has students.": "Kelas ini sudah memiliki siswa.",
+    "See students": "Lihat siswa",
 
     "Student": "Siswa",
     "Create Student": "Tambah Siswa",
@@ -233,6 +234,7 @@
     "Filled with AGP payment receipt number (example: MH0000001234).": "Diisi dengan nomor payment receipt AGP (contoh: MH0000001234).",
     "Example: 5x5x5 (LxWxH)": "Contoh: 5x5x5 (PxLxT)",
     "In accordance with the provisions of the Axioo Construction Guidelines.": "Sesuai dengan ketentuan Axioo Construction Guidelines.",
+    "This is only used for export.": "Ini hanya digunakan untuk eksport.",
 
     "File must have extension *.ZIP/*.RAR with size 5 MB or less.": "File harus berektensi *.ZIP/*.RAR dengan ukuran 5 MB atau kurang.",
     "Don't compress photos on RAR/ZIP. Because, some photos can be uploaded at once. Maximum size is 5 MB per file.": "Jangan satukan foto menjadi RAR/ZIP. Karena, beberapa foto dapat diunggah sekaligus. Ukuran maksimal 5 MB per berkas.",

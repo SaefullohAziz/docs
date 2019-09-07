@@ -168,7 +168,7 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
     	Route::post('export', 'StudentClassController@export')->name('export');
 		Route::delete('destroy', 'StudentClassController@destroy')->name('destroy');
 		// Student
-		Route::prefix('{class}/student')->name('student.')->group(function () {
+		Route::prefix('{studentClass}/student')->name('student.')->group(function () {
 			Route::post('list', 'StudentController@list')->name('list');
 			Route::post('export', 'StudentController@export')->name('export');
 			Route::delete('destroy', 'StudentController@destroy')->name('destroy');

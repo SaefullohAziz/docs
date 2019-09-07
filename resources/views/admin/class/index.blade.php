@@ -264,11 +264,12 @@
 							{{ Form::bsSelect('col-sm-4', __('Generation'), 'generation', $generations, null, __('Select'), ['placeholder' => __('Select')]) }}
 							{{ Form::bsSelect('col-sm-4', __('School Year'), 'school_year', $schoolYears, null, __('Select'), ['placeholder' => __('Select')]) }}
 							{{ Form::bsSelect('col-sm-4', __('Department'), 'department', $departments, null, __('Select'), ['placeholder' => __('Select')]) }}
+							{{ Form::bsSelect('col-sm-4', __('SSP Status'), 'ssp_status', ['1' => __('Yes'), '0' => __('Not')], null, __('Select'), ['placeholder' => __('Select')], [__('This is only used for export.')]) }}
 						</div>
 					</div>
 				</div>
 				<div class="modal-footer bg-whitesmoke d-flex justify-content-center">
-					<!-- {{ Form::submit(__('Export'), ['class' => 'btn btn-primary']) }} -->
+					{{ Form::submit(__('Export'), ['class' => 'btn btn-primary']) }}
 					{{ Form::button(__('Filter'), ['class' => 'btn btn-primary', 'onclick' => 'filter()']) }}
 					{{ Form::button(__('Cancel'), ['class' => 'btn btn-secondary', ' data-dismiss' => 'modal']) }}
 				</div>

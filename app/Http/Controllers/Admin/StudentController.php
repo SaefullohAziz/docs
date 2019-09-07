@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use Auth;
+use App\StudentClass;
 use App\Student;
 use App\Province;
 use App\School;
@@ -86,21 +87,25 @@ class StudentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(StudentClass $studentClass)
     {
         if ( ! auth()->guard('admin')->user()->can('access ' . $this->table)) {
-            return redirect()->route('admin.home')->with('alert-danger', $this->noPermission);
+            return redirect()->route('admin.home')->with('alert-danger', __($this->noPermission));
         }
         $view = [
             'title' => __('Student'),
             'breadcrumbs' => [
-                route('admin.student.index') => __('Student'),
+                route('admin.class.index') => __('Class'),
+                route('admin.class.student.index', $studentClass->id) => __('Student'),
                 null => 'Data'
             ],
+            'subtitle' => $studentClass->generation . ' - ' .$studentClass->school_year. ', ' . $studentClass->department->name,
+            'description' => $studentClass->school->name,
             'levels' => SchoolLevel::pluck('name', 'id')->toArray(),
             'schools' => School::pluck('name', 'id')->toArray(),
+            'studentClass' => $studentClass
         ];
-        return view('admin.student.index', $view);
+        return view('admin.class.student.index', $view);
     }
 
     /**
@@ -108,9 +113,10 @@ class StudentController extends Controller
      * 
      * @param  \Illuminate\Http\Request  $request
      */
-    public function list(Request $request)
+    public function list(Request $request, StudentClass $studentClass)
     {
         if ($request->ajax()) {
+            $request->request->add(['class' => $studentClass->id]);
             $students = Student::list($request);
             return DataTables::of($students)
                 ->addColumn('DT_RowIndex', function ($data) {
@@ -119,8 +125,8 @@ class StudentController extends Controller
                 ->editColumn('created_at', function($data) {
                     return (date('d-m-Y h:m:s', strtotime($data->created_at)));
                 })
-                ->addColumn('action', function($data) {
-                    return '<a class="btn btn-sm btn-success" href="'.route('admin.student.show', $data->id).'" title="'.__("See detail").'"><i class="fa fa-eye"></i> '.__("See").'</a> <a class="btn btn-sm btn-warning" href="'.route('admin.student.edit', $data->id).'" title="'.__("Edit").'"><i class="fa fa-edit"></i> '.__("Edit").'</a>';
+                ->addColumn('action', function($data) use ($studentClass) {
+                    return '<a class="btn btn-sm btn-success" href="'.route('admin.class.student.show', ['studentClass' => $studentClass->id, 'student' => $data->id]).'" title="'.__("See detail").'"><i class="fa fa-eye"></i> '.__("See").'</a> <a class="btn btn-sm btn-warning" href="'.route('admin.class.student.edit', ['studentClass' => $studentClass->id, 'student' => $data->id]).'" title="'.__("Edit").'"><i class="fa fa-edit"></i> '.__("Edit").'</a>';
                 })
                 ->rawColumns(['DT_RowIndex', 'action'])
                 ->make(true);
@@ -132,19 +138,13 @@ class StudentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(StudentClass $studentClass)
     {
         if ( ! auth()->guard('admin')->user()->can('create ' . $this->table)) {
-            return redirect()->route('admin.student.index')->with('alert-danger', $this->noPermission);
+            return redirect()->route('admin.class.student.index', $studentClass->id)->with('alert-danger', __($this->noPermission));
         }
-        for ($i=3; $i >= -1; $i--) { 
-            $schoolYears[date('Y', strtotime('-'.($i+1).' years')).'/'.date('Y', strtotime('-'.$i.' years'))] = date('Y', strtotime('-'.($i+1).' years')).'/'.date('Y', strtotime('-'.$i.' years'));
-        }
-        for ($i=10; $i <= 12; $i++) { 
-			$grades['Kelas ' . $i] = 'Kelas ' . $i;
-        }
-        for ($i=1; $i <= 5; $i++) { 
-			$generations['Angkatan ' . $i] = 'Angkatan ' . $i;
+        if (auth()->guard('admin')->user()->cant('adminCreate', $studentClass)) {
+            return redirect()->route('admin.class.student.index', $studentClass->id)->with('alert-danger', __($this->unauthorizedMessage));
         }
         for ($i=1; $i <= 20; $i++) { 
 			$childOrders[$i] = $i;
@@ -154,25 +154,14 @@ class StudentController extends Controller
 		}
         $view = [
             'title' => __('Create Student'),
+            'subtitle' => $studentClass->generation . ' - ' .$studentClass->school_year. ', ' . $studentClass->department->name,
+            'description' => $studentClass->school->name,
             'breadcrumbs' => [
-                route('admin.student.index') => __('Student'),
+                route('admin.class.index') => __('Class'),
+                route('admin.class.student.index', $studentClass->id) => __('Student'),
                 null => __('Create')
             ],
-            'schools' => School::pluck('name', 'id')->toArray(),
             'provinces' => Province::pluck('name', 'name')->toArray(),
-            'schoolYears' => $schoolYears,
-            // 'departments' => Student::department()->pluck('department', 'department')->toArray(),
-            'departments' => [
-                'TKJ' => 'TKJ',
-                'RPL' => 'RPL',
-                'Multimedia' => 'Multimedia',
-                'Telin' => 'Telin',
-                'TI' => 'TI',
-                'Teknik Jaringan Akses Telekomunikasi' => 'Teknik Jaringan Akses Telekomunikasi',
-                'Lain-Lain' => 'Lain-Lain'
-            ],
-            'grades' => $grades,
-            'generations' => $generations,
             'parentEducations' => $this->parentEducations,
             'parentEarnings' => $this->parentEarnings,
             'economyStatuses' => $this->economyStatuses,
@@ -181,8 +170,9 @@ class StudentController extends Controller
             'mileages' => $this->mileages,
             'childOrders' => $childOrders,
             'siblingNumbers' => $siblingNumbers,
+            'studentClass' => $studentClass,
         ];
-        return view('admin.student.create', $view);
+        return view('admin.class.student.create', $view);
     }
 
     /**
@@ -191,15 +181,15 @@ class StudentController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreStudent $request)
+    public function store(StoreStudent $request, StudentClass $studentClass)
     {
         if ( ! auth()->guard('admin')->user()->can('create ' . $this->table)) {
-            return redirect()->route('admin.student.index')->with('alert-danger', $this->noPermission);
+            return redirect()->route('admin.class.student.index', $studentClass->id)->with('alert-danger', __($this->noPermission));
         }
         $request->merge([
             'dateofbirth' => date('Y-m-d', strtotime($request->dateofbirth)),
         ]);
-        $student = Student::create($request->except(['terms', 'submit']));
+        $student = $studentClass->student()->create($request->except(['terms', 'submit']));
         $student->photo = $this->uploadPhoto($student, $request);
         $student->save();
         return redirect(url()->previous())->with('alert-success', $this->createdMessage);
@@ -211,19 +201,10 @@ class StudentController extends Controller
      * @param  \App\Student  $student
      * @return \Illuminate\Http\Response
      */
-    public function show(Student $student)
+    public function show(StudentClass $studentClass, Student $student)
     {
         if ( ! auth()->guard('admin')->user()->can('read ' . $this->table)) {
-            return redirect()->route('admin.student.index')->with('alert-danger', $this->noPermission);
-        }
-        for ($i=3; $i >= -1; $i--) { 
-            $schoolYears[date('Y', strtotime('-'.($i+1).' years')).'/'.date('Y', strtotime('-'.$i.' years'))] = date('Y', strtotime('-'.($i+1).' years')).'/'.date('Y', strtotime('-'.$i.' years'));
-        }
-        for ($i=10; $i <= 12; $i++) { 
-			$grades['Kelas ' . $i] = 'Kelas ' . $i;
-        }
-        for ($i=1; $i <= 5; $i++) { 
-			$generations['Angkatan ' . $i] = 'Angkatan ' . $i;
+            return redirect()->route('admin.class.student.index', $studentClass->id)->with('alert-danger', __($this->noPermission));
         }
         for ($i=1; $i <= 20; $i++) { 
 			$childOrders[$i] = $i;
@@ -233,25 +214,14 @@ class StudentController extends Controller
 		}
         $view = [
             'title' => __('Student Detail'),
+            'subtitle' => $studentClass->generation . ' - ' .$studentClass->school_year. ', ' . $studentClass->department->name,
+            'description' => $studentClass->school->name,
             'breadcrumbs' => [
-                route('admin.student.index') => __('Student'),
+                route('admin.class.index') => __('Class'),
+                route('admin.class.student.index', $studentClass->id) => __('Student'),
                 null => __('Detail')
             ],
-            'schools' => School::pluck('name', 'id')->toArray(),
             'provinces' => Province::pluck('name', 'name')->toArray(),
-            'schoolYears' => $schoolYears,
-            // 'departments' => Student::department()->pluck('department', 'department')->toArray(),
-            'departments' => [
-                'TKJ' => 'TKJ',
-                'RPL' => 'RPL',
-                'Multimedia' => 'Multimedia',
-                'Telin' => 'Telin',
-                'TI' => 'TI',
-                'Teknik Jaringan Akses Telekomunikasi' => 'Teknik Jaringan Akses Telekomunikasi',
-                'Lain-Lain' => 'Lain-Lain'
-            ],
-            'grades' => $grades,
-            'generations' => $generations,
             'parentEducations' => $this->parentEducations,
             'parentEarnings' => $this->parentEarnings,
             'economyStatuses' => $this->economyStatuses,
@@ -260,9 +230,10 @@ class StudentController extends Controller
             'mileages' => $this->mileages,
             'childOrders' => $childOrders,
             'siblingNumbers' => $siblingNumbers,
-            'student' => $student
+            'studentClass' => $studentClass,
+            'data' => $student
         ];
-        return view('admin.student.show', $view);
+        return view('admin.class.student.show', $view);
     }
 
     /**
@@ -271,19 +242,10 @@ class StudentController extends Controller
      * @param  \App\Student  $student
      * @return \Illuminate\Http\Response
      */
-    public function edit(Student $student)
+    public function edit(StudentClass $studentClass, Student $student)
     {
         if ( ! auth()->guard('admin')->user()->can('update ' . $this->table)) {
-            return redirect()->route('admin.student.index')->with('alert-danger', $this->noPermission);
-        }
-        for ($i=3; $i >= -1; $i--) { 
-            $schoolYears[date('Y', strtotime('-'.($i+1).' years')).'/'.date('Y', strtotime('-'.$i.' years'))] = date('Y', strtotime('-'.($i+1).' years')).'/'.date('Y', strtotime('-'.$i.' years'));
-        }
-        for ($i=10; $i <= 12; $i++) { 
-			$grades['Kelas ' . $i] = 'Kelas ' . $i;
-        }
-        for ($i=1; $i <= 5; $i++) { 
-			$generations['Angkatan ' . $i] = 'Angkatan ' . $i;
+            return redirect()->route('admin.class.student.index', $studentClass->id)->with('alert-danger', __($this->noPermission));
         }
         for ($i=1; $i <= 20; $i++) { 
 			$childOrders[$i] = $i;
@@ -293,25 +255,14 @@ class StudentController extends Controller
 		}
         $view = [
             'title' => __('Edit Student'),
+            'subtitle' => $studentClass->generation . ' - ' .$studentClass->school_year. ', ' . $studentClass->department->name,
+            'description' => $studentClass->school->name,
             'breadcrumbs' => [
-                route('admin.student.index') => __('Student'),
+                route('admin.class.index') => __('Class'),
+                route('admin.class.student.index', $studentClass->id) => __('Student'),
                 null => __('Edit')
             ],
-            'schools' => School::pluck('name', 'id')->toArray(),
             'provinces' => Province::pluck('name', 'name')->toArray(),
-            'schoolYears' => $schoolYears,
-            // 'departments' => Student::department()->pluck('department', 'department')->toArray(),
-            'departments' => [
-                'TKJ' => 'TKJ',
-                'RPL' => 'RPL',
-                'Multimedia' => 'Multimedia',
-                'Telin' => 'Telin',
-                'TI' => 'TI',
-                'Teknik Jaringan Akses Telekomunikasi' => 'Teknik Jaringan Akses Telekomunikasi',
-                'Lain-Lain' => 'Lain-Lain'
-            ],
-            'grades' => $grades,
-            'generations' => $generations,
             'parentEducations' => $this->parentEducations,
             'parentEarnings' => $this->parentEarnings,
             'economyStatuses' => $this->economyStatuses,
@@ -320,9 +271,10 @@ class StudentController extends Controller
             'mileages' => $this->mileages,
             'childOrders' => $childOrders,
             'siblingNumbers' => $siblingNumbers,
-            'student' => $student
+            'studentClass' => $studentClass,
+            'data' => $student,
         ];
-        return view('admin.student.edit', $view);
+        return view('admin.class.student.edit', $view);
     }
 
     /**
@@ -332,10 +284,10 @@ class StudentController extends Controller
      * @param  \App\Student  $student
      * @return \Illuminate\Http\Response
      */
-    public function update(StoreStudent $request, Student $student)
+    public function update(StoreStudent $request, StudentClass $studentClass, Student $student)
     {
         if ( ! auth()->guard('admin')->user()->can('update ' . $this->table)) {
-            return redirect()->route('admin.student.index')->with('alert-danger', $this->noPermission);
+            return redirect()->route('admin.class.student.index', $studentClass->id)->with('alert-danger', __($this->noPermission));
         }
         $request->merge([
             'dateofbirth' => date('Y-m-d', strtotime($request->dateofbirth)),
@@ -373,8 +325,9 @@ class StudentController extends Controller
      * 
      * @param  \Illuminate\Http\Request  $request
      */
-    public function export(Request $request)
+    public function export(Request $request, StudentClass $studentClass)
     {
+        $request->request->add(['class' => $studentClass->id]);
         return (new StudentsExport($request))->download('student-'.date('d-m-Y-h-m-s').'.xlsx');
     }
 
@@ -384,9 +337,9 @@ class StudentController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request)
+    public function destroy(Request $request, StudentClass $studentClass)
     {
-        if ( ! auth()->guard('admin')->user()->can('delete ' . $this->school)) {
+        if ( ! auth()->guard('admin')->user()->can('delete ' . $this->table)) {
             return response()->json(['status' => false, 'message' => $this->noPermission], 422);
         }
         Student::destroy($request->selectedData);

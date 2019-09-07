@@ -2,7 +2,9 @@
 
 namespace App\Policies;
 
+use App\Admin\User as Staff;
 use App\User;
+use App\StudentClass;
 use App\Student;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
@@ -18,7 +20,7 @@ class StudentPolicy
      */
     public function before($user, $ability)
     {
-        if (auth()->guard('web')->check()) {
+        if (auth()->check()) {
             return true;
         }
     }
@@ -52,9 +54,24 @@ class StudentPolicy
      * @param  \App\User  $user
      * @return mixed
      */
-    public function create(User $user)
+    public function adminCreate(Staff $staff, StudentClass $studentClass)
     {
-        //
+        if ($studentClass->school_year == schoolYear()) {
+            return empty($studentClass->closed_at);
+        }
+    }
+
+    /**
+     * Determine whether the user can create students.
+     *
+     * @param  \App\User  $user
+     * @return mixed
+     */
+    public function create(User $user, StudentClass $studentClass)
+    {
+        if ($studentClass->school_year == schoolYear()) {
+            return empty($studentClass->closed_at);
+        }   
     }
 
     /**

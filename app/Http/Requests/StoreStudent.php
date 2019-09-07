@@ -45,7 +45,7 @@ class StoreStudent extends FormRequest
             'economy_status' => [],
             'religion' => ['required'],
             'blood_type' => ['required'],
-            'special_need' => [],
+            'special_need' => ['required'],
             'mileage' => [],
             'distance' => ['numeric'],
             'diploma_number' => [],
