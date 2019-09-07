@@ -212,6 +212,7 @@
 			    })
 			    .then((willReject) => {
 			      	if (willReject) {
+			      		console.log(selectedData);
 			      		$.ajax({
 							url : "{{ route('admin.subsidy.approve') }}",
 							type: "POST",

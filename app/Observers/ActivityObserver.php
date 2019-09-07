@@ -32,7 +32,7 @@ class ActivityObserver
      */
     public function updated(Activity $activity)
     {
-        //
+        $this->saveStatus($activity, 'Edited', 'Mengubah pengajuan activity.');
     }
 
     /**
@@ -66,5 +66,23 @@ class ActivityObserver
     public function forceDeleted(Activity $activity)
     {
         //
+    }
+
+    /**
+     * Save status
+     * 
+     * @param  \App\Activity  $activity
+     * @param  string  $status
+     * @param  string  $desc
+     */
+    public function saveStatus($activity, $status, $desc)
+    {
+        $log = actlog($desc);
+        $status = Status::byName($status)->first();
+        $activity->status()->attach($status->id, [
+            'log_id' => $log,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
     }
 }

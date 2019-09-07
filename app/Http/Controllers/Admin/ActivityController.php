@@ -7,10 +7,14 @@ use DataTables;
 use App\School;
 use App\Status;
 use App\Activity;
+use App\ActivityPic;
 use App\Pic;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreActivity;
 use Illuminate\Support\Facades\DB;
+use App\Events\ActivityCanceled;
+use App\Events\ActivityRejected;
+use App\Events\ActivityApproved;
 use App\Http\Controllers\Controller;
 
 class ActivityController extends Controller
@@ -77,10 +81,12 @@ class ActivityController extends Controller
                     return (date('d-m-Y h:m:s', strtotime($data->created_at)));
                 })
                 ->editColumn('submission_letter', function($data) {
-                    return '<a href="'.route('download', ['dir' => encrypt('subsidy/submission-letter'), 'file' => encrypt($data->submission_letter)]).'" class="btn btn-sm btn-success '.( ! isset($data->submission_letter)?'disabled':'').'" title="'.__('Download').'" target="_blank"><i class="fa fa-file"></i>  '.__('Download').'</a>';
+                    return '<a href="'.route('download', ['dir' => encrypt('activity/submission-letter'), 'file' => encrypt($data->submission_letter)]).'" class="btn btn-sm btn-success '.( ! isset($data->submission_letter)?'disabled':'').'" title="'.__('Download').'" target="_blank"><i class="fa fa-file"></i>  '.__('Download').'</a>';
                 })
                 ->addColumn('action', function($data) {
-                    return '<a class="btn btn-sm btn-success" href="'.route('admin.activity.show', $data->id).'" title="'.__("See detail").'"><i class="fa fa-eye"></i>';
+                    return '<a class="btn btn-sm btn-success" href="'.route('admin.activity.show', $data->id).'" title="'.__("See detail").'"><i class="fa fa-eye"></i> '.__("See").'</a> <a class="btn btn-sm btn-warning" href="'.route('admin.activity.edit', $data->id).'" title="'.__("Edit").'"><i class="fa fa-edit"></i> '.__("Edit").'</a>';
+                })->editColumn('status', function($data) {
+                    return $data->status;
                 })
                 ->rawColumns(['DT_RowIndex', 'submission_letter', 'action'])
                 ->make(true);
@@ -162,7 +168,21 @@ class ActivityController extends Controller
      */
     public function edit(Activity $activity)
     {
-        //
+        // if ( ! auth()->guard('admin')->user()->can('update ' . $this->table)) {
+        //     return redirect()->route('admin.activity.index')->with('alert-danger', $this->noPermission);
+        // }
+        $view = [
+            'title' => __('Edit activity'),
+            'breadcrumbs' => [
+                route('admin.activity.index') => __('activity'),
+                null => __('Edit')
+            ],
+            'schools' => School::pluck('name', 'id')->toArray(),
+            'types' => $this->types,
+            'statuses' => $this->statuses,
+            'activity' => $activity
+        ];
+        return view('admin.activity_submission.edit', $view);
     }
 
     /**
@@ -174,36 +194,61 @@ class ActivityController extends Controller
      */
     public function update(Request $request, Activity $activity)
     {
-        //
-    }
+        if ( ! auth()->guard('admin')->user()->can('update ' . $this->table)) {
+            return redirect()->route('admin.activity.index')->with('alert-danger', $this->noPermission);
+        }
+        $request->merge([
+            'date' => date('Y-m-d', strtotime($request->date)),
+        ]);
+        if ($request->until_date) {
+            $request->merge([
+                'until_date' => date('Y-m-d', strtotime($request->until_date)),
+            ]);
+        }
+        $activity->fill($request->all());
+        $activity->submission_letter = $this->uploadSubmissionLetter($activity, $request, $activity->submission_letter);
+        $activity->participant = $this->uploadParticipant($activity, $request, $activity->participant);
+        $activity->save();
+        $this->savePic($activity, $request);
+        return redirect(url()->previous())->with('alert-success', $this->updatedMessage);    }
 
     /**
-     * Approve some activity submission on admin.
-     *
+     * Approve activity
+     * 
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Activity  $activity
-     * @return \Illuminate\Http\Response
      */
-    public function Approve(Activity $activity)
+    public function approve(Request $request)
     {
-        //
+        if ($request->ajax()) {
+            // if ( ! auth()->guard('admin')->user()->can('approval ' . $this->table)) {
+            //     return response()->json(['status' => false, 'message' => $this->noPermission], 422);
+            // }
+            event(new ActivityApproved($request));
+            return response()->json(['status' => true, 'message' => '$this->updatedMessage']);
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Activity  $activity
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Activity $activity)
+    public function destroy(Request $request)
     {
-        //
+        if ($request->ajax()) {
+            if ( ! auth()->guard('admin')->user()->can('delete ' . $this->table)) {
+                return response()->json(['status' => false, 'message' => $this->noPermission], 422);
+            }
+            Activity::destroy($request->selectedData);
+            return response()->json(['status' => true, 'message' => $this->deletedMessage]);
+        }
     }
 
     /**
      * Upload participant
      * 
-     * @param  \App\Subsidy  $subsidy
+     * @param  \App\activity  $activity
      * @param  \Illuminate\Http\Request  $request
      * @param  string  $oldFile
      * @return string
@@ -222,7 +267,7 @@ class ActivityController extends Controller
     /**
      * Upload submission letter
      * 
-     * @param  \App\Subsidy  $subsidy
+     * @param  \App\activity  $activity
      * @param  \Illuminate\Http\Request  $request
      * @param  string  $oldFile
      * @return string
@@ -240,7 +285,7 @@ class ActivityController extends Controller
     /**
      * Save pic
      * 
-     * @param  \App\Subsidy  $subsidy
+     * @param  \App\activity  $activity
      * @param  \Illuminate\Http\Request  $request
      */
     public function savePic($activity, Request $request)

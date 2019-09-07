@@ -82,7 +82,8 @@ class Activity extends Model
                 $query->where('activities.type', $request->type);
             })->when( ! empty($request->status), function ($query) use ($request) {
                 $query->where('statuses.id', $request->status);
-            })->whereNull('schools.deleted_at');
+            })->whereNull('schools.deleted_at')
+            ->whereNull('activities.deleted_at');
     }
 
     /**
