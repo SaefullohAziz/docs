@@ -15,6 +15,7 @@ class Controller extends BaseController
     protected $updatedMessage;
     protected $deletedMessage;
     protected $noPermission;
+    protected $unauthorizedMessage;
 
     public function __construct()
     {
@@ -22,5 +23,6 @@ class Controller extends BaseController
         $this->updatedMessage = __('Data successfully updated.');
         $this->deletedMessage = __('Data successfully deleted.');
         $this->noPermission = __('You have no related permission.');
+        $this->unauthorizedMessage = __('This action is unauthorized.');
     }
 }

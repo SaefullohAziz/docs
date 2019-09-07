@@ -60,8 +60,7 @@ class AccountController extends Controller
         if ($request->ajax()) {
             $accounts = User::list($request);
             return DataTables::of($accounts)
-                ->addColumn('DT_RowIndex', function ($data)
-                {
+                ->addColumn('DT_RowIndex', function ($data) {
                     return '<div class="checkbox icheck"><label><input type="checkbox" name="selectedData[]" value="'.$data->id.'"></label></div>';
                 })
                 ->editColumn('created_at', function($data) {

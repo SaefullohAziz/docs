@@ -41,6 +41,7 @@
     "Data successfully updated.": "Data berhasil diperbarui.",
     "Data successfully deleted.": "Data berhasil dihapus",
     "You have no related permission.": "Anda tidak memiliki hak akses terkait.",
+    "This action is unauthorized.": "Tindakan ini tidak sah.",
     "Data filled above is true and can be accounted for.": "Data yang diisi di atas adalah benar dan dapat dipertanggungjawabkan.",
 
     "Home": "Beranda",
@@ -65,6 +66,12 @@
 
     "Document": "Dokumen",
     "Add Document": "Tambah Dokumen",
+
+    "Class": "Kelas",
+    "Create Class": "Membuat Kelas",
+    "Edit Class": "Edit Kelas",
+    "Class Detail": "Detail Kelas",
+    "This class already has students.": "Kelas ini sudah memiliki siswa.",
 
     "Student": "Siswa",
     "Create Student": "Tambah Siswa",

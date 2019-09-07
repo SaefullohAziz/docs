@@ -52,11 +52,27 @@ class School extends Model
     }
 
     /**
+     * Get the implementation for the school.
+     */
+    public function implementation()
+    {
+        return $this->hasMany('App\SchoolImplementation');
+    }
+
+    /**
      * Get the document for the school.
      */
     public function documents()
     {
         return $this->hasMany('App\Document');
+    }
+
+    /**
+     * Get the student class for the school.
+     */
+    public function studentClass()
+    {
+        return $this->hasMany('App\StudentClass');
     }
 
     /**

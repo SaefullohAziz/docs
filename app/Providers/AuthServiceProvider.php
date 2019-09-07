@@ -2,10 +2,12 @@
 
 namespace App\Providers;
 
+use App\StudentClass;
 use App\Student;
 use App\Subsidy;
 use App\Training;
 use App\Payment;
+use App\Policies\StudentClassPolicy;
 use App\Policies\StudentPolicy;
 use App\Policies\SubsidyPolicy;
 use App\Policies\TrainingPolicy;
@@ -21,6 +23,7 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
+        StudentClass::class => StudentClassPolicy::class,
         Student::class => StudentPolicy::class,
         Subsidy::class => SubsidyPolicy::class,
         Training::class => TrainingPolicy::class,

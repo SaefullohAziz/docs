@@ -95,8 +95,7 @@ class PaymentController extends Controller
         if ($request->ajax()) {
             $payments = Payment::list($request);
             return DataTables::of($payments)
-                ->addColumn('DT_RowIndex', function ($data)
-                {
+                ->addColumn('DT_RowIndex', function ($data) {
                     return '<div class="checkbox icheck"><label><input type="checkbox" name="selectedData[]" value="'.$data->id.'"></label></div>';
                 })
                 ->editColumn('created_at', function($data) {

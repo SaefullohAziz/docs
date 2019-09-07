@@ -2,9 +2,9 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Model;
 
 class Student extends Model
 {
@@ -16,11 +16,11 @@ class Student extends Model
     protected $guarded = ['approval', 'notif'];
 
     /**
-     * Get the school that owns the student.
+     * Get the class that owns the student.
      */
-    public function school()
+    public function class()
     {
-        return $this->belongsTo('App\School');
+        return $this->belongsTo('App\StudentClass', 'class_id');
     }
 
     /**

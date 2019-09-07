@@ -6,7 +6,9 @@ use App\Regency;
 use App\School;
 use App\Teacher;
 use App\Pic;
+use App\StudentClass;
 use App\Student;
+use App\Department;
 use Illuminate\Http\Request;
 
 class GetController extends Controller
@@ -60,6 +62,20 @@ class GetController extends Controller
         }
     }
 
+    // Class
+    public function generationFromClass(Request $request)
+    {
+        if ($request->ajax()) {
+            if (auth()->guard('web')->check()) {
+                $request->request->add(['school' => auth()->user()->school->id]);
+            }
+            $school = School::find($request->school);
+            $department = Department::find($request->department);
+            $data = studentGeneration($school, $department);
+            return response()->json(['status' => true, 'result' => $data]);
+        }
+    }
+
     // Student
     public function generationBySchool(Request $request)
     {
@@ -67,7 +83,7 @@ class GetController extends Controller
             if (auth()->guard('web')->check()) {
                 $request->request->add(['school' => auth()->user()->school->id]);
             }
-            $generations = Student::generationBySchool($request->school)->pluck('generation', 'generation')->toArray();
+            $generations = StudentClass::pluck('generation', 'generation')->toArray();
             return response()->json(['status' => true, 'result' => $generations]);
         }
     }
@@ -78,7 +94,7 @@ class GetController extends Controller
             if (auth()->guard('web')->check()) {
                 $request->request->add(['school' => auth()->user()->school->id]);
             }
-            $schoolYears = Student::schoolYearBySchool($request->school)->pluck('school_year', 'school_year')->toArray();
+            $schoolYears = StudentClass::pluck('school_year', 'school_year')->toArray();
             return response()->json(['status' => true, 'result' => $schoolYears]);
         }
     }
@@ -89,7 +105,9 @@ class GetController extends Controller
             if (auth()->guard('web')->check()) {
                 $request->request->add(['school' => auth()->user()->school->id]);
             }
-            $departments = Student::departmentBySchool($request->school)->pluck('department', 'department')->toArray();
+            $departments = Department::whereHas('schoolImplementation', function ($query) use ($request) {
+                $query->where('school_id', $request->school);
+            })->pluck('name', 'id')->toArray();
             return response()->json(['status' => true, 'result' => $departments]);
         }
     }
