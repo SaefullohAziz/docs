@@ -94,13 +94,13 @@ class StudentController extends Controller
         }
         $view = [
             'title' => __('Student'),
+            'subtitle' => $studentClass->generation . ' - ' .$studentClass->school_year. ', ' . $studentClass->department->name,
+            'description' => $studentClass->school->name,
             'breadcrumbs' => [
                 route('admin.class.index') => __('Class'),
                 route('admin.class.student.index', $studentClass->id) => __('Student'),
                 null => 'Data'
             ],
-            'subtitle' => $studentClass->generation . ' - ' .$studentClass->school_year. ', ' . $studentClass->department->name,
-            'description' => $studentClass->school->name,
             'levels' => SchoolLevel::pluck('name', 'id')->toArray(),
             'schools' => School::pluck('name', 'id')->toArray(),
             'studentClass' => $studentClass
@@ -143,7 +143,7 @@ class StudentController extends Controller
         if ( ! auth()->guard('admin')->user()->can('create ' . $this->table)) {
             return redirect()->route('admin.class.student.index', $studentClass->id)->with('alert-danger', __($this->noPermission));
         }
-        if (auth()->guard('admin')->user()->cant('adminCreate', $studentClass)) {
+        if (auth()->guard('admin')->user()->cant('adminCreateStudent', $studentClass)) {
             return redirect()->route('admin.class.student.index', $studentClass->id)->with('alert-danger', __($this->unauthorizedMessage));
         }
         for ($i=1; $i <= 20; $i++) { 
@@ -185,6 +185,9 @@ class StudentController extends Controller
     {
         if ( ! auth()->guard('admin')->user()->can('create ' . $this->table)) {
             return redirect()->route('admin.class.student.index', $studentClass->id)->with('alert-danger', __($this->noPermission));
+        }
+        if (auth()->guard('admin')->user()->cant('adminCreateStudent', $studentClass)) {
+            return redirect()->route('admin.class.student.index', $studentClass->id)->with('alert-danger', __($this->unauthorizedMessage));
         }
         $request->merge([
             'dateofbirth' => date('Y-m-d', strtotime($request->dateofbirth)),
@@ -247,6 +250,9 @@ class StudentController extends Controller
         if ( ! auth()->guard('admin')->user()->can('update ' . $this->table)) {
             return redirect()->route('admin.class.student.index', $studentClass->id)->with('alert-danger', __($this->noPermission));
         }
+        if (auth()->guard('admin')->user()->cant('adminUpdateStudent', $studentClass)) {
+            return redirect()->route('admin.class.student.index', $studentClass->id)->with('alert-danger', __($this->unauthorizedMessage));
+        }
         for ($i=1; $i <= 20; $i++) { 
 			$childOrders[$i] = $i;
         }
@@ -288,6 +294,9 @@ class StudentController extends Controller
     {
         if ( ! auth()->guard('admin')->user()->can('update ' . $this->table)) {
             return redirect()->route('admin.class.student.index', $studentClass->id)->with('alert-danger', __($this->noPermission));
+        }
+        if (auth()->guard('admin')->user()->cant('adminUpdateStudent', $studentClass)) {
+            return redirect()->route('admin.class.student.index', $studentClass->id)->with('alert-danger', __($this->unauthorizedMessage));
         }
         $request->merge([
             'dateofbirth' => date('Y-m-d', strtotime($request->dateofbirth)),

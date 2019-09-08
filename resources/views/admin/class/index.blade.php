@@ -28,7 +28,7 @@
 
 		<div class="card card-primary">
 			<div class="card-header">
-				@if(auth()->guard('admin')->user()->can('create students'))
+				@if(auth()->guard('admin')->user()->can('create student_classes'))
 					<a href="{{ route('admin.class.create') }}" class="btn btn-icon btn-success" title="{{ __('Create') }}"><i class="fa fa-plus"></i></a>
 				@endif
 				<button class="btn btn-icon btn-secondary" title="{{ __('Filter') }}" data-toggle="modal" data-target="#filterModal"><i class="fa fa-filter"></i></button>
@@ -56,7 +56,7 @@
 				</div>
 			</div>
 			<div class="card-footer bg-whitesmoke">
-				@if (auth()->guard('admin')->user()->can('delete students'))
+				@if (auth()->guard('admin')->user()->can('delete student_classes'))
 					<button class="btn btn-danger btn-sm" name="deleteData" title="{{ __('Delete') }}">{{ __('Delete') }}</button>
 				@endif
 			</div>

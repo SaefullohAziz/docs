@@ -20,13 +20,7 @@ class StudentClassPolicy
      */
     public function before($user, $ability)
     {
-        if (auth()->guard('web')->check()) {
-            $school = School::find(auth()->user()->school->id);
-            if ( ! $school->implementation->count()) {
-                return false;
-            }
-        }
-        return false;
+        
     }
     
     /**
@@ -64,6 +58,28 @@ class StudentClassPolicy
     }
 
     /**
+     * Determine whether the user can create students.
+     *
+     * @param  \App\User  $user
+     * @return mixed
+     */
+    public function createStudent(User $user, StudentClass $studentClass)
+    {
+        return $studentClass->school_year == schoolYear()?empty($studentClass->closed_at):null;
+    }
+
+    /**
+     * Determine whether the user can create students.
+     *
+     * @param  \App\User  $user
+     * @return mixed
+     */
+    public function adminCreateStudent(Staff $staff, StudentClass $studentClass)
+    {
+        return $studentClass->school_year == schoolYear()?empty($studentClass->closed_at):null;
+    }
+
+    /**
      * Determine whether the user can update the student class.
      *
      * @param  \App\User  $user
@@ -72,7 +88,7 @@ class StudentClassPolicy
      */
     public function update(User $user, StudentClass $studentClass)
     {
-        //
+        return $studentClass->student->count() == 0;
     }
 
     /**
@@ -88,6 +104,28 @@ class StudentClassPolicy
     }
 
     /**
+     * Determine whether the user can create students.
+     *
+     * @param  \App\User  $user
+     * @return mixed
+     */
+    public function updateStudent(User $user, StudentClass $studentClass)
+    {
+        return $studentClass->school_year == schoolYear()?empty($studentClass->closed_at):null;
+    }
+
+    /**
+     * Determine whether the user can create students.
+     *
+     * @param  \App\User  $user
+     * @return mixed
+     */
+    public function adminUpdateStudent(Staff $staff, StudentClass $studentClass)
+    {
+        return $studentClass->school_year == schoolYear()?empty($studentClass->closed_at):null;
+    }
+
+    /**
      * Determine whether the user can delete the student class.
      *
      * @param  \App\User  $user
@@ -97,6 +135,18 @@ class StudentClassPolicy
     public function delete(User $user, StudentClass $studentClass)
     {
         //
+    }
+
+    /**
+     * Determine whether the user can delete the student class.
+     *
+     * @param  \App\User  $user
+     * @param  \App\StudentClass  $studentClass
+     * @return mixed
+     */
+    public function deleteStudent(User $user, StudentClass $studentClass)
+    {
+        return $user->school_id === $studentClass->school_id;
     }
 
     /**

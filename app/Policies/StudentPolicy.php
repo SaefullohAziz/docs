@@ -4,7 +4,6 @@ namespace App\Policies;
 
 use App\Admin\User as Staff;
 use App\User;
-use App\StudentClass;
 use App\Student;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
@@ -20,9 +19,7 @@ class StudentPolicy
      */
     public function before($user, $ability)
     {
-        if (auth()->check()) {
-            return true;
-        }
+        
     }
     
     /**
@@ -45,7 +42,7 @@ class StudentPolicy
      */
     public function view(User $user, Student $student)
     {
-        return $user->school_id === $student->school_id;
+        return $user->school_id === $student->class->school_id;
     }
 
     /**
@@ -54,24 +51,9 @@ class StudentPolicy
      * @param  \App\User  $user
      * @return mixed
      */
-    public function adminCreate(Staff $staff, StudentClass $studentClass)
+    public function create(User $user, Student $student)
     {
-        if ($studentClass->school_year == schoolYear()) {
-            return empty($studentClass->closed_at);
-        }
-    }
 
-    /**
-     * Determine whether the user can create students.
-     *
-     * @param  \App\User  $user
-     * @return mixed
-     */
-    public function create(User $user, StudentClass $studentClass)
-    {
-        if ($studentClass->school_year == schoolYear()) {
-            return empty($studentClass->closed_at);
-        }   
     }
 
     /**
@@ -83,7 +65,7 @@ class StudentPolicy
      */
     public function update(User $user, Student $student)
     {
-        return $user->school_id === $student->school_id;
+        return $user->school_id === $student->class->school_id;
     }
 
     /**
@@ -95,7 +77,7 @@ class StudentPolicy
      */
     public function delete(User $user, Student $student)
     {
-        return $user->school_id === $student->school_id;
+        return $user->school_id === $student->class->school_id;
     }
 
     /**
@@ -107,7 +89,7 @@ class StudentPolicy
      */
     public function restore(User $user, Student $student)
     {
-        return $user->school_id === $student->school_id;
+        return $user->school_id === $student->class->school_id;
     }
 
     /**
@@ -119,6 +101,6 @@ class StudentPolicy
      */
     public function forceDelete(User $user, Student $student)
     {
-        return $user->school_id === $student->school_id;
+        return $user->school_id === $student->class->school_id;
     }
 }

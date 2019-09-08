@@ -196,7 +196,7 @@ class StudentClassController extends Controller
             return redirect()->route('admin.class.index')->with('alert-danger', __($this->noPermission));
         }
         if (auth()->guard('admin')->user()->cant('adminUpdate', $studentClass)) {
-            return redirect()->route('admin.class.index')->with('alert-danger', __($this->unauthorizedMessage));
+            return redirect()->route('admin.class.index')->with('alert-danger', __($this->unauthorizedMessage) . ' ' . __('This class already has students.'));
         }
         $school = School::find($request->school_id);
         if ($school->implementation->count() > 1) {

@@ -49,13 +49,24 @@ Route::resource('document', 'DocumentController', ['except' => [
 	'destroy',
 ]]);
 
-// Student
-Route::prefix('student')->name('student.')->group(function () {
-	Route::post('list', 'StudentController@list')->name('list');
-	// Route::post('export', 'StudentController@export')->name('export');
-	// Route::delete('destroy', 'StudentController@destroy')->name('destroy');
+// Class
+Route::prefix('class')->name('class.')->group(function () {
+	Route::post('list', 'StudentClassController@list')->name('list');
+	// Route::post('export', 'StudentClassController@export')->name('export');
+	// Route::delete('destroy', 'StudentClassController@destroy')->name('destroy');
+	// Student
+	Route::prefix('{studentClass}/student')->name('student.')->group(function () {
+		Route::post('list', 'StudentController@list')->name('list');
+		// Route::post('export', 'StudentController@export')->name('export');
+		// Route::delete('destroy', 'StudentController@destroy')->name('destroy');
+	});
+	Route::resource('{studentClass}/student', 'StudentController', ['except' => [
+		'destroy',
+	]]);
 });
-Route::resource('student', 'StudentController', ['except' => [
+Route::resource('class', 'StudentClassController', ['parameters' => [
+	'class' => 'studentClass'
+], 'except' => [
 	'destroy',
 ]]);
 
