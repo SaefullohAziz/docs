@@ -28,7 +28,9 @@
 
 		<div class="card card-primary">
 			<div class="card-header">
-				<a href="{{ route('student.create') }}" class="btn btn-icon btn-success" title="{{ __('Create') }}"><i class="fa fa-plus"></i></a>
+				@if(auth()->guard('admin')->user()->can('create exam_readinesses'))
+					<a href="{{ route('admin.exam.readiness.create') }}" class="btn btn-icon btn-success" title="{{ __('Create') }}"><i class="fa fa-plus"></i></a>
+				@endif
 				<button class="btn btn-icon btn-secondary" title="{{ __('Filter') }}" data-toggle="modal" data-target="#filterModal"><i class="fa fa-filter"></i></button>
             	<button class="btn btn-icon btn-secondary" onclick="reloadTable()" title="{{ __('Refresh') }}"><i class="fa fa-sync"></i></i></button>
 			</div>
@@ -41,14 +43,11 @@
 									<div class="checkbox icheck"><label><input type="checkbox" name="selectData"></label></div>
 								</th>
 								<th>{{ __('Created At') }}</th>
-								<th>{{ __('Name') }}</th>
 								<th>{{ __('School') }}</th>
-								<th>{{ __('NISN') }}</th>
-								<th>{{ __('Department') }}</th>
-								<th>{{ __('E-Mail') }}</th>
-								<th>{{ __('Generation') }}</th>
-								<th>{{ __('School Year') }}</th>
-								<th>{{ __('Phone Number') }}</th>
+								<th>{{ __('Type') }}</th>
+								<th>{{ __('Execution') }}</th>
+								<th>{{ __('Student') }}</th>
+                                <th>{{ __('Status') }}</th>
 								<th>{{ __('Action') }}</th>
 							</tr>
 						</thead>
@@ -58,7 +57,9 @@
 				</div>
 			</div>
 			<div class="card-footer bg-whitesmoke">
-				
+				@if (auth()->guard('admin')->user()->can('delete exam_readinesses'))
+					<button class="btn btn-danger btn-sm" name="deleteData" title="{{ __('Delete') }}">{{ __('Delete') }}</button>
+				@endif
 			</div>
 		</div>
 
@@ -74,27 +75,22 @@
 			processing: true,
 			serverSide: true,
 			"ajax": {
-				"url": "{{ route('student.list') }}",
+				"url": "{{ route('admin.exam.readiness.list') }}",
 				"type": "POST",
 				"data": function (d) {
 		          d._token = "{{ csrf_token() }}";
-				  d.generation = $('select[name="generation"]').val();
-				  d.schoolYear = $('select[name="school_year"]').val();
-				  d.department = $('select[name="department"]').val();
-				  d.sspStatus = $('select[name="ssp_status"]').val();
+				  d.school = $('select[name="school"]').val();
+				  d.type = $('select[name="type"]').val();
 		        }
 			},
 			columns: [
 				{ data: 'DT_RowIndex', name: 'DT_RowIndex', 'searchable': false },
 				{ data: 'created_at', name: 'created_at' },
-				{ data: 'name', name: 'students.name' },
 				{ data: 'school', name: 'schools.name' },
-				{ data: 'nisn', name: 'students.nisn' },
-				{ data: 'department', name: 'students.department' },
-				{ data: 'email', name: 'students.email' },
-				{ data: 'generation', name: 'students.generation' },
-				{ data: 'school_year', name: 'students.school_year' },
-				{ data: 'phone_number', name: 'students.phone_number' },
+				{ data: 'exam_type', name: 'exam_readinesses.exam_type' },
+				{ data: 'execution', name: 'exam_readinesses.execution' },
+				{ data: 'student', name: 'exam_readinesses.sub_exam_type' },
+				{ data: 'status', name: 'statuses.name' },
 				{ data: 'action', name: 'action' }
 			],
 			"columnDefs": [
@@ -116,6 +112,46 @@
       			});
       		},
   		});
+
+		$('[name="deleteData"]').click(function(event) {
+			if ($('[name="selectedData[]"]:checked').length > 0) {
+				event.preventDefault();
+				var selectedData = $('[name="selectedData[]"]:checked').map(function(){
+					return $(this).val();
+				}).get();
+				swal({
+			      	title: '{{ __("Are you sure want to delete this data?") }}',
+			      	text: '',
+			      	icon: 'warning',
+			      	buttons: true,
+			      	dangerMode: true,
+			    })
+			    .then((willDelete) => {
+			      	if (willDelete) {
+			      		$.ajax({
+							url : "{{ route('admin.exam.readiness.destroy') }}",
+							type: "DELETE",
+							dataType: "JSON",
+							data: {"selectedData" : selectedData, "_token" : "{{ csrf_token() }}"},
+							success: function(data)
+							{
+								reloadTable();
+							},
+							error: function (jqXHR, textStatus, errorThrown)
+							{
+								if (JSON.parse(jqXHR.responseText).status) {
+									swal("{{ __('Failed!') }}", "{{ __("Data cannot be deleted.") }}", "warning");
+								} else {
+									swal(JSON.parse(jqXHR.responseText).message, "", "error");
+								}
+							}
+						});
+			      	}
+    			});
+			} else {
+				swal("{{ __('Please select a data..') }}", "", "warning");
+			}
+		});
 	});
 
 	function reloadTable() {
@@ -131,7 +167,7 @@
 
 <!-- Modal -->
 <div class="modal fade" id="filterModal" tabindex="-1" role="dialog" aria-labelledby="filterModalLabel" aria-hidden="true">
-	<div class="modal-dialog modal-lg" role="document">
+	<div class="modal-dialog modal-sm" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
 				<h5 class="modal-title" id="filterModallLabel">{{ __('Filter') }}</h5>
@@ -143,14 +179,13 @@
 				<div class="modal-body">
 					<div class="container-fluid">
 						<div class="row">
-							{{ Form::bsSelect('col-sm-4', __('Generation'), 'generation', $generations, null, __('Select'), ['placeholder' => __('Select')]) }}
-							{{ Form::bsSelect('col-sm-4', __('School Year'), 'school_year', $schoolYears, null, __('Select'), ['placeholder' => __('Select')]) }}
-							{{ Form::bsSelect('col-sm-4', __('Department'), 'department', $departments, null, __('Select'), ['placeholder' => __('Select')]) }}
-							{{ Form::bsSelect('col-sm-4', __('SSP Status'), 'ssp_status', ['1' => __('Yes'), '0' => __('No')], null, __('Select'), ['placeholder' => __('Select')]) }}
+							{{ Form::bsSelect('col-12', __('School'), 'school', $schools, null, __('Select'), ['placeholder' => __('Select')]) }}
+							{{ Form::bsSelect('col-12', __('Type'), 'type', $types, null, __('Select'), ['placeholder' => __('Select')]) }}
 						</div>
 					</div>
 				</div>
 				<div class="modal-footer bg-whitesmoke d-flex justify-content-center">
+					<!-- {{ Form::submit(__('Export'), ['class' => 'btn btn-primary']) }} -->
 					{{ Form::button(__('Filter'), ['class' => 'btn btn-primary', 'onclick' => 'filter()']) }}
 					{{ Form::button(__('Cancel'), ['class' => 'btn btn-secondary', ' data-dismiss' => 'modal']) }}
 				</div>

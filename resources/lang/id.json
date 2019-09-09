@@ -102,6 +102,9 @@
     "Do you have assets?": "Sudah memiliki aset?",
     "Participant have been selected.": "Peserta sudah dipilih.",
 
+    "Exam Readiness": "Kesiapan Ujian",
+    "Create Exam Readiness": "Membuat Kesiapan Ujian",
+
     "Payment Confirmation": "Konfirmasi Pembayaran",
     "Payment": "Pembayaran",
     "Create Payment Confirmation": "Tambah Konfirmasi Pembayaran",
@@ -226,6 +229,7 @@
     "Remaining payment": "Pembayaran tersisa",
     "All Categories": "Semua Kategori",
     "There is no document.": "Tidak ada dokumen.",
+    "Execution": "Pelaksanaan",
 
     "Enter phone number without country code.": "Masukkan nomor handphone tanpa kode negara.",
     "Complete with an academic degree and or degree of expertise.": "Lengkapi dengan gelar akademi atau keahlian.",

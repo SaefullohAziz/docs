@@ -232,6 +232,19 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
 		'destroy',
 	]]);
 
+	// Exam
+	Route::prefix('exam')->name('exam.')->group(function () {
+		// Exam: readiness
+		Route::prefix('readiness')->name('readiness.')->group(function () {
+			Route::post('list', 'ExamReadinessController@list')->name('list');
+			// Route::post('export', 'ExamReadinessController@export')->name('export');
+			Route::delete('destroy', 'ExamReadinessController@destroy')->name('destroy');
+		});
+		Route::resource('readiness', 'ExamReadinessController', ['except' => [
+			'destroy',
+		]]);
+    });
+
 	// Payment
 	Route::prefix('payment')->name('payment.')->group(function () {
     	Route::post('list', 'PaymentController@list')->name('list');
@@ -268,10 +281,8 @@ Route::prefix('get')->name('get.')->middleware(['auth:web,admin'])->group(functi
 		Route::post('by', 'GetController@teacherBy')->name('by');
 	});
 	Route::post('pic/by/school', 'GetController@picBySchool')->name('picBySchool');
+	Route::post('students', 'GetController@students')->name('students');
 	Route::prefix('student')->name('student.')->group(function () {
-		Route::post('by/school', 'GetController@studentBySchool')->name('bySchool');
-		Route::post('by/generation', 'GetController@studentByGeneration')->name('byGeneration');
-		Route::post('by/grade', 'GetController@studentByGrade')->name('byGrade');
 		Route::post('by', 'GetController@studentBy')->name('by');
 	});
 });

@@ -238,6 +238,6 @@ class StudentClassController extends Controller
             return response()->json(['status' => false, 'message' => __($this->noPermission)], 422);
         }
         StudentClass::destroy($request->selectedData);
-        return response()->json(['status' => true, 'message' => 'Data successfully deleted.']);
+        return response()->json(['status' => true, 'message' => __('Data successfully deleted.')]);
     }
 }

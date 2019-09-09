@@ -19,21 +19,14 @@ use App\Http\Controllers\Controller;
 
 class ActivityController extends Controller
 {
-    protected $createdMessage;
-    protected $updatedMessage;
-    protected $deletedMessage;
-    protected $noPermission;
     protected $table;
     protected $types;
     protected $statuses;
 
     public function __construct()
     {
+        parent::__construct();
         $this->middleware('auth:admin');
-        $this->createdMessage = __('Data successfully created.');
-        $this->updatedMessage = __('Data successfully updated.');
-        $this->deletedMessage = __('Data successfully deleted.');
-        $this->noPermission = __('You have no related permission.');
         $this->table = 'subsidies';
         $this->types = [
                 'MOU' => 'M.O.U',
