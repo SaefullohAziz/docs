@@ -49,13 +49,24 @@ Route::resource('document', 'DocumentController', ['except' => [
 	'destroy',
 ]]);
 
-// Student
-Route::prefix('student')->name('student.')->group(function () {
-	Route::post('list', 'StudentController@list')->name('list');
-	// Route::post('export', 'StudentController@export')->name('export');
-	// Route::delete('destroy', 'StudentController@destroy')->name('destroy');
+// Class
+Route::prefix('class')->name('class.')->group(function () {
+	Route::post('list', 'StudentClassController@list')->name('list');
+	// Route::post('export', 'StudentClassController@export')->name('export');
+	// Route::delete('destroy', 'StudentClassController@destroy')->name('destroy');
+	// Student
+	Route::prefix('{studentClass}/student')->name('student.')->group(function () {
+		Route::post('list', 'StudentController@list')->name('list');
+		// Route::post('export', 'StudentController@export')->name('export');
+		// Route::delete('destroy', 'StudentController@destroy')->name('destroy');
+	});
+	Route::resource('{studentClass}/student', 'StudentController', ['except' => [
+		'destroy',
+	]]);
 });
-Route::resource('student', 'StudentController', ['except' => [
+Route::resource('class', 'StudentClassController', ['parameters' => [
+	'class' => 'studentClass'
+], 'except' => [
 	'destroy',
 ]]);
 
@@ -168,7 +179,7 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
     	Route::post('export', 'StudentClassController@export')->name('export');
 		Route::delete('destroy', 'StudentClassController@destroy')->name('destroy');
 		// Student
-		Route::prefix('{class}/student')->name('student.')->group(function () {
+		Route::prefix('{studentClass}/student')->name('student.')->group(function () {
 			Route::post('list', 'StudentController@list')->name('list');
 			Route::post('export', 'StudentController@export')->name('export');
 			Route::delete('destroy', 'StudentController@destroy')->name('destroy');
@@ -221,6 +232,19 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
 		'destroy',
 	]]);
 
+	// Exam
+	Route::prefix('exam')->name('exam.')->group(function () {
+		// Exam: readiness
+		Route::prefix('readiness')->name('readiness.')->group(function () {
+			Route::post('list', 'ExamReadinessController@list')->name('list');
+			// Route::post('export', 'ExamReadinessController@export')->name('export');
+			Route::delete('destroy', 'ExamReadinessController@destroy')->name('destroy');
+		});
+		Route::resource('readiness', 'ExamReadinessController', ['except' => [
+			'destroy',
+		]]);
+    });
+
 	// Payment
 	Route::prefix('payment')->name('payment.')->group(function () {
     	Route::post('list', 'PaymentController@list')->name('list');
@@ -257,10 +281,8 @@ Route::prefix('get')->name('get.')->middleware(['auth:web,admin'])->group(functi
 		Route::post('by', 'GetController@teacherBy')->name('by');
 	});
 	Route::post('pic/by/school', 'GetController@picBySchool')->name('picBySchool');
+	Route::post('students', 'GetController@students')->name('students');
 	Route::prefix('student')->name('student.')->group(function () {
-		Route::post('by/school', 'GetController@studentBySchool')->name('bySchool');
-		Route::post('by/generation', 'GetController@studentByGeneration')->name('byGeneration');
-		Route::post('by/grade', 'GetController@studentByGrade')->name('byGrade');
 		Route::post('by', 'GetController@studentBy')->name('by');
 	});
 });

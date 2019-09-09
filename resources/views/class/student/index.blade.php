@@ -28,7 +28,7 @@
 
 		<div class="card card-primary">
 			<div class="card-header">
-				<a href="{{ route('student.create') }}" class="btn btn-icon btn-success" title="{{ __('Create') }}"><i class="fa fa-plus"></i></a>
+				<a href="{{ route('class.student.create', $studentClass->id) }}" class="btn btn-icon btn-success" title="{{ __('Create') }}"><i class="fa fa-plus"></i></a>
 				<button class="btn btn-icon btn-secondary" title="{{ __('Filter') }}" data-toggle="modal" data-target="#filterModal"><i class="fa fa-filter"></i></button>
             	<button class="btn btn-icon btn-secondary" onclick="reloadTable()" title="{{ __('Refresh') }}"><i class="fa fa-sync"></i></i></button>
 			</div>
@@ -57,9 +57,6 @@
 					</table>
 				</div>
 			</div>
-			<div class="card-footer bg-whitesmoke">
-				
-			</div>
 		</div>
 
 	</div>
@@ -74,7 +71,7 @@
 			processing: true,
 			serverSide: true,
 			"ajax": {
-				"url": "{{ route('student.list') }}",
+				"url": "{{ route('class.student.list', $studentClass->id) }}",
 				"type": "POST",
 				"data": function (d) {
 		          d._token = "{{ csrf_token() }}";
@@ -90,10 +87,10 @@
 				{ data: 'name', name: 'students.name' },
 				{ data: 'school', name: 'schools.name' },
 				{ data: 'nisn', name: 'students.nisn' },
-				{ data: 'department', name: 'students.department' },
+				{ data: 'department', name: 'departments.name' },
 				{ data: 'email', name: 'students.email' },
-				{ data: 'generation', name: 'students.generation' },
-				{ data: 'school_year', name: 'students.school_year' },
+				{ data: 'generation', name: 'student_classes.generation' },
+				{ data: 'school_year', name: 'student_classes.school_year' },
 				{ data: 'phone_number', name: 'students.phone_number' },
 				{ data: 'action', name: 'action' }
 			],
@@ -131,7 +128,7 @@
 
 <!-- Modal -->
 <div class="modal fade" id="filterModal" tabindex="-1" role="dialog" aria-labelledby="filterModalLabel" aria-hidden="true">
-	<div class="modal-dialog modal-lg" role="document">
+	<div class="modal-dialog modal-sm" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
 				<h5 class="modal-title" id="filterModallLabel">{{ __('Filter') }}</h5>
@@ -143,14 +140,12 @@
 				<div class="modal-body">
 					<div class="container-fluid">
 						<div class="row">
-							{{ Form::bsSelect('col-sm-4', __('Generation'), 'generation', $generations, null, __('Select'), ['placeholder' => __('Select')]) }}
-							{{ Form::bsSelect('col-sm-4', __('School Year'), 'school_year', $schoolYears, null, __('Select'), ['placeholder' => __('Select')]) }}
-							{{ Form::bsSelect('col-sm-4', __('Department'), 'department', $departments, null, __('Select'), ['placeholder' => __('Select')]) }}
-							{{ Form::bsSelect('col-sm-4', __('SSP Status'), 'ssp_status', ['1' => __('Yes'), '0' => __('No')], null, __('Select'), ['placeholder' => __('Select')]) }}
+							{{ Form::bsSelect('col-12', __('SSP Status'), 'ssp_status', ['1' => __('Yes'), '0' => __('Not')], null, __('Select'), ['placeholder' => __('Select')]) }}
 						</div>
 					</div>
 				</div>
 				<div class="modal-footer bg-whitesmoke d-flex justify-content-center">
+					<!-- {{ Form::submit(__('Export'), ['class' => 'btn btn-primary']) }} -->
 					{{ Form::button(__('Filter'), ['class' => 'btn btn-primary', 'onclick' => 'filter()']) }}
 					{{ Form::button(__('Cancel'), ['class' => 'btn btn-secondary', ' data-dismiss' => 'modal']) }}
 				</div>

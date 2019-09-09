@@ -28,8 +28,8 @@
 
 		<div class="card card-primary">
 			<div class="card-header">
-				@if(auth()->guard('admin')->user()->can('create student_classes'))
-					<a href="{{ route('admin.class.create') }}" class="btn btn-icon btn-success" title="{{ __('Create') }}"><i class="fa fa-plus"></i></a>
+				@if(auth()->guard('admin')->user()->can('create exam_readinesses'))
+					<a href="{{ route('admin.exam.readiness.create') }}" class="btn btn-icon btn-success" title="{{ __('Create') }}"><i class="fa fa-plus"></i></a>
 				@endif
 				<button class="btn btn-icon btn-secondary" title="{{ __('Filter') }}" data-toggle="modal" data-target="#filterModal"><i class="fa fa-filter"></i></button>
             	<button class="btn btn-icon btn-secondary" onclick="reloadTable()" title="{{ __('Refresh') }}"><i class="fa fa-sync"></i></i></button>
@@ -44,9 +44,10 @@
 								</th>
 								<th>{{ __('Created At') }}</th>
 								<th>{{ __('School') }}</th>
-								<th>{{ __('Generation') }}</th>
-								<th>{{ __('School Year') }}</th>
-								<th>{{ __('Department') }}</th>
+								<th>{{ __('Type') }}</th>
+								<th>{{ __('Execution') }}</th>
+								<th>{{ __('Student') }}</th>
+                                <th>{{ __('Status') }}</th>
 								<th>{{ __('Action') }}</th>
 							</tr>
 						</thead>
@@ -56,7 +57,7 @@
 				</div>
 			</div>
 			<div class="card-footer bg-whitesmoke">
-				@if (auth()->guard('admin')->user()->can('delete student_classes'))
+				@if (auth()->guard('admin')->user()->can('delete exam_readinesses'))
 					<button class="btn btn-danger btn-sm" name="deleteData" title="{{ __('Delete') }}">{{ __('Delete') }}</button>
 				@endif
 			</div>
@@ -74,23 +75,22 @@
 			processing: true,
 			serverSide: true,
 			"ajax": {
-				"url": "{{ route('admin.class.list') }}",
+				"url": "{{ route('admin.exam.readiness.list') }}",
 				"type": "POST",
 				"data": function (d) {
 		          d._token = "{{ csrf_token() }}";
 				  d.school = $('select[name="school"]').val();
-				  d.generation = $('select[name="generation"]').val();
-				  d.schoolYear = $('select[name="school_year"]').val();
-				  d.department = $('select[name="department"]').val();
+				  d.type = $('select[name="type"]').val();
 		        }
 			},
 			columns: [
 				{ data: 'DT_RowIndex', name: 'DT_RowIndex', 'searchable': false },
 				{ data: 'created_at', name: 'created_at' },
 				{ data: 'school', name: 'schools.name' },
-				{ data: 'generation', name: 'student_classes.generation' },
-				{ data: 'school_year', name: 'student_classes.school_year' },
-				{ data: 'department', name: 'departments.name' },
+				{ data: 'exam_type', name: 'exam_readinesses.exam_type' },
+				{ data: 'execution', name: 'exam_readinesses.execution' },
+				{ data: 'student', name: 'exam_readinesses.sub_exam_type' },
+				{ data: 'status', name: 'statuses.name' },
 				{ data: 'action', name: 'action' }
 			],
 			"columnDefs": [
@@ -113,86 +113,6 @@
       		},
   		});
 
-		$('select[name="level"]').change(function() {
-			if ($(this).val() != '') {
-				$('select[name="school"]').html('<option value="">Select</option>');
-				$.ajax({
-					url : "{{ route('get.schoolByLevel') }}",
-					type: "POST",
-					dataType: "JSON",
-					cache: false,
-					data: {'_token' : '{{ csrf_token() }}', 'level' : $(this).val()},
-					success: function(data)
-					{
-						$.each(data.result, function(key, value) {
-							$('select[name="school"]').append('<option value="'+key+'">'+value+'</option>');
-						});
-					},
-					error: function (jqXHR, textStatus, errorThrown)
-					{
-						$('select[name="school"]').html('<option value="">Select</option>');
-					}
-				});
-			}
-		});
-
-		$('select[name="school"]').change(function() {
-			if ($(this).val() != '') {
-				$('select[name="generation"], select[name="school_year"], select[name="department"]').html('<option value="">Select</option>');
-				$.ajax({
-					url : "{{ route('get.generationBySchool') }}",
-					type: "POST",
-					dataType: "JSON",
-					cache: false,
-					data: {'_token' : '{{ csrf_token() }}', 'school' : $(this).val()},
-					success: function(data)
-					{
-						$.each(data.result, function(key, value) {
-							$('select[name="generation"]').append('<option value="'+key+'">'+value+'</option>');
-						});
-					},
-					error: function (jqXHR, textStatus, errorThrown)
-					{
-						$('select[name="generation"]').html('<option value="">Select</option>');
-					}
-				});
-				$.ajax({
-					url : "{{ route('get.schoolYearBySchool') }}",
-					type: "POST",
-					dataType: "JSON",
-					cache: false,
-					data: {'_token' : '{{ csrf_token() }}', 'school' : $(this).val()},
-					success: function(data)
-					{
-						$.each(data.result, function(key, value) {
-							$('select[name="school_year"]').append('<option value="'+key+'">'+value+'</option>');
-						});
-					},
-					error: function (jqXHR, textStatus, errorThrown)
-					{
-						$('select[name="school_year"]').html('<option value="">Select</option>');
-					}
-				});
-				$.ajax({
-					url : "{{ route('get.departmentBySchool') }}",
-					type: "POST",
-					dataType: "JSON",
-					cache: false,
-					data: {'_token' : '{{ csrf_token() }}', 'school' : $(this).val()},
-					success: function(data)
-					{
-						$.each(data.result, function(key, value) {
-							$('select[name="department"]').append('<option value="'+key+'">'+value+'</option>');
-						});
-					},
-					error: function (jqXHR, textStatus, errorThrown)
-					{
-						$('select[name="department"]').html('<option value="">Select</option>');
-					}
-				});
-			}
-		});
-
 		$('[name="deleteData"]').click(function(event) {
 			if ($('[name="selectedData[]"]:checked').length > 0) {
 				event.preventDefault();
@@ -209,7 +129,7 @@
 			    .then((willDelete) => {
 			      	if (willDelete) {
 			      		$.ajax({
-							url : "{{ route('admin.class.destroy') }}",
+							url : "{{ route('admin.exam.readiness.destroy') }}",
 							type: "DELETE",
 							dataType: "JSON",
 							data: {"selectedData" : selectedData, "_token" : "{{ csrf_token() }}"},
@@ -247,7 +167,7 @@
 
 <!-- Modal -->
 <div class="modal fade" id="filterModal" tabindex="-1" role="dialog" aria-labelledby="filterModalLabel" aria-hidden="true">
-	<div class="modal-dialog modal-lg" role="document">
+	<div class="modal-dialog modal-sm" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
 				<h5 class="modal-title" id="filterModallLabel">{{ __('Filter') }}</h5>
@@ -255,21 +175,17 @@
 					<span aria-hidden="true">&times;</span>
 				</button>
 			</div>
-			{{ Form::open(['route' => 'admin.class.export', 'files' => true]) }}
+			{{ Form::open(['url' => '#', 'files' => true]) }}
 				<div class="modal-body">
 					<div class="container-fluid">
 						<div class="row">
-							{{ Form::bsSelect('col-sm-4', __('Level'), 'level', $levels, null, __('Select'), ['placeholder' => __('Select')]) }}
-							{{ Form::bsSelect('col-sm-4', __('School'), 'school', $schools, null, __('Select'), ['placeholder' => __('Select')]) }}
-							{{ Form::bsSelect('col-sm-4', __('Generation'), 'generation', $generations, null, __('Select'), ['placeholder' => __('Select')]) }}
-							{{ Form::bsSelect('col-sm-4', __('School Year'), 'school_year', $schoolYears, null, __('Select'), ['placeholder' => __('Select')]) }}
-							{{ Form::bsSelect('col-sm-4', __('Department'), 'department', $departments, null, __('Select'), ['placeholder' => __('Select')]) }}
-							{{ Form::bsSelect('col-sm-4', __('SSP Status'), 'ssp_status', ['1' => __('Yes'), '0' => __('Not')], null, __('Select'), ['placeholder' => __('Select')], [__('This is only used for export.')]) }}
+							{{ Form::bsSelect('col-12', __('School'), 'school', $schools, null, __('Select'), ['placeholder' => __('Select')]) }}
+							{{ Form::bsSelect('col-12', __('Type'), 'type', $types, null, __('Select'), ['placeholder' => __('Select')]) }}
 						</div>
 					</div>
 				</div>
 				<div class="modal-footer bg-whitesmoke d-flex justify-content-center">
-					{{ Form::submit(__('Export'), ['class' => 'btn btn-primary']) }}
+					<!-- {{ Form::submit(__('Export'), ['class' => 'btn btn-primary']) }} -->
 					{{ Form::button(__('Filter'), ['class' => 'btn btn-primary', 'onclick' => 'filter()']) }}
 					{{ Form::button(__('Cancel'), ['class' => 'btn btn-secondary', ' data-dismiss' => 'modal']) }}
 				</div>

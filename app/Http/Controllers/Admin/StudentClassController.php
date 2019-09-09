@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreStudentClass;
 use DataTables;
+use App\Exports\StudentsExport;
 
 class StudentClassController extends Controller
 {
@@ -69,7 +70,7 @@ class StudentClassController extends Controller
                     return (date('d-m-Y h:m:s', strtotime($data->created_at)));
                 })
                 ->addColumn('action', function($data) {
-                    return '<a class="btn btn-sm btn-success" href="'.route('admin.class.show', $data->id).'" title="'.__("See detail").'"><i class="fa fa-eye"></i> '.__("See").'</a> <a class="btn btn-sm btn-warning" href="'.route('admin.class.edit', $data->id).'" title="'.__("Edit").'"><i class="fa fa-edit"></i> '.__("Edit").'</a>';
+                    return '<a class="btn btn-sm btn-secondary" href="'.route('admin.class.student.index', $data->id).'" title="'.__("See students").'"><i class="fa fa-users"></i> '.__("Student").'</a> <a class="btn btn-sm btn-success" href="'.route('admin.class.show', $data->id).'" title="'.__("See detail").'"><i class="fa fa-eye"></i> '.__("See").'</a> <a class="btn btn-sm btn-warning" href="'.route('admin.class.edit', $data->id).'" title="'.__("Edit").'"><i class="fa fa-edit"></i> '.__("Edit").'</a>';
                 })
                 ->rawColumns(['DT_RowIndex', 'action'])
                 ->make(true);
@@ -195,7 +196,7 @@ class StudentClassController extends Controller
             return redirect()->route('admin.class.index')->with('alert-danger', __($this->noPermission));
         }
         if (auth()->guard('admin')->user()->cant('adminUpdate', $studentClass)) {
-            return redirect()->route('admin.class.index')->with('alert-danger', __($this->noPermission));
+            return redirect()->route('admin.class.index')->with('alert-danger', __($this->unauthorizedMessage) . ' ' . __('This class already has students.'));
         }
         $school = School::find($request->school_id);
         if ($school->implementation->count() > 1) {
@@ -222,7 +223,7 @@ class StudentClassController extends Controller
      */
     public function export(Request $request)
     {
-        // return (new StudentsExport($request))->download('student-'.date('d-m-Y-h-m-s').'.xlsx');
+        return (new StudentsExport($request))->download('student-'.date('d-m-Y-h-m-s').'.xlsx');
     }
 
     /**
@@ -237,6 +238,6 @@ class StudentClassController extends Controller
             return response()->json(['status' => false, 'message' => __($this->noPermission)], 422);
         }
         StudentClass::destroy($request->selectedData);
-        return response()->json(['status' => true, 'message' => 'Data successfully deleted.']);
+        return response()->json(['status' => true, 'message' => __('Data successfully deleted.')]);
     }
 }

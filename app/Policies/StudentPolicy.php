@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Admin\User as Staff;
 use App\User;
 use App\Student;
 use Illuminate\Auth\Access\HandlesAuthorization;
@@ -18,9 +19,7 @@ class StudentPolicy
      */
     public function before($user, $ability)
     {
-        if (auth()->guard('web')->check()) {
-            return true;
-        }
+        
     }
     
     /**
@@ -43,7 +42,7 @@ class StudentPolicy
      */
     public function view(User $user, Student $student)
     {
-        return $user->school_id === $student->school_id;
+        return $user->school_id === $student->class->school_id;
     }
 
     /**
@@ -52,9 +51,9 @@ class StudentPolicy
      * @param  \App\User  $user
      * @return mixed
      */
-    public function create(User $user)
+    public function create(User $user, Student $student)
     {
-        //
+
     }
 
     /**
@@ -66,7 +65,7 @@ class StudentPolicy
      */
     public function update(User $user, Student $student)
     {
-        return $user->school_id === $student->school_id;
+        return $user->school_id === $student->class->school_id;
     }
 
     /**
@@ -78,7 +77,7 @@ class StudentPolicy
      */
     public function delete(User $user, Student $student)
     {
-        return $user->school_id === $student->school_id;
+        return $user->school_id === $student->class->school_id;
     }
 
     /**
@@ -90,7 +89,7 @@ class StudentPolicy
      */
     public function restore(User $user, Student $student)
     {
-        return $user->school_id === $student->school_id;
+        return $user->school_id === $student->class->school_id;
     }
 
     /**
@@ -102,6 +101,6 @@ class StudentPolicy
      */
     public function forceDelete(User $user, Student $student)
     {
-        return $user->school_id === $student->school_id;
+        return $user->school_id === $student->class->school_id;
     }
 }

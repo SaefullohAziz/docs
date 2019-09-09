@@ -29,7 +29,7 @@
 		<div class="card card-primary">
 			<div class="card-header">
 				@if(auth()->guard('admin')->user()->can('create students'))
-					<a href="{{ route('admin.student.create') }}" class="btn btn-icon btn-success" title="{{ __('Create') }}"><i class="fa fa-plus"></i></a>
+					<a href="{{ route('admin.class.student.create', $studentClass->id) }}" class="btn btn-icon btn-success" title="{{ __('Create') }}"><i class="fa fa-plus"></i></a>
 				@endif
 				<button class="btn btn-icon btn-secondary" title="{{ __('Filter') }}" data-toggle="modal" data-target="#filterModal"><i class="fa fa-filter"></i></button>
             	<button class="btn btn-icon btn-secondary" onclick="reloadTable()" title="{{ __('Refresh') }}"><i class="fa fa-sync"></i></i></button>
@@ -78,7 +78,7 @@
 			processing: true,
 			serverSide: true,
 			"ajax": {
-				"url": "{{ route('admin.student.list') }}",
+				"url": "{{ route('admin.class.student.list', $studentClass->id) }}",
 				"type": "POST",
 				"data": function (d) {
 		          d._token = "{{ csrf_token() }}";
@@ -95,10 +95,10 @@
 				{ data: 'name', name: 'students.name' },
 				{ data: 'school', name: 'schools.name' },
 				{ data: 'nisn', name: 'students.nisn' },
-				{ data: 'department', name: 'students.department' },
+				{ data: 'department', name: 'departments.name' },
 				{ data: 'email', name: 'students.email' },
-				{ data: 'generation', name: 'students.generation' },
-				{ data: 'school_year', name: 'students.school_year' },
+				{ data: 'generation', name: 'student_classes.generation' },
+				{ data: 'school_year', name: 'student_classes.school_year' },
 				{ data: 'phone_number', name: 'students.phone_number' },
 				{ data: 'action', name: 'action' }
 			],
@@ -218,7 +218,7 @@
 			    .then((willDelete) => {
 			      	if (willDelete) {
 			      		$.ajax({
-							url : "{{ route('admin.student.destroy') }}",
+							url : "{{ route('admin.class.student.destroy', $studentClass->id) }}",
 							type: "DELETE",
 							dataType: "JSON",
 							data: {"selectedData" : selectedData, "_token" : "{{ csrf_token() }}"},
@@ -256,7 +256,7 @@
 
 <!-- Modal -->
 <div class="modal fade" id="filterModal" tabindex="-1" role="dialog" aria-labelledby="filterModalLabel" aria-hidden="true">
-	<div class="modal-dialog modal-lg" role="document">
+	<div class="modal-dialog modal-sm" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
 				<h5 class="modal-title" id="filterModallLabel">{{ __('Filter') }}</h5>
@@ -264,16 +264,11 @@
 					<span aria-hidden="true">&times;</span>
 				</button>
 			</div>
-			{{ Form::open(['route' => 'admin.student.export', 'files' => true]) }}
+			{{ Form::open(['route' => ['admin.class.student.export', $studentClass->id], 'files' => true]) }}
 				<div class="modal-body">
 					<div class="container-fluid">
 						<div class="row">
-							{{ Form::bsSelect('col-sm-4', __('Level'), 'level', $levels, null, __('Select'), ['placeholder' => __('Select')]) }}
-							{{ Form::bsSelect('col-sm-4', __('School'), 'school', $schools, null, __('Select'), ['placeholder' => __('Select')]) }}
-							{{ Form::bsSelect('col-sm-4', __('Generation'), 'generation', [], null, __('Select'), ['placeholder' => __('Select')]) }}
-							{{ Form::bsSelect('col-sm-4', __('School Year'), 'school_year', [], null, __('Select'), ['placeholder' => __('Select')]) }}
-							{{ Form::bsSelect('col-sm-4', __('Department'), 'department', [], null, __('Select'), ['placeholder' => __('Select')]) }}
-							{{ Form::bsSelect('col-sm-4', __('SSP Status'), 'ssp_status', ['1' => 'Ya', '0' => 'Tidak'], null, __('Select'), ['placeholder' => __('Select')]) }}
+							{{ Form::bsSelect('col-12', __('SSP Status'), 'ssp_status', ['1' => __('Yes'), '0' => __('Not')], null, __('Select'), ['placeholder' => __('Select')]) }}
 						</div>
 					</div>
 				</div>

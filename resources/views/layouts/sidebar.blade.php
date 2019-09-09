@@ -11,7 +11,7 @@
       <li><a class="nav-link" href="{{ route('home') }}"><i class="fa fa-home"></i> <span>{{ __('Home') }}</span></a></li>
       <li class="menu-header">{{ __('Menu') }}</li>
       <li><a class="nav-link" href="{{ route('school.index') }}"><i class="fa fa-university"></i> <span>{{ __('School') }}</span></a></li>
-      <li><a class="nav-link" href="{{ route('student.index') }}"><i class="fa fa-user-tie"></i> <span>{{ __('Student') }}</span></a></li>
+      <li><a class="nav-link" href="{{ route('class.index') }}"><i class="fa fa-user-tie"></i> <span>{{ __('Student') }}</span></a></li>
       <li><a class="nav-link" href="{{ route('activity.index') }}"><i class="fas fa-city"></i> <span>{{ __('Activity Submission') }}</span></a></li>
       <li><a class="nav-link" href="{{ route('subsidy.index') }}"><i class="fa fa-briefcase"></i> <span>{{ __('Submission of Assistance') }}</span></a></li>
       <li><a class="nav-link" href="{{ route('training.index') }}"><i class="fas fa-business-time"></i> <span>{{ __('Training') }}</span></a></li>

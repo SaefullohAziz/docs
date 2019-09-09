@@ -112,40 +112,27 @@ class GetController extends Controller
         }
     }
 
-    public function studentBySchool(Request $request)
+    public function students(Request $request)
     {
         if ($request->ajax()) {
             if (auth()->guard('web')->check()) {
                 $request->request->add(['school' => auth()->user()->school->id]);
             }
-            $students = Student::bySchool($request->school)->pluck('name', 'id')->toArray();
-            return response()->json(['status' => true, 'result' => $students]);
-        }
-    }
-
-    public function studentByGeneration(Request $request)
-    {
-        if ($request->ajax()) {
-            if (auth()->guard('web')->check()) {
-                $request->request->add(['school' => auth()->user()->school->id]);
-            }
-            $students = Student::when( ! empty($request->school), function ($query) use ($request) {
-                $query->bySchool($request->school);
-            })->byGeneration($request->generation)->pluck('name', 'id')->toArray();
-            return response()->json(['status' => true, 'result' => $students]);
-        }
-    }
-
-    public function studentByGrade(Request $request)
-    {
-        if ($request->ajax()) {
-            if (auth()->guard('web')->check()) {
-                $request->request->add(['school' => auth()->user()->school->id]);
-            }
-            $students = Student::when( ! empty($request->school), function ($query) use ($request) {
-                $query->bySchool($request->school);
-            })->byGrade($request->grade)->pluck('name', 'id')->toArray();
-            return response()->json(['status' => true, 'result' => $students]);
+            $data = Student::whereHas('class', function ($query) use ($request) {
+                $query->when( ! empty($request->school), function ($subQuery) use ($request) {
+                    $subQuery->where('student_classes.school_id', $request->school);
+                });
+                $query->when( ! empty($request->generation), function ($subQuery) use ($request) {
+                    $subQuery->where('student_classes.generation', $request->generation);
+                });
+                $query->when( ! empty($request->grade), function ($subQuery) use ($request) {
+                    $subQuery->where('student_classes.grade', $request->grade);
+                });
+            })->when( ! empty($request->ssp), function ($query) {
+                $query->has('sspStudent');
+            })
+            ->pluck('name', 'id')->toArray();
+            return response()->json(['status' => true, 'result' => $data]);
         }
     }
 

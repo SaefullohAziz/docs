@@ -115,7 +115,7 @@
 			$('select[name="student"]').html('<option value="">{{ __('Select') }}</option>');
 	    	if ($(this).val() != '') {
 	    		$.ajax({
-					url : "{{ route('get.student.byGeneration') }}",
+					url : "{{ route('get.students') }}",
 					type: "POST",
 					dataType: "JSON",
 					data: {'_token' : '{{ csrf_token() }}', 'generation' : $(this).val()},
@@ -137,7 +137,7 @@
 			$('select[name="student"]').html('<option value="">{{ __('Select') }}</option>');
 	    	if ($(this).val() != '') {
 	    		$.ajax({
-					url : "{{ route('get.student.byGrade') }}",
+					url : "{{ route('get.students') }}",
 					type: "POST",
 					dataType: "JSON",
 					data: {'_token' : '{{ csrf_token() }}', 'grade' : $(this).val()},

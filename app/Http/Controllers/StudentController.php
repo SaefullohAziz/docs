@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use Auth;
+use App\StudentClass;
 use App\Student;
 use App\Province;
 use App\School;
 use App\SchoolLevel;
+use App\Department;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreStudent;
@@ -86,19 +88,25 @@ class StudentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(StudentClass $studentClass)
     {
         $view = [
             'title' => __('Student'),
+            'subtitle' => $studentClass->generation . ' - ' .$studentClass->school_year. ', ' . $studentClass->department->name,
+            'description' => $studentClass->school->name,
             'breadcrumbs' => [
-                route('student.index') => __('Student'),
+                route('class.index') => __('Class'),
+                route('class.student.index', $studentClass->id) => __('Student'),
                 null => 'Data'
             ],
-            'generations' => Student::generationBySchool(auth()->user()->school->id)->pluck('generation', 'generation')->toArray(),
-            'schoolYears' => Student::schoolYearBySchool(auth()->user()->school->id)->pluck('school_year', 'school_year')->toArray(),
-            'departments' => Student::departmentBySchool(auth()->user()->school->id)->pluck('department', 'department')->toArray(),
+            'generations' => StudentClass::where('school_id', auth()->user()->school->id)->pluck('generation', 'generation')->toArray(),
+            'schoolYears' => StudentClass::where('school_id', auth()->user()->school->id)->pluck('school_year', 'school_year')->toArray(),
+            'departments' => Department::whereHas('schoolImplementation', function ($query) use ($studentClass) {
+                $query->where('school_id', $studentClass->school_id);
+            })->pluck('name', 'id')->toArray(),
+            'studentClass' => $studentClass
         ];
-        return view('student.index', $view);
+        return view('class.student.index', $view);
     }
 
     /**
@@ -106,9 +114,10 @@ class StudentController extends Controller
      * 
      * @param  \Illuminate\Http\Request  $request
      */
-    public function list(Request $request)
+    public function list(Request $request, StudentClass $studentClass)
     {
         if ($request->ajax()) {
+            $request->request->add(['class' => $studentClass->id]);
             $students = Student::list($request);
             return DataTables::of($students)
                 ->addColumn('DT_RowIndex', function ($data)
@@ -118,8 +127,8 @@ class StudentController extends Controller
                 ->editColumn('created_at', function($data) {
                     return (date('d-m-Y h:m:s', strtotime($data->created_at)));
                 })
-                ->addColumn('action', function($data) {
-                    return '<a class="btn btn-sm btn-success" href="'.route('student.show', $data->id).'" title="'.__("See detail").'"><i class="fa fa-eye"></i> '.__("See").'</a> <a class="btn btn-sm btn-warning" href="'.route('student.edit', $data->id).'" title="'.__("Edit").'"><i class="fa fa-edit"></i> '.__("Edit").'</a>';
+                ->addColumn('action', function($data) use ($studentClass) {
+                    return '<a class="btn btn-sm btn-success" href="'.route('class.student.show', ['studentClass' => $studentClass->id, 'student' => $data->id]).'" title="'.__("See detail").'"><i class="fa fa-eye"></i> '.__("See").'</a> <a class="btn btn-sm btn-warning" href="'.route('class.student.edit', ['studentClass' => $studentClass->id, 'student' => $data->id]).'" title="'.__("Edit").'"><i class="fa fa-edit"></i> '.__("Edit").'</a>';
                 })
                 ->rawColumns(['DT_RowIndex', 'action'])
                 ->make(true);
@@ -131,16 +140,10 @@ class StudentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(StudentClass $studentClass)
     {
-        for ($i=3; $i >= -1; $i--) { 
-            $schoolYears[date('Y', strtotime('-'.($i+1).' years')).'/'.date('Y', strtotime('-'.$i.' years'))] = date('Y', strtotime('-'.($i+1).' years')).'/'.date('Y', strtotime('-'.$i.' years'));
-        }
-        for ($i=10; $i <= 12; $i++) { 
-			$grades['Kelas ' . $i] = 'Kelas ' . $i;
-        }
-        for ($i=1; $i <= 5; $i++) { 
-			$generations['Angkatan ' . $i] = 'Angkatan ' . $i;
+        if (auth()->user()->cant('createStudent', $studentClass)) {
+            return redirect()->route('class.student.index', $studentClass->id)->with('alert-danger', __($this->unauthorizedMessage));
         }
         for ($i=1; $i <= 20; $i++) { 
 			$childOrders[$i] = $i;
@@ -150,24 +153,14 @@ class StudentController extends Controller
 		}
         $view = [
             'title' => __('Create Student'),
+            'subtitle' => $studentClass->generation . ' - ' .$studentClass->school_year. ', ' . $studentClass->department->name,
+            'description' => $studentClass->school->name,
             'breadcrumbs' => [
-                route('student.index') => __('Student'),
+                route('class.index') => __('Class'),
+                route('class.student.index', $studentClass->id) => __('Student'),
                 null => __('Create')
             ],
             'provinces' => Province::pluck('name', 'name')->toArray(),
-            'schoolYears' => $schoolYears,
-            // 'departments' => Student::department()->pluck('department', 'department')->toArray(),
-            'departments' => [
-                'TKJ' => 'TKJ',
-                'RPL' => 'RPL',
-                'Multimedia' => 'Multimedia',
-                'Telin' => 'Telin',
-                'TI' => 'TI',
-                'Teknik Jaringan Akses Telekomunikasi' => 'Teknik Jaringan Akses Telekomunikasi',
-                'Lain-Lain' => 'Lain-Lain'
-            ],
-            'grades' => $grades,
-            'generations' => $generations,
             'parentEducations' => $this->parentEducations,
             'parentEarnings' => $this->parentEarnings,
             'economyStatuses' => $this->economyStatuses,
@@ -176,8 +169,9 @@ class StudentController extends Controller
             'mileages' => $this->mileages,
             'childOrders' => $childOrders,
             'siblingNumbers' => $siblingNumbers,
+            'studentClass' => $studentClass
         ];
-        return view('student.create', $view);
+        return view('class.student.create', $view);
     }
 
     /**
@@ -186,13 +180,15 @@ class StudentController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreStudent $request)
+    public function store(StoreStudent $request, StudentClass $studentClass)
     {
-        $request->request->add(['school_id' => auth()->user()->school->id]);
+        if (auth()->user()->cant('createStudent', $studentClass)) {
+            return redirect()->route('class.student.index', $studentClass->id)->with('alert-danger', __($this->unauthorizedMessage));
+        }
         $request->merge([
             'dateofbirth' => date('Y-m-d', strtotime($request->dateofbirth)),
         ]);
-        $student = Student::create($request->except(['terms', 'submit']));
+        $student = $studentClass->student()->create($request->except(['terms', 'submit']));
         $student->photo = $this->uploadPhoto($student, $request);
         $student->save();
         return redirect(url()->previous())->with('alert-success', $this->createdMessage);
@@ -204,19 +200,10 @@ class StudentController extends Controller
      * @param  \App\Student  $student
      * @return \Illuminate\Http\Response
      */
-    public function show(Student $student)
+    public function show(StudentClass $studentClass, Student $student)
     {
         if (auth()->user()->cant('view', $student)) {
-            return redirect()->route('student.index')->with('alert-danger', $this->noPermission);
-        }
-        for ($i=3; $i >= -1; $i--) { 
-            $schoolYears[date('Y', strtotime('-'.($i+1).' years')).'/'.date('Y', strtotime('-'.$i.' years'))] = date('Y', strtotime('-'.($i+1).' years')).'/'.date('Y', strtotime('-'.$i.' years'));
-        }
-        for ($i=10; $i <= 12; $i++) { 
-			$grades['Kelas ' . $i] = 'Kelas ' . $i;
-        }
-        for ($i=1; $i <= 5; $i++) { 
-			$generations['Angkatan ' . $i] = 'Angkatan ' . $i;
+            return redirect()->route('class.student.index', $studentClass->id)->with('alert-danger', $this->unauthorizedMessage);
         }
         for ($i=1; $i <= 20; $i++) { 
 			$childOrders[$i] = $i;
@@ -226,24 +213,14 @@ class StudentController extends Controller
 		}
         $view = [
             'title' => __('Student Detail'),
+            'subtitle' => $studentClass->generation . ' - ' .$studentClass->school_year. ', ' . $studentClass->department->name,
+            'description' => $studentClass->school->name,
             'breadcrumbs' => [
-                route('student.index') => __('Student'),
+                route('class.index') => __('Class'),
+                route('class.student.index', $studentClass->id) => __('Student'),
                 null => __('Detail')
             ],
             'provinces' => Province::pluck('name', 'name')->toArray(),
-            'schoolYears' => $schoolYears,
-            // 'departments' => Student::department()->pluck('department', 'department')->toArray(),
-            'departments' => [
-                'TKJ' => 'TKJ',
-                'RPL' => 'RPL',
-                'Multimedia' => 'Multimedia',
-                'Telin' => 'Telin',
-                'TI' => 'TI',
-                'Teknik Jaringan Akses Telekomunikasi' => 'Teknik Jaringan Akses Telekomunikasi',
-                'Lain-Lain' => 'Lain-Lain'
-            ],
-            'grades' => $grades,
-            'generations' => $generations,
             'parentEducations' => $this->parentEducations,
             'parentEarnings' => $this->parentEarnings,
             'economyStatuses' => $this->economyStatuses,
@@ -252,9 +229,10 @@ class StudentController extends Controller
             'mileages' => $this->mileages,
             'childOrders' => $childOrders,
             'siblingNumbers' => $siblingNumbers,
-            'student' => $student
+            'studentClass' => $studentClass,
+            'data' => $student
         ];
-        return view('student.show', $view);
+        return view('class.student.show', $view);
     }
 
     /**
@@ -263,19 +241,13 @@ class StudentController extends Controller
      * @param  \App\Student  $student
      * @return \Illuminate\Http\Response
      */
-    public function edit(Student $student)
+    public function edit(StudentClass $studentClass, Student $student)
     {
+        if (auth()->user()->cant('updateStudent', $studentClass)) {
+            return redirect()->route('class.student.index', $studentClass->id)->with('alert-danger', __($this->unauthorizedMessage));
+        }
         if (auth()->user()->cant('update', $student)) {
-            return redirect()->route('student.index')->with('alert-danger', $this->noPermission);
-        }
-        for ($i=3; $i >= -1; $i--) { 
-            $schoolYears[date('Y', strtotime('-'.($i+1).' years')).'/'.date('Y', strtotime('-'.$i.' years'))] = date('Y', strtotime('-'.($i+1).' years')).'/'.date('Y', strtotime('-'.$i.' years'));
-        }
-        for ($i=10; $i <= 12; $i++) { 
-			$grades['Kelas ' . $i] = 'Kelas ' . $i;
-        }
-        for ($i=1; $i <= 5; $i++) { 
-			$generations['Angkatan ' . $i] = 'Angkatan ' . $i;
+            return redirect()->route('class.student.index', $studentClass->id)->with('alert-danger', $this->unauthorizedMessage);
         }
         for ($i=1; $i <= 20; $i++) { 
 			$childOrders[$i] = $i;
@@ -285,24 +257,14 @@ class StudentController extends Controller
 		}
         $view = [
             'title' => __('Edit Student'),
+            'subtitle' => $studentClass->generation . ' - ' .$studentClass->school_year. ', ' . $studentClass->department->name,
+            'description' => $studentClass->school->name,
             'breadcrumbs' => [
-                route('student.index') => __('Student'),
+                route('class.index') => __('Class'),
+                route('class.student.index', $studentClass->id) => __('Student'),
                 null => __('Edit')
             ],
             'provinces' => Province::pluck('name', 'name')->toArray(),
-            'schoolYears' => $schoolYears,
-            // 'departments' => Student::department()->pluck('department', 'department')->toArray(),
-            'departments' => [
-                'TKJ' => 'TKJ',
-                'RPL' => 'RPL',
-                'Multimedia' => 'Multimedia',
-                'Telin' => 'Telin',
-                'TI' => 'TI',
-                'Teknik Jaringan Akses Telekomunikasi' => 'Teknik Jaringan Akses Telekomunikasi',
-                'Lain-Lain' => 'Lain-Lain'
-            ],
-            'grades' => $grades,
-            'generations' => $generations,
             'parentEducations' => $this->parentEducations,
             'parentEarnings' => $this->parentEarnings,
             'economyStatuses' => $this->economyStatuses,
@@ -311,9 +273,10 @@ class StudentController extends Controller
             'mileages' => $this->mileages,
             'childOrders' => $childOrders,
             'siblingNumbers' => $siblingNumbers,
-            'student' => $student
+            'studentClass' => $studentClass,
+            'data' => $student
         ];
-        return view('student.edit', $view);
+        return view('class.student.edit', $view);
     }
 
     /**
@@ -323,12 +286,14 @@ class StudentController extends Controller
      * @param  \App\Student  $student
      * @return \Illuminate\Http\Response
      */
-    public function update(StoreStudent $request, Student $student)
+    public function update(StoreStudent $request, StudentClass $studentClass, Student $student)
     {
-        if (auth()->user()->cant('update', $student)) {
-            return redirect()->route('student.index')->with('alert-danger', $this->noPermission);
+        if (auth()->user()->cant('updateStudent', $studentClass)) {
+            return redirect()->route('class.student.index', $studentClass->id)->with('alert-danger', __($this->unauthorizedMessage));
         }
-        $request->request->add(['school_id' => auth()->user()->school->id]);
+        if (auth()->user()->cant('update', $student)) {
+            return redirect()->route('class.student.index', $studentClass->id)->with('alert-danger', $this->unauthorizedMessage);
+        }
         $request->merge([
             'dateofbirth' => date('Y-m-d', strtotime($request->dateofbirth)),
         ]);
@@ -365,7 +330,7 @@ class StudentController extends Controller
      * 
      * @param  \Illuminate\Http\Request  $request
      */
-    public function export(Request $request)
+    public function export(Request $request, StudentClass $studentClass)
     {
         return (new StudentsExport($request))->download('student-'.date('d-m-Y-h-m-s').'.xlsx');
     }
@@ -376,8 +341,11 @@ class StudentController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request)
+    public function destroy(Request $request, StudentClass $studentClass)
     {
+        if (auth()->user()->cant('deleteStudent', $studentClass)) {
+            return response()->json(['status' => false, 'message' => $this->unauthorizedMessage], 422);
+        }
         Student::destroy($request->selectedData);
         return response()->json(['status' => true, 'message' => 'Data successfully deleted.']);
     }

@@ -70,19 +70,20 @@ class Activity extends Model
     {
         return DB::table('activities')
             ->join('schools', 'activities.school_id', '=', 'schools.id')
-            ->join('activity_statuses', 'activity_statuses.activity_id', '=', 'activities.id')
+            ->join('activity_statuses', 'activity_statuses.id', '=', DB::raw('(SELECT id FROM activity_statuses WHERE activity_statuses.activity_id = activities.id ORDER BY id DESC LIMIT 1)'))
             ->join('statuses', 'activity_statuses.status_id', '=', 'statuses.id')
             ->join('activity_pics', 'activities.id', '=', 'activity_pics.activity_id')
             ->join('pics', 'activity_pics.pic_id', '=', 'pics.id')
             ->when(auth()->guard('web')->check(), function ($query) use ($request) {
-                $query->where('activities.school_id', auth()->user()->school->id);
+                $query->where('schools.school_id', auth()->user()->school->id);
             })->when( ! empty($request->school), function ($query) use ($request) {
-                $query->where('activities.school_id', $request->school);
+                $query->where('schools.school_id', $request->school);
             })->when( ! empty($request->type), function ($query) use ($request) {
                 $query->where('activities.type', $request->type);
             })->when( ! empty($request->status), function ($query) use ($request) {
                 $query->where('statuses.id', $request->status);
-            })->whereNull('schools.deleted_at')
+            })
+            ->whereNull('schools.deleted_at')
             ->whereNull('activities.deleted_at');
     }
 
