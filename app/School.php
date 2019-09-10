@@ -68,27 +68,11 @@ class School extends Model
     }
 
     /**
-     * Get the student class for the school.
-     */
-    public function studentClass()
-    {
-        return $this->hasMany('App\StudentClass');
-    }
-
-    /**
      * Get the photo for the school.
      */
     public function photo()
     {
         return $this->hasMany('App\SchoolPhoto');
-    }
-
-    /**
-     * Get the student for the school.
-     */
-    public function student()
-    {
-        return $this->hasMany('App\Student');
     }
 
     /**
@@ -100,11 +84,43 @@ class School extends Model
     }
 
     /**
+     * Get the student class for the school.
+     */
+    public function studentClass()
+    {
+        return $this->hasMany('App\StudentClass');
+    }
+
+    /**
+     * Get the student for the school.
+     */
+    public function student()
+    {
+        return $this->hasMany('App\Student');
+    }
+
+    /**
      * Get the subsidy for the school.
      */
     public function subsidy()
     {
         return $this->hasMany('App\Subsidy');
+    }
+
+    /**
+     * Get the exam readiness for the school.
+     */
+    public function examReadiness()
+    {
+        return $this->hasMany('App\ExamReadiness');
+    }
+
+    /**
+     * Get the exam readiness school for the school.
+     */
+    public function examReadinessSchool()
+    {
+        return $this->hasMany('App\ExamReadinessSchool');
     }
 
     /**
