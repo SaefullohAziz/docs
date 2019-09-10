@@ -28,4 +28,12 @@ class ExamReadinessSchool extends Model
     {
         return $this->belongsTo('App\School');
     }
+
+    /**
+     * Get all schools references name
+     */
+    public function getSchoolName()
+    {
+
+    }
 }

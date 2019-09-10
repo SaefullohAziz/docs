@@ -9,6 +9,7 @@ use App\Pic;
 use App\StudentClass;
 use App\Student;
 use App\Department;
+use App\ExamType;
 use Illuminate\Http\Request;
 
 class GetController extends Controller
@@ -133,6 +134,16 @@ class GetController extends Controller
             })
             ->pluck('name', 'id')->toArray();
             return response()->json(['status' => true, 'result' => $data]);
+        }
+    }
+
+    public function subExamBy(Request $request){
+        if ($request->ajax()) {
+            $data = ExamType::where('name', $request->type)->where('sub_name', '!=', '')->pluck('sub_name', 'id')->toArray();
+            if (count($data) > 0) {
+                return response()->json(['status' => true, 'result' => $data]);
+            }
+            return response()->json(['status' => false]);
         }
     }
 

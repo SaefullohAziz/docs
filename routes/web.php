@@ -276,6 +276,7 @@ Route::prefix('get')->name('get.')->middleware(['auth:web,admin'])->group(functi
 	Route::post('generation/from/class', 'GetController@generationFromClass')->name('generationFromClass');
 	Route::post('schoolYear/by/school', 'GetController@schoolYearBySchool')->name('schoolYearBySchool');
 	Route::post('department/by/school', 'GetController@departmentBySchool')->name('departmentBySchool');
+	Route::post('subExamBy/by/type', 'GetController@subExamBy')->name('subExamBy');
 	Route::prefix('teacher')->name('teacher.')->group(function () {
 		Route::post('by/school', 'GetController@teacherBySchool')->name('bySchool');
 		Route::post('by', 'GetController@teacherBy')->name('by');

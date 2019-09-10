@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Pic;
 use App\School;
 use App\ExamType;
 use App\ExamReadiness;
+use App\ExamReadinessSchool;
+use App\ExamReadinessStudent;
 use App\StudentClass;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Str;
 use DataTables;
 
 class ExamReadinessController extends Controller
@@ -23,7 +27,7 @@ class ExamReadinessController extends Controller
     {
         parent::__construct();
         $this->middleware('auth:admin');
-        $this->table = 'exam_readinesses';
+        $this->table = 'subsidies';
     }
 
     /**
@@ -93,7 +97,8 @@ class ExamReadinessController extends Controller
             ],
             'schools' => School::orderBy('name', 'asc')->pluck('name', 'id')->toArray(),
             'types' => ExamType::orderBy('name', 'asc')->pluck('name', 'name')->toArray(),
-            'generations' => StudentClass::orderBy('generation', 'asc')->pluck('generation', 'generation')->toArray()
+            'generations' => StudentClass::orderBy('generation', 'asc')->pluck('generation', 'generation')->toArray(),
+            'school_references' => School::has('ExamReadinessSchool')->pluck('name', 'name')->toArray()
         ];
         return view('admin.exam.readiness.create', $view);
     }
@@ -106,7 +111,14 @@ class ExamReadinessController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        if ( ! auth()->guard('admin')->user()->can('create ' . $this->table)) {
+            return redirect()->route('admin.exam.readiness.index')->with('alert-danger', $this->noPermission);
+        }
+        $request->request->add(['token' => str::random(10)]);
+        $examReadiness = ExamReadiness::create($request->only(['school_id', 'exam_type', 'token']));
+        $this->saveStudentPartition($examReadiness, $request);
+        $this->savePic($examReadiness, $request);
+        return redirect(url()->previous())->with('alert-success', $this->createdMessage);
     }
 
     /**
@@ -153,5 +165,54 @@ class ExamReadinessController extends Controller
     {
         ExamReadiness::destroy($request->selectedData);
         return response()->json(['status' => true, 'message' => __('Data successfully deleted.')]);
+    }
+
+    /**
+     * Save pic
+     * 
+     * @param  \App\examReadiness  $examReadiness
+     * @param  \Illuminate\Http\Request  $request
+     */
+    public function saveStudentPartition($examReadiness, Request $request)
+    {
+        if ($request->student_id) {
+            foreach ($request->student_id as $student_id) {
+                $examReadiness->student()->attach($student_id, [
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
+        }
+    }
+
+    /**
+     * Save pic
+     * 
+     * @param  \App\examReadiness  $examReadiness
+     * @param  \Illuminate\Http\Request  $request
+     */
+    public function savePic($examReadiness, Request $request)
+    {
+        $pic = Pic::bySchool($request->school_id)->first();
+        if ($request->isMethod('put')) {
+            $schoolPic = Pic::bySchool($examReadiness->school_id)->where('id', $examReadiness->examReadinessPic->pic->id)->first();
+            if ( ! $schoolPic) {
+                Pic::destroy($examReadiness->examReadinessPic->pic->id);
+            }
+            $examReadiness->pic()->detach();
+            $request->request->add(['pic' => 1]);
+        }
+        if ($request->pic == 1) {
+            $pic = Pic::firstOrCreate([
+                'name' => $request->pic_name,
+                'position' => $request->pic_position,
+                'phone_number' => $request->pic_phone_number,
+                'email' => $request->pic_email
+            ]);
+        }
+        $examReadiness->pic()->attach($pic->id, [
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
     }
 }

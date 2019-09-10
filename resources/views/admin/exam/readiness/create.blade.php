@@ -36,6 +36,17 @@
                                 {{ Form::bsSelect(null, __('School'), 'school_id', $schools, old('school_id'), __('Select'), ['placeholder' => __('Select'), 'required' => '']) }}
 
                                 {{ Form::bsSelect(null, __('Type'), 'exam_type', $types, old('exam_type'), __('Select'), ['placeholder' => __('Select'), 'required' => '']) }}
+
+                                {{ Form::bsSelect('d-none', __('Sub Type'), 'exam_sub_type', [''=>''], old('exam_sub_type'), __('Select'), ['placeholder' => __('Select'), 'required' => '']) }}
+
+								{{ Form::bsInlineRadio('d-none', __('Ma Status?'), 'ma_status', ['2' => __('Already'), '1' => __('Not yet')], old('pic'), [( ! empty(old('pic'))?'':'disabled') => '', 'required' => '']) }}
+
+								{{ Form::bsInlineRadio('d-none', __('Execution?'), 'execution', ['2' => __('Self'), '1' => __('Not yet')], old('pic'), [( ! empty(old('pic'))?'':'disabled') => '', 'required' => '']) }}
+
+                                {{ Form::bsSelect('d-none', __('School Reference'), 'school_reference', $school_references , old('school_reference'), __('Select'), ['placeholder' => __('Select'), 'required' => '']) }}
+
+								{{ Form::bsInlineRadio('d-none', __('Important!'), 'confirmation_of_readiness', ['1' => __('Ready to provide transportation and accommodation for the MikroTik Trainer team')], old('pic'), [( ! empty(old('pic'))?'':'disabled') => '', 'required' => '']) }}
+
                             </fieldset>
                             <fieldset>
                                 <legend>{{ __('Student') }}</legend>
@@ -97,6 +108,66 @@
 			}
 		});
 
+		$('select[name="exam_type"]').change(function() {
+			$('#exam_sub_type').html('<option value=""></option>');
+			$('select[name="exam_sub_type"]').prop('multiple', true).prop('required', true).prop('disabled', false);
+			$('select[name="school_reference"]').closest('.form-group').hide(300);
+			$.ajax({
+				url : "{{ route('get.subExamBy') }}",
+				type: "POST",
+				dataType: "JSON",
+				data: {
+			        '_token' : '{{ csrf_token() }}', 'type' : $('select[name="exam_type"]').val()
+			    },
+				success: function(data)
+				{
+					if (data.status == true) {
+						$.each(data.result, function(key, value) {
+							$('#exam_sub_type').append('<option value="'+value+'"> '+value+' </option>');
+						});
+						$('#exam_sub_type').parent().show(300);
+						$('#exam_sub_type').prop('required', true);
+						$('select[name="type"]').next().next('.help-block').text(data.result.desc);
+					} else {
+						$('#exam_sub_type').parent().hide(300);
+						$('#exam_sub_type').prop('required', false);
+					}
+				},
+				error: function (jqXHR, textStatus, errorThrown)
+				{
+					$('#exam_sub_type').parent().hide(300);
+					$('#exam_sub_type').prop('required', false);
+				}
+			});
+			$('#exam_sub_type').closest('.form-group').removeClass('d-none');
+			$('input[name="ma_status"], input[name="confirmation_of_readiness"], input[name="execution"]').prop('required', false).iCheck('uncheck');
+			$('input[name="ma_status"], input[name="confirmation_of_readiness"], input[name="execution"]').closest('.form-group').hide(300);
+			if ($(this).val() == 'MTCNA') {
+				$('input[name="ma_status"]').prop('required', true).prop('disabled', false).iCheck('uncheck');
+				$('input[name="ma_status"]').closest('.form-group').removeClass('d-none');
+				$('input[name="ma_status"]').closest('.form-group').show(300);
+			} 
+			else if ($(this).val() == 'Remedial Axioo' || $(this).val() == 'Axioo')
+			{
+				$('[name="exam_sub_type"]').prop('multiple', true);
+			}
+		});
+
+		$('input[name="ma_status"]').on('click', function(){
+			if ($(this).val() == 1) 
+			{
+				$('select[name="school_reference"], input[name="confirmation_of_readiness"]').closest('.form-group').removeClass('d-none');
+				$('select[name="school_reference"], input[name="confirmation_of_readiness"]').parent().show(200);
+				$('select[name="school_reference"], input[name="confirmation_of_readiness"]').prop('required', true).prop('disabled', false);
+			} 
+			else if ($(this).val() == 2)
+			{
+				$('select[name="school_reference"], input[name="confirmation_of_readiness"]').closest('.form-group').addClass('d-none');
+				$('select[name="school_reference"], input[name="confirmation_of_readiness"]').parent().hide(200);
+				$('select[name="school_reference"], input[name="confirmation_of_readiness"]').prop('required', false).prop('disabled', true);
+			}
+		});
+
         $('select[name="generation"]').change(function () {
 			$('select[name="student"]').html('<option value="">{{ __('Select') }}</option>');
 	    	if ($(this).val() != '') {
@@ -113,7 +184,8 @@
 					},
 					error: function (jqXHR, textStatus, errorThrown)
 					{
-						$('select[name="student"]').html('<option value="">{{ __('Select') }}</option>');
+						$('.sub-type option[value=""]').remove();
+						$('select[name="student"]').html('<option value="">{{ __('Select') }}</option>').attr('name', 'exam_sub_type[]').select2();
 					}
 				});
 	    	}

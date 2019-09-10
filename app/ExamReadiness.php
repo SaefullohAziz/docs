@@ -27,6 +27,22 @@ class ExamReadiness extends Model
     }
 
     /**
+     * Get the exam readiness students for the exam readiness.
+     */
+    public function examReadinessStusent()
+    {
+        return $this->hasMany('App\ExamReadinessStudent');
+    }
+
+    /**
+     * The status that belong to the exam readiness.
+     */
+    public function student()
+    {
+        return $this->belongsToMany('App\student', 'exam_readiness_students');
+    }
+
+    /**
      * Get the exam readiness status for the exam readiness.
      */
     public function examReadinessStatus()
