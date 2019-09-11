@@ -70,7 +70,7 @@ class StoreActivity extends FormRequest
             'activty' => [
                 Rule::requiredIf(function () {
                     if ( ! empty($this->get('type'))) {
-                        return $this->get('type') == 'axioo_mengajar';
+                        return $this->get('type') == 'Axioo_Mengajar';
                     }
                 }),
             ],

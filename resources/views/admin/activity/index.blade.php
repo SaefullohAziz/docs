@@ -28,7 +28,9 @@
 
 		<div class="card card-primary">
 			<div class="card-header">
-				<a href="{{ route('admin.activity.create') }}" class="btn btn-icon btn-success" title="{{ __('Create') }}"><i class="fa fa-plus"></i></a>
+				@if (auth()->guard('admin')->user()->can('create activities'))
+					<a href="{{ route('admin.activity.create') }}" class="btn btn-icon btn-success" title="{{ __('Create') }}"><i class="fa fa-plus"></i></a>
+				@endif
 				<button class="btn btn-icon btn-secondary" title="{{ __('Filter') }}" data-toggle="modal" data-target="#filterModal"><i class="fa fa-filter"></i></button>
             	<button class="btn btn-icon btn-secondary" onclick="reloadTable()" title="{{ __('Refresh') }}"><i class="fa fa-sync"></i></i></button>
 			</div>
@@ -44,7 +46,7 @@
 								<th>{{ __('School') }}</th>
 								<th>{{ __('Type') }}</th>
 								<th>{{ __('Submission Letter') }}</th>
-								<th>{{ __('P.I.C') }}</th>
+								<th>{{ __('PIC') }}</th>
 								<th>{{ __('Date') }}</th>
 								<th>{{ __('Until') }}</th>
 								<th>{{ __('Status') }}</th>
@@ -57,12 +59,12 @@
 				</div>
 			</div>
 			<div class="card-footer bg-whitesmoke">
-				@if (auth()->guard('admin')->user()->can('approval subsidies'))
+				@if (auth()->guard('admin')->user()->can('approval activities'))
 					<!-- <button class="btn btn-light btn-sm" name="cancelData" title="{{ __('Cancel') }}">{{ __('Cancel') }}</button> -->
 					<!-- <button class="btn btn-light btn-sm" name="rejectData" title="{{ __('Reject') }}">{{ __('Reject') }}</button> -->
 					<button class="btn btn-light btn-sm" name="approveData" title="{{ __('Approve') }}">{{ __('Approve') }}</button>
 				@endif
-				@if (auth()->guard('admin')->user()->can('delete subsidies'))
+				@if (auth()->guard('admin')->user()->can('delete activities'))
 					<button class="btn btn-danger btn-sm" name="deleteData" title="{{ __('Delete') }}">{{ __('Delete') }}</button>
 				@endif
 			</div>
@@ -93,7 +95,7 @@
 			columns: [
 				{ data: 'DT_RowIndex', name: 'DT_RowIndex', 'searchable': false },
 				{ data: 'created_at', name: 'created_at' },
-				{ data: 'school', name: 'school' },
+				{ data: 'school', name: 'schools.name' },
 				{ data: 'type', name: 'type' },
                 { data: 'submission_letter', name: 'submission_letter' },
                 { data: 'pic_name', name: 'pics.name' },
@@ -125,122 +127,44 @@
 
 	// Approve data action
 	$('[name="approveData"]').click(function(event) {
-	    	if ($('[name="selectedData[]"]:checked').length > 0) {
-	    		event.preventDefault();
-	    		var selectedData = $('[name="selectedData[]"]:checked').map(function(){
-	    			return $(this).val();
-	    		}).get();
-				swal({
-			      	title: '{{ __("Are you sure you want to approve selected data?") }}',
-			      	text: '',
-			      	icon: 'warning',
-			      	buttons: true,
-			      	dangerMode: true,
-			    })
-			    .then((willAprove) => {
-			      	if (willAprove) {
-			      		$.ajax({
-							url : "{{ route('admin.activity.approve') }}",
-							type: "POST",
-							dataType: "JSON",
-							data: {"_token" : "{{ csrf_token() }}", "selectedData" : selectedData},
-							success: function(data)
-							{
-								reloadTable();
-							},
-							error: function (jqXHR, textStatus, errorThrown)
-							{
-								if (JSON.parse(jqXHR.responseText).status) {
-									swal("{{ __('Failed!') }}", '{{ __("Data cannot be updated.") }}', "warning");
-								} else {
-									swal(JSON.parse(jqXHR.responseText).message, "", "error");
-								}
+	    if ($('[name="selectedData[]"]:checked').length > 0) {
+	    	event.preventDefault();
+	    	var selectedData = $('[name="selectedData[]"]:checked').map(function(){
+	    		return $(this).val();
+			}).get();
+			swal({
+		      	title: '{{ __("Are you sure you want to approve selected data?") }}',
+		      	text: '',
+		      	icon: 'warning',
+			    buttons: true,
+			  	dangerMode: true,
+		    })
+		    .then((willAprove) => {
+		      	if (willAprove) {
+			      	$.ajax({
+						url : "{{ route('admin.activity.approve') }}",
+						type: "POST",
+						dataType: "JSON",
+						data: {"_token" : "{{ csrf_token() }}", "selectedData" : selectedData},
+						success: function(data)
+						{
+							reloadTable();
+						},
+						error: function (jqXHR, textStatus, errorThrown)
+						{
+							if (JSON.parse(jqXHR.responseText).status) {
+								swal("{{ __('Failed!') }}", '{{ __("Data cannot be updated.") }}', "warning");
+							} else {
+								swal(JSON.parse(jqXHR.responseText).message, "", "error");
 							}
-						});
-			      	}
-    			});
-	    	} else {
-	    		swal("{{ __('Please select a data..') }}", "", "warning");
-	    	}
-	    });
-
-	// $('[name="cancelData"]').click(function(event) {
- //      	if ($('[name="selectedData[]"]:checked').length > 0) {
-	//         $('#cancel-form [name="description"]').val('');
-	//         $("#cancel-form input").keypress(function (e) {
-	//           	if(e.which == 13)  // the enter key code
-	//           	{
-	//             	$('[name="saveCancel"]').click();
-	//             	return false;  
-	//           	}
-	//         });
-	// 		$('#cancelModal').modal('show');
- //      	} else {
- //        	swal("{{ __('Please select a data..') }}", "", "warning");
- //      	}
- //    });
-
- //    $('[name="saveCancel"]').click(function(event) {
- //        event.preventDefault();
- //        var selectedData = $('[name="selectedData[]"]:checked').map(function(){
- //          	return $(this).val();
- //        }).get();
- //        $.ajax({
- //        	url : "{{ route('admin.subsidy.cancel') }}",
- //        	type: "POST",
- //        	dataType: "JSON",
- //        	data: {"_token" : "{{ csrf_token() }}", "selectedData" : selectedData, "description" : $('#cancel-form [name="description"]').val()},
- //        	success: function(data)
- //        	{
- //        		$('#cancelModal').modal('hide');
- //        		reloadTable();
- //        	},
- //        	error: function (jqXHR, textStatus, errorThrown)
- //        	{
- //        		reloadTable();
- //        	}
- //        });
- //    });
-
-	// $('[name="rejectData"]').click(function(event) {
- //    	if ($('[name="selectedData[]"]:checked').length > 0) {
- //    		event.preventDefault();
- //    		var selectedData = $('[name="selectedData[]"]:checked').map(function(){
- //    			return $(this).val();
- //    		}).get();
-	// 		swal({
-	// 	      	title: '{{ __("Are you sure you want to reject selected data?") }}',
-	// 	      	text: '',
-	// 	      	icon: 'warning',
-	// 	      	buttons: true,
-	// 	      	dangerMode: true,
-	// 	    })
-	// 	    .then((willReject) => {
-	// 	      	if (willReject) {
-	// 	      		$.ajax({
-	// 					url : "{{ route('admin.subsidy.reject') }}",
-	// 					type: "POST",
-	// 					dataType: "JSON",
-	// 					data: {"_token" : "{{ csrf_token() }}", "selectedData" : selectedData},
-	// 					success: function(data)
-	// 					{
-	// 						reloadTable();
-	// 					},
-	// 					error: function (jqXHR, textStatus, errorThrown)
-	// 					{
-	// 						if (JSON.parse(jqXHR.responseText).status) {
-	// 							swal("{{ __('Failed!') }}", '{{ __("Data cannot be updated.") }}', "warning");
-	// 						} else {
-	// 							swal(JSON.parse(jqXHR.responseText).message, "", "error");
-	// 						}
-	// 					}
-	// 				});
-	// 	      	}
-	// 		});
- //    	} else {
- //    		swal("{{ __('Please select a data..') }}", "", "warning");
- //    	}
- //    });
+						}
+					});
+		      	}
+    		});
+    	} else {
+	    	swal("{{ __('Please select a data..') }}", "", "warning");
+	    }
+	});
 
 	$('[name="deleteData"]').click(function(event) {
 		if ($('[name="selectedData[]"]:checked').length > 0) {
@@ -295,7 +219,7 @@
 </script>
 
 <!-- Modal -->
-<!-- <div class="modal fade" id="filterModal" tabindex="-1" role="dialog" aria-labelledby="filterModalLabel" aria-hidden="true">
+<div class="modal fade" id="filterModal" tabindex="-1" role="dialog" aria-labelledby="filterModalLabel" aria-hidden="true">
 	<div class="modal-dialog modal-lg" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -308,9 +232,9 @@
 				<div class="modal-body">
 					<div class="container-fluid">
 						<div class="row">
+							{{ Form::bsSelect('col-sm-4', __('School'), 'school', $schools, null, __('Select'), ['placeholder' => __('Select')]) }}
 							{{ Form::bsSelect('col-sm-4', __('Type'), 'type', $types, null, __('Select'), ['placeholder' => __('Select')]) }}
 							{{ Form::bsSelect('col-sm-4', __('Status'), 'status', $statuses, null, __('Select'), ['placeholder' => __('Select')]) }}
-							{{ Form::bsSelect('col-sm-4', __('school'), 'school', $schools, null, __('Select'), ['placeholder' => __('Select')]) }}
 						</div>
 					</div>
 				</div>
@@ -321,5 +245,5 @@
 			{{ Form::close() }}
 		</div>
 	</div>
-</div> -->
+</div>
 @endsection

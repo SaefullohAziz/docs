@@ -66,7 +66,7 @@
 			$('select[name="department_id"]').html('<option value="">Select</option>').prop('disabled', false);
 			if ($(this).val() != '') {
 				$.ajax({
-					url : "{{ route('get.departmentBySchool') }}",
+					url : "{{ route('get.department') }}",
 					type: "POST",
 					dataType: "JSON",
 					cache: false,

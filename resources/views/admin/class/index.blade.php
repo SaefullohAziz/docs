@@ -117,7 +117,7 @@
 			if ($(this).val() != '') {
 				$('select[name="school"]').html('<option value="">Select</option>');
 				$.ajax({
-					url : "{{ route('get.schoolByLevel') }}",
+					url : "{{ route('get.school') }}",
 					type: "POST",
 					dataType: "JSON",
 					cache: false,
@@ -140,7 +140,7 @@
 			if ($(this).val() != '') {
 				$('select[name="generation"], select[name="school_year"], select[name="department"]').html('<option value="">Select</option>');
 				$.ajax({
-					url : "{{ route('get.generationBySchool') }}",
+					url : "{{ route('get.generation') }}",
 					type: "POST",
 					dataType: "JSON",
 					cache: false,
@@ -157,7 +157,7 @@
 					}
 				});
 				$.ajax({
-					url : "{{ route('get.schoolYearBySchool') }}",
+					url : "{{ route('get.schoolYear') }}",
 					type: "POST",
 					dataType: "JSON",
 					cache: false,
@@ -174,7 +174,7 @@
 					}
 				});
 				$.ajax({
-					url : "{{ route('get.departmentBySchool') }}",
+					url : "{{ route('get.department') }}",
 					type: "POST",
 					dataType: "JSON",
 					cache: false,

@@ -18,6 +18,10 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
+        // Activity
+        'App\Events\ActivityApproved' => [
+            'App\Listeners\ApproveActivity',
+        ],
         // Subsidy
         'App\Events\SubsidyCanceled' => [
             'App\Listeners\CancelSubsidy',

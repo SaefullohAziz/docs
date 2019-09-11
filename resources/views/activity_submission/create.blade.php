@@ -136,7 +136,7 @@
 
     function getPic() {
 		$.ajax({
-			url : "{{ route('get.picBySchool') }}",
+			url : "{{ route('get.pic') }}",
 			type: "POST",
 			dataType: "JSON",
 			data: {'_token' : '{{ csrf_token() }}'},

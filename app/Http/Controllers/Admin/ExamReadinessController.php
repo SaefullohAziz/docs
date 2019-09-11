@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\School;
 use App\ExamType;
 use App\ExamReadiness;
+use App\ExamReadinessSchool;
 use App\StudentClass;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -93,7 +94,8 @@ class ExamReadinessController extends Controller
             ],
             'schools' => School::orderBy('name', 'asc')->pluck('name', 'id')->toArray(),
             'types' => ExamType::orderBy('name', 'asc')->pluck('name', 'name')->toArray(),
-            'generations' => StudentClass::orderBy('generation', 'asc')->pluck('generation', 'generation')->toArray()
+            'generations' => StudentClass::orderBy('generation', 'asc')->pluck('generation', 'generation')->toArray(),
+            'referenceSchool' => ExamReadinessSchool::school()->pluck('name', 'name')->toArray(),
         ];
         return view('admin.exam.readiness.create', $view);
     }
