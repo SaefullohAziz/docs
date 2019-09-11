@@ -7,10 +7,7 @@ use App\School;
 use App\ExamType;
 use App\ExamReadiness;
 use App\ExamReadinessSchool;
-<<<<<<< HEAD
-=======
 use App\ExamReadinessStudent;
->>>>>>> 18b454ff226346cf1b9c661a0eb3edb4e2490710
 use App\StudentClass;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
