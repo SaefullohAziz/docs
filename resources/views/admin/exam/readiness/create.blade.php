@@ -39,11 +39,11 @@
 
                                 {{ Form::bsSelect('d-none', __('Sub Type'), 'exam_sub_type', [''=>''], old('exam_sub_type'), __('Select'), ['placeholder' => __('Select'), 'required' => '']) }}
 
-								{{ Form::bsInlineRadio('d-none', __('Ma Status?'), 'ma_status', ['2' => __('Already'), '1' => __('Not yet')], old('pic'), [( ! empty(old('pic'))?'':'disabled') => '', 'required' => '']) }}
+								{{ Form::bsInlineRadio('d-none', __('Ma Status?'), 'ma_status', ['Sudah' => __('Already'), 'Belum' => __('Not yet')], old('pic'), [( ! empty(old('pic'))?'':'disabled') => '', 'required' => '']) }}
 
-								{{ Form::bsInlineRadio('d-none', __('Execution?'), 'execution', ['2' => __('Self'), '1' => __('Not yet')], old('pic'), [( ! empty(old('pic'))?'':'disabled') => '', 'required' => '']) }}
+								{{ Form::bsInlineRadio('d-none', __('Execution?'), 'execution', ['Mandiri' => __('Self'), 'Bergabung' => __('Together')], old('pic'), [( ! empty(old('pic'))?'':'disabled') => '', 'required' => '']) }}
 
-                                {{ Form::bsSelect('d-none', __('School Reference'), 'school_reference', $school_references , old('school_reference'), __('Select'), ['placeholder' => __('Select'), 'required' => '']) }}
+                                {{ Form::bsSelect('d-none', __('School Reference'), 'reference_school', $reference_schools , old('reference_school'), __('Select'), ['placeholder' => __('Select'), 'required' => '']) }}
 
 								{{ Form::bsInlineRadio('d-none', __('Important!'), 'confirmation_of_readiness', ['1' => __('Ready to provide transportation and accommodation for the MikroTik Trainer team')], old('pic'), [( ! empty(old('pic'))?'':'disabled') => '', 'required' => '']) }}
 
@@ -109,9 +109,10 @@
 		});
 
 		$('select[name="exam_type"]').change(function() {
-			$('#exam_sub_type').html('<option value=""></option>');
-			$('select[name="exam_sub_type"]').prop('multiple', true).prop('required', true).prop('disabled', false);
-			$('select[name="school_reference"]').closest('.form-group').hide(300);
+			$('select[name="exam_sub_types[]"]').attr('name', 'exam_sub_type').select2();
+			$('[name="exam_sub_type"], [name="ma_status"], [name="confirmation_of_readiness"], [name="execution"], [name="reference_school"]').prop('required', false).prop('disabled', true).closest('form-group').addClass('d-none');
+			$('[name="exam_sub_type"]').prop('required', false).prop('disabled', true).prop('multiple', false).select2();
+			$('[name="exam_sub_type"]').html('<option value=""></option>');
 			$.ajax({
 				url : "{{ route('get.subExamBy') }}",
 				type: "POST",
@@ -147,26 +148,43 @@
 				$('input[name="ma_status"]').closest('.form-group').removeClass('d-none');
 				$('input[name="ma_status"]').closest('.form-group').show(300);
 			} 
-			else if ($(this).val() == 'Remedial Axioo' || $(this).val() == 'Axioo')
+			else if ($(this).val() == 'Remidial Axioo' || $(this).val() == 'Axioo')
 			{
-				$('[name="exam_sub_type"]').prop('multiple', true);
+				$('[name="exam_sub_type"] option[value=""]').remove();
+				$('[name="exam_sub_type"]').prop('multiple', true).attr('name', 'exam_sub_types[]').select2();
 			}
 		});
 
 		$('input[name="ma_status"]').on('click', function(){
-			if ($(this).val() == 1) 
+			if ($(this).val() == 'Belum') 
 			{
-				$('select[name="school_reference"], input[name="confirmation_of_readiness"]').closest('.form-group').removeClass('d-none');
-				$('select[name="school_reference"], input[name="confirmation_of_readiness"]').parent().show(200);
-				$('select[name="school_reference"], input[name="confirmation_of_readiness"]').prop('required', true).prop('disabled', false);
+				$('[name="execution"]').closest('.form-group').removeClass('d-none');
+				$('[name="execution"]').parent().show(200);
+				$('[name="execution"]').prop('required', true).prop('disabled', false);
 			} 
-			else if ($(this).val() == 2)
+			else if ($(this).val() == 'Sudah')
 			{
-				$('select[name="school_reference"], input[name="confirmation_of_readiness"]').closest('.form-group').addClass('d-none');
-				$('select[name="school_reference"], input[name="confirmation_of_readiness"]').parent().hide(200);
-				$('select[name="school_reference"], input[name="confirmation_of_readiness"]').prop('required', false).prop('disabled', true);
+				$('[name="execution"]').closest('.form-group').addClass('d-none');
+				$('[name="execution"]').parent().hide(200);
+				$('[name="execution"]').prop('required', false).prop('disabled', true);
 			}
 		});
+
+		$('[name="execution"]').on('click', function(){
+			if ($(this).val() == 'Bergabung') 
+			{
+				$('select[name="reference_school"], input[name="confirmation_of_readiness"]').closest('.form-group').removeClass('d-none');
+				$('select[name="reference_school"], input[name="confirmation_of_readiness"]').parent().show(200);
+				$('select[name="reference_school"], input[name="confirmation_of_readiness"]').prop('required', true).prop('disabled', false);
+			} 
+			else if  ($(this).val() == 'Mandiri')
+			{
+				$('select[name="reference_school"], input[name="confirmation_of_readiness"]').closest('.form-group').addClass('d-none');
+				$('select[name="reference_school"], input[name="confirmation_of_readiness"]').parent().hide(200);
+				$('select[name="reference_school"], input[name="confirmation_of_readiness"]').prop('required', false).prop('disabled', true);
+			}
+		});
+
 
         $('select[name="generation"]').change(function () {
 			$('select[name="student"]').html('<option value="">{{ __('Select') }}</option>');

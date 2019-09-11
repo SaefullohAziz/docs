@@ -11,6 +11,8 @@ class ExamReadiness extends Model
 {
     use SoftDeletes;
 
+    protected $fillable = ['school_id', 'exam_type', 'sub_exam_type', 'ma_status', 'reference_school', 'execution', 'token'];
+
     /**
      * The attributes that aren't mass assignable.
      *
@@ -116,5 +118,5 @@ class ExamReadiness extends Model
     public static function list(Request $request)
     {
         return self::get($request)->select('exam_readinesses.*', 'schools.name as school', 'statuses.name as status');
-    }
 }
+    }

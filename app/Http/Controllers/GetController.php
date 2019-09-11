@@ -119,19 +119,7 @@ class GetController extends Controller
             if (auth()->guard('web')->check()) {
                 $request->request->add(['school' => auth()->user()->school->id]);
             }
-            $data = Student::whereHas('class', function ($query) use ($request) {
-                $query->when( ! empty($request->school), function ($subQuery) use ($request) {
-                    $subQuery->where('student_classes.school_id', $request->school);
-                });
-                $query->when( ! empty($request->generation), function ($subQuery) use ($request) {
-                    $subQuery->where('student_classes.generation', $request->generation);
-                });
-                $query->when( ! empty($request->grade), function ($subQuery) use ($request) {
-                    $subQuery->where('student_classes.grade', $request->grade);
-                });
-            })->when( ! empty($request->ssp), function ($query) {
-                $query->has('sspStudent');
-            })
+            $data = Student::whereHas('class')
             ->pluck('name', 'id')->toArray();
             return response()->json(['status' => true, 'result' => $data]);
         }
