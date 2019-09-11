@@ -45,11 +45,9 @@ class GetController extends Controller
             $data = Teacher::when( ! empty($request->school), function ($query) use ($request) {
                 $query->bySchool($request->school);
             })
-            ->when( ! empty($request->teacher), function ($query) use ($request) {
-                $query->find($request->teacher);
-            });
-            if (empty($request->teacher)) {
-                $data = $data->get();
+            ->get();
+            if ( ! empty($request->teacher)) {
+                $data = Teacher::find($request->teacher);
             }
             $data = $data->toArray();
             return response()->json(['status' => true, 'result' => $data]);
@@ -148,9 +146,9 @@ class GetController extends Controller
             })
             ->when( ! empty($request->student), function ($query) use ($request) {
                 $query->find($request->student);
-            });
-            if (empty($request->student)) {
-                $data = $data->pluck('name', 'id');
+            })->pluck('name', 'id');
+            if ( ! empty($request->student)) {
+                $data = Student::find($request->student);
             }
             $data = $data->toArray();
             return response()->json(['status' => true, 'result' => $data]);
