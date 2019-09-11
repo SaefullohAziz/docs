@@ -113,7 +113,7 @@
 			$('select[name="exam_sub_type"]').prop('multiple', true).prop('required', true).prop('disabled', false);
 			$('select[name="school_reference"]').closest('.form-group').hide(300);
 			$.ajax({
-				url : "{{ route('get.subExamBy') }}",
+				url : "{{ route('get.subExam') }}",
 				type: "POST",
 				dataType: "JSON",
 				data: {

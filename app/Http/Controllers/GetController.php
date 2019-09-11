@@ -157,21 +157,18 @@ class GetController extends Controller
         }
     }
 
-    public function subExamBy(Request $request){
+    public function subExam(Request $request){
         if ($request->ajax()) {
-            $data = ExamType::where('name', $request->type)->where('sub_name', '!=', '')->pluck('sub_name', 'id')->toArray();
-            if (count($data) > 0) {
-                return response()->json(['status' => true, 'result' => $data]);
+            $data = ExamType::when( ! empty($request->type), function ($query) use ($request) {
+                $query->where('name', $request->type);
+            })
+            ->where('sub_name', '!=', '')
+            ->pluck('sub_name', 'id')
+            ->toArray();
+            if (count($data) == 0) {
+                return response()->json(['status' => false]);
             }
-            return response()->json(['status' => false]);
-        }
-    }
-
-    public function studentBy(Request $request)
-    {
-        if ($request->ajax()) {
-            $student = Student::find($request->student)->toArray();
-            return response()->json(['status' => true, 'result' => $student]);
+            return response()->json(['status' => true, 'result' => $data]);
         }
     }
 }
