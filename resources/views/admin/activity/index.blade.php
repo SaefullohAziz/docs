@@ -127,11 +127,11 @@
 
 	// Approve data action
 	$('[name="approveData"]').click(function(event) {
-	    if ($('[name="selectedData[]"]:checked').length > 0) {
-	    	event.preventDefault();
-	    	var selectedData = $('[name="selectedData[]"]:checked').map(function(){
-	    		return $(this).val();
-			}).get();
+    	if ($('[name="selectedData[]"]:checked').length > 0) {
+    		event.preventDefault();
+    		var selectedData = $('[name="selectedData[]"]:checked').map(function(){
+    			return $(this).val();
+    		}).get();
 			swal({
 		      	title: '{{ __("Are you sure you want to approve selected data?") }}',
 		      	text: '',
@@ -160,12 +160,89 @@
 						}
 					});
 		      	}
-    		});
+			});
     	} else {
-	    	swal("{{ __('Please select a data..') }}", "", "warning");
-	    }
-	});
+    		swal("{{ __('Please select a data..') }}", "", "warning");
+    	}
+    });
 
+	// $('[name="cancelData"]').click(function(event) {
+ //      	if ($('[name="selectedData[]"]:checked').length > 0) {
+	//         $('#cancel-form [name="description"]').val('');
+	//         $("#cancel-form input").keypress(function (e) {
+	//           	if(e.which == 13)  // the enter key code
+	//           	{
+	//             	$('[name="saveCancel"]').click();
+	//             	return false;  
+	//           	}
+	//         });
+	// 		$('#cancelModal').modal('show');
+ //      	} else {
+ //        	swal("{{ __('Please select a data..') }}", "", "warning");
+ //      	}
+ //    });
+
+ //    $('[name="saveCancel"]').click(function(event) {
+ //        event.preventDefault();
+ //        var selectedData = $('[name="selectedData[]"]:checked').map(function(){
+ //          	return $(this).val();
+ //        }).get();
+ //        $.ajax({
+ //        	url : "{{ route('admin.subsidy.cancel') }}",
+ //        	type: "POST",
+ //        	dataType: "JSON",
+ //        	data: {"_token" : "{{ csrf_token() }}", "selectedData" : selectedData, "description" : $('#cancel-form [name="description"]').val()},
+ //        	success: function(data)
+ //        	{
+ //        		$('#cancelModal').modal('hide');
+ //        		reloadTable();
+ //        	},
+ //        	error: function (jqXHR, textStatus, errorThrown)
+ //        	{
+ //        		reloadTable();
+ //        	}
+ //        });
+ //    });
+
+	// $('[name="rejectData"]').click(function(event) {
+ //    	if ($('[name="selectedData[]"]:checked').length > 0) {
+ //    		event.preventDefault();
+ //    		var selectedData = $('[name="selectedData[]"]:checked').map(function(){
+ //    			return $(this).val();
+ //    		}).get();
+	// 		swal({
+	// 	      	title: '{{ __("Are you sure you want to reject selected data?") }}',
+	// 	      	text: '',
+	// 	      	icon: 'warning',
+	// 	      	buttons: true,
+	// 	      	dangerMode: true,
+	// 	    })
+	// 	    .then((willReject) => {
+	// 	      	if (willReject) {
+	// 	      		$.ajax({
+	// 					url : "{{ route('admin.subsidy.reject') }}",
+	// 					type: "POST",
+	// 					dataType: "JSON",
+	// 					data: {"_token" : "{{ csrf_token() }}", "selectedData" : selectedData},
+	// 					success: function(data)
+	// 					{
+	// 						reloadTable();
+	// 					},
+	// 					error: function (jqXHR, textStatus, errorThrown)
+	// 					{
+	// 						if (JSON.parse(jqXHR.responseText).status) {
+	// 							swal("{{ __('Failed!') }}", '{{ __("Data cannot be updated.") }}', "warning");
+	// 						} else {
+	// 							swal(JSON.parse(jqXHR.responseText).message, "", "error");
+	// 						}
+	// 					}
+	// 				});
+	// 	      	}
+	// 		});
+ //    	} else {
+ //    		swal("{{ __('Please select a data..') }}", "", "warning");
+ //    	}
+ //    });
 	$('[name="deleteData"]').click(function(event) {
 		if ($('[name="selectedData[]"]:checked').length > 0) {
 			event.preventDefault();

@@ -98,8 +98,7 @@ class ExamReadinessController extends Controller
             'schools' => School::orderBy('name', 'asc')->pluck('name', 'id')->toArray(),
             'types' => ExamType::orderBy('name', 'asc')->pluck('name', 'name')->toArray(),
             'generations' => StudentClass::orderBy('generation', 'asc')->pluck('generation', 'generation')->toArray(),
-            'referenceSchool' => ExamReadinessSchool::school()->pluck('name', 'name')->toArray(),
-            'school_references' => School::has('ExamReadinessSchool')->pluck('name', 'name')->toArray()
+            'reference_schools' => School::has('ExamReadinessSchool')->pluck('name', 'name')->toArray()
         ];
         return view('admin.exam.readiness.create', $view);
     }
@@ -115,8 +114,12 @@ class ExamReadinessController extends Controller
         if ( ! auth()->guard('admin')->user()->can('create ' . $this->table)) {
             return redirect()->route('admin.exam.readiness.index')->with('alert-danger', $this->noPermission);
         }
+        if ($request->exam_sub_types) {
+            $exam_sub = implode($request->exam_sub_types, ', ');
+            $request->request->add(['sub_exam_type' => $exam_sub]);
+        }
         $request->request->add(['token' => str::random(10)]);
-        $examReadiness = ExamReadiness::create($request->only(['school_id', 'exam_type', 'token']));
+        $examReadiness = ExamReadiness::create($request->all());
         $this->saveStudentPartition($examReadiness, $request);
         $this->savePic($examReadiness, $request);
         return redirect(url()->previous())->with('alert-success', $this->createdMessage);
