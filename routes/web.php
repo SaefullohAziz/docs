@@ -270,22 +270,16 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
 
 // Custom
 Route::prefix('get')->name('get.')->middleware(['auth:web,admin'])->group(function () {
-	Route::post('regency/by/province', 'GetController@regencyByProvince')->name('regencyByProvince');
-	Route::post('school/by/level', 'GetController@schoolByLevel')->name('schoolByLevel');
-	Route::post('generation/by/school', 'GetController@generationBySchool')->name('generationBySchool');
+	Route::post('regency', 'GetController@regency')->name('regency');
+	Route::post('school', 'GetController@school')->name('school');
+	Route::post('teacher', 'GetController@teacher')->name('teacher');
+	Route::post('generation', 'GetController@generation')->name('generation');
 	Route::post('generation/from/class', 'GetController@generationFromClass')->name('generationFromClass');
-	Route::post('schoolYear/by/school', 'GetController@schoolYearBySchool')->name('schoolYearBySchool');
-	Route::post('department/by/school', 'GetController@departmentBySchool')->name('departmentBySchool');
-	Route::post('subExamBy/by/type', 'GetController@subExamBy')->name('subExamBy');
-	Route::prefix('teacher')->name('teacher.')->group(function () {
-		Route::post('by/school', 'GetController@teacherBySchool')->name('bySchool');
-		Route::post('by', 'GetController@teacherBy')->name('by');
-	});
-	Route::post('pic/by/school', 'GetController@picBySchool')->name('picBySchool');
-	Route::post('students', 'GetController@students')->name('students');
-	Route::prefix('student')->name('student.')->group(function () {
-		Route::post('by', 'GetController@studentBy')->name('by');
-	});
+	Route::post('schoolYear', 'GetController@schoolYear')->name('schoolYear');
+	Route::post('department', 'GetController@department')->name('department');
+	Route::post('pic', 'GetController@pic')->name('pic');
+	Route::post('student', 'GetController@student')->name('student');
+	Route::post('subExam', 'GetController@subExam')->name('subExam');
 });
 
 Route::get('locale/{locale}', function ($locale){
@@ -298,9 +292,8 @@ Route::get('download/{dir}/{file}', function ($dir, $file) {
 })->name('download');
 
 Route::get('check', function () {
-	$school = App\School::find(497);
-	$department = App\Department::find(7);
-	return studentGeneration($school, $department);
+	$data = App\Student::get()->toArray();
+	return dd($data);
 });
 
 Route::get('mailable', function () {

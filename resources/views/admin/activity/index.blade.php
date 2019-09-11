@@ -28,7 +28,9 @@
 
 		<div class="card card-primary">
 			<div class="card-header">
-				<a href="{{ route('admin.activity.create') }}" class="btn btn-icon btn-success" title="{{ __('Create') }}"><i class="fa fa-plus"></i></a>
+				@if (auth()->guard('admin')->user()->can('create activities'))
+					<a href="{{ route('admin.activity.create') }}" class="btn btn-icon btn-success" title="{{ __('Create') }}"><i class="fa fa-plus"></i></a>
+				@endif
 				<button class="btn btn-icon btn-secondary" title="{{ __('Filter') }}" data-toggle="modal" data-target="#filterModal"><i class="fa fa-filter"></i></button>
             	<button class="btn btn-icon btn-secondary" onclick="reloadTable()" title="{{ __('Refresh') }}"><i class="fa fa-sync"></i></i></button>
 			</div>
@@ -44,7 +46,7 @@
 								<th>{{ __('School') }}</th>
 								<th>{{ __('Type') }}</th>
 								<th>{{ __('Submission Letter') }}</th>
-								<th>{{ __('P.I.C') }}</th>
+								<th>{{ __('PIC') }}</th>
 								<th>{{ __('Date') }}</th>
 								<th>{{ __('Until') }}</th>
 								<th>{{ __('Status') }}</th>
@@ -57,12 +59,12 @@
 				</div>
 			</div>
 			<div class="card-footer bg-whitesmoke">
-				@if (auth()->guard('admin')->user()->can('approval subsidies'))
+				@if (auth()->guard('admin')->user()->can('approval activities'))
 					<!-- <button class="btn btn-light btn-sm" name="cancelData" title="{{ __('Cancel') }}">{{ __('Cancel') }}</button> -->
 					<!-- <button class="btn btn-light btn-sm" name="rejectData" title="{{ __('Reject') }}">{{ __('Reject') }}</button> -->
 					<button class="btn btn-light btn-sm" name="approveData" title="{{ __('Approve') }}">{{ __('Approve') }}</button>
 				@endif
-				@if (auth()->guard('admin')->user()->can('delete subsidies'))
+				@if (auth()->guard('admin')->user()->can('delete activities'))
 					<button class="btn btn-danger btn-sm" name="deleteData" title="{{ __('Delete') }}">{{ __('Delete') }}</button>
 				@endif
 			</div>
@@ -93,7 +95,7 @@
 			columns: [
 				{ data: 'DT_RowIndex', name: 'DT_RowIndex', 'searchable': false },
 				{ data: 'created_at', name: 'created_at' },
-				{ data: 'school', name: 'school' },
+				{ data: 'school', name: 'schools.name' },
 				{ data: 'type', name: 'type' },
                 { data: 'submission_letter', name: 'submission_letter' },
                 { data: 'pic_name', name: 'pics.name' },
@@ -134,12 +136,12 @@
 		      	title: '{{ __("Are you sure you want to approve selected data?") }}',
 		      	text: '',
 		      	icon: 'warning',
-		      	buttons: true,
-		      	dangerMode: true,
+			    buttons: true,
+			  	dangerMode: true,
 		    })
 		    .then((willAprove) => {
 		      	if (willAprove) {
-		      		$.ajax({
+			      	$.ajax({
 						url : "{{ route('admin.activity.approve') }}",
 						type: "POST",
 						dataType: "JSON",
@@ -241,7 +243,6 @@
  //    		swal("{{ __('Please select a data..') }}", "", "warning");
  //    	}
  //    });
-
 	$('[name="deleteData"]').click(function(event) {
 		if ($('[name="selectedData[]"]:checked').length > 0) {
 			event.preventDefault();
@@ -308,9 +309,9 @@
 				<div class="modal-body">
 					<div class="container-fluid">
 						<div class="row">
+							{{ Form::bsSelect('col-sm-4', __('School'), 'school', $schools, null, __('Select'), ['placeholder' => __('Select')]) }}
 							{{ Form::bsSelect('col-sm-4', __('Type'), 'type', $types, null, __('Select'), ['placeholder' => __('Select')]) }}
 							{{ Form::bsSelect('col-sm-4', __('Status'), 'status', $statuses, null, __('Select'), ['placeholder' => __('Select')]) }}
-							{{ Form::bsSelect('col-sm-4', __('school'), 'school', $schools, null, __('Select'), ['placeholder' => __('Select')]) }}
 						</div>
 					</div>
 				</div>

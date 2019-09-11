@@ -39,7 +39,7 @@
 
                             {{ Form::bsText(null, __('Date'), 'date', old('date'), __('DD-MM-YYYY'), ['required' => '']) }}
 
-                            {{ Form::bsText(null, __('Until date'), 'until_date', old('until_date'), __('DD-MM-YYYY'), ['required' => '']) }}
+                            {{ Form::bsText(null, __('Until Date'), 'until_date', old('until_date'), __('DD-MM-YYYY'), ['required' => '']) }}
 
                             {{ Form::bsFile(null, __('Submission Letter'), 'submission_letter', old('submission_letter'), ['required' => ''], [__('File with PDF/JPG/PNG format up to 5MB.')]) }}
 
@@ -98,9 +98,9 @@
 		$('[name="school_id"]').change(function (){
 			if ($(this).val() != '') {
 				$('input[name="pic"]').prop('disabled', false).prop('required', true);
-			}
-			else{
-				$('input[name="pic"]').prop('disabled', true).prop('required', true);
+				if ($('input[name="pic"][value="2"]').is(':checked')) {
+                    getPic();
+                }
 			}
 		});
 
@@ -146,7 +146,7 @@
 
     function getPic() {
 		$.ajax({
-			url : "{{ route('get.picBySchool') }}",
+			url : "{{ route('get.pic') }}",
 			type: "POST",
 			dataType: "JSON",
 			data: {'_token' : '{{ csrf_token() }}', 'school' : $('[name="school_id"]').val()},

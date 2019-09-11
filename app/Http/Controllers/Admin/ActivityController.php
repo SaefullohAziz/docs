@@ -28,7 +28,7 @@ class ActivityController extends Controller
 
         parent::__construct();
         $this->middleware('auth:admin');
-        $this->table = 'subsidies';
+        $this->table = 'activities';
         $this->types = [
                 'MOU' => 'M.O.U',
                 'Kunjungan_industri' => 'Kunjungan Industri',
@@ -45,16 +45,20 @@ class ActivityController extends Controller
      */
     public function index()
     {
+        if ( ! auth()->guard('admin')->user()->can('create ' . $this->table)) {
+            return redirect()->route('admin.home')->with('alert-danger', __($this->noPermission));
+        }
         $view = [
             'title' => __('Activity Submission'),
             'breadcrumbs' => [
-                null => __('Activity')
+                route('admin.activity.index') => __('Activity Submission'),
+                null => 'Data'
             ],
+            'schools' => School::orderBy('name', 'asc')->pluck('name', 'id')->toArray(),
             'types' => $this->types,
             'statuses' => $this->statuses,
-            'schools' => School::pluck('name', 'id')->toArray(),
         ];
-        return view('admin.activity_submission.index', $view);
+        return view('admin.activity.index', $view);
     }
 
     /**
@@ -94,16 +98,19 @@ class ActivityController extends Controller
      */
     public function create()
     {
+        if ( ! auth()->guard('admin')->user()->can('create ' . $this->table)) {
+            return redirect()->route('admin.activity.index')->with('alert-danger', __($this->noPermission));
+        }
         $view = [
-            'title' => __('Activity_Submission'),
+            'title' => __('Create Activity Submission'),
             'breadcrumbs' => [
-                route('activity.index') => __('Activity'),
-                null => 'Data'
+                route('admin.activity.index') => __('Activity Submission'),
+                null => __('Create')
             ],
+            'schools' => School::orderBy('name', 'asc')->pluck('name', 'id')->toArray(),
             'types' => $this->types,
-            'schools' => School::pluck('name', 'id')->toArray(),
         ];
-        return view('admin.activity_submission.create', $view);
+        return view('admin.activity.create', $view);
     }
 
     /**
@@ -114,6 +121,9 @@ class ActivityController extends Controller
      */
     public function store(StoreActivity $request)
     {
+        if ( ! auth()->guard('admin')->user()->can('create ' . $this->table)) {
+            return redirect()->route('admin.activity.index')->with('alert-danger', __($this->noPermission));
+        }
         $request->merge([
             'date' => date('Y-m-d', strtotime($request->date)),
         ]);
@@ -122,12 +132,12 @@ class ActivityController extends Controller
                 'until_date' => date('Y-m-d', strtotime($request->until_date)),
             ]);
         }
-        $activity = activity::create($request->all());
+        $activity = Activity::create($request->all());
         $activity->submission_letter = $this->uploadSubmissionLetter($activity, $request);
         $activity->participant = $this->uploadParticipant($activity, $request);
         $activity->save();
         $this->savePic($activity, $request);
-        return redirect(url()->previous())->with('alert-success', $this->createdMessage);
+        return redirect(url()->previous())->with('alert-success', __($this->createdMessage));
     }
 
     /**
@@ -138,20 +148,21 @@ class ActivityController extends Controller
      */
     public function show(Activity $activity)
     {
-        // if (auth()->user()->cant('view', $activity)) {
-        //     return redirect()->route('activity.index')->with('alert-danger', $this->noPermission);
-        // }
+        if ( ! auth()->guard('admin')->user()->can('read ' . $this->table)) {
+            return redirect()->route('admin.activity.index')->with('alert-danger', __($this->noPermission));
+        }
         $view = [
-            'title' => __('Activity Detail'),
+            'title' => __('Activity Submission Detail'),
             'breadcrumbs' => [
-                route('activity.index') => __('Activity'),
-                null => __('Detail')
+                route('admin.activity.index') => __('Activity Submission'),
+                null => __('Edit')
             ],
+            'schools' => School::orderBy('name', 'asc')->pluck('name', 'id')->toArray(),
             'types' => $this->types,
-            'activity' => $activity,
             'statuses' => $this->statuses,
+            'data' => $activity,
         ];
-        return view('admin.activity_submission.show', $view);
+        return view('admin.activity.show', $view);
     }
 
     /**
@@ -162,21 +173,21 @@ class ActivityController extends Controller
      */
     public function edit(Activity $activity)
     {
-        // if ( ! auth()->guard('admin')->user()->can('update ' . $this->table)) {
-        //     return redirect()->route('admin.activity.index')->with('alert-danger', $this->noPermission);
-        // }
+        if ( ! auth()->guard('admin')->user()->can('update ' . $this->table)) {
+            return redirect()->route('admin.activity.index')->with('alert-danger', __($this->noPermission));
+        }
         $view = [
-            'title' => __('Edit activity'),
+            'title' => __('Edit Activity Submission'),
             'breadcrumbs' => [
-                route('admin.activity.index') => __('activity'),
+                route('admin.activity.index') => __('Activity Submission'),
                 null => __('Edit')
             ],
-            'schools' => School::pluck('name', 'id')->toArray(),
+            'schools' => School::orderBy('name', 'asc')->pluck('name', 'id')->toArray(),
             'types' => $this->types,
             'statuses' => $this->statuses,
-            'activity' => $activity
+            'data' => $activity
         ];
-        return view('admin.activity_submission.edit', $view);
+        return view('admin.activity.edit', $view);
     }
 
     /**
@@ -204,39 +215,7 @@ class ActivityController extends Controller
         $activity->participant = $this->uploadParticipant($activity, $request, $activity->participant);
         $activity->save();
         $this->savePic($activity, $request);
-        return redirect(url()->previous())->with('alert-success', $this->updatedMessage);    }
-
-    /**
-     * Approve activity
-     * 
-     * @param  \Illuminate\Http\Request  $request
-     */
-    public function approve(Request $request)
-    {
-        if ($request->ajax()) {
-            // if ( ! auth()->guard('admin')->user()->can('approval ' . $this->table)) {
-            //     return response()->json(['status' => false, 'message' => $this->noPermission], 422);
-            // }
-            event(new ActivityApproved($request));
-            return response()->json(['status' => true, 'message' => '$this->updatedMessage']);
-        }
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Request $request)
-    {
-        if ($request->ajax()) {
-            if ( ! auth()->guard('admin')->user()->can('delete ' . $this->table)) {
-                return response()->json(['status' => false, 'message' => $this->noPermission], 422);
-            }
-            Activity::destroy($request->selectedData);
-            return response()->json(['status' => true, 'message' => $this->deletedMessage]);
-        }
+        return redirect(url()->previous())->with('alert-success', __($this->updatedMessage));    
     }
 
     /**
@@ -305,5 +284,38 @@ class ActivityController extends Controller
             'created_at' => now(),
             'updated_at' => now(),
         ]);
+    }
+
+    /**
+     * Approve activity
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     */
+    public function approve(Request $request)
+    {
+        if ($request->ajax()) {
+            if ( ! auth()->guard('admin')->user()->can('approval ' . $this->table)) {
+                return response()->json(['status' => false, 'message' => __($this->noPermission)], 422);
+            }
+            event(new ActivityApproved($request));
+            return response()->json(['status' => true, 'message' => __($this->updatedMessage)]);
+        }
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(Request $request)
+    {
+        if ($request->ajax()) {
+            if ( ! auth()->guard('admin')->user()->can('delete ' . $this->table)) {
+                return response()->json(['status' => false, 'message' => __($this->noPermission)], 422);
+            }
+            Activity::destroy($request->selectedData);
+            return response()->json(['status' => true, 'message' => __($this->deletedMessage)]);
+        }
     }
 }

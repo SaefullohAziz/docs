@@ -121,7 +121,7 @@
 			$('select[name="regency"]').html('<option value="">Select</option>');
 			if ($(this).val() != '') {
 				$.ajax({
-					url : "{{ route('get.regencyByProvince') }}",
+					url : "{{ route('get.regency') }}",
 					type: "POST",
 					dataType: "JSON",
 					cache: false,

@@ -81,6 +81,9 @@
     "SSP Status": "Status SSP",
 
     "Activity Submission": "Pengajuan Aktivitas",
+    "Create Activity Submission": "Membuat Pengajuan Aktivitas",
+    "Edit Activity Submission": "Edit Pengajuan Aktivitas",
+    "Activity Submission Detail": "Detail Pengajuan Aktivitas",
 
     "Submission of Assistance": "Pengajuan Bantuan",
     "Subsidy": "Subsidi",
@@ -230,6 +233,8 @@
     "All Categories": "Semua Kategori",
     "There is no document.": "Tidak ada dokumen.",
     "Execution": "Pelaksanaan",
+    "Until Date": "Hingga Tanggal",
+    "Amount of Student": "Jumlah Siswa",
 
     "Enter phone number without country code.": "Masukkan nomor handphone tanpa kode negara.",
     "Complete with an academic degree and or degree of expertise.": "Lengkapi dengan gelar akademi atau keahlian.",

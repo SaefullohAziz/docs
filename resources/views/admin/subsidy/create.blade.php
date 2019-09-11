@@ -125,10 +125,10 @@
 			$('select[name="student"]').html('<option value="">{{ __('Select') }}</option>');
 	    	if ($(this).val() != '') {
 	    		$.ajax({
-					url : "{{ route('get.students') }}",
+					url : "{{ route('get.student') }}",
 					type: "POST",
 					dataType: "JSON",
-					data: {'_token' : '{{ csrf_token() }}', 'school' : $('select[name="school"]').val(), 'generation' : $(this).val()},
+					data: {'_token' : '{{ csrf_token() }}', 'school' : $('select[name="school_id"]').val(), 'generation' : $(this).val()},
 					success: function(data)
 					{
 						$.each(data.result, function(k, v) {
@@ -150,7 +150,7 @@
 					$('select[name="student"]').val(null).change();
 				} else {
 					$.ajax({
-						url : "{{ route('get.student.by') }}",
+						url : "{{ route('get.student') }}",
 						type: "POST",
 						dataType: "JSON",
 						data: {'_token' : '{{ csrf_token() }}', 'student' : $(this).val()},
@@ -185,7 +185,7 @@
 
 	function getPic() {
 		$.ajax({
-			url : "{{ route('get.picBySchool') }}",
+			url : "{{ route('get.pic') }}",
 			type: "POST",
 			dataType: "JSON",
 			data: {'_token' : '{{ csrf_token() }}', 'school' : $('[name="school_id"]').val()},

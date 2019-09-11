@@ -209,7 +209,7 @@
 			if ($(this).val() != '') {
 				$('select[name="participant"], input[name="pic"]').prop('disabled', false);
 				$.ajax({
-					url : "{{ route('get.teacher.bySchool') }}",
+					url : "{{ route('get.teacher') }}",
 					type: "POST",
 					dataType: "JSON",
 					data: {'_token' : '{{ csrf_token() }}', 'school' : $(this).val()},
@@ -292,7 +292,7 @@
 					$('select[name="participant"]').val(null).change();
 				} else {
 					$.ajax({
-						url : "{{ route('get.teacher.by') }}",
+						url : "{{ route('get.teacher') }}",
 						type: "POST",
 						dataType: "JSON",
 						data: {'_token' : '{{ csrf_token() }}', 'teacher' : $(this).val()},

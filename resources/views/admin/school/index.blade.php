@@ -126,7 +126,7 @@
   		$('select[name="province[]"]').change(function() {
 			if ($(this).val() != '') {
 				$.ajax({
-					url : "{{ route('get.regencyByProvince') }}",
+					url : "{{ route('get.regency') }}",
 					type: "POST",
 					dataType: "JSON",
 					cache: false,

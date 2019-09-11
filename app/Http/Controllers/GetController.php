@@ -15,51 +15,58 @@ use Illuminate\Http\Request;
 class GetController extends Controller
 {
     // School
-    public function regencyByProvince(Request $request)
+    public function regency(Request $request)
     {
         if ($request->ajax()) {
-            $regencies = Regency::getByProvinceName($request->province)->pluck('name')->toArray();
-            return response()->json(['status' => true, 'result' => $regencies]);
+            $data = Regency::when( ! empty($request->school), function ($query) use ($request) {
+                $query->getByProvinceName($request->province);
+            })->pluck('name')->toArray();
+            return response()->json(['status' => true, 'result' => $data]);
         }
     }
 
-    public function schoolByLevel(Request $request)
+    public function school(Request $request)
     {
         if ($request->ajax()) {
-            $schools = School::byLevel($request->level)->pluck('name', 'id')->toArray();
-            return response()->json(['status' => true, 'result' => $schools]);
+            $data = School::when( ! empty($request->level), function ($query) use ($request) {
+                $query->byLevel($request->level);
+            })->orderBy('name', 'asc')->pluck('name', 'id')->toArray();
+            return response()->json(['status' => true, 'result' => $data]);
         }
     }
 
     // Teacher
-    public function teacherBySchool(Request $request)
+    public function teacher(Request $request)
     {
         if ($request->ajax()) {
             if (auth()->guard('web')->check()) {
                 $request->request->add(['school' => auth()->user()->school->id]);
             }
-            $teachers = Teacher::bySchool($request->school)->get()->toArray();
-            return response()->json(['status' => true, 'result' => $teachers]);
-        }
-    }
-
-    public function teacherBy(Request $request)
-    {
-        if ($request->ajax()) {
-            $teacher = Teacher::find($request->teacher)->toArray();
-            return response()->json(['status' => true, 'result' => $teacher]);
+            $data = Teacher::when( ! empty($request->school), function ($query) use ($request) {
+                $query->bySchool($request->school);
+            })
+            ->when( ! empty($request->teacher), function ($query) use ($request) {
+                $query->find($request->teacher);
+            });
+            if (empty($request->teacher)) {
+                $data = $data->get();
+            }
+            $data = $data->toArray();
+            return response()->json(['status' => true, 'result' => $data]);
         }
     }
 
     // PIC
-    public function picBySchool(Request $request)
+    public function pic(Request $request)
     {
         if ($request->ajax()) {
             if (auth()->guard('web')->check()) {
                 $request->request->add(['school' => auth()->user()->school->id]);
             }
-            $pic = Pic::bySchool($request->school)->select('pics.*')->first()->toArray();
-            return response()->json(['status' => true, 'result' => $pic]);
+            $data = Pic::when( ! empty($request->school), function ($query) use ($request) {
+                $query->bySchool($request->school);
+            })->select('pics.*')->first()->toArray();
+            return response()->json(['status' => true, 'result' => $data]);
         }
     }
 
@@ -78,42 +85,48 @@ class GetController extends Controller
     }
 
     // Student
-    public function generationBySchool(Request $request)
+    public function generation(Request $request)
     {
         if ($request->ajax()) {
             if (auth()->guard('web')->check()) {
                 $request->request->add(['school' => auth()->user()->school->id]);
             }
-            $generations = StudentClass::pluck('generation', 'generation')->toArray();
-            return response()->json(['status' => true, 'result' => $generations]);
-        }
-    }
-
-    public function schoolYearBySchool(Request $request)
-    {
-        if ($request->ajax()) {
-            if (auth()->guard('web')->check()) {
-                $request->request->add(['school' => auth()->user()->school->id]);
-            }
-            $schoolYears = StudentClass::pluck('school_year', 'school_year')->toArray();
-            return response()->json(['status' => true, 'result' => $schoolYears]);
-        }
-    }
-
-    public function departmentBySchool(Request $request)
-    {
-        if ($request->ajax()) {
-            if (auth()->guard('web')->check()) {
-                $request->request->add(['school' => auth()->user()->school->id]);
-            }
-            $departments = Department::whereHas('schoolImplementation', function ($query) use ($request) {
+            $data = StudentClass::when( ! empty($request->school), function ($query) use ($request) {
                 $query->where('school_id', $request->school);
-            })->pluck('name', 'id')->toArray();
-            return response()->json(['status' => true, 'result' => $departments]);
+            })->pluck('generation', 'generation')->toArray();
+            return response()->json(['status' => true, 'result' => $data]);
         }
     }
 
-    public function students(Request $request)
+    public function schoolYear(Request $request)
+    {
+        if ($request->ajax()) {
+            if (auth()->guard('web')->check()) {
+                $request->request->add(['school' => auth()->user()->school->id]);
+            }
+            $data = StudentClass::when( ! empty($request->school), function ($query) use ($request) {
+                $query->where('school_id', $request->school);
+            })->pluck('school_year', 'school_year')->toArray();
+            return response()->json(['status' => true, 'result' => $data]);
+        }
+    }
+
+    public function department(Request $request)
+    {
+        if ($request->ajax()) {
+            if (auth()->guard('web')->check()) {
+                $request->request->add(['school' => auth()->user()->school->id]);
+            }
+            $data = Department::whereHas('schoolImplementation', function ($query) use ($request) {
+                $query->when( ! empty($request->school), function ($subQuery) use ($request) {
+                    $subQuery->where('school_id', $request->school);
+                });
+            })->pluck('name', 'id')->toArray();
+            return response()->json(['status' => true, 'result' => $data]);
+        }
+    }
+
+    public function student(Request $request)
     {
         if ($request->ajax()) {
             if (auth()->guard('web')->check()) {
@@ -129,29 +142,33 @@ class GetController extends Controller
                 $query->when( ! empty($request->grade), function ($subQuery) use ($request) {
                     $subQuery->where('student_classes.grade', $request->grade);
                 });
-            })->when( ! empty($request->ssp), function ($query) {
+            })
+            ->when( ! empty($request->ssp), function ($query) {
                 $query->has('sspStudent');
             })
-            ->pluck('name', 'id')->toArray();
+            ->when( ! empty($request->student), function ($query) use ($request) {
+                $query->find($request->student);
+            });
+            if (empty($request->student)) {
+                $data = $data->pluck('name', 'id');
+            }
+            $data = $data->toArray();
             return response()->json(['status' => true, 'result' => $data]);
         }
     }
 
-    public function subExamBy(Request $request){
+    public function subExam(Request $request){
         if ($request->ajax()) {
-            $data = ExamType::where('name', $request->type)->where('sub_name', '!=', '')->pluck('sub_name', 'id')->toArray();
-            if (count($data) > 0) {
-                return response()->json(['status' => true, 'result' => $data]);
+            $data = ExamType::when( ! empty($request->type), function ($query) use ($request) {
+                $query->where('name', $request->type);
+            })
+            ->where('sub_name', '!=', '')
+            ->pluck('sub_name', 'id')
+            ->toArray();
+            if (count($data) == 0) {
+                return response()->json(['status' => false]);
             }
-            return response()->json(['status' => false]);
-        }
-    }
-
-    public function studentBy(Request $request)
-    {
-        if ($request->ajax()) {
-            $student = Student::find($request->student)->toArray();
-            return response()->json(['status' => true, 'result' => $student]);
+            return response()->json(['status' => true, 'result' => $data]);
         }
     }
 }

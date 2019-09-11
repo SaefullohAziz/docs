@@ -11,6 +11,11 @@ class Activity extends Model
 {
     use SoftDeletes;
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
     protected $fillable = ['type', 'school_id', 'date', 'until_date', 'time', 'participant', 'amount_of_teacher', 'amount_of_acp_student', 'amount_of_reguler_student', 'amount_of_student', 'activity', 'period', 'submission_letter', 'detail'];
 
     /**
@@ -66,7 +71,7 @@ class Activity extends Model
      * 
      * @param  \Illuminate\Http\Request  $request
      */
-    public static function get_list(Request $request)
+    public static function get(Request $request)
     {
         return DB::table('activities')
             ->join('schools', 'activities.school_id', '=', 'schools.id')
@@ -75,9 +80,9 @@ class Activity extends Model
             ->join('activity_pics', 'activities.id', '=', 'activity_pics.activity_id')
             ->join('pics', 'activity_pics.pic_id', '=', 'pics.id')
             ->when(auth()->guard('web')->check(), function ($query) use ($request) {
-                $query->where('schools.school_id', auth()->user()->school->id);
+                $query->where('schools.id', auth()->user()->school->id);
             })->when( ! empty($request->school), function ($query) use ($request) {
-                $query->where('schools.school_id', $request->school);
+                $query->where('schools.id', $request->school);
             })->when( ! empty($request->type), function ($query) use ($request) {
                 $query->where('activities.type', $request->type);
             })->when( ! empty($request->status), function ($query) use ($request) {
@@ -94,6 +99,6 @@ class Activity extends Model
      */
     public static function list(Request $request)
     {
-        return self::get_list($request)->select('activities.*', 'schools.name as school', 'pics.name as pic_name','statuses.name as status');
+        return self::get($request)->select('activities.*', 'schools.name as school', 'pics.name as pic_name', 'statuses.name as status');
     }
 }

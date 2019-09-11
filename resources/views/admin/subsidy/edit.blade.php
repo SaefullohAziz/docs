@@ -43,9 +43,7 @@
                             <fieldset class="{{ ($subsidy->type=='Student Starter Pack (SSP)'?'d-block':'d-none') }}">
                                 <legend>{{ __('Student Starter Pack (SSP)') }}</legend>
                                 <div class="row">
-                                    {{ Form::bsSelect('col-sm-6', __('Generation'), 'generation', $generations, old('generation'), __('Select'), ['placeholder' => __('Select')]) }}
-
-                                    {{ Form::bsSelect('col-sm-6', __('Grade'), 'grade', $grades, old('grade'), __('Select'), ['placeholder' => __('Select')]) }}
+                                    {{ Form::bsSelect('col-12', __('Generation'), 'generation', $generations, old('generation'), __('Select'), ['placeholder' => __('Select')]) }}
                                 </div>
                                 {{ Form::bsSelect('null', __('Student'), 'student', [], old('student'), __('Select'), ['placeholder' => __('Select')]) }}
 								<fieldset>
@@ -123,29 +121,7 @@
 					url : "{{ route('get.student.byGeneration') }}",
 					type: "POST",
 					dataType: "JSON",
-					data: {'_token' : '{{ csrf_token() }}', 'school' : $('select[name="school"]').val(), 'generation' : $(this).val()},
-					success: function(data)
-					{
-						$.each(data.result, function(k, v) {
-						 	$('select[name="student"]').append('<option value="'+k+'">'+v+'</option>');
-						});
-					},
-					error: function (jqXHR, textStatus, errorThrown)
-					{
-						$('select[name="student"]').html('<option value="">{{ __('Select') }}</option>');
-					}
-				});
-	    	}
-		});
-
-		$('select[name="grade"]').change(function () {
-			$('select[name="student"]').html('<option value="">{{ __('Select') }}</option>');
-	    	if ($(this).val() != '') {
-	    		$.ajax({
-					url : "{{ route('get.student.byGrade') }}",
-					type: "POST",
-					dataType: "JSON",
-					data: {'_token' : '{{ csrf_token() }}', 'school' : $('select[name="school"]').val(), 'grade' : $(this).val()},
+					data: {'_token' : '{{ csrf_token() }}', 'school' : $('select[name="school_id"]').val(), 'generation' : $(this).val()},
 					success: function(data)
 					{
 						$.each(data.result, function(k, v) {
@@ -167,7 +143,7 @@
 					$('select[name="student"]').val(null).change();
 				} else {
 					$.ajax({
-						url : "{{ route('get.student.by') }}",
+						url : "{{ route('get.student') }}",
 						type: "POST",
 						dataType: "JSON",
 						data: {'_token' : '{{ csrf_token() }}', 'student' : $(this).val()},
