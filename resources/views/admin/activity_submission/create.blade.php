@@ -33,7 +33,7 @@
                     <div class="col-sm-6">
                         <fieldset>
                         	<legend>{{ __('Activity') }}</legend>
-                        	{{ Form::bsSelect(null, __('school'), 'school_id', $schools, old('school_id'), __('Select'), ['placeholder' => __('Select'), 'required' => '']) }}
+                        	{{ Form::bsSelect(null, __('School'), 'school_id', $schools, old('school_id'), __('Select'), ['placeholder' => __('Select'), 'required' => '']) }}
 
                         	{{ Form::bsSelect(null, __('Type'), 'type', $types, old('type'), __('Select'), ['placeholder' => __('Select'), 'required' => '']) }}
 

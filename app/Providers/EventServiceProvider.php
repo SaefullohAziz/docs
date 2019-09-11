@@ -40,6 +40,11 @@ class EventServiceProvider extends ServiceProvider
             'App\Listeners\CreateTrainingPayment',
             'App\Listeners\ApproveTraining',
         ],
+
+        // Activity
+        'App\Events\ActivityApproved' => [
+            'App\Listeners\ApproveActivity',
+        ],
     ];
 
     /**

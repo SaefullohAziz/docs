@@ -125,44 +125,44 @@
 
 	// Approve data action
 	$('[name="approveData"]').click(function(event) {
-	    	if ($('[name="selectedData[]"]:checked').length > 0) {
-	    		event.preventDefault();
-	    		var selectedData = $('[name="selectedData[]"]:checked').map(function(){
-	    			return $(this).val();
-	    		}).get();
-				swal({
-			      	title: '{{ __("Are you sure you want to approve selected data?") }}',
-			      	text: '',
-			      	icon: 'warning',
-			      	buttons: true,
-			      	dangerMode: true,
-			    })
-			    .then((willAprove) => {
-			      	if (willAprove) {
-			      		$.ajax({
-							url : "{{ route('admin.activity.approve') }}",
-							type: "POST",
-							dataType: "JSON",
-							data: {"_token" : "{{ csrf_token() }}", "selectedData" : selectedData},
-							success: function(data)
-							{
-								reloadTable();
-							},
-							error: function (jqXHR, textStatus, errorThrown)
-							{
-								if (JSON.parse(jqXHR.responseText).status) {
-									swal("{{ __('Failed!') }}", '{{ __("Data cannot be updated.") }}', "warning");
-								} else {
-									swal(JSON.parse(jqXHR.responseText).message, "", "error");
-								}
+    	if ($('[name="selectedData[]"]:checked').length > 0) {
+    		event.preventDefault();
+    		var selectedData = $('[name="selectedData[]"]:checked').map(function(){
+    			return $(this).val();
+    		}).get();
+			swal({
+		      	title: '{{ __("Are you sure you want to approve selected data?") }}',
+		      	text: '',
+		      	icon: 'warning',
+		      	buttons: true,
+		      	dangerMode: true,
+		    })
+		    .then((willAprove) => {
+		      	if (willAprove) {
+		      		$.ajax({
+						url : "{{ route('admin.activity.approve') }}",
+						type: "POST",
+						dataType: "JSON",
+						data: {"_token" : "{{ csrf_token() }}", "selectedData" : selectedData},
+						success: function(data)
+						{
+							reloadTable();
+						},
+						error: function (jqXHR, textStatus, errorThrown)
+						{
+							if (JSON.parse(jqXHR.responseText).status) {
+								swal("{{ __('Failed!') }}", '{{ __("Data cannot be updated.") }}', "warning");
+							} else {
+								swal(JSON.parse(jqXHR.responseText).message, "", "error");
 							}
-						});
-			      	}
-    			});
-	    	} else {
-	    		swal("{{ __('Please select a data..') }}", "", "warning");
-	    	}
-	    });
+						}
+					});
+		      	}
+			});
+    	} else {
+    		swal("{{ __('Please select a data..') }}", "", "warning");
+    	}
+    });
 
 	// $('[name="cancelData"]').click(function(event) {
  //      	if ($('[name="selectedData[]"]:checked').length > 0) {
@@ -295,7 +295,7 @@
 </script>
 
 <!-- Modal -->
-<!-- <div class="modal fade" id="filterModal" tabindex="-1" role="dialog" aria-labelledby="filterModalLabel" aria-hidden="true">
+<div class="modal fade" id="filterModal" tabindex="-1" role="dialog" aria-labelledby="filterModalLabel" aria-hidden="true">
 	<div class="modal-dialog modal-lg" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -321,5 +321,5 @@
 			{{ Form::close() }}
 		</div>
 	</div>
-</div> -->
+</div>
 @endsection

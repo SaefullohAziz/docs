@@ -35,7 +35,7 @@
 							<fieldset>
                                 {{ Form::bsSelect(null, __('School'), 'school_id', $schools, old('school_id'), __('Select'), ['placeholder' => __('Select'), 'required' => '']) }}
 
-                                {{ Form::bsSelect(null, __('Type'), 'exam_type', $types, old('exam_type'), __('Select'), ['placeholder' => __('Select'), 'required' => '']) }}
+                                {{ Form::bsSelect(null, __('Type'), 'exam_type', $types, old('exam_type'), __('Select'), ['placeholder' => __('Select'), 'required' => ''], ['']) }}
 
                                 {{ Form::bsSelect('d-none', __('Sub Type'), 'exam_sub_type', [''=>''], old('exam_sub_type'), __('Select'), ['placeholder' => __('Select'), 'required' => '']) }}
 
@@ -127,11 +127,11 @@
 							$('#exam_sub_type').append('<option value="'+value+'"> '+value+' </option>');
 						});
 						$('#exam_sub_type').parent().show(300);
-						$('#exam_sub_type').prop('required', true);
-						$('select[name="type"]').next().next('.help-block').text(data.result.desc);
+						$('#exam_sub_type').prop('required', true).prop('disabled', false);
+						$('[name="exam_type"]').closest('.form-text').text(data.result.description);
 					} else {
 						$('#exam_sub_type').parent().hide(300);
-						$('#exam_sub_type').prop('required', false);
+						$('#exam_sub_type').prop('required', false).prop('disabled', true);
 					}
 				},
 				error: function (jqXHR, textStatus, errorThrown)
