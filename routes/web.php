@@ -240,7 +240,9 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
 			// Route::post('export', 'ExamReadinessController@export')->name('export');
 			Route::delete('destroy', 'ExamReadinessController@destroy')->name('destroy');
 		});
-		Route::resource('readiness', 'ExamReadinessController', ['except' => [
+		Route::resource('readiness', 'ExamReadinessController', ['parameters' => [
+			'readiness' => 'examReadiness'
+		], 'except' => [
 			'destroy',
 		]]);
     });

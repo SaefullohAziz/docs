@@ -12,6 +12,7 @@ use App\Observers\DocumentObserver;
 use App\Observers\SubsidyObserver;
 use App\Observers\TrainingObserver;
 use App\Observers\PaymentObserver;
+use App\Observers\ExamReadinessObserver;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
 
@@ -40,5 +41,6 @@ class AppServiceProvider extends ServiceProvider
         Subsidy::observe(SubsidyObserver::class);
         Training::observe(TrainingObserver::class);
         Payment::observe(PaymentObserver::class);
+        Payment::observe(ExamReadinessObserver::class);
     }
 }

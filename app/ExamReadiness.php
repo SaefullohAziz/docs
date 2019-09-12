@@ -89,7 +89,7 @@ class ExamReadiness extends Model
      * 
      * @param  \Illuminate\Http\Request  $request
      */
-    public static function get(Request $request)
+    public static function _get(Request $request)
     {
         return DB::table('exam_readinesses')
             ->join('exam_readiness_statuses', 'exam_readiness_statuses.id', '=', DB::raw('(SELECT id FROM exam_readiness_statuses WHERE exam_readiness_statuses.exam_readiness_id = exam_readinesses.id ORDER BY id DESC LIMIT 1)'))
@@ -117,6 +117,6 @@ class ExamReadiness extends Model
      */
     public static function list(Request $request)
     {
-        return self::get($request)->select('exam_readinesses.*', 'schools.name as school', 'statuses.name as status');
+        return self::_get($request)->select('exam_readinesses.*', 'schools.name as school', 'statuses.name as status');
 }
     }

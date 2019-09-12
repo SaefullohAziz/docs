@@ -133,7 +133,24 @@ class ExamReadinessController extends Controller
      */
     public function show(ExamReadiness $examReadiness)
     {
-        //
+        if ( ! auth()->guard('admin')->user()->can('read ' . $this->table)) {
+            return redirect()->route('admin.exam.readiness.index')->with('alert-danger', $this->noPermission);
+        }
+        $view = [
+            'title' => __('Detail Exam Readiness'),
+            'breadcrumbs' => [
+                route('admin.exam.readiness.index') => __('Exam Readiness'),
+                null => __('Detail')
+            ],
+            'schools' => School::orderBy('name', 'asc')->pluck('name', 'id')->toArray(),
+            'types' => ExamType::orderBy('name', 'asc')->pluck('name', 'name')->toArray(),
+            'generations' => StudentClass::orderBy('generation', 'asc')->pluck('generation', 'generation')->toArray(),
+            'reference_schools' => School::has('ExamReadinessSchool')->pluck('name', 'name')->toArray(),
+            'reference_student' => $examReadiness->student(),
+            'examReadiness' => $examReadiness
+        ];
+        dd($examReadiness->student());
+        return view('admin.exam.readiness.show', $view);
     }
 
     /**
