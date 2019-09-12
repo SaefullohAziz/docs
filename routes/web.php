@@ -73,10 +73,10 @@ Route::resource('class', 'StudentClassController', ['parameters' => [
 // Activity
 Route::prefix('activity')->name('activity.')->group(function () {
 	Route::post('list', 'ActivityController@list')->name('list');
-	Route::delete('destroy', 'ActivityController@destroy')->name('destroy');
+	// Route::delete('destroy', 'ActivityController@destroy')->name('destroy');
 });
 Route::resource('activity', 'ActivityController', ['except' => [
-	'destroy',
+	'edit', 'update', 'destroy',
 ]]);
 
 // Subsidy

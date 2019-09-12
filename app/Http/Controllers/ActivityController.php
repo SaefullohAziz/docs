@@ -22,14 +22,14 @@ class ActivityController extends Controller
     {
         parent::__construct();
         $this->middleware('auth');
-        $this->table = 'subsidies';
+        $this->table = 'activities';
         $this->types = [
-                'MOU' => 'M.O.U',
-                'Kunjungan_industri' => 'Kunjungan Industri',
-                'SSP Pendampingan' => 'SSP Pendampingan',
-                'AYR' => 'AYR',
-                'Axioo_Mengajar' => 'Axioo Mengajar'
-            ];
+            'MOU' => 'M.O.U',
+            'Kunjungan_industri' => 'Kunjungan Industri',
+            'SSP Pendampingan' => 'SSP Pendampingan',
+            'AYR' => 'AYR',
+            'Axioo_Mengajar' => 'Axioo Mengajar'
+        ];
         $this->statuses = Status::pluck('name', 'id')->toArray();
     }
     /**
@@ -42,13 +42,13 @@ class ActivityController extends Controller
         $view = [
             'title' => __('Activity Submission'),
             'breadcrumbs' => [
-                null => __('Activity')
+                route('activity.index') => __('Activity Submission'),
+                null => 'Data'
             ],
             'types' => $this->types,
             'statuses' => $this->statuses,
-            'schools' => School::where('id', Auth::user()->school_id)->pluck('name', 'id')->toArray(),
         ];
-        return view('activity_submission.index', $view);
+        return view('activity.index', $view);
     }
 
     /**
@@ -89,13 +89,12 @@ class ActivityController extends Controller
         $view = [
             'title' => __('Activity_Submission'),
             'breadcrumbs' => [
-                route('activity.index') => __('Activity'),
-                null => 'Data'
+                route('activity.index') => __('Activity Submission'),
+                null => 'Create'
             ],
             'types' => $this->types,
-            'schools' => School::where('id', Auth::user()->school_id)->pluck('name', 'id')->toArray(),
         ];
-        return view('activity_submission.create', $view);
+        return view('activity.create', $view);
     }
 
     /**
@@ -115,7 +114,7 @@ class ActivityController extends Controller
                 'until_date' => date('Y-m-d', strtotime($request->until_date)),
             ]);
         }
-        $activity = activity::create($request->all());
+        $activity = Activity::create($request->all());
         $activity->submission_letter = $this->uploadSubmissionLetter($activity, $request);
         $activity->participant = $this->uploadParticipant($activity, $request);
         $activity->save();
@@ -131,20 +130,20 @@ class ActivityController extends Controller
      */
     public function show(Activity $activity)
     {
-        // if (auth()->user()->cant('view', $activity)) {
-        //     return redirect()->route('activity.index')->with('alert-danger', $this->noPermission);
-        // }
+        if (auth()->user()->cant('view', $activity)) {
+            return redirect()->route('activity.index')->with('alert-danger', __($this->unauthorizedMessage));
+        }
         $view = [
             'title' => __('Activity Detail'),
             'breadcrumbs' => [
-                route('activity.index') => __('Activity'),
-                null => __('Detail')
+                route('activity.index') => __('Activity Submission'),
+                null => 'Detail'
             ],
             'types' => $this->types,
-            'activity' => $activity,
             'statuses' => $this->statuses,
+            'data' => $activity,
         ];
-        return view('activity_submission.show', $view);
+        return view('activity.show', $view);
     }
 
     /**
@@ -245,24 +244,6 @@ class ActivityController extends Controller
             ]);
         }
         $activity->pic()->attach($pic->id, [
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
-    }
-
-    /**
-     * Save status
-     * 
-     * @param  \App\Subsidy  $subsidy
-     * @param  string  $status
-     * @param  string  $desc
-     */
-    public function saveStatus($activity, $status, $desc)
-    {
-        $log = actlog($desc);
-        $status = Status::byName($status)->first();
-        $activity->status()->attach($status->id, [
-            'log_id' => $log,
             'created_at' => now(),
             'updated_at' => now(),
         ]);
