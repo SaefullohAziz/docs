@@ -28,13 +28,11 @@
 
 		<div class="card card-primary">
 
-			{{ Form::open(['route' => 'admin.exam.readiness.store', 'files' => true]) }}
+			{{ Form::open(['route' => 'exam.readiness.store', 'files' => true]) }}
 				<div class="card-body">
 					<div class="row">
 						<div class="col-sm-6">
 							<fieldset>
-                                {{ Form::bsSelect(null, __('School'), 'school_id', $schools, old('school_id'), __('Select'), ['placeholder' => __('Select'), 'required' => '']) }}
-
                                 {{ Form::bsSelect(null, __('Type'), 'exam_type', $types, old('exam_type'), __('Select'), ['placeholder' => __('Select'), 'required' => ''], ['']) }}
 
                                 {{ Form::bsSelect('d-none', __('Sub Type'), 'exam_sub_type', [''=>''], old('exam_sub_type'), __('Select'), ['placeholder' => __('Select'), 'required' => '']) }}
@@ -51,7 +49,7 @@
                             <fieldset>
                                 <legend>{{ __('Student') }}</legend>
                                 <div class="row">
-                                    {{ Form::bsSelect('col-12', __('Generation'), 'generation', $generations, old('generation'), __('Select'), ['placeholder' => __('Select'), 'disabled' => '']) }}
+                                    {{ Form::bsSelect('col-12', __('Generation'), 'generation', $generations, old('generation'), __('Select'), ['placeholder' => __('Select'), 'required' => '']) }}
                                 </div>
                                 {{ Form::bsSelect('null', __('Student'), 'student', [], old('student'), __('Select'), ['placeholder' => __('Select')]) }}
 								<fieldset>
@@ -70,7 +68,7 @@
 						<div class="col-sm-6">
 							<fieldset>
 								<legend>{{ __('Person in Charge (PIC)') }}</legend>
-								{{ Form::bsInlineRadio(null, __('Person in Charge?'), 'pic', ['2' => __('Yes'), '1' => __('Not')], old('pic'), [( ! empty(old('pic'))?'':'disabled') => '', 'required' => '']) }}
+								{{ Form::bsInlineRadio(null, __('Person in Charge?'), 'pic', ['2' => __('Yes'), '1' => __('Not')], old('pic'), ['required' => '']) }}
 								<div class="{{ ( ! empty(old('type'))?'d-block':'d-none') }}">
 									{{ Form::bsText(null, __('PIC Name'), 'pic_name', old('pic_name'), __('PIC Name')) }}
 
@@ -98,10 +96,9 @@
 <script>
 	$(document).ready(function () {
 		$('select[name="school_id"]').change(function () {
-			$('select[name="generation"], input[name="pic"]').prop('disabled', true);
-            $('select[name="generation"]').val(null).change();
+			$('input[name="pic"]').prop('disabled', true);
 			if ($(this).val() != '') {
-				$('select[name="generation"], input[name="pic"]').prop('disabled', false);
+				$('input[name="pic"]').prop('disabled', false);
                 if ($('input[name="pic"][value="2"]').is(':checked')) {
                     getPic();
                 }
@@ -193,7 +190,7 @@
 					url : "{{ route('get.student') }}",
 					type: "POST",
 					dataType: "JSON",
-					data: {'_token' : '{{ csrf_token() }}', 'ssp' : true, 'school' : $('select[name="school_id"]').val(), 'generation' : $(this).val()},
+					data: {'_token' : '{{ csrf_token() }}', 'ssp' : true, 'generation' : $(this).val()},
 					success: function(data)
 					{
 						$.each(data.result, function(k, v) {

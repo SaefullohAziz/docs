@@ -99,6 +99,21 @@ Route::resource('training', 'TrainingController', ['except' => [
 	'destroy',
 ]]);
 
+// Exam
+Route::prefix('exam')->name('exam.')->group(function () {
+	// Exam: readiness
+	Route::prefix('readiness')->name('readiness.')->group(function () {
+		Route::post('list', 'ExamReadinessController@list')->name('list');
+		// Route::post('export', 'ExamReadinessController@export')->name('export');
+		// Route::delete('destroy', 'ExamReadinessController@destroy')->name('destroy');
+	});
+	Route::resource('readiness', 'ExamReadinessController', ['parameters' => [
+		'readiness' => 'examReadiness'
+	], 'except' => [
+		'destroy',
+	]]);
+});
+
 // Payment
 Route::prefix('payment')->name('payment.')->group(function () {
 	Route::post('list', 'PaymentController@list')->name('list');
@@ -240,7 +255,9 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
 			// Route::post('export', 'ExamReadinessController@export')->name('export');
 			Route::delete('destroy', 'ExamReadinessController@destroy')->name('destroy');
 		});
-		Route::resource('readiness', 'ExamReadinessController', ['except' => [
+		Route::resource('readiness', 'ExamReadinessController', ['parameters' => [
+			'readiness' => 'examReadiness'
+		], 'except' => [
 			'destroy',
 		]]);
     });

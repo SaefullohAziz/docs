@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers;
 
 use App\Pic;
 use App\School;
@@ -10,7 +10,6 @@ use App\ExamReadinessSchool;
 use App\ExamReadinessStudent;
 use App\StudentClass;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Str;
 use DataTables;
 
@@ -26,7 +25,7 @@ class ExamReadinessController extends Controller
     public function __construct()
     {
         parent::__construct();
-        $this->middleware('auth:admin');
+        $this->middleware('auth');
         $this->table = 'exam_readiness';
     }
 
@@ -37,19 +36,15 @@ class ExamReadinessController extends Controller
      */
     public function index()
     {
-        if ( ! auth()->guard('admin')->user()->can('access ' . $this->table)) {
-            return redirect()->route('admin.home')->with('alert-danger', __($this->noPermission));
-        }
         $view = [
             'title' => __('Exam Readiness'),
             'breadcrumbs' => [
                 route('admin.exam.readiness.index') => __('Exam Readiness'),
                 null => 'Data'
             ],
-            'schools' => School::orderBy('name', 'asc')->pluck('name', 'id')->toArray(),
             'types' => ExamType::orderBy('name', 'asc')->pluck('name', 'name')->toArray(),
         ];
-        return view('admin.exam.readiness.index', $view);
+        return view('exam.readiness.index', $view);
     }
 
     /**
@@ -72,7 +67,7 @@ class ExamReadinessController extends Controller
                     return '';
                 })
                 ->addColumn('action', function($data) {
-                    return '<a class="btn btn-sm btn-success" href="'.route('admin.exam.readiness.show', $data->id).'" title="'.__("See detail").'"><i class="fa fa-eye"></i> '.__("See").'</a> <a class="btn btn-sm btn-warning" href="'.route('admin.exam.readiness.edit', $data->id).'" title="'.__("Edit").'"><i class="fa fa-edit"></i> '.__("Edit").'</a>';
+                    return '<a class="btn btn-sm btn-success" href="'.route('exam.readiness.show', $data->id).'" title="'.__("See detail").'"><i class="fa fa-eye"></i> '.__("See").'</a>';
                 })
                 ->rawColumns(['DT_RowIndex', 'action'])
                 ->make(true);
@@ -86,21 +81,20 @@ class ExamReadinessController extends Controller
      */
     public function create()
     {
-        if ( ! auth()->guard('admin')->user()->can('create ' . $this->table)) {
-            return redirect()->route('admin.exam.readiness.index')->with('alert-danger', __($this->noPermission));
+        if (auth()->user()->cant('create', ExamReadiness::class)) {
+            return redirect()->route('exam.readiness.index')->with('alert-danger', __($this->unauthorizedMessage) . ' ' . __('This school has no SSP students.'));
         }
         $view = [
             'title' => __('Create Exam Readiness'),
             'breadcrumbs' => [
-                route('admin.exam.readiness.index') => __('Exam Readiness'),
+                route('exam.readiness.index') => __('Exam Readiness'),
                 null => __('Create')
             ],
-            'schools' => School::orderBy('name', 'asc')->pluck('name', 'id')->toArray(),
             'types' => ExamType::orderBy('name', 'asc')->pluck('name', 'name')->toArray(),
-            'generations' => StudentClass::orderBy('generation', 'asc')->pluck('generation', 'generation')->toArray(),
+            'generations' => StudentClass::where('school_id', auth()->user()->school->id)->orderBy('generation', 'asc')->pluck('generation', 'generation')->toArray(),
             'referenceSchools' => School::has('ExamReadinessSchool')->pluck('name', 'name')->toArray()
         ];
-        return view('admin.exam.readiness.create', $view);
+        return view('exam.readiness.create', $view);
     }
 
     /**
@@ -111,18 +105,16 @@ class ExamReadinessController extends Controller
      */
     public function store(Request $request)
     {
-        if ( ! auth()->guard('admin')->user()->can('create ' . $this->table)) {
-            return redirect()->route('admin.exam.readiness.index')->with('alert-danger', $this->noPermission);
-        }
-        if ($request->exam_sub_types) {
+        $request->request->add(['school_id' => auth()->user()->school->id]);
+        if ($request->filled('exam_sub_types')) {
             $exam_sub = implode($request->exam_sub_types, ', ');
             $request->request->add(['sub_exam_type' => $exam_sub]);
         }
-        $request->request->add(['token' => str::random(10)]);
+        $request->request->add(['token' => Str::random(10)]);
         $examReadiness = ExamReadiness::create($request->all());
-        $this->saveStudentPartition($examReadiness, $request);
+        $this->saveStudent($examReadiness, $request);
         $this->savePic($examReadiness, $request);
-        return redirect(url()->previous())->with('alert-success', $this->createdMessage);
+        return redirect(url()->previous())->with('alert-success', __($this->createdMessage));
     }
 
     /**
@@ -160,24 +152,12 @@ class ExamReadinessController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Request $request)
-    {
-        ExamReadiness::destroy($request->selectedData);
-        return response()->json(['status' => true, 'message' => __('Data successfully deleted.')]);
-    }
-
-    /**
      * Save pic
      * 
      * @param  \App\examReadiness  $examReadiness
      * @param  \Illuminate\Http\Request  $request
      */
-    public function saveStudentPartition($examReadiness, Request $request)
+    public function saveStudent($examReadiness, Request $request)
     {
         if ($request->student_id) {
             foreach ($request->student_id as $student_id) {
@@ -218,5 +198,16 @@ class ExamReadinessController extends Controller
             'created_at' => now(),
             'updated_at' => now(),
         ]);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\ExamReadiness  $examReadiness
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(ExamReadiness $examReadiness)
+    {
+        //
     }
 }

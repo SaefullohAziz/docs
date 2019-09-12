@@ -161,6 +161,7 @@ class GetController extends Controller
                 $query->where('name', $request->type);
             })
             ->where('sub_name', '!=', '')
+            ->whereNotNull('sub_name')
             ->pluck('sub_name', 'id')
             ->toArray();
             if (count($data) == 0) {

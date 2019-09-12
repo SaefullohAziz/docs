@@ -41,7 +41,7 @@ class ExamReadiness extends Model
      */
     public function student()
     {
-        return $this->belongsToMany('App\student', 'exam_readiness_students');
+        return $this->belongsToMany('App\Student', 'exam_readiness_students');
     }
 
     /**
@@ -102,7 +102,9 @@ class ExamReadiness extends Model
             ->join('schools', 'exam_readinesses.school_id', '=', 'schools.id')
             ->leftJoin('provinces', 'schools.province', '=', 'provinces.name')
             ->when(auth()->guard('web')->check(), function ($query) use ($request) {
-                $query->where('schools.school_id', auth()->user()->school->id);
+                $query->where('schools.id', auth()->user()->school->id);
+            })->when( ! empty($request->school), function ($query) use ($request) {
+                $query->where('schools.id', $request->school);
             })->when( ! empty($request->type), function ($query) use ($request) {
                 $query->where('exam_readinesses.exam_type', $request->type);
             })
