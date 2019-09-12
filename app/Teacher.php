@@ -7,6 +7,21 @@ use Illuminate\Database\Eloquent\Model;
 class Teacher extends Model
 {
     /**
+     * The attributes that aren't mass assignable.
+     *
+     * @var array
+     */
+    protected $guarded = [];
+
+    /**
+     * Get the school that owns the teacher.
+     */
+    public function school()
+    {
+        return $this->belongsTo('App\School');
+    }
+
+    /**
      * Get the training participant for the participant.
      */
     public function trainingParticipant()
