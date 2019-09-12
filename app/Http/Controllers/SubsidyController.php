@@ -153,7 +153,7 @@ class SubsidyController extends Controller
     public function show(Subsidy $subsidy)
     {
         if (auth()->user()->cant('view', $subsidy)) {
-            return redirect()->route('subsidy.index')->with('alert-danger', $this->noPermission);
+            return redirect()->route('subsidy.index')->with('alert-danger', __($this->unauthorizedMessage));
         }
         $view = [
             'title' => __('Subsidy Detail'),

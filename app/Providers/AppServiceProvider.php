@@ -6,11 +6,13 @@ use App\Activity;
 use App\Document;
 use App\Subsidy;
 use App\Training;
+use App\ExamReadiness;
 use App\Payment;
 use App\Observers\ActivityObserver;
 use App\Observers\DocumentObserver;
 use App\Observers\SubsidyObserver;
 use App\Observers\TrainingObserver;
+use App\Observers\ExamReadinessObserver;
 use App\Observers\PaymentObserver;
 use App\Observers\ExamReadinessObserver;
 use Illuminate\Support\ServiceProvider;
@@ -40,6 +42,7 @@ class AppServiceProvider extends ServiceProvider
         Document::observe(DocumentObserver::class);
         Subsidy::observe(SubsidyObserver::class);
         Training::observe(TrainingObserver::class);
+        ExamReadiness::observe(ExamReadinessObserver::class);
         Payment::observe(PaymentObserver::class);
         Payment::observe(ExamReadinessObserver::class);
     }

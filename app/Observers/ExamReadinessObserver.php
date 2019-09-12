@@ -2,7 +2,7 @@
 
 namespace App\Observers;
 
-use App\ExampReadiness;
+use App\ExamReadiness;
 use App\Status;
 
 class ExamReadinessObserver
@@ -13,15 +13,9 @@ class ExamReadinessObserver
      * @param  \App\Activity  $activity
      * @return void
      */
-    public function created(ExampReadiness $ExampReadiness)
+    public function created(ExamReadiness $examReadiness)
     {
-        $log = actlog('Membuat kesiapan ujian.');
-        $status = Status::byName('Created')->first();
-        $ExampReadiness->status()->attach($status->id, [
-            'log_id' => $log,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
+        $this->saveStatus($examReadiness, 'Created', 'Membuat kesiapan ujian.');
     }
 
     /**
@@ -30,9 +24,9 @@ class ExamReadinessObserver
      * @param  \App\Activity  $activity
      * @return void
      */
-    public function updated(Activity $activity)
+    public function updated(ExamReadiness $examReadiness)
     {
-        $this->saveStatus($activity, 'Edited', 'Mengubah pengajuan activity.');
+        $this->saveStatus($examReadiness, 'Edited', 'Mengubah kesiapan ujian.');
     }
 
     /**
@@ -41,7 +35,7 @@ class ExamReadinessObserver
      * @param  \App\Activity  $activity
      * @return void
      */
-    public function deleted(Activity $activity)
+    public function deleted(ExamReadiness $examReadiness)
     {
         //
     }
@@ -52,7 +46,7 @@ class ExamReadinessObserver
      * @param  \App\Activity  $activity
      * @return void
      */
-    public function restored(Activity $activity)
+    public function restored(ExamReadiness $examReadiness)
     {
         //
     }
@@ -63,7 +57,7 @@ class ExamReadinessObserver
      * @param  \App\Activity  $activity
      * @return void
      */
-    public function forceDeleted(Activity $activity)
+    public function forceDeleted(ExamReadiness $examReadiness)
     {
         //
     }
@@ -71,15 +65,15 @@ class ExamReadinessObserver
     /**
      * Save status
      * 
-     * @param  \App\Activity  $activity
+     * @param  \App\ExamReadiness  $examReadiness
      * @param  string  $status
      * @param  string  $desc
      */
-    public function saveStatus($activity, $status, $desc)
+    public function saveStatus($examReadiness, $status, $desc)
     {
         $log = actlog($desc);
         $status = Status::byName($status)->first();
-        $activity->status()->attach($status->id, [
+        $examReadiness->status()->attach($status->id, [
             'log_id' => $log,
             'created_at' => now(),
             'updated_at' => now(),

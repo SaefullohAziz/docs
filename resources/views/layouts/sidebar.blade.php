@@ -15,6 +15,7 @@
       <li><a class="nav-link" href="{{ route('activity.index') }}"><i class="fas fa-city"></i> <span>{{ __('Activity Submission') }}</span></a></li>
       <li><a class="nav-link" href="{{ route('subsidy.index') }}"><i class="fa fa-briefcase"></i> <span>{{ __('Submission of Assistance') }}</span></a></li>
       <li><a class="nav-link" href="{{ route('training.index') }}"><i class="fas fa-business-time"></i> <span>{{ __('Training') }}</span></a></li>
+      <li><a class="nav-link" href="{{ route('exam.readiness.index') }}"><i class="far fa-list-alt"></i> <span>{{ __('Exam Readiness') }}</span></a></li>
       <li><a class="nav-link" href="{{ route('payment.index') }}"><i class="fas fa-receipt"></i> <span>{{ __('Payment Confirmation') }}</span></a></li>
       <li class="menu-header">{{ __('User') }}</li>
       <li><a class="nav-link" href="{{ route('account.index') }}"><i class="fa fa-user"></i> <span>{{ __('Account') }}</span></a></li>

@@ -73,10 +73,10 @@ Route::resource('class', 'StudentClassController', ['parameters' => [
 // Activity
 Route::prefix('activity')->name('activity.')->group(function () {
 	Route::post('list', 'ActivityController@list')->name('list');
-	Route::delete('destroy', 'ActivityController@destroy')->name('destroy');
+	// Route::delete('destroy', 'ActivityController@destroy')->name('destroy');
 });
 Route::resource('activity', 'ActivityController', ['except' => [
-	'destroy',
+	'edit', 'update', 'destroy',
 ]]);
 
 // Subsidy
@@ -98,6 +98,21 @@ Route::prefix('training')->name('training.')->group(function () {
 Route::resource('training', 'TrainingController', ['except' => [
 	'destroy',
 ]]);
+
+// Exam
+Route::prefix('exam')->name('exam.')->group(function () {
+	// Exam: readiness
+	Route::prefix('readiness')->name('readiness.')->group(function () {
+		Route::post('list', 'ExamReadinessController@list')->name('list');
+		// Route::post('export', 'ExamReadinessController@export')->name('export');
+		// Route::delete('destroy', 'ExamReadinessController@destroy')->name('destroy');
+	});
+	Route::resource('readiness', 'ExamReadinessController', ['parameters' => [
+		'readiness' => 'examReadiness'
+	], 'except' => [
+		'destroy',
+	]]);
+});
 
 // Payment
 Route::prefix('payment')->name('payment.')->group(function () {

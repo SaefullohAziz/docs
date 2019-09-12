@@ -142,8 +142,8 @@
 				<div class="modal-body">
 					<div class="container-fluid">
 						<div class="row">
-							{{ Form::bsSelect('col-sm-4', __('Type'), 'type', $types, null, __('Select'), ['placeholder' => __('Select')]) }}
-							{{ Form::bsSelect('col-sm-4', __('Status'), 'status', $statuses, null, __('Select'), ['placeholder' => __('Select')]) }}
+							{{ Form::bsSelect('col-sm-6', __('Type'), 'type', $types, null, __('Select'), ['placeholder' => __('Select')]) }}
+							{{ Form::bsSelect('col-sm-6', __('Status'), 'status', $statuses, null, __('Select'), ['placeholder' => __('Select')]) }}
 						</div>
 					</div>
 				</div>

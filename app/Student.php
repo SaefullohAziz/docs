@@ -28,7 +28,7 @@ class Student extends Model
      */
     public function sspStudent()
     {
-        return $this->hasMany('App\SspStudent');
+        return $this->hasOne('App\SspStudent');
     }
 
     /**

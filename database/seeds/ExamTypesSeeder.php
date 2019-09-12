@@ -13,66 +13,66 @@ class ExamTypesSeeder extends Seeder
     {
         $data = [
             ['name' => 'MTCNA',
-            'sub_name' => '',
+            'sub_name' => null,
             'description' => 'Mikrotik Certified Network Associate'],
 
 
             ['name' => 'IoT',
-            'sub_name' => '',
-            'description' => ''],
+            'sub_name' => null,
+            'description' => null],
 
 
             ['name' => 'Telview',
             'sub_name' => 'Surveillance Technology Fundamental (TCPS)',
-            'description' => ''],
+            'description' => null],
 
 
             ['name' => 'Telview',
             'sub_name' => 'Surveillance Technology Junior Technician (TCT)',
-            'description' => ''],
+            'description' => null],
 
 
             ['name' => 'LS',
-            'sub_name' => '',
-            'description' => ''],
+            'sub_name' => null,
+            'description' => null],
 
             ['name' => 'Microsoft',
             'sub_name' => 'MTA Network Fundamental (TKJ)',
-            'description' => ''],
+            'description' => null],
 
 
             ['name' => 'Microsoft',
             'sub_name' => 'MTA Software Fundamental (RPL)',
-            'description' => ''],
+            'description' => null],
 
 
             ['name' => 'Adobe',
             'sub_name' => 'Design Graphic Photoshop',
-            'description' => ''],
+            'description' => null],
 
 
             ['name' => 'Android Native (Dicoding)',
-            'sub_name' => 'Khusus sekolah RPL',
-            'description' => ''],
+            'sub_name' => null,
+            'description' => 'Khusus sekolah RPL'],
 
 
             ['name' => 'AR (Vaganza)',
-            'sub_name' => 'Khusus sekolah Multimedia',
-            'description' => ''],
+            'sub_name' => null,
+            'description' => 'Khusus sekolah Multimedia'],
 
             ['name' => 'Axioo',
             'sub_name' => 'ACP #1',
-            'description' => ''],
+            'description' => null],
 
 
             ['name' => 'Axioo',
             'sub_name' => 'ACP #2',
-            'description' => ''],
+            'description' => null],
 
 
             ['name' => 'Axioo',
             'sub_name' => 'ACP #3',
-            'description' => ''],
+            'description' => null],
 
             ['name' => 'Remidial Axioo',
             'sub_name' => 'ACP #1',
@@ -90,8 +90,8 @@ class ExamTypesSeeder extends Seeder
 
 
             ['name' => 'Network Operators',
-            'sub_name' => '',
-            'description' => ''],
+            'sub_name' => null,
+            'description' => null],
         ];
         foreach ($data as $insert) {
             \App\ExamType::firstOrCreate($insert);

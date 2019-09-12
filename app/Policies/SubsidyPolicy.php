@@ -18,9 +18,7 @@ class SubsidyPolicy
      */
     public function before($user, $ability)
     {
-        if (auth()->guard('web')->check()) {
-            return true;
-        }
+        
     }
     
     /**
