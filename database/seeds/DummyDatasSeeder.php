@@ -16,6 +16,7 @@ class DummyDatasSeeder extends Seeder
                                             ->each(function ($school) {
                                                 $school->schoolPic()->save(factory(App\SchoolPic::class)->make());
                                                 $school->statusUpdate()->save(factory(App\SchoolStatusUpdate::class)->make());
+                                                $school->teacher()->createMany(factory(App\Teacher::class, 6)->make()->toArray());
                                                 $school->implementation()->save(factory(App\SchoolImplementation::class)->make());
                                                 foreach ($school->implementation as $implementation) {
                                                     $school->studentClass()->save(factory(App\StudentClass::class)->make([

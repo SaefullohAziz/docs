@@ -55,6 +55,9 @@
 								<fieldset>
 									<legend>{{ __('Selected Student') }}</legend>
 									<ul class="list-group list-group-flush students">
+										<?php foreach ($ExamReadinessStudents as $student): ?>
+											<li>{{ $student }}</li>
+										<?php endforeach ?>
 										
 									</ul>
 									@if ($errors->has('student_id'))

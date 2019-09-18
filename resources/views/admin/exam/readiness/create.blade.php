@@ -53,7 +53,7 @@
                                 <div class="row">
                                     {{ Form::bsSelect('col-12', __('Generation'), 'generation', $generations, old('generation'), __('Select'), ['placeholder' => __('Select'), 'disabled' => '']) }}
                                 </div>
-                                {{ Form::bsSelect('null', __('Student'), 'student', [], old('student'), __('Select'), ['placeholder' => __('Select')]) }}
+                                <!-- {{ Form::bsSelect('null', __('Student'), 'student', [], old('student'), __('Select'), ['placeholder' => __('Select')]) }} -->
 								<fieldset>
 									<legend>{{ __('Selected Student') }}</legend>
 									<ul class="list-group list-group-flush students">
@@ -94,10 +94,12 @@
 </div>
 @endsection
 
+
 @section('script')
 <script>
 	$(document).ready(function () {
 		$('select[name="school_id"]').change(function () {
+			$('[name="student_id[]"]').closest('.list-group-item').remove();
 			$('select[name="generation"], input[name="pic"]').prop('disabled', true);
             $('select[name="generation"]').val(null).change();
 			if ($(this).val() != '') {
@@ -185,54 +187,81 @@
 			}
 		});
 
-
-        $('select[name="generation"]').change(function () {
-			$('select[name="student"]').html('<option value="">{{ __('Select') }}</option>');
-	    	if ($(this).val() != '') {
-	    		$.ajax({
+		$('select[name="generation"]').change(function (){
+			$('[name="student_id[]"]').closest('.list-group-item').remove();
+			if ($(this).val() != '') {
+				$.ajax({
 					url : "{{ route('get.student') }}",
 					type: "POST",
 					dataType: "JSON",
-					data: {'_token' : '{{ csrf_token() }}', 'ssp' : true, 'school' : $('select[name="school_id"]').val(), 'generation' : $(this).val()},
+					data: {
+						'_token' : '{{ csrf_token() }}',
+						'generation' : $(this).val(),
+						'school' : $('select[name="school_id"]').val(),
+					},
 					success: function(data)
 					{
-						$.each(data.result, function(k, v) {
-						 	$('select[name="student"]').append('<option value="'+k+'">'+v+'</option>');
+						no = 1;
+						$.each(data.result, function( k, v ){
+							$('.students').append('<li class="student list-group-item d-flex justify-content-between align-items-center">' + no++ + ' <input type="hidden" name="student_id[]" value="'+k+'">'+v+'<a href="javascript:void()" onclick="deleteStudent('+"'"+k+"'"+')" class="badge badge-danger badge-pill badge-sm" title="{{ __('Delete') }}"><i class="fas fa-trash-alt"></i></a></li>');
+							$('select[name="student"]').val(null).change();
 						});
 					},
 					error: function (jqXHR, textStatus, errorThrown)
 					{
-						$('.sub-type option[value=""]').remove();
-						$('select[name="student"]').html('<option value="">{{ __('Select') }}</option>').attr('name', 'exam_sub_type[]').select2();
+						
 					}
 				});
-	    	}
+			}
 		});
 
-        $('select[name="student"]').change(function () {
-	    	if ($(this).val() != '') {
-	    		if ($('[name="student_id[]"][value="'+$(this).val()+'"]').length) {
-					swal('{{ __("Student have been selected.") }}', '', 'warning');
-					$('select[name="student"]').val(null).change();
-				} else {
-					$.ajax({
-						url : "{{ route('get.student') }}",
-						type: "POST",
-						dataType: "JSON",
-						data: {'_token' : '{{ csrf_token() }}', 'student' : $(this).val()},
-						success: function(data)
-						{
-							$('.students').append('<li class="student list-group-item d-flex justify-content-between align-items-center"><input type="hidden" name="student_id[]" value="'+data.result.id+'">'+data.result.name+'<a href="javascript:void()" onclick="deleteStudent('+"'"+data.result.id+"'"+')" class="badge badge-danger badge-pill" title="{{ __('Delete') }}"><i class="fas fa-trash-alt"></i></a></li>');
-							$('select[name="student"]').val(null).change();
-						},
-						error: function (jqXHR, textStatus, errorThrown)
-						{
+  //       $('select[name="generation"]').change(function () {
+		// 	$('select[name="student"]').html('<option value="">{{ __('Select') }}</option>');
+	 //    	if ($(this).val() != '') {
+	 //    		$.ajax({
+		// 			url : "{{ route('get.student') }}",
+		// 			type: "POST",
+		// 			dataType: "JSON",
+		// 			data: {'_token' : '{{ csrf_token() }}', 'ssp' : true, 'school' : $('select[name="school_id"]').val(), 'generation' : $(this).val()},
+		// 			success: function(data)
+		// 			{
+		// 				$.each(data.result, function(k, v) {
+		// 				 	$('select[name="student"]').append('<option value="'+k+'">'+v+'</option>');
+		// 				});
+		// 			},
+		// 			error: function (jqXHR, textStatus, errorThrown)
+		// 			{
+		// 				$('.sub-type option[value=""]').remove();
+		// 				$('select[name="student"]').html('<option value="">{{ __('Select') }}</option>').attr('name', 'exam_sub_type[]').select2();
+		// 			}
+		// 		});
+	 //    	}
+		// });
+
+    //     $('select[name="student"]').change(function () {
+	   //  	if ($(this).val() != '') {
+	   //  		if ($('[name="student_id[]"][value="'+$(this).val()+'"]').length) {
+				// 	swal('{{ __("Student have been selected.") }}', '', 'warning');
+				// 	$('select[name="student"]').val(null).change();
+				// } else {
+				// 	$.ajax({
+				// 		url : "{{ route('get.student') }}",
+				// 		type: "POST",
+				// 		dataType: "JSON",
+				// 		data: {'_token' : '{{ csrf_token() }}', 'student' : $(this).val()},
+				// 		success: function(data)
+				// 		{
+				// 			$('.students').append('<li class="student list-group-item d-flex justify-content-between align-items-center"><input type="hidden" name="student_id[]" value="'+data.result.id+'">'+data.result.name+'<a href="javascript:void()" onclick="deleteStudent('+"'"+data.result.id+"'"+')" class="badge badge-danger badge-pill" title="{{ __('Delete') }}"><i class="fas fa-trash-alt"></i></a></li>');
+				// 			$('select[name="student"]').val(null).change();
+				// 		},
+				// 		error: function (jqXHR, textStatus, errorThrown)
+				// 		{
 							
-						}
-					});
-				}
-	    	}
-	    });
+				// 		}
+				// 	});
+				// }
+	   //  	}
+	   //  });
 
         $('input[name="pic"]').click(function () {
 			if ($('input[name="pic"][value="2"]').is(':checked')) {

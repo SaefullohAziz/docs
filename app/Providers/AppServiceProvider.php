@@ -12,7 +12,6 @@ use App\Observers\ActivityObserver;
 use App\Observers\DocumentObserver;
 use App\Observers\SubsidyObserver;
 use App\Observers\TrainingObserver;
-use App\Observers\ExamReadinessObserver;
 use App\Observers\PaymentObserver;
 use App\Observers\ExamReadinessObserver;
 use Illuminate\Support\ServiceProvider;

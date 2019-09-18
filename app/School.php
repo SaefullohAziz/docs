@@ -84,6 +84,14 @@ class School extends Model
     }
 
     /**
+     * Get the teacher for the school.
+     */
+    public function teacher()
+    {
+        return $this->hasMany('App\Teacher');
+    }
+
+    /**
      * Get the student class for the school.
      */
     public function studentClass()
