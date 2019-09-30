@@ -14,8 +14,9 @@ class CreateActivityPhotosTable extends Migration
     public function up()
     {
         Schema::create('activity_photos', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->unsignedBigInteger('activity_id')->index();
+            $table->uuid('id');
+            $table->primary('id');
+            $table->uuid('activity_id')->index();
             $table->foreign('activity_id')->references('id')->on('activities')->onDelete('cascade')->onUpdate('cascade');
             $table->string('filename');
             $table->timestamps();

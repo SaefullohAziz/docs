@@ -3,9 +3,12 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\Uuids;
 
 class PaymentInstallment extends Model
 {
+    use Uuids;
+    
     /**
      * The attributes that aren't mass assignable.
      *

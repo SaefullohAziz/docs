@@ -14,10 +14,11 @@ class CreateExamReadinessSchoolsTable extends Migration
     public function up()
     {
         Schema::create('exam_readiness_schools', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->unsignedBigInteger('exam_type_id')->index();
+            $table->uuid('id');
+            $table->primary('id');
+            $table->uuid('exam_type_id')->index();
             $table->foreign('exam_type_id')->references('id')->on('exam_types')->onDelete('cascade')->onUpdate('cascade');
-            $table->unsignedBigInteger('school_id')->index();
+            $table->uuid('school_id')->index();
             $table->foreign('school_id')->references('id')->on('schools')->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
         });

@@ -323,11 +323,7 @@ Route::get('download/{dir}/{file}', function ($dir, $file) {
 })->name('download');
 
 Route::get('check', function () {
-	$user = App\Admin\User::where('username', 'user')->first();
-	if (Illuminate\Support\Facades\Hash::check('naonsih', $user->password)) {
-		return 'true';
-	}
-	return 'wrong';
+	dd(App\Admin\User::all());
 });
 
 Route::get('mailable', function () {

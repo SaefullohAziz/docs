@@ -14,10 +14,11 @@ class CreateSubsidyPaymentsTable extends Migration
     public function up()
     {
         Schema::create('subsidy_payments', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->unsignedBigInteger('subsidy_id')->index();
+            $table->uuid('id');
+            $table->primary('id');
+            $table->uuid('subsidy_id')->index();
             $table->foreign('subsidy_id')->references('id')->on('subsidies')->onDelete('cascade')->onUpdate('cascade');
-            $table->unsignedBigInteger('payment_id')->index();
+            $table->uuid('payment_id')->index();
             $table->foreign('payment_id')->references('id')->on('payments')->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
         });

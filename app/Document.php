@@ -4,10 +4,11 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Traits\Uuids;
 
 class Document extends Model
 {
-    use SoftDeletes;
+    use Uuids, SoftDeletes;
 
     /**
      * The attributes that aren't mass assignable.

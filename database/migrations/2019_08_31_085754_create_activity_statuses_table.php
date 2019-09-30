@@ -14,12 +14,13 @@ class CreateActivityStatusesTable extends Migration
     public function up()
     {
         Schema::create('activity_statuses', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->unsignedBigInteger('activity_id')->index();
+            $table->uuid('id');
+            $table->primary('id');
+            $table->uuid('activity_id')->index();
             $table->foreign('activity_id')->references('id')->on('activities')->onDelete('cascade')->onUpdate('cascade');
-            $table->unsignedBigInteger('status_id')->index();
+            $table->uuid('status_id')->index();
             $table->foreign('status_id')->references('id')->on('statuses')->onDelete('cascade')->onUpdate('cascade');
-            $table->unsignedBigInteger('log_id')->index();
+            $table->uuid('log_id')->index();
             $table->foreign('log_id')->references('id')->on('activity_logs')->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
         });

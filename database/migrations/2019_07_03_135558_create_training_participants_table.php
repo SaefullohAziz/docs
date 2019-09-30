@@ -14,10 +14,11 @@ class CreateTrainingParticipantsTable extends Migration
     public function up()
     {
         Schema::create('training_participants', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->unsignedBigInteger('training_id')->index();
+            $table->uuid('id');
+            $table->primary('id');
+            $table->uuid('training_id')->index();
             $table->foreign('training_id')->references('id')->on('trainings')->onDelete('cascade')->onUpdate('cascade');
-            $table->unsignedBigInteger('teacher_id')->index();
+            $table->uuid('teacher_id')->index();
             $table->foreign('teacher_id')->references('id')->on('teachers')->onDelete('cascade')->onUpdate('cascade');
             $table->string('status')->default('Absent');
             $table->string('presence_code')->nullable();

@@ -7,10 +7,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Notifications\Notifiable;
+use App\Traits\Uuids;
 
 class School extends Model
 {
-    use SoftDeletes, Notifiable;
+    use Uuids, SoftDeletes, Notifiable;
 
     /**
      * The attributes that are mass assignable.

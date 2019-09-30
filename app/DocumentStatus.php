@@ -3,9 +3,12 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\Uuids;
 
 class DocumentStatus extends Model
 {
+    use Uuids;
+    
     /**
      * Get the document that owns the document status.
      */

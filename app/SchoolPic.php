@@ -3,9 +3,12 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\Uuids;
 
 class SchoolPic extends Model
 {
+    use Uuids;
+    
     /**
      * Get the school that owns the school pic.
      */

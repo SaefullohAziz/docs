@@ -10,10 +10,11 @@ use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 use Spatie\MediaLibrary\File;
 use Spatie\MediaLibrary\Models\Media;
 use Spatie\Image\Manipulations;
+use App\Traits\Uuids;
 
 class User extends Authenticatable implements HasMedia
 {
-    use Notifiable, HasMediaTrait;
+    use Uuids, Notifiable, HasMediaTrait;
 
     /**
      * The attributes that are mass assignable.

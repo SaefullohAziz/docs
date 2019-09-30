@@ -14,10 +14,11 @@ class CreateSubsidyPicsTable extends Migration
     public function up()
     {
         Schema::create('subsidy_pics', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->unsignedBigInteger('subsidy_id')->index();
+            $table->uuid('id');
+            $table->primary('id');
+            $table->uuid('subsidy_id')->index();
             $table->foreign('subsidy_id')->references('id')->on('subsidies')->onDelete('cascade')->onUpdate('cascade');
-            $table->unsignedBigInteger('pic_id')->index();
+            $table->uuid('pic_id')->index();
             $table->foreign('pic_id')->references('id')->on('pics')->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
         });

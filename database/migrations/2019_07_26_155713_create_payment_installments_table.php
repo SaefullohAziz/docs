@@ -14,8 +14,9 @@ class CreatePaymentInstallmentsTable extends Migration
     public function up()
     {
         Schema::create('payment_installments', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->unsignedBigInteger('payment_id')->index();
+            $table->uuid('id');
+            $table->primary('id');
+            $table->uuid('payment_id')->index();
             $table->foreign('payment_id')->references('id')->on('payments')->onDelete('cascade')->onUpdate('cascade');
             $table->date('date');
             $table->decimal('total', 13, 4);

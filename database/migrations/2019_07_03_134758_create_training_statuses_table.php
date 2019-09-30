@@ -14,12 +14,13 @@ class CreateTrainingStatusesTable extends Migration
     public function up()
     {
         Schema::create('training_statuses', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->unsignedBigInteger('training_id')->index();
+            $table->uuid('id');
+            $table->primary('id');
+            $table->uuid('training_id')->index();
             $table->foreign('training_id')->references('id')->on('trainings')->onDelete('cascade')->onUpdate('cascade');
-            $table->unsignedBigInteger('status_id')->index();
+            $table->uuid('status_id')->index();
             $table->foreign('status_id')->references('id')->on('statuses')->onDelete('cascade')->onUpdate('cascade');
-            $table->unsignedBigInteger('log_id')->index();
+            $table->uuid('log_id')->index();
             $table->foreign('log_id')->references('id')->on('activity_logs')->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
         });

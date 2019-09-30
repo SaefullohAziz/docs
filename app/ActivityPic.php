@@ -3,9 +3,12 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\Uuids;
 
 class ActivityPic extends Model
 {
+    use Uuids;
+    
     /**
      * Get the activity that owns the activity pic.
      */
