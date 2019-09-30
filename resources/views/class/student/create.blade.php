@@ -40,11 +40,17 @@
 
 								{{ Form::bsSelect(null, __('Province') . ' *', 'province', $provinces, old('province'), __('Select'), ['placeholder' => __('Select'), 'required' => '']) }}
 
+								{{ Form::bsText(null, __('Date of Birth') . ' *', 'dateofbirth', old('dateofbirth'), __('DD-MM-YYYY'), ['required' => '']) }}
+
+								{{ Form::bsTextarea(null, __('Address') . ' *', 'address', old('address'), __('Address'), ['required' => '']) }}
+
 								{{ Form::bsText(null, __('NISN') . ' *', 'nisn', old('nisn'), __('NISN'), ['required' => '']) }}
 
 								{{ Form::bsEmail(null, __('E-Mail') . ' *', 'email', old('email'), __('E-Mail'), ['required' => ''], [__('Required to use Gmail')]) }}
 
 								{{ Form::bsSelect(null, __('Gender') . ' *', 'gender', ['Laki-Laki' => 'Laki-Laki', 'Perempuan' => 'Perempuan'], old('gender'), __('Select'), ['placeholder' => __('Select'), 'required' => '']) }}
+
+								{{ Form::bsPhoneNumber(null, __('Phone Number') . ' *', 'phone_number', old('phone_number'), __('Phone Number'), ['maxlength' => '13', 'required' => '']) }}
 							</fieldset>
 							<fieldset>
 								<legend>{{ __('Parents Data') }}</legend>
@@ -100,15 +106,9 @@
 
 								{{ Form::bsSelect(null, __('Number of siblings raised'), 'step_sibling_number', $siblingNumbers, old('step_sibling_number'), __('Select'), ['placeholder' => __('Select')]) }}
 
-								{{ Form::bsText(null, __('Date of Birth') . ' *', 'dateofbirth', old('dateofbirth'), __('DD-MM-YYYY'), ['required' => '']) }}
-
-								{{ Form::bsTextarea(null, __('Address') . ' *', 'address', old('address'), __('Address'), ['required' => '']) }}
-
 								{{ Form::bsTextarea(null, __('Father Address'), 'father_address', old('father_address'), __('Father Address')) }}
 
 								{{ Form::bsTextarea(null, __('Trustee Address'), 'trustee_address', old('trustee_address'), __('Trustee Address')) }}
-
-								{{ Form::bsPhoneNumber(null, __('Phone Number') . ' *', 'phone_number', old('phone_number'), __('Phone Number'), ['maxlength' => '13', 'required' => '']) }}
 
 								{{ Form::bsFile(null, __('Photo'), 'photo', old('photo'), [], [__('Photo with JPG/PNG format up to 5MB.')]) }}
 							</fieldset>	

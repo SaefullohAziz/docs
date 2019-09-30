@@ -26,7 +26,7 @@ class ExamReadinessController extends Controller
     {
         parent::__construct();
         $this->middleware('auth');
-        $this->table = 'exam_readiness';
+        $this->table = 'exam_readinesses';
     }
 
     /**
@@ -81,16 +81,16 @@ class ExamReadinessController extends Controller
      */
     public function create()
     {
-        if (auth()->user()->cant('create', ExamReadiness::class)) {
-            return redirect()->route('exam.readiness.index')->with('alert-danger', __($this->unauthorizedMessage) . ' ' . __('This school has no SSP students.'));
-        }
         $view = [
             'title' => __('Create Exam Readiness'),
             'breadcrumbs' => [
                 route('exam.readiness.index') => __('Exam Readiness'),
                 null => __('Create')
             ],
-            'types' => ExamType::orderBy('name', 'asc')->pluck('name', 'name')->toArray(),
+            'types' => ExamType::when(auth()->user()->cant('create', ExamReadiness::class), function ($query) {
+                $query->where('name', 'Axioo');
+                $query->orWhere('name', 'Remidial Axioo');
+            })->orderBy('name', 'asc')->pluck('name', 'name')->toArray(),
             'generations' => StudentClass::where('school_id', auth()->user()->school->id)->orderBy('generation', 'asc')->pluck('generation', 'generation')->toArray(),
             'referenceSchools' => School::has('ExamReadinessSchool')->pluck('name', 'name')->toArray()
         ];

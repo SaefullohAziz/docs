@@ -14,7 +14,7 @@
     </tr>
     <tr>
         <td>
-            <img src="{{ asset('storage/file/acp-logo-sm.png') }}" alt="" margin="2">
+            <img src="{{ asset('img/mails/acp-logo-sm.png') }}" alt="" margin="2">
         </td>
         <td>
             <small>

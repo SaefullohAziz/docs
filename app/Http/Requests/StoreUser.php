@@ -86,7 +86,9 @@ class StoreUser extends FormRequest
                         'unique:users,email'
                     ],
                     'password' => [],
-                    'password_confirmation' => [],
+                    'password_confirmation' => [
+                        'same:password'
+                    ],
                 ];
                 $rules = array_merge($rules, $addonRules);
             }

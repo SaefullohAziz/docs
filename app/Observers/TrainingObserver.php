@@ -2,7 +2,9 @@
 
 namespace App\Observers;
 
+use App\School;
 use App\Training;
+use App\Payment;
 use App\Status;
 use App\Notifications\TrainingWaited;
 use App\Notifications\TrainingApproved;
@@ -91,7 +93,7 @@ class TrainingObserver
      */
     public function createPayment($training)
     {
-        $training = Training::doesntHave('trainingPayment')->where('id', $id)->first();
+        $training = Training::doesntHave('trainingPayment')->where('id', $training->id)->first();
         if ($training) {
             if ($training->batch != 'Waiting') {
                 $payment = Payment::create([
@@ -132,9 +134,9 @@ class TrainingObserver
     {
         $school = School::findOrFail($training->school->id);
         if ($training->batch == 'Waiting') {
-            $school->notify(new TrainingWaited($training));
+            // $school->notify(new TrainingWaited($training));
         } elseif ($training->batch != 'Waiting') {
-            $school->notify(new TrainingApproved($training));
+            // $school->notify(new TrainingApproved($training));
         }
     }
 }

@@ -59,9 +59,9 @@ class ChangeSomeColumnOnStudentsTable extends Migration
             Schema::disableForeignKeyConstraints();
             $table->dropForeign(['class_id']);
             $table->dropColumn(['class_id']);
-            Schema::enableForeignKeyConstraints();
             $table->unsignedBigInteger('school_id')->index()->after('id');
             $table->foreign('school_id')->references('id')->on('schools')->onDelete('cascade')->onUpdate('cascade');
+            Schema::enableForeignKeyConstraints();
             $table->string('grade')->after('gender');
             $table->string('school_year')->after('gender');
             $table->string('generation')->after('gender');
