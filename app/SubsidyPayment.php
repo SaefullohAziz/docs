@@ -3,9 +3,12 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\Uuids;
 
 class SubsidyPayment extends Model
 {
+    use Uuids;
+    
     /**
      * Get the subsidy that owns the subsidy payment.
      */

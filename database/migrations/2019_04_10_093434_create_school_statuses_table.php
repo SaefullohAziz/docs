@@ -14,8 +14,9 @@ class CreateSchoolStatusesTable extends Migration
     public function up()
     {
         Schema::create('school_statuses', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->unsignedBigInteger('school_level_id')->index();
+            $table->uuid('id');
+            $table->primary('id');
+            $table->uuid('school_level_id')->index();
             $table->foreign('school_level_id')->references('id')->on('school_levels')->onDelete('cascade')->onUpdate('cascade');
             $table->string('order_by');
             $table->string('name');

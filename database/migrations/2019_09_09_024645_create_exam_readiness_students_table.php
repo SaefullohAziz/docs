@@ -14,10 +14,11 @@ class CreateExamReadinessStudentsTable extends Migration
     public function up()
     {
         Schema::create('exam_readiness_students', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->unsignedBigInteger('exam_readiness_id')->index();
+            $table->uuid('id');
+            $table->primary('id');
+            $table->uuid('exam_readiness_id')->index();
             $table->foreign('exam_readiness_id')->references('id')->on('exam_readinesses')->onDelete('cascade')->onUpdate('cascade');
-            $table->unsignedBigInteger('student_id')->index();
+            $table->uuid('student_id')->index();
             $table->foreign('student_id')->references('id')->on('students')->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
         });

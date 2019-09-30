@@ -80,6 +80,7 @@ class PaymentController extends Controller
             'types' => $this->types,
             'statuses' => Status::byNames(['Created', 'Processed', 'Approved', 'Sent', 'Refunded'])->pluck('name', 'id')->toArray(),
             'subsidyPayments' => Payment::with(['latestPaymentStatus.status'])->has('subsidy')->join('payment_statuses', 'payment_statuses.id', '=', DB::raw('(SELECT id FROM payment_statuses WHERE payment_statuses.payment_id = payments.id ORDER BY id DESC LIMIT 1)'))->join('statuses', 'payment_statuses.status_id', '=', 'statuses.id')->where('statuses.name', 'Published')->select('payments.*')->get(),
+            'trainingPayments' => Payment::with(['latestPaymentStatus.status'])->has('training')->join('payment_statuses', 'payment_statuses.id', '=', DB::raw('(SELECT id FROM payment_statuses WHERE payment_statuses.payment_id = payments.id ORDER BY id DESC LIMIT 1)'))->join('statuses', 'payment_statuses.status_id', '=', 'statuses.id')->where('statuses.name', 'Published')->select('payments.*')->get(),
         ];
         return view('payment.index', $view);
     }
@@ -255,6 +256,7 @@ class PaymentController extends Controller
                 route('payment.index') => __('Payment Confirmation'),
                 null => __('Edit')
             ],
+            'subtitle' => $payment->subsidy->count()?__('Subsidy').' '.$payment->subsidy[0]->type:__('Training').' '.$payment->training[0]->type,
             'types' => [
                 'Subsidi' => 'Subsidi', 
                 'Commitment Fee' => 'Commitment Fee', 

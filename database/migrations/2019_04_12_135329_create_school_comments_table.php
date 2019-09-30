@@ -14,10 +14,11 @@ class CreateSchoolCommentsTable extends Migration
     public function up()
     {
         Schema::create('school_comments', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->unsignedBigInteger('school_id')->index();
+            $table->uuid('id');
+            $table->primary('id');
+            $table->uuid('school_id')->index();
             $table->foreign('school_id')->references('id')->on('schools')->onDelete('cascade')->onUpdate('cascade');
-            $table->unsignedBigInteger('staff_id')->index();
+            $table->uuid('staff_id')->index();
             $table->foreign('staff_id')->references('id')->on('staffs')->onDelete('cascade')->onUpdate('cascade');
             $table->text('message');
             $table->timestamps();

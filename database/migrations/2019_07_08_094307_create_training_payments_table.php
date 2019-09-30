@@ -14,10 +14,11 @@ class CreateTrainingPaymentsTable extends Migration
     public function up()
     {
         Schema::create('training_payments', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->unsignedBigInteger('training_id')->index();
+            $table->uuid('id');
+            $table->primary('id');
+            $table->uuid('training_id')->index();
             $table->foreign('training_id')->references('id')->on('trainings')->onDelete('cascade')->onUpdate('cascade');
-            $table->unsignedBigInteger('payment_id')->index();
+            $table->uuid('payment_id')->index();
             $table->foreign('payment_id')->references('id')->on('payments')->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
         });

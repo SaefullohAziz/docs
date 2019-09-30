@@ -6,10 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Traits\Uuids;
 
 class ExamReadiness extends Model
 {
-    use SoftDeletes;
+    use Uuids, SoftDeletes;
 
     protected $fillable = ['school_id', 'exam_type', 'sub_exam_type', 'ma_status', 'reference_school', 'execution', 'token'];
 

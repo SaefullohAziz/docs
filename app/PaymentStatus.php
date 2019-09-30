@@ -3,9 +3,12 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\Uuids;
 
 class PaymentStatus extends Model
 {
+    use Uuids;
+    
     /**
      * Get the payment that owns the payment status.
      */

@@ -14,10 +14,11 @@ class CreateDocumentPicsTable extends Migration
     public function up()
     {
         Schema::create('document_pics', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->unsignedBigInteger('document_id')->index();
+            $table->uuid('id');
+            $table->primary('id');
+            $table->uuid('document_id')->index();
             $table->foreign('document_id')->references('id')->on('documents')->onDelete('cascade')->onUpdate('cascade');
-            $table->unsignedBigInteger('pic_id')->index();
+            $table->uuid('pic_id')->index();
             $table->foreign('pic_id')->references('id')->on('pics')->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
         });

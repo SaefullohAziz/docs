@@ -14,10 +14,11 @@ class CreateSspStudentsTable extends Migration
     public function up()
     {
         Schema::create('ssp_students', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->unsignedBigInteger('subsidy_id')->index();
+            $table->uuid('id');
+            $table->primary('id');
+            $table->uuid('subsidy_id')->index();
             $table->foreign('subsidy_id')->references('id')->on('subsidies')->onDelete('cascade')->onUpdate('cascade');
-            $table->unsignedBigInteger('student_id')->index();
+            $table->uuid('student_id')->index();
             $table->foreign('student_id')->references('id')->on('students')->onDelete('cascade')->onUpdate('cascade');
             $table->string('status')->default('Unpaid');
             $table->timestamps();

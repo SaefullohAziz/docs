@@ -5,9 +5,12 @@ namespace App;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\Uuids;
 
 class StudentClass extends Model
 {
+    use Uuids;
+    
      /**
      * The attributes that are mass assignable.
      *

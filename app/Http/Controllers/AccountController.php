@@ -9,6 +9,7 @@ use App\Http\Requests\StoreUser;
 use Validator;
 use Spatie\Image\Image;
 use Spatie\Image\Manipulations;
+use Illuminate\Support\Facades\Hash;
 
 class AccountController extends Controller
 {
@@ -99,9 +100,10 @@ class AccountController extends Controller
         $user = User::find(auth()->user()->id);
         $request->merge(['password' => $user->password]);
         if ($request->filled('password')) {
-            $request->merge(['password' => bcrypt($request->password)]);
+            $request->merge(['password' => Hash::make($request->password)]);
         }
         $user->fill($request->except(['username', 'name']));
+        $user->save();
         $this->uploadPhoto($user, $request);
         return redirect(url()->previous())->with('alert-success', $this->updatedMessage);
     }

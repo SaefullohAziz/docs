@@ -14,10 +14,11 @@ class CreateSchoolImplementationsTable extends Migration
     public function up()
     {
         Schema::create('school_implementations', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->unsignedBigInteger('school_id')->index();
+            $table->uuid('id');
+            $table->primary('id');
+            $table->uuid('school_id')->index();
             $table->foreign('school_id')->references('id')->on('schools')->onDelete('cascade')->onUpdate('cascade');
-            $table->unsignedBigInteger('department_id')->index();
+            $table->uuid('department_id')->index();
             $table->foreign('department_id')->references('id')->on('departments')->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
         });

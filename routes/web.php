@@ -114,6 +114,11 @@ Route::prefix('exam')->name('exam.')->group(function () {
 	]]);
 });
 
+// Attendance
+Route::resource('attendance', 'AttendanceController', ['except' => [
+	'destroy',
+]]);
+
 // Payment
 Route::prefix('payment')->name('payment.')->group(function () {
 	Route::post('list', 'PaymentController@list')->name('list');
@@ -260,7 +265,12 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
 		], 'except' => [
 			'destroy',
 		]]);
-    });
+	});
+	
+	// Attendance
+	Route::resource('attendance', 'AttendanceController', ['except' => [
+		'destroy',
+	]]);
 
 	// Payment
 	Route::prefix('payment')->name('payment.')->group(function () {
@@ -305,16 +315,19 @@ Route::get('locale/{locale}', function ($locale){
 });
 
 Route::get('download/{dir}/{file}', function ($dir, $file) {
-	return response()->download(storage_path('app/public/' . decrypt($dir) . '/' . decrypt($file)));
+	$path = storage_path('app/public/' . decrypt($dir) . '/' . decrypt($file));
+	if (file_exists(public_path(decrypt($dir) . '/' . decrypt($file)))) {
+		$path = public_path(decrypt($dir) . '/' . decrypt($file));
+	}
+	return response()->download($path);
 })->name('download');
 
 Route::get('check', function () {
-	$data = App\Student::get()->toArray();
-	return dd($data);
+	dd(App\Admin\User::all());
 });
 
 Route::get('mailable', function () {
-    $training = App\Training::find(5);
+    $school = App\School::first();
 
-    return new App\Mail\TrainingWaited($training);
+    return new App\Mail\SchoolCreated($school);
 });

@@ -3,6 +3,7 @@
 use Illuminate\Database\Seeder;
 use App\Admin\User;
 use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\Hash;
 
 class UsersTableSeeder extends Seeder
 {
@@ -17,7 +18,7 @@ class UsersTableSeeder extends Seeder
         	'username' => 'supersu',
         	'name' => 'Supersu',
         	'email' => 'supersu@example.com',
-        	'password' => bcrypt('rememberthat')
+        	'password' => Hash::make('rememberthat')
         ]);
         $supersu->assignRole('supersu');
 
@@ -25,7 +26,7 @@ class UsersTableSeeder extends Seeder
         	'username' => 'admin',
         	'name' => 'Admin',
         	'email' => 'admin@example.com',
-        	'password' => bcrypt('rememberthat')
+        	'password' => Hash::make('rememberthat')
         ]);
         $admin->assignRole('admin');
 
@@ -33,7 +34,7 @@ class UsersTableSeeder extends Seeder
         	'username' => 'finance',
         	'name' => 'Finance',
         	'email' => 'finance@example.com',
-        	'password' => bcrypt('rememberthat')
+        	'password' => Hash::make('rememberthat')
         ]);
         $finance->assignRole('finance');
 
@@ -41,7 +42,7 @@ class UsersTableSeeder extends Seeder
         	'username' => 'user',
         	'name' => 'User',
         	'email' => 'user@example.com',
-        	'password' => bcrypt('rememberthat')
+        	'password' => Hash::make('rememberthat')
         ]);
         $user->assignRole('user');
     }

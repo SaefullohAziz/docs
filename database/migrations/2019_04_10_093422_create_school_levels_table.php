@@ -14,7 +14,8 @@ class CreateSchoolLevelsTable extends Migration
     public function up()
     {
         Schema::create('school_levels', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->uuid('id');
+            $table->primary('id');
             $table->string('type');
             $table->string('name');
             $table->timestamps();

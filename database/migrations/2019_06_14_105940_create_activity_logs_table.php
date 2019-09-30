@@ -14,14 +14,15 @@ class CreateActivityLogsTable extends Migration
     public function up()
     {
         Schema::create('activity_logs', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->uuid('id');
+            $table->primary('id');
             $table->text('description');
             $table->string('created_by');
-            $table->unsignedBigInteger('staff_id')->index()->nullable();
+            $table->uuid('staff_id')->index()->nullable();
             $table->foreign('staff_id')->references('id')->on('staffs')->onDelete('set null')->onUpdate('cascade');
-            $table->unsignedBigInteger('user_id')->index()->nullable();
+            $table->uuid('user_id')->index()->nullable();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('set null')->onUpdate('cascade');
-            $table->unsignedBigInteger('school_id')->index()->nullable();
+            $table->uuid('school_id')->index()->nullable();
             $table->foreign('school_id')->references('id')->on('schools')->onDelete('set null')->onUpdate('cascade');
             $table->timestamps();
         });

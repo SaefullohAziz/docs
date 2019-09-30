@@ -14,10 +14,11 @@ class CreateSchoolPicsTable extends Migration
     public function up()
     {
         Schema::create('school_pics', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->unsignedBigInteger('school_id')->index();
+            $table->uuid('id');
+            $table->primary('id');
+            $table->uuid('school_id')->index();
             $table->foreign('school_id')->references('id')->on('schools')->onDelete('cascade')->onUpdate('cascade');
-            $table->unsignedBigInteger('pic_id')->index();
+            $table->uuid('pic_id')->index();
             $table->foreign('pic_id')->references('id')->on('pics')->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
         });

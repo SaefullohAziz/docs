@@ -8,10 +8,10 @@ use App\SchoolStatusUpdate;
 use Faker\Generator as Faker;
 
 $factory->define(SchoolStatusUpdate::class, function (Faker $faker) {
-    $status = SchoolStatus::byName('Daftar')->first();
+    $statuses = SchoolStatus::pluck('id')->toArray();
     $user = Staff::where('username', 'admin')->first();
     return [
-        'school_status_id' => $status->id,
+        'school_status_id' => $faker->randomElement($statuses),
         'created_by' => 'staff',
         'staff_id' => $user->id,
     ];

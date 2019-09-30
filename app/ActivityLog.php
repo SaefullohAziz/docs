@@ -3,9 +3,12 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\Uuids;
 
 class ActivityLog extends Model
 {
+    use Uuids;
+    
     /**
      * The attributes that are mass assignable.
      *

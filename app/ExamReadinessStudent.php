@@ -3,9 +3,12 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\Uuids;
 
 class ExamReadinessStudent extends Model
 {
+    use Uuids;
+    
     /**
      * Get the exam readiness that owns the exam readiness student.
      */

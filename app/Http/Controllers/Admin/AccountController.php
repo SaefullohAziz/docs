@@ -11,6 +11,7 @@ use DataTables;
 use Validator;
 use Spatie\Image\Image;
 use Spatie\Image\Manipulations;
+use Illuminate\Support\Facades\Hash;
 
 class AccountController extends Controller
 {
@@ -110,7 +111,7 @@ class AccountController extends Controller
             return redirect()->route('admin.account.index')->with('alert-danger', $this->noPermission);
         }
         Validator::make($request->all(), User::rules())->validate();
-        $request->merge(['password' => bcrypt($request->password)]);
+        $request->merge(['password' => Hash::make($request->password)]);
         $user = User::create($request->all());
         $this->uploadPhoto($user, $request);
         $user->assignRole('user');
@@ -196,9 +197,10 @@ class AccountController extends Controller
         }
         $request->merge(['password' => $user->password]);
         if ($request->filled('password')) {
-            $request->merge(['password' => bcrypt($request->password)]);
+            $request->merge(['password' => Hash::make($request->password)]);
         }
         $user->fill($request->all());
+        $user->save();
         $this->uploadPhoto($user, $request);
         return redirect(url()->previous())->with('alert-success', $this->updatedMessage);
     }

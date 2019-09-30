@@ -14,7 +14,8 @@ class CreateExamTypesTable extends Migration
     public function up()
     {
         Schema::create('exam_types', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->uuid('id');
+            $table->primary('id');
             $table->string('name');
             $table->string('sub_name')->nullable();
             $table->text('description')->nullable();

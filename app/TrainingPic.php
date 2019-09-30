@@ -3,9 +3,12 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\Uuids;
 
 class TrainingPic extends Model
 {
+    use Uuids;
+    
     /**
      * Get the training that owns the training pic.
      */

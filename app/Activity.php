@@ -6,10 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Traits\Uuids;
 
 class Activity extends Model
 {
-    use SoftDeletes;
+    use Uuids, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
