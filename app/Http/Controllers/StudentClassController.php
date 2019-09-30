@@ -202,6 +202,7 @@ class StudentClassController extends Controller
             'grade' => 'Kelas 10'
         ]);
         $studentClass->fill($request->except(['_token', 'submit']));
+        $studentClass->save();
         return redirect(url()->previous())->with('alert-success', $this->createdMessage);
     }
 
