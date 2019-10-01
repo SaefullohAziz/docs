@@ -19,7 +19,6 @@ use Faker\Generator as Faker;
 $factory->define(User::class, function (Faker $faker) {
     $gender = $faker->randomElement(['male', 'female']);
     return [
-        'username' => $faker->unique()->userName,
         'name' => $faker->unique()->name($gender),
         'email' => $faker->unique()->safeEmail,
         'email_verified_at' => now(),
