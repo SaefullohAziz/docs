@@ -43,6 +43,20 @@ class Student extends Model
     }
 
     /**
+     * Get the avatar.
+     *
+     * @param  string  $value
+     * @return string
+     */
+    public function getAvatarAttribute()
+    {
+        if ($this->attributes['photo'] == 'default.png') {
+            return '/img/avatar/default.png';
+        }
+        return '/storage/student/photo/'.$this->attributes['photo'];
+    }
+
+    /**
      * Main query for listing
      * 
      * @param  \Illuminate\Http\Request  $request

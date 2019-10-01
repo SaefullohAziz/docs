@@ -2,7 +2,7 @@
 
 namespace App\Exports;
 
-use App\Training;
+use App\Teacher;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithHeadings;
@@ -17,9 +17,9 @@ use PhpOffice\PhpSpreadsheet\Cell\DataType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class TrainingsExport implements ShouldAutoSize, WithEvents
+class TeachersExport implements ShouldAutoSize, WithEvents
 {
-    use Exportable, RegistersEventListeners;
+	use Exportable, RegistersEventListeners;
 
     /**
      * Instantiate a new class instance.
@@ -36,7 +36,7 @@ class TrainingsExport implements ShouldAutoSize, WithEvents
      */
     public function get()
     {
-    	return Training::list($this->request)->get()->toArray();
+    	return Teacher::list($this->request)->get()->toArray();
     }
 
     /**
@@ -46,23 +46,12 @@ class TrainingsExport implements ShouldAutoSize, WithEvents
     {
     	return [
     		['column' => 'created_at', 'title' => 'Created At'], 
-    		['column' => 'school', 'title' => 'School'], 
-    		['column' => 'type', 'title' => 'Type'],
-            ['column' => 'has_asset', 'title' => 'Asset'],
-            ['column' => 'date', 'title' => 'Date'],
-            ['column' => 'until_date', 'title' => 'Until Date'],
-            ['column' => 'implementation', 'title' => 'Implementation'],
-            ['column' => 'approval_code', 'title' => 'Approval Code'],
-            ['column' => 'room_type', 'title' => 'Room Type'],
-            ['column' => 'room_size', 'title' => 'Room Size'],
-            ['column' => 'booking_code', 'title' => 'Booking Code'],
-            ['column' => 'batch', 'title' => 'Batch'],
-            ['column' => 'detail', 'title' => 'Detail'],
-    		['column' => 'pic_name', 'title' => 'PIC Name'],
-    		['column' => 'pic_position', 'title' => 'PIC Position'],
-    		['column' => 'pic_phone_number', 'title' => 'PIC Phone Number'],
-    		['column' => 'pic_email', 'title' => 'PIC E-Mail'],
-    		['column' => 'status', 'title' => 'Status'],
+    		['column' => 'name', 'title' => 'Name'], 
+    		['column' => 'school', 'title' => 'School'],
+    		['column' => 'gender', 'title' => 'Gender'],
+    		['column' => 'position', 'title' => 'Position'],
+    		['column' => 'email', 'title' => 'E-Mail'],
+    		['column' => 'phone_number', 'title' => 'Phone Number'],
     	];
     }
 

@@ -129,7 +129,6 @@ class SchoolController extends Controller
         $request->merge([
             'department' => implode(', ', $request->department),
             'reference' => implode(', ', $request->reference),
-            'code' => Str::random(10),
         ]);
         $school = School::create($request->all());
         $school->document = $this->uploadDocument($school, $request);

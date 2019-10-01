@@ -9,7 +9,6 @@ $factory->define(Teacher::class, function (Faker $faker) {
     $gender = $faker->randomElement(['male', 'female']);
     $genders = ['male' => 'Laki-Laki', 'female' => 'Perempuan'];
     return [
-        'username' => $faker->unique()->userName,
         'name' => $faker->name($gender),
         'position' => 'Guru Umum',
         'gender' => $genders[$gender],

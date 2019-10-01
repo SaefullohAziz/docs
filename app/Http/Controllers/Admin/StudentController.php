@@ -195,7 +195,7 @@ class StudentController extends Controller
         $student = $studentClass->student()->create($request->except(['terms', 'submit']));
         $student->photo = $this->uploadPhoto($student, $request);
         $student->save();
-        return redirect(url()->previous())->with('alert-success', $this->createdMessage);
+        return redirect(url()->previous())->with('alert-success', __($this->createdMessage));
     }
 
     /**
@@ -304,11 +304,11 @@ class StudentController extends Controller
         $student = $student->fill($request->except(['terms', 'submit']));
         $student->photo = $this->uploadPhoto($student, $request, $student->photo);
         $student->save();
-        return redirect(url()->previous())->with('alert-success', $this->updatedMessage);
+        return redirect(url()->previous())->with('alert-success', __($this->updatedMessage));
     }
 
     /**
-     * Upload photo for student
+     * Upload photo
      * 
      * @param  \App\Student  $student
      * @param  \Illuminate\Http\Request  $request

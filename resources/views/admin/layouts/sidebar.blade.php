@@ -21,6 +21,12 @@
           <i class="fa fa-university"></i> <span>{{ __('School') }}</span>
         </a>
       </li>
+      <!-- Teacher -->
+      <li class="{{ (request()->is('admin/teacher')||request()->is('admin/teacher/*')?'active':'') }}">
+        <a class="nav-link" href="{{ route('admin.teacher.index') }}">
+          <i class="fa fa-user-check"></i> <span>{{ __('Teacher') }}</span>
+        </a>
+      </li>
       <!-- Class: student -->
       <li class="{{ (request()->is('admin/class')||request()->is('admin/class/*')?'active':'') }}">
         <a class="nav-link" href="{{ route('admin.class.index') }}">

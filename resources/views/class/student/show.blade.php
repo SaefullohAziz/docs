@@ -5,7 +5,7 @@
 	<div class="col-12 col-md-12 col-lg-4">
 		<div class="card profile-widget">
 			<div class="profile-widget-header">                     
-				<img alt="image" src="{{ asset('storage/student/photo/'.$data->photo) }}" class="rounded-circle profile-widget-picture">
+				<img alt="image" src="{{ asset($data->avatar) }}" class="rounded-circle profile-widget-picture">
 			</div>
 			<div class="profile-widget-description">
 				<div class="profile-widget-name">{{ $data->name }} <div class="text-muted d-inline font-weight-normal"><div class="slash"></div> {{ $data->email }}</div></div>

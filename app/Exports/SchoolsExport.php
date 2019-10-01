@@ -97,7 +97,7 @@ class SchoolsExport implements ShouldAutoSize, WithEvents
                 // Content
                 $count = 1;
                 foreach ($this->get() as $data) {
-                    $event->writer->getActiveSheet()->setCellValue(Coordinate::stringFromColumnIndex($count).($count+1), $count);
+                    $event->writer->getActiveSheet()->setCellValue(Coordinate::stringFromColumnIndex(1).($count+1), $count);
                     $subCount = 2;
                     foreach ($this->worksheets() as $worksheet) {
                         $event->writer->getActiveSheet()->setCellValueExplicit(Coordinate::stringFromColumnIndex($subCount).($count+1), $data->{$worksheet['column']}, DataType::TYPE_STRING);

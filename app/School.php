@@ -14,6 +14,19 @@ class School extends Model
     use Uuids, SoftDeletes, Notifiable;
 
     /**
+     * The "booting" method of the model.
+     *
+     * @return void
+     */
+    protected static function boot()
+    {
+        parent::boot();
+        static::creating(function ($model) {
+            $model->code = mt_rand(1000000, 9999999);
+        });
+    }
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var array

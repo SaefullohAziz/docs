@@ -8,6 +8,17 @@ use App\Notifications\SchoolCreated;
 class SchoolObserver
 {
     /**
+     * Handle the school "creating" event.
+     *
+     * @param  \App\School  $school
+     * @return void
+     */
+    public function creating(School $school)
+    {
+        // $school->code = mt_rand(1000000, 9999999);
+    }
+
+    /**
      * Handle the school "created" event.
      *
      * @param  \App\School  $school

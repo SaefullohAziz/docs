@@ -39,8 +39,7 @@ $factory->define(School::class, function (Faker $faker) {
         'dealer_name' => null, 
         'dealer_phone_number' => null, 
         'dealer_email' => null, 
-        'proposal' => $faker->randomElement(['Sudah', 'Belum']), 
-        'code' => Str::random(10),
+        'proposal' => $faker->randomElement(['Sudah', 'Belum']),
     ];
 });
 
