@@ -19,7 +19,7 @@ class TrainingObserver
      */
     public function created(Training $training)
     {
-        $this->saveStatus($training, 'Created', 'Mendaftar program training.');
+        saveStatus($training, 'Created', 'Mendaftar program training.');
         $this->createPayment($training);
         $this->sendNotification($training);
     }
@@ -32,7 +32,7 @@ class TrainingObserver
      */
     public function updated(Training $training)
     {
-        $this->saveStatus($training, 'Edited', 'Mengubah pendaftaran training.');
+        saveStatus($training, 'Edited', 'Mengubah pendaftaran training.');
     }
 
     /**
@@ -69,24 +69,6 @@ class TrainingObserver
     }
 
     /**
-     * Save status
-     * 
-     * @param  \App\Training  $training
-     * @param  string  $status
-     * @param  string  $desc
-     */
-    public function saveStatus($training, $status, $desc)
-    {
-        $log = actlog($desc);
-        $status = Status::byName($status)->first();
-        $training->status()->attach($status->id, [
-            'log_id' => $log,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
-    }
-
-    /**
      * Create payment
      * 
      * @param  \App\Training  $training
@@ -100,29 +82,13 @@ class TrainingObserver
                     'school_id' => $training->school->id,
                     'type' => 'Commitment Fee'
                 ]);
-                $this->savePaymentStatus($payment, 'Published', 'Menerbitkan konfirmasi pembayaran.');
+                saveStatus($payment, 'Published', 'Menerbitkan konfirmasi pembayaran.');
                 $training->payment()->attach($payment->id, [
                     'created_at' => now(),
                     'updated_at' => now(),
                 ]);
             }
         }
-    }/**
-     * Save payment status
-     * 
-     * @param  \App\Payment  $payment
-     * @param  string  $status
-     * @param  string  $desc
-     */
-    public function savePaymentStatus($payment, $status, $desc)
-    {
-        $log = actlog($desc);
-        $status = Status::byName($status)->first();
-        $payment->status()->attach($status->id, [
-            'log_id' => $log,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
     }
 
     /**

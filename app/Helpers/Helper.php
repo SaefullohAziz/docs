@@ -47,6 +47,26 @@ if ( ! function_exists('actlog')) {
     }
 }
 
+if ( ! function_exists('saveStatus')) {
+    /**
+     * Save related data status
+     * 
+     * @param  \App\Model $model  Related model data
+     * @param  string $status Name of status
+     * @param  string $desc   Description for log
+     */
+    function saveStatus($model, $status, $desc)
+    {
+        $log = actlog($desc);
+        $status = App\Status::byName($status)->first();
+        $model->status()->attach($status->id, [
+            'log_id' => $log,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+    }
+}
+
 if ( ! function_exists('schoolYear')) {
 
     /**

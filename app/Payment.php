@@ -47,7 +47,7 @@ class Payment extends Model
      */
     public function latestPaymentStatus()
     {
-        return $this->hasOne('App\PaymentStatus')->orderBy('id', 'desc')->limit(1);
+        return $this->hasOne('App\PaymentStatus')->orderBy('created_at', 'desc')->limit(1);
     }
 
     /**
@@ -55,7 +55,7 @@ class Payment extends Model
      */
     public function status()
     {
-        return $this->belongsToMany('App\Status', 'payment_statuses');
+        return $this->belongsToMany('App\Status', 'payment_statuses')->using('App\PaymentStatus');
     }
 
     /**
@@ -71,7 +71,7 @@ class Payment extends Model
      */
     public function subsidy()
     {
-        return $this->belongsToMany('App\Subsidy', 'subsidy_payments');
+        return $this->belongsToMany('App\Subsidy', 'subsidy_payments')->using('App\SubsidyPayment');
     }
 
     /**
@@ -87,7 +87,7 @@ class Payment extends Model
      */
     public function training()
     {
-        return $this->belongsToMany('App\Training', 'training_payments');
+        return $this->belongsToMany('App\Training', 'training_payments')->using('App\TrainingPayment');
     }
 
     /**
@@ -98,7 +98,7 @@ class Payment extends Model
     public static function get(Request $request)
     {
         return DB::table('payments')
-            ->join('payment_statuses', 'payment_statuses.id', '=', DB::raw('(SELECT id FROM payment_statuses WHERE payment_statuses.payment_id = payments.id ORDER BY id DESC LIMIT 1)'))
+            ->join('payment_statuses', 'payment_statuses.id', '=', DB::raw('(SELECT id FROM payment_statuses WHERE payment_statuses.payment_id = payments.id ORDER BY created_at DESC LIMIT 1)'))
             ->join('statuses', 'payment_statuses.status_id', '=', 'statuses.id')
             ->join('activity_logs', 'payment_statuses.log_id', '=', 'activity_logs.id')
             ->leftJoin('users', 'activity_logs.user_id', '=', 'users.id')

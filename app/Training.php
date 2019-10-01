@@ -39,7 +39,7 @@ class Training extends Model
      */
     public function participant()
     {
-        return $this->belongsToMany('App\Teacher', 'training_participants', 'training_id', 'teacher_id');
+        return $this->belongsToMany('App\Teacher', 'training_participants', 'training_id', 'teacher_id')->using('App\TrainingParticipant');
     }
 
     /**
@@ -55,7 +55,7 @@ class Training extends Model
      */
     public function latestTrainingStatus()
     {
-        return $this->hasOne('App\TrainingStatus')->orderBy('id', 'desc')->limit(1);
+        return $this->hasOne('App\TrainingStatus')->orderBy('created_at', 'desc')->limit(1);
     }
 
     /**
@@ -63,7 +63,7 @@ class Training extends Model
      */
     public function status()
     {
-        return $this->belongsToMany('App\Status', 'training_statuses');
+        return $this->belongsToMany('App\Status', 'training_statuses')->using('App\TrainingStatus');
     }
 
     /**
@@ -79,7 +79,7 @@ class Training extends Model
      */
     public function pic()
     {
-        return $this->belongsToMany('App\Pic', 'training_pics');
+        return $this->belongsToMany('App\Pic', 'training_pics')->using('App\TrainingPic');
     }
 
     /**
@@ -95,7 +95,7 @@ class Training extends Model
      */
     public function payment()
     {
-        return $this->belongsToMany('App\Payment', 'training_payments');
+        return $this->belongsToMany('App\Payment', 'training_payments')->using('App\TrainingPayment');
     }
 
     /**
@@ -106,7 +106,7 @@ class Training extends Model
     public static function get(Request $request)
     {
         return DB::table('trainings')
-            ->join('training_statuses', 'training_statuses.id', '=', DB::raw('(SELECT id FROM training_statuses WHERE training_statuses.training_id = trainings.id ORDER BY id DESC LIMIT 1)'))
+            ->join('training_statuses', 'training_statuses.id', '=', DB::raw('(SELECT id FROM training_statuses WHERE training_statuses.training_id = trainings.id ORDER BY created_at DESC LIMIT 1)'))
             ->join('statuses', 'training_statuses.status_id', '=', 'statuses.id')
             ->join('activity_logs', 'training_statuses.log_id', '=', 'activity_logs.id')
             ->leftJoin('users', 'activity_logs.user_id', '=', 'users.id')

@@ -46,7 +46,7 @@ class School extends Model
      */
     public function status()
     {
-        return $this->belongsToMany('App\SchoolStatus', 'school_status_updates');
+        return $this->belongsToMany('App\SchoolStatus', 'school_status_updates')->using('App\SchoolStatusUpdate');
     }
 
     /**
@@ -62,7 +62,7 @@ class School extends Model
      */
     public function pic()
     {
-        return $this->belongsToMany('App\Pic', 'school_pics');
+        return $this->belongsToMany('App\Pic', 'school_pics')->using('App\SchoolPic');
     }
 
     /**
@@ -130,6 +130,14 @@ class School extends Model
     }
 
     /**
+     * Get the training for the school.
+     */
+    public function training()
+    {
+        return $this->hasMany('App\Training');
+    }
+
+    /**
      * Get the exam readiness for the school.
      */
     public function examReadiness()
@@ -175,7 +183,7 @@ class School extends Model
             ->leftJoin('provinces', 'schools.province', '=', 'provinces.name')
             ->join('school_pics', 'schools.id', '=', 'school_pics.school_id')
             ->join('pics', 'school_pics.pic_id', '=', 'pics.id')
-            ->join('school_status_updates', 'school_status_updates.id', '=', DB::raw('(SELECT id FROM school_status_updates WHERE school_status_updates.school_id = schools.id ORDER BY id DESC LIMIT 1)'))
+            ->join('school_status_updates', 'school_status_updates.id', '=', DB::raw('(SELECT id FROM school_status_updates WHERE school_status_updates.school_id = schools.id ORDER BY created_at DESC LIMIT 1)'))
             ->join('school_statuses', 'school_status_updates.school_status_id', '=', 'school_statuses.id')
             ->join('school_levels', 'school_statuses.school_level_id', '=', 'school_levels.id')
             ->leftJoin('staffs AS status_staff', function ($join) {

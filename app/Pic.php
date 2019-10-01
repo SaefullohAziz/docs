@@ -29,7 +29,39 @@ class Pic extends Model
      */
     public function school()
     {
-        return $this->belongsToMany('App\School', 'school_pics');
+        return $this->belongsToMany('App\School', 'school_pics')->using('App\SchoolPic');
+    }
+
+    /**
+     * Get the document status for the pic.
+     */
+    public function documentPic()
+    {
+        return $this->hasMany('App\DocumentPic');
+    }
+
+    /**
+     * The document that belong to the pic.
+     */
+    public function document()
+    {
+        return $this->belongsToMany('App\Document', 'document_pics')->using('App\DocumentPic');
+    }
+
+    /**
+     * Get the activity status for the pic.
+     */
+    public function activityPic()
+    {
+        return $this->hasMany('App\ActivityPic');
+    }
+
+    /**
+     * The activity that belong to the pic.
+     */
+    public function activity()
+    {
+        return $this->belongsToMany('App\Activity', 'activity_pics')->using('App\ActivityPic');
     }
 
     /**
@@ -45,7 +77,7 @@ class Pic extends Model
      */
     public function subsidy()
     {
-        return $this->belongsToMany('App\Subsidy', 'subsidy_pics');
+        return $this->belongsToMany('App\Subsidy', 'subsidy_pics')->using('App\SubsidyPic');
     }
 
     /**
@@ -61,7 +93,23 @@ class Pic extends Model
      */
     public function training()
     {
-        return $this->belongsToMany('App\Training', 'training_pics');
+        return $this->belongsToMany('App\Training', 'training_pics')->using('App\TrainingPic');
+    }
+
+    /**
+     * Get the exam readiness status for the pic.
+     */
+    public function examReadinessPic()
+    {
+        return $this->hasMany('App\ExamReadinessPic');
+    }
+
+    /**
+     * The exam readiness that belong to the pic.
+     */
+    public function examReadiness()
+    {
+        return $this->belongsToMany('App\ExamReadiness', 'exam_readiness_pics')->using('App\ExamReadinessPic');
     }
 
     /**

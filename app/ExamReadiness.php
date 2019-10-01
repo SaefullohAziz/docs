@@ -32,7 +32,7 @@ class ExamReadiness extends Model
     /**
      * Get the exam readiness students for the exam readiness.
      */
-    public function examReadinessStusent()
+    public function examReadinessStudent()
     {
         return $this->hasMany('App\ExamReadinessStudent');
     }
@@ -42,7 +42,7 @@ class ExamReadiness extends Model
      */
     public function student()
     {
-        return $this->belongsToMany('App\Student', 'exam_readiness_students');
+        return $this->belongsToMany('App\Student', 'exam_readiness_students')->using('App\ExamReadinessStudent');
     }
 
     /**
@@ -58,7 +58,7 @@ class ExamReadiness extends Model
      */
     public function latestExamReadinessStatus()
     {
-        return $this->hasOne('App\ExamReadinessStatus')->orderBy('id', 'desc')->limit(1);
+        return $this->hasOne('App\ExamReadinessStatus')->orderBy('created_at', 'desc')->limit(1);
     }
 
     /**
@@ -66,7 +66,7 @@ class ExamReadiness extends Model
      */
     public function status()
     {
-        return $this->belongsToMany('App\Status', 'exam_readiness_statuses');
+        return $this->belongsToMany('App\Status', 'exam_readiness_statuses')->using('App\ExamReadinessStatus');
     }
 
     /**
@@ -82,7 +82,7 @@ class ExamReadiness extends Model
      */
     public function pic()
     {
-        return $this->belongsToMany('App\Pic', 'exam_readiness_pics');
+        return $this->belongsToMany('App\Pic', 'exam_readiness_pics')->using('App\ExamReadinessPic');
     }
 
     /**
@@ -93,7 +93,7 @@ class ExamReadiness extends Model
     public static function get(Request $request)
     {
         return DB::table('exam_readinesses')
-            ->join('exam_readiness_statuses', 'exam_readiness_statuses.id', '=', DB::raw('(SELECT id FROM exam_readiness_statuses WHERE exam_readiness_statuses.exam_readiness_id = exam_readinesses.id ORDER BY id DESC LIMIT 1)'))
+            ->join('exam_readiness_statuses', 'exam_readiness_statuses.id', '=', DB::raw('(SELECT id FROM exam_readiness_statuses WHERE exam_readiness_statuses.exam_readiness_id = exam_readinesses.id ORDER BY created_at DESC LIMIT 1)'))
             ->join('statuses', 'exam_readiness_statuses.status_id', '=', 'statuses.id')
             ->join('activity_logs', 'exam_readiness_statuses.log_id', '=', 'activity_logs.id')
             ->leftJoin('users', 'activity_logs.user_id', '=', 'users.id')

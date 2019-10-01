@@ -42,14 +42,7 @@ class CancelSubsidy
     {
         foreach ($request->selectedData as $id) {
             $subsidy = Subsidy::find($id);
-            $log = actlog($desc);
-            $status = Status::byName($status)->first();
-            $subsidy->status()->attach($status->id, [
-                'log_id' => $log,
-                'description' => $request->description,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
+            saveStatus($subsidy, $status, $desc);
         }
     }
 }

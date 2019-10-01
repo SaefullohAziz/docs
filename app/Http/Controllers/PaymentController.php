@@ -79,8 +79,8 @@ class PaymentController extends Controller
             ],
             'types' => $this->types,
             'statuses' => Status::byNames(['Created', 'Processed', 'Approved', 'Sent', 'Refunded'])->pluck('name', 'id')->toArray(),
-            'subsidyPayments' => Payment::with(['latestPaymentStatus.status'])->has('subsidy')->join('payment_statuses', 'payment_statuses.id', '=', DB::raw('(SELECT id FROM payment_statuses WHERE payment_statuses.payment_id = payments.id ORDER BY id DESC LIMIT 1)'))->join('statuses', 'payment_statuses.status_id', '=', 'statuses.id')->where('statuses.name', 'Published')->select('payments.*')->get(),
-            'trainingPayments' => Payment::with(['latestPaymentStatus.status'])->has('training')->join('payment_statuses', 'payment_statuses.id', '=', DB::raw('(SELECT id FROM payment_statuses WHERE payment_statuses.payment_id = payments.id ORDER BY id DESC LIMIT 1)'))->join('statuses', 'payment_statuses.status_id', '=', 'statuses.id')->where('statuses.name', 'Published')->select('payments.*')->get(),
+            'subsidyPayments' => Payment::with(['latestPaymentStatus.status'])->has('subsidy')->join('payment_statuses', 'payment_statuses.id', '=', DB::raw('(SELECT id FROM payment_statuses WHERE payment_statuses.payment_id = payments.id ORDER BY created_at DESC LIMIT 1)'))->join('statuses', 'payment_statuses.status_id', '=', 'statuses.id')->where('statuses.name', 'Published')->select('payments.*')->get(),
+            'trainingPayments' => Payment::with(['latestPaymentStatus.status'])->has('training')->join('payment_statuses', 'payment_statuses.id', '=', DB::raw('(SELECT id FROM payment_statuses WHERE payment_statuses.payment_id = payments.id ORDER BY created_at DESC LIMIT 1)'))->join('statuses', 'payment_statuses.status_id', '=', 'statuses.id')->where('statuses.name', 'Published')->select('payments.*')->get(),
         ];
         return view('payment.index', $view);
     }
@@ -156,7 +156,7 @@ class PaymentController extends Controller
         $payment = Payment::create($request->all());
         $payment->payment_receipt = $this->uploadPaymentReceipt($payment, $request);
         $payment->save();
-        return redirect(url()->previous())->with('alert-success', $this->createdMessage);
+        return redirect(url()->previous())->with('alert-success', __($this->createdMessage));
     }
 
     /**
@@ -176,6 +176,7 @@ class PaymentController extends Controller
                 route('payment.index') => __('Payment Confirmation'),
                 null => __('Detail')
             ],
+            'subtitle' => $payment->subsidy->count()?__('Subsidy').' '.$payment->subsidy[0]->type:__('Training').' '.$payment->training[0]->type,
             'types' => array_merge($this->types, [
                 'Subsidi' => 'Subsidi', 
                 'Commitment Fee' => 'Commitment Fee', 
@@ -205,6 +206,7 @@ class PaymentController extends Controller
                 route('payment.index') => __('Payment Confirmation'),
                 null => __('Edit')
             ],
+            'subtitle' => $payment->subsidy->count()?__('Subsidy').' '.$payment->subsidy[0]->type:__('Training').' '.$payment->training[0]->type,
             'types' => array_merge($this->types, [
                 'Subsidi' => 'Subsidi', 
                 'Commitment Fee' => 'Commitment Fee', 
@@ -236,7 +238,7 @@ class PaymentController extends Controller
         $payment->fill($request->all());
         $payment->payment_receipt = $this->uploadPaymentReceipt($payment, $request, $payment->payment_receipt);
         $payment->save();
-        return redirect(url()->previous())->with('alert-success', $this->updatedMessage);
+        return redirect(url()->previous())->with('alert-success', __($this->updatedMessage));
     }
 
     /**
@@ -285,6 +287,9 @@ class PaymentController extends Controller
         if (auth()->user()->cant('confirm', $payment)) {
             return redirect()->route('payment.index')->with('alert-danger', $this->noPermission);
         }
+        if ($payment->training()->count()) {
+            $request->merge(['repayment' => 'Paid in cash']);
+        }
         $request->merge([
             'date' => date('Y-m-d', strtotime($request->date)),
             'total' => str_replace(',', '', $request->total),
@@ -313,7 +318,7 @@ class PaymentController extends Controller
             }
         }
         $payment->save();
-        return redirect(url()->previous())->with('alert-success', $this->updatedMessage);
+        return redirect(url()->previous())->with('alert-success', __($this->updatedMessage));
     }
 
     /**
@@ -353,6 +358,6 @@ class PaymentController extends Controller
     public function destroy(Request $request)
     {
         Payment::destroy($request->selectedData);
-        return response()->json(['status' => true, 'message' => $this->deletedMessage]);
+        return response()->json(['status' => true, 'message' => __($this->deletedMessage)]);
     }
 }

@@ -39,7 +39,7 @@ class Subsidy extends Model
      */
     public function student()
     {
-        return $this->belongsToMany('App\Student', 'ssp_students');
+        return $this->belongsToMany('App\Student', 'ssp_students')->using('App\SspStudent');
     }
 
     /**
@@ -55,7 +55,7 @@ class Subsidy extends Model
      */
     public function latestSubsidyStatus()
     {
-        return $this->hasOne('App\SubsidyStatus')->orderBy('id', 'desc')->limit(1);
+        return $this->hasOne('App\SubsidyStatus')->orderBy('created_at', 'desc')->limit(1);
     }
 
     /**
@@ -63,7 +63,7 @@ class Subsidy extends Model
      */
     public function status()
     {
-        return $this->belongsToMany('App\Status', 'subsidy_statuses');
+        return $this->belongsToMany('App\Status', 'subsidy_statuses')->using('App\SubsidyStatus');
     }
 
     /**
@@ -79,7 +79,7 @@ class Subsidy extends Model
      */
     public function pic()
     {
-        return $this->belongsToMany('App\Pic', 'subsidy_pics');
+        return $this->belongsToMany('App\Pic', 'subsidy_pics')->using('App\SubsidyPic');
     }
 
     /**
@@ -95,7 +95,7 @@ class Subsidy extends Model
      */
     public function payment()
     {
-        return $this->belongsToMany('App\Payment', 'subsidy_payments');
+        return $this->belongsToMany('App\Payment', 'subsidy_payments')->using('App\SubsidyPayment');
     }
 
     /**
@@ -106,7 +106,7 @@ class Subsidy extends Model
     public static function get(Request $request)
     {
         return DB::table('subsidies')
-            ->join('subsidy_statuses', 'subsidy_statuses.id', '=', DB::raw('(SELECT id FROM subsidy_statuses WHERE subsidy_statuses.subsidy_id = subsidies.id ORDER BY id DESC LIMIT 1)'))
+            ->join('subsidy_statuses', 'subsidy_statuses.id', '=', DB::raw('(SELECT id FROM subsidy_statuses WHERE subsidy_statuses.subsidy_id = subsidies.id ORDER BY created_at DESC LIMIT 1)'))
             ->join('statuses', 'subsidy_statuses.status_id', '=', 'statuses.id')
             ->join('activity_logs', 'subsidy_statuses.log_id', '=', 'activity_logs.id')
             ->leftJoin('users', 'activity_logs.user_id', '=', 'users.id')
