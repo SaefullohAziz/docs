@@ -147,6 +147,6 @@ class DocumentController extends Controller
             unlink(storage_path('app/public/document/'.$document->filename));
         }
         Document::destroy($request->selectedData);
-        return response()->json(['status' => true, 'message' => $this->deletedMessage]);
+        return response()->json(['status' => true, 'message' => __($this->deletedMessage)]);
     }
 }

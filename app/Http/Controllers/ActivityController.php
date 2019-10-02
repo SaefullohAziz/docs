@@ -119,7 +119,7 @@ class ActivityController extends Controller
         $activity->participant = $this->uploadParticipant($activity, $request);
         $activity->save();
         $this->savePic($activity, $request);
-        return redirect(url()->previous())->with('alert-success', $this->createdMessage);
+        return redirect(url()->previous())->with('alert-success', __($this->createdMessage));
     }
 
     /**

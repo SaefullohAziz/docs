@@ -184,7 +184,7 @@ class PaymentController extends Controller
             'methods' => $this->methods,
             'bankSenders' => $this->bankSenders,
             'banks' => $this->banks,
-            'payment' => $payment
+            'data' => $payment
         ];
         return view('payment.show', $view);
     }
@@ -214,7 +214,7 @@ class PaymentController extends Controller
             'methods' => $this->methods,
             'bankSenders' => $this->bankSenders,
             'banks' => $this->banks,
-            'payment' => $payment
+            'data' => $payment
         ];
         return view('payment.edit', $view);
     }

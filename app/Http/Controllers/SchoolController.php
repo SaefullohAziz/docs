@@ -171,7 +171,7 @@ class SchoolController extends Controller
         $pic->save();
         $school->pic()->sync([$pic->id]);
         $this->uploadPhoto($school, $request);
-        return redirect(url()->previous())->with('alert-success', $this->updatedMessage);
+        return redirect(url()->previous())->with('alert-success', __($this->updatedMessage));
     }
 
      /**

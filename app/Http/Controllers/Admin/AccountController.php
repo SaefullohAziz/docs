@@ -115,7 +115,7 @@ class AccountController extends Controller
         $user = User::create($request->all());
         $this->uploadPhoto($user, $request);
         $user->assignRole('user');
-        return redirect(url()->previous())->with('alert-success', $this->createdMessage);
+        return redirect(url()->previous())->with('alert-success', __($this->createdMessage));
     }
 
     /**
@@ -202,7 +202,7 @@ class AccountController extends Controller
         $user->fill($request->all());
         $user->save();
         $this->uploadPhoto($user, $request);
-        return redirect(url()->previous())->with('alert-success', $this->updatedMessage);
+        return redirect(url()->previous())->with('alert-success', __($this->updatedMessage));
     }
 
     /**

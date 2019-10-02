@@ -122,7 +122,7 @@ class ExamReadinessController extends Controller
         $examReadiness = ExamReadiness::create($request->all());
         $this->saveStudentPartition($examReadiness, $request);
         $this->savePic($examReadiness, $request);
-        return redirect(url()->previous())->with('alert-success', $this->createdMessage);
+        return redirect(url()->previous())->with('alert-success', __($this->createdMessage));
     }
 
     /**

@@ -151,7 +151,7 @@ class TrainingController extends Controller
         $training->save();
         $this->saveParticipant($training, $request);
         $this->savePic($training, $request);
-        return redirect(url()->previous())->with('alert-success', $this->createdMessage);
+        return redirect(url()->previous())->with('alert-success', __($this->createdMessage));
     }
 
     /**
@@ -228,7 +228,7 @@ class TrainingController extends Controller
         $training->save();
         $this->saveParticipant($training, $request);
         $this->savePic($training, $request);
-        return redirect(url()->previous())->with('alert-success', $this->createdMessage);
+        return redirect(url()->previous())->with('alert-success', __($this->createdMessage));
     }
 
     /**
@@ -356,6 +356,6 @@ class TrainingController extends Controller
     public function destroy(Request $request)
     {
         Training::destroy($request->selectedData);
-        return response()->json(['status' => true, 'message' => $this->deletedMessage]);
+        return response()->json(['status' => true, 'message' => __($this->deletedMessage)]);
     }
 }

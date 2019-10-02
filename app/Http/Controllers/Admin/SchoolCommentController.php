@@ -57,7 +57,7 @@ class SchoolCommentController extends Controller
             'message' => htmlentities($request->message),
         ]);
         $school->comment()->create($request->all());
-        return redirect(url()->previous())->with('alert-success', $this->createdMessage);
+        return redirect(url()->previous())->with('alert-success', __($this->createdMessage));
     }
 
     /**

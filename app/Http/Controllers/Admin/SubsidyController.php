@@ -152,7 +152,7 @@ class SubsidyController extends Controller
         $subsidy->save();
         $this->saveSspStudent($subsidy, $request);
         $this->savePic($subsidy, $request);
-        return redirect(url()->previous())->with('alert-success', $this->createdMessage);
+        return redirect(url()->previous())->with('alert-success', __($this->createdMessage));
     }
 
     /**
@@ -227,7 +227,7 @@ class SubsidyController extends Controller
         $subsidy->save();
         $this->saveSspStudent($subsidy, $request);
         $this->savePic($subsidy, $request);
-        return redirect(url()->previous())->with('alert-success', $this->updatedMessage);
+        return redirect(url()->previous())->with('alert-success', __($this->updatedMessage));
     }
 
     /**
@@ -391,7 +391,7 @@ class SubsidyController extends Controller
                 return response()->json(['status' => false, 'message' => $this->noPermission], 422);
             }
             Subsidy::destroy($request->selectedData);
-            return response()->json(['status' => true, 'message' => $this->deletedMessage]);
+            return response()->json(['status' => true, 'message' => __($this->deletedMessage)]);
         }
     }
 }

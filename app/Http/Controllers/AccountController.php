@@ -105,7 +105,7 @@ class AccountController extends Controller
         $user->fill($request->except(['username', 'name']));
         $user->save();
         $this->uploadPhoto($user, $request);
-        return redirect(url()->previous())->with('alert-success', $this->updatedMessage);
+        return redirect(url()->previous())->with('alert-success', __($this->updatedMessage));
     }
 
     /**

@@ -161,7 +161,7 @@ class PaymentController extends Controller
         $payment = Payment::create($request->all());
         $payment->payment_receipt = $this->uploadPaymentReceipt($payment, $request);
         $payment->save();
-        return redirect(url()->previous())->with('alert-success', $this->createdMessage);
+        return redirect(url()->previous())->with('alert-success', __($this->createdMessage));
     }
 
     /**
@@ -186,7 +186,7 @@ class PaymentController extends Controller
             'methods' => $this->methods,
             'bankSenders' => $this->bankSenders,
             'banks' => $this->banks,
-            'payment' => $payment
+            'data' => $payment
         ];
         return view('admin.payment.show', $view);
     }
@@ -213,7 +213,7 @@ class PaymentController extends Controller
             'methods' => $this->methods,
             'bankSenders' => $this->bankSenders,
             'banks' => $this->banks,
-            'payment' => $payment
+            'data' => $payment
         ];
         return view('admin.payment.edit', $view);
     }
@@ -237,7 +237,7 @@ class PaymentController extends Controller
         $payment->fill($request->all());
         $payment->payment_receipt = $this->uploadPaymentReceipt($payment, $request, $payment->payment_receipt);
         $payment->save();
-        return redirect(url()->previous())->with('alert-success', $this->updatedMessage);
+        return redirect(url()->previous())->with('alert-success', __($this->updatedMessage));
     }
 
     /**
@@ -280,6 +280,6 @@ class PaymentController extends Controller
             return response()->json(['status' => false, 'message' => $this->noPermission], 422);
         }
         Payment::destroy($request->selectedData);
-        return response()->json(['status' => true, 'message' => $this->deletedMessage]);
+        return response()->json(['status' => true, 'message' => __($this->deletedMessage)]);
     }
 }

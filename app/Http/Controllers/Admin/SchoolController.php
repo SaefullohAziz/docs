@@ -151,7 +151,7 @@ class SchoolController extends Controller
             'updated_at' => now()
         ]);
         $this->uploadPhoto($school, $request);
-        return redirect(url()->previous())->with('alert-success', $this->createdMessage);
+        return redirect(url()->previous())->with('alert-success', __($this->createdMessage));
     }
 
     /**
@@ -261,7 +261,7 @@ class SchoolController extends Controller
         $pic->save();
         $school->pic()->sync([$pic->id]);
         $this->uploadPhoto($school, $request);
-        return redirect(url()->previous())->with('alert-success', $this->updatedMessage);
+        return redirect(url()->previous())->with('alert-success', __($this->updatedMessage));
     }
 
     /**
@@ -329,6 +329,6 @@ class SchoolController extends Controller
             return response()->json(['status' => false, 'message' => $this->noPermission], 422);
         }
         School::destroy($request->selectedData);
-        return response()->json(['status' => true, 'message' => $this->deletedMessage]);
+        return response()->json(['status' => true, 'message' => __($this->deletedMessage)]);
     }
 }
