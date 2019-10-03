@@ -15,7 +15,7 @@ class ExamReadinessObserver
      */
     public function created(ExamReadiness $examReadiness)
     {
-        $this->saveStatus($examReadiness, 'Created', 'Membuat kesiapan ujian.');
+        saveStatus($examReadiness, 'Created', 'Membuat kesiapan ujian.');
     }
 
     /**
@@ -26,7 +26,7 @@ class ExamReadinessObserver
      */
     public function updated(ExamReadiness $examReadiness)
     {
-        $this->saveStatus($examReadiness, 'Edited', 'Mengubah kesiapan ujian.');
+        saveStatus($examReadiness, 'Edited', 'Mengubah kesiapan ujian.');
     }
 
     /**
@@ -60,23 +60,5 @@ class ExamReadinessObserver
     public function forceDeleted(ExamReadiness $examReadiness)
     {
         //
-    }
-
-    /**
-     * Save status
-     * 
-     * @param  \App\ExamReadiness  $examReadiness
-     * @param  string  $status
-     * @param  string  $desc
-     */
-    public function saveStatus($examReadiness, $status, $desc)
-    {
-        $log = actlog($desc);
-        $status = Status::byName($status)->first();
-        $examReadiness->status()->attach($status->id, [
-            'log_id' => $log,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
     }
 }

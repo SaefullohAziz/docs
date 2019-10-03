@@ -29,25 +29,29 @@ class ConfirmPayment extends FormRequest
         $rules = [
             'repayment' => [
                 Rule::requiredIf(function () use ($payment) {
-                    return $payment->installment()->count() == 0;
+                    return $payment->subsidy()->count() && $payment->installment()->count() == 0;
                 }),
             ],
             'invoice' => [
                 Rule::requiredIf(function () use ($payment) {
-                    return $payment->installment()->count() == 0;
+                    return $payment->subsidy()->count() && $payment->installment()->count() == 0;
                 }),
             ],
             'date' => ['required', 'date'],
             'total' => [
                 Rule::requiredIf(function () use ($payment) {
-                    return $payment->installment()->count() == 0;
+                    return $payment->installment()->count() == 0 || $payment->training()->count();
                 }),
             ],
-            'method' => ['required'],
+            'method' => [
+                Rule::requiredIf(function () use ($payment) {
+                    return $payment->subsidy()->count();
+                }),
+            ],
             'bank_sender' => [
                 Rule::requiredIf(function () {
                     if ( ! empty($this->get('method'))) {
-                        return $this->get('method') == 'ATM';
+                        return $this->get('method') == 'ATM' || $payment->training()->count();
                     }
                 }),
             ],
@@ -63,19 +67,36 @@ class ConfirmPayment extends FormRequest
                     }
                 }
             ],
+            // Subsidy: FTP
             'npwp_number' => [
                 Rule::requiredIf(function () use ($payment) {
-                    return $payment->installment()->count() == 0;
+                    return $payment->subsidy()->count() && $payment->installment()->count() == 0;
                 }),
             ],
             'npwp_on_behalf_of' => [
                 Rule::requiredIf(function () use ($payment) {
-                    return $payment->installment()->count() == 0;
+                    return $payment->subsidy()->count() && $payment->installment()->count() == 0;
                 }),
             ],
             'npwp_address' => [
                 Rule::requiredIf(function () use ($payment) {
-                    return $payment->installment()->count() == 0;
+                    return $payment->subsidy()->count() && $payment->installment()->count() == 0;
+                }),
+            ],
+            // Training
+            'receiver_bank_name' => [
+                Rule::requiredIf(function () use ($payment) {
+                    return $payment->training()->count();
+                }),
+            ],
+            'receiver_bill_number' => [
+                Rule::requiredIf(function () use ($payment) {
+                    return $payment->training()->count();
+                }),
+            ],
+            'receiver_on_behalf_of' => [
+                Rule::requiredIf(function () use ($payment) {
+                    return $payment->training()->count();
                 }),
             ],
         ];

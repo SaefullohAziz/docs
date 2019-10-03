@@ -28,27 +28,27 @@
 
 		<div class="card card-primary">
 
-			{{ Form::open(['route' => ['admin.payment.update', $payment->id], 'files' => true, 'method' => 'put']) }}
+			{{ Form::open(['route' => ['admin.payment.update', $data->id], 'files' => true, 'method' => 'put']) }}
 				<div class="card-body">
 					<div class="row">
                         <div class="col-sm-6">
                             <fieldset>
-                                {{ Form::bsSelect(null, __('School'), 'school_id', $schools, $payment->school_id, __('Select'), ['placeholder' => __('Select'), 'required' => '']) }}
+                                {{ Form::bsSelect(null, __('School'), 'school_id', $schools, $data->school_id, __('Select'), ['placeholder' => __('Select'), 'required' => '']) }}
 
-                                {{ Form::bsSelect(null, __('Type'), 'type', $types, $payment->type, __('Select'), ['placeholder' => __('Select'), 'required' => '']) }}
+                                {{ Form::bsSelect(null, __('Type'), 'type', $types, $data->type, __('Select'), ['placeholder' => __('Select'), 'required' => '']) }}
 
-								{{ Form::bsText(($payment->type!='Biaya Pengiriman Mikrotik'?'d-block':'d-none'), __('Invoice'), 'invoice', $payment->invoice, __('Invoice'), []) }}
+								{{ Form::bsText((empty($data->invoice)?'d-none':'d-block'), __('Invoice'), 'invoice', $data->invoice, __('Invoice'), []) }}
 
-								{{ Form::bsText(null, __('Payment Date'), 'date', (empty($payment->date)?null:date('d-m-Y', strtotime($payment->date))), ['required' => '']) }}
+								{{ Form::bsText(null, __('Payment Date'), 'date', (empty($data->date)?null:date('d-m-Y', strtotime($data->date))), ['required' => '']) }}
                             </fieldset>
                         </div>
                         <div class="col-sm-6">
 							<fieldset>
-								{{ Form::bsCurrency(null, __('Payment Ammount'), 'total', $payment->total, __('Payment Ammount'), ['required' => '']) }}
+								{{ Form::bsCurrency(null, __('Payment Ammount'), 'total', $data->total, __('Payment Ammount'), ['required' => '']) }}
 								
-								{{ Form::bsSelect(null, __('Method'), 'method', $methods, $payment->method, __('Select'), ['placeholder' => __('Select'), 'required' => '']) }}
+								{{ Form::bsSelect(($data->training()->count()?'d-none':'d-block'), __('Method'), 'method', $methods, $data->method, __('Select'), ['placeholder' => __('Select'), 'required' => '']) }}
 
-								{{ Form::bsSelect(($payment->method=='ATM'?'d-block':'d-none'), __('Bank Sender'), 'bank_sender', $bankSenders, $payment->bank_sender, __('Select'), ['placeholder' => __('Select')]) }}
+								{{ Form::bsSelect(($data->method=='ATM'||$data->training()->count()?'d-block':'d-none'), __('Bank Sender'), 'bank_sender', $bankSenders, $data->bank_sender, __('Select'), ['placeholder' => __('Select')]) }}
 
 								{{ Form::bsFile(null, __('Payment Receipt'), 'payment_receipt', null, [], [__('File with PDF/JPG/PNG format up to 5MB.')]) }}
 							</fieldset>

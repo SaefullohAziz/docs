@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
         $this->call(SchoolStatusesTableSeeder::class);
         $this->call(SchoolPermissionsTableSeeder::class);
         $this->call(StudentPermissionsTableSeeder::class);
+        $this->call(StatusesTableSeeder::class);
         $this->call(SubsidyPermissionsTableSeeder::class);
         $this->call(TrainingPermissionsTableSeeder::class);
         $this->call(PaymentPermissionsTableSeeder::class);
@@ -29,5 +30,6 @@ class DatabaseSeeder extends Seeder
         $this->call(DummyDatasSeeder::class);
         $this->call(ActivityPermissionsTableSeeder::class);
         $this->call(ExamReadinessSchoolsTableSeeder::class);
+        $this->call(TeacherPermissionsTableSeeder::class);
     }
 }

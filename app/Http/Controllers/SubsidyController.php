@@ -140,8 +140,7 @@ class SubsidyController extends Controller
         $subsidy->save();
         $this->saveSspStudent($subsidy, $request);
         $this->savePic($subsidy, $request);
-        $this->saveStatus($subsidy, 'Created', 'Membuat pengajuan program bantuan.');
-        return redirect(url()->previous())->with('alert-success', $this->createdMessage);
+        return redirect(url()->previous())->with('alert-success', __($this->createdMessage));
     }
 
     /**
@@ -215,8 +214,7 @@ class SubsidyController extends Controller
         $subsidy->save();
         $this->saveSspStudent($subsidy, $request);
         $this->savePic($subsidy, $request);
-        $this->saveStatus($subsidy, 'Edited', 'Mengubah pengajuan program bantuan.');
-        return redirect(url()->previous())->with('alert-success', $this->updatedMessage);
+        return redirect(url()->previous())->with('alert-success', __($this->updatedMessage));
     }
 
     /**
@@ -310,24 +308,6 @@ class SubsidyController extends Controller
     }
 
     /**
-     * Save status
-     * 
-     * @param  \App\Subsidy  $subsidy
-     * @param  string  $status
-     * @param  string  $desc
-     */
-    public function saveStatus($subsidy, $status, $desc)
-    {
-        $log = actlog($desc);
-        $status = Status::byName($status)->first();
-        $subsidy->status()->attach($status->id, [
-            'log_id' => $log,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
-    }
-
-    /**
      * Export subsidy listing as Excel
      * 
      * @param  \Illuminate\Http\Request  $request
@@ -346,6 +326,6 @@ class SubsidyController extends Controller
     public function destroy(Request $request)
     {
         Subsidy::destroy($request->selectedData);
-        return response()->json(['status' => true, 'message' => $this->deletedMessage]);
+        return response()->json(['status' => true, 'message' => __($this->deletedMessage)]);
     }
 }

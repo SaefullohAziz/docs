@@ -39,7 +39,7 @@ class SchoolStatus extends Model
      */
     public function school()
     {
-        return $this->belongsToMany('App\School', 'school_status_updates');
+        return $this->belongsToMany('App\School', 'school_status_updates')->using('App\SchoolStatusUpdate');
     }
 
     /**

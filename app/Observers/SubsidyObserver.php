@@ -15,7 +15,7 @@ class SubsidyObserver
      */
     public function created(Subsidy $subsidy)
     {
-        $this->saveStatus($subsidy, 'Created', 'Membuat pengajuan program bantuan.');
+        saveStatus($subsidy, 'Created', 'Membuat pengajuan program bantuan.');
     }
 
     /**
@@ -26,7 +26,7 @@ class SubsidyObserver
      */
     public function updated(Subsidy $subsidy)
     {
-        $this->saveStatus($subsidy, 'Edited', 'Mengubah pengajuan program bantuan.');
+        saveStatus($subsidy, 'Edited', 'Mengubah pengajuan program bantuan.');
     }
 
     /**
@@ -60,23 +60,5 @@ class SubsidyObserver
     public function forceDeleted(Subsidy $subsidy)
     {
         //
-    }
-
-    /**
-     * Save status
-     * 
-     * @param  \App\Subsidy  $subsidy
-     * @param  string  $status
-     * @param  string  $desc
-     */
-    public function saveStatus($subsidy, $status, $desc)
-    {
-        $log = actlog($desc);
-        $status = Status::byName($status)->first();
-        $subsidy->status()->attach($status->id, [
-            'log_id' => $log,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
     }
 }

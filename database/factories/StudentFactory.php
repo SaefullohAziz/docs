@@ -16,7 +16,6 @@ $factory->define(Student::class, function (Faker $faker) {
     $bloodTypes = ['A', 'AB', 'B', 'O'];
     $mileages = ['Kurang dari 1 Km', 'Lebih dari 1 Km'];
     return [
-        'username' => $faker->unique()->userName,
         'name' => $faker->name($gender),
         'nickname' => $faker->firstName($gender),
         'province' => $faker->randomElement($provinces),

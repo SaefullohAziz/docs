@@ -67,6 +67,11 @@
     "Document": "Dokumen",
     "Add Document": "Tambah Dokumen",
 
+    "Teacher": "Guru",
+    "Create Teacher": "Tambah Guru",
+    "Edit Teacher": "Edit Guru",
+    "Detail Teacher": "Detail Guru",
+
     "Class": "Kelas",
     "Create Class": "Membuat Kelas",
     "Edit Class": "Edit Kelas",
@@ -241,6 +246,7 @@
     "On Behalf of": "Atas Nama",
     "Bank Account Number": "Nomor Rekening",
     "Bank Name": "Nama Bank",
+    "Position": "Jabatan",
 
     "Enter phone number without country code.": "Masukkan nomor handphone tanpa kode negara.",
     "Complete with an academic degree and or degree of expertise.": "Lengkapi dengan gelar akademi atau keahlian.",

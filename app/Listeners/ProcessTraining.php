@@ -42,13 +42,7 @@ class ProcessTraining
     {
         foreach ($request->selectedData as $id) {
             $training = Training::find($id);
-            $log = actlog($desc);
-            $status = Status::byName($status)->first();
-            $training->status()->attach($status->id, [
-                'log_id' => $log,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
+            saveStatus($training, $status, $desc);
         }
     }
 }

@@ -36,30 +36,12 @@ class CreateSubsidyPayment
                     'school_id' => $subsidy->school->id,
                     'type' => 'Subsidi'
                 ]);
-                $this->saveStatus($payment, 'Published', 'Menerbitkan konfirmasi pembayaran.');
+                saveStatus($payment, 'Published', 'Menerbitkan konfirmasi pembayaran.');
                 $subsidy->payment()->attach($payment->id, [
                     'created_at' => now(),
                     'updated_at' => now(),
                 ]);
             }
         }
-    }
-
-    /**
-     * Save status
-     * 
-     * @param  \App\Payment  $payment
-     * @param  string  $status
-     * @param  string  $desc
-     */
-    public function saveStatus($payment, $status, $desc)
-    {
-        $log = actlog($desc);
-        $status = Status::byName($status)->first();
-        $payment->status()->attach($status->id, [
-            'log_id' => $log,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
     }
 }

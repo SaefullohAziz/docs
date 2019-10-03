@@ -42,13 +42,7 @@ class ApproveActivity
     {
         foreach ($request->selectedData as $id) {
             $activity = Activity::find($id);
-            $log = actlog($desc);
-            $status = Status::byName($status)->first();
-            $activity->status()->attach($status->id, [
-                'log_id' => $log,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
+            saveStatus($activity, $status, $desc);
         }
     }
 }

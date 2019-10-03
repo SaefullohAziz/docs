@@ -125,7 +125,7 @@ class StudentClassController extends Controller
             'grade' => 'Kelas 10'
         ]);
         $school->studentClass()->firstOrCreate($request->except(['_token', 'submit']));
-        return redirect(url()->previous())->with('alert-success', $this->createdMessage);
+        return redirect(url()->previous())->with('alert-success', __($this->createdMessage));
     }
 
     /**
@@ -203,7 +203,7 @@ class StudentClassController extends Controller
         ]);
         $studentClass->fill($request->except(['_token', 'submit']));
         $studentClass->save();
-        return redirect(url()->previous())->with('alert-success', $this->createdMessage);
+        return redirect(url()->previous())->with('alert-success', __($this->createdMessage));
     }
 
     /**

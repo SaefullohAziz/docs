@@ -12,6 +12,12 @@
       <li class="menu-header">{{ __('Menu') }}</li>
       <!-- School -->
       <li><a class="nav-link" href="{{ route('school.index') }}"><i class="fa fa-university"></i> <span>{{ __('School') }}</span></a></li>
+      <!-- Teacher -->
+      <li class="{{ (request()->is('teacher')||request()->is('teacher/*')?'active':'') }}">
+        <a class="nav-link" href="{{ route('teacher.index') }}">
+          <i class="fa fa-user-check"></i> <span>{{ __('Teacher') }}</span>
+        </a>
+      </li>
       <!-- Student -->
       <li><a class="nav-link" href="{{ route('class.index') }}"><i class="fa fa-user-tie"></i> <span>{{ __('Student') }}</span></a></li>
       <!-- Activity -->

@@ -39,7 +39,37 @@ class Student extends Model
      */
     public function subsidy()
     {
-        return $this->belongsToMany('App\Subsidy', 'ssp_students');
+        return $this->belongsToMany('App\Subsidy', 'ssp_students')->using('App\SspStudent');
+    }
+
+    /**
+     * Get the exam readiness student for the student.
+     */
+    public function examReadinessStusent()
+    {
+        return $this->hasMany('App\ExamReadinessStusent');
+    }
+
+    /**
+     * The exam readiness that belong to the student.
+     */
+    public function examReadiness()
+    {
+        return $this->belongsToMany('App\ExamReadiness', 'exam_readiness_students')->using('App\ExamReadinessStusent');
+    }
+
+    /**
+     * Get the avatar.
+     *
+     * @param  string  $value
+     * @return string
+     */
+    public function getAvatarAttribute()
+    {
+        if ($this->attributes['photo'] == 'default.png') {
+            return '/img/avatar/default.png';
+        }
+        return '/storage/student/photo/'.$this->attributes['photo'];
     }
 
     /**

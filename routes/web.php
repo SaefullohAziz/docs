@@ -49,6 +49,16 @@ Route::resource('document', 'DocumentController', ['except' => [
 	'destroy',
 ]]);
 
+// Teacher
+Route::prefix('teacher')->name('teacher.')->group(function () {
+	// Route::post('list', 'TeacherController@list')->name('list');
+	// Route::post('export', 'TeacherController@export')->name('export');
+	Route::delete('destroy', 'TeacherController@destroy')->name('destroy');
+});
+Route::resource('teacher', 'TeacherController', ['except' => [
+	'destroy',
+]]);
+
 // Class
 Route::prefix('class')->name('class.')->group(function () {
 	Route::post('list', 'StudentClassController@list')->name('list');
@@ -193,6 +203,16 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
 		'destroy',
 	]]);
 
+	// Teacher
+	Route::prefix('teacher')->name('teacher.')->group(function () {
+		Route::post('list', 'TeacherController@list')->name('list');
+    	Route::post('export', 'TeacherController@export')->name('export');
+		Route::delete('destroy', 'TeacherController@destroy')->name('destroy');
+	});
+	Route::resource('teacher', 'TeacherController', ['except' => [
+		'destroy',
+	]]);
+
 	// Class
 	Route::prefix('class')->name('class.')->group(function () {
     	Route::post('list', 'StudentClassController@list')->name('list');
@@ -323,7 +343,8 @@ Route::get('download/{dir}/{file}', function ($dir, $file) {
 })->name('download');
 
 Route::get('check', function () {
-	dd(App\Admin\User::all());
+	$staff = App\Admin\User::latest()->first();
+	dd($staff->username);
 });
 
 Route::get('mailable', function () {

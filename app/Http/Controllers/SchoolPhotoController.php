@@ -144,6 +144,6 @@ class SchoolPhotoController extends Controller
             unlink(storage_path('app/public/school/photo/'.$photo->name));
         }
         SchoolPhoto::destroy($request->selectedData);
-        return response()->json(['status' => true, 'message' => $this->deletedMessage]);
+        return response()->json(['status' => true, 'message' => __($this->deletedMessage)]);
     }
 }

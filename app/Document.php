@@ -38,7 +38,7 @@ class Document extends Model
      */
     public function latestDocumentStatus()
     {
-        return $this->hasOne('App\DocumentStatus')->orderBy('id', 'desc')->limit(1);
+        return $this->hasOne('App\DocumentStatus')->orderBy('created_at', 'desc')->limit(1);
     }
 
     /**
@@ -46,7 +46,7 @@ class Document extends Model
      */
     public function status()
     {
-        return $this->belongsToMany('App\Status', 'document_statuses');
+        return $this->belongsToMany('App\Status', 'document_statuses')->using('App\DocumentStatus');
     }
 
     /**
@@ -62,6 +62,6 @@ class Document extends Model
      */
     public function pic()
     {
-        return $this->belongsToMany('App\Pic', 'document_pics');
+        return $this->belongsToMany('App\Pic', 'document_pics')->using('App\DocumentPic');
     }
 }

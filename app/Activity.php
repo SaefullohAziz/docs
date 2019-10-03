@@ -40,7 +40,7 @@ class Activity extends Model
      */
     public function latestActivityStatus()
     {
-        return $this->hasOne('App\ActivityStatus')->orderBy('id', 'desc')->limit(1);
+        return $this->hasOne('App\ActivityStatus')->orderBy('created_at', 'desc')->limit(1);
     }
 
     /**
@@ -48,7 +48,7 @@ class Activity extends Model
      */
     public function status()
     {
-        return $this->belongsToMany('App\Status', 'activity_statuses');
+        return $this->belongsToMany('App\Status', 'activity_statuses')->using('App\ActivityStatus');
     }
 
     /**
@@ -64,7 +64,7 @@ class Activity extends Model
      */
     public function pic()
     {
-        return $this->belongsToMany('App\Pic', 'activity_pics');
+        return $this->belongsToMany('App\Pic', 'activity_pics')->using('App\ActivityPic');
     }
 
     /**
@@ -76,7 +76,7 @@ class Activity extends Model
     {
         return DB::table('activities')
             ->join('schools', 'activities.school_id', '=', 'schools.id')
-            ->join('activity_statuses', 'activity_statuses.id', '=', DB::raw('(SELECT id FROM activity_statuses WHERE activity_statuses.activity_id = activities.id ORDER BY id DESC LIMIT 1)'))
+            ->join('activity_statuses', 'activity_statuses.id', '=', DB::raw('(SELECT id FROM activity_statuses WHERE activity_statuses.activity_id = activities.id ORDER BY created_at DESC LIMIT 1)'))
             ->join('statuses', 'activity_statuses.status_id', '=', 'statuses.id')
             ->join('activity_pics', 'activities.id', '=', 'activity_pics.activity_id')
             ->join('pics', 'activity_pics.pic_id', '=', 'pics.id')
