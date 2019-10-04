@@ -100,9 +100,9 @@ class TrainingObserver
     {
         $school = School::findOrFail($training->school->id);
         if ($training->batch == 'Waiting') {
-            // $school->notify(new TrainingWaited($training));
+            $school->notify(new TrainingWaited($training));
         } elseif ($training->batch != 'Waiting') {
-            // $school->notify(new TrainingApproved($training));
+            $school->notify(new TrainingApproved($training));
         }
     }
 }

@@ -70,7 +70,7 @@ class TrainingController extends Controller
     public function index()
     {
         if ( ! auth()->guard('admin')->user()->can('access ' . $this->table)) {
-            return redirect()->route('admin.home')->with('alert-danger', $this->noPermission);
+            return redirect()->route('admin.home')->with('alert-danger', __($this->noPermission));
         }
         $view = [
             'title' => __('Training'),
@@ -127,7 +127,7 @@ class TrainingController extends Controller
     public function create()
     {
         if ( ! auth()->guard('admin')->user()->can('create ' . $this->table)) {
-            return redirect()->route('admin.training.index')->with('alert-danger', $this->noPermission);
+            return redirect()->route('admin.training.index')->with('alert-danger', __($this->noPermission));
         }
         $view = [
             'title' => __('Register Training'),
@@ -152,7 +152,7 @@ class TrainingController extends Controller
     public function store(StoreTraining $request)
     {
         if ( ! auth()->guard('admin')->user()->can('create ' . $this->table)) {
-            return redirect()->route('admin.training.index')->with('alert-danger', $this->noPermission);
+            return redirect()->route('admin.training.index')->with('alert-danger', __($this->noPermission));
         }
         $request->request->add(['booking_code' => Str::random(12)]);
         $training = Training::create($request->all());
@@ -173,7 +173,7 @@ class TrainingController extends Controller
     public function show(Training $training)
     {
         if ( ! auth()->guard('admin')->user()->can('read ' . $this->table)) {
-            return redirect()->route('admin.training.index')->with('alert-danger', $this->noPermission);
+            return redirect()->route('admin.training.index')->with('alert-danger', __($this->noPermission));
         }
         $view = [
             'title' => __('Training Detail'),
@@ -200,7 +200,7 @@ class TrainingController extends Controller
     public function edit(Training $training)
     {
         if ( ! auth()->guard('admin')->user()->can('update ' . $this->table)) {
-            return redirect()->route('admin.training.index')->with('alert-danger', $this->noPermission);
+            return redirect()->route('admin.training.index')->with('alert-danger', __($this->noPermission));
         }
         $view = [
             'title' => __('Edit Training'),
@@ -228,7 +228,7 @@ class TrainingController extends Controller
     public function update(StoreTraining $request, Training $training)
     {
         if ( ! auth()->guard('admin')->user()->can('update ' . $this->table)) {
-            return redirect()->route('admin.training.index')->with('alert-danger', $this->noPermission);
+            return redirect()->route('admin.training.index')->with('alert-danger', __($this->noPermission));
         }
         $request->request->add(['booking_code' => Str::random(12)]);
         $training->fill($request->all());
@@ -329,7 +329,7 @@ class TrainingController extends Controller
     }
 
     /**
-     * Cancel training
+     * Cancel data
      * 
      * @param  \Illuminate\Http\Request  $request
      */
@@ -337,15 +337,15 @@ class TrainingController extends Controller
     {
         if ($request->ajax()) {
             if ( ! auth()->guard('admin')->user()->can('approval ' . $this->table)) {
-                return response()->json(['status' => false, 'message' => $this->noPermission], 422);
+                return response()->json(['status' => false, 'message' => __($this->noPermission)], 422);
             }
             event(new TrainingCanceled($request));
-            return response()->json(['status' => true, 'message' => $this->updatedMessage]);
+            return response()->json(['status' => true, 'message' => __($this->updatedMessage)]);
         }
     }
 
     /**
-     * process training
+     * Process data
      * 
      * @param  \Illuminate\Http\Request  $request
      */
@@ -353,15 +353,15 @@ class TrainingController extends Controller
     {
         if ($request->ajax()) {
             if ( ! auth()->guard('admin')->user()->can('approval ' . $this->table)) {
-                return response()->json(['status' => false, 'message' => $this->noPermission], 422);
+                return response()->json(['status' => false, 'message' => __($this->noPermission)], 422);
             }
             event(new TrainingProcessed($request));
-            return response()->json(['status' => true, 'message' => $this->updatedMessage]);
+            return response()->json(['status' => true, 'message' => __($this->updatedMessage)]);
         }
     }
 
     /**
-     * Approve training
+     * Approve data
      * 
      * @param  \Illuminate\Http\Request  $request
      */
@@ -369,10 +369,10 @@ class TrainingController extends Controller
     {
         if ($request->ajax()) {
             if ( ! auth()->guard('admin')->user()->can('approval ' . $this->table)) {
-                return response()->json(['status' => false, 'message' => $this->noPermission], 422);
+                return response()->json(['status' => false, 'message' => __($this->noPermission)], 422);
             }
             event(new TrainingApproved($request));
-            return response()->json(['status' => true, 'message' => $this->updatedMessage]);
+            return response()->json(['status' => true, 'message' => __($this->updatedMessage)]);
         }
     }
 
@@ -395,7 +395,7 @@ class TrainingController extends Controller
     public function destroy(Request $request)
     {
         if ( ! auth()->guard('admin')->user()->can('delete ' . $this->table)) {
-            return response()->json(['status' => false, 'message' => $this->noPermission], 422);
+            return response()->json(['status' => false, 'message' => __($this->noPermission)], 422);
         }
         Training::destroy($request->selectedData);
         return response()->json(['status' => true, 'message' => __($this->deletedMessage)]);

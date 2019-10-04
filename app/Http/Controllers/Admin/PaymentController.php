@@ -70,7 +70,7 @@ class PaymentController extends Controller
     public function index()
     {
         if ( ! auth()->guard('admin')->user()->can('access ' . $this->table)) {
-            return redirect()->route('admin.home')->with('alert-danger', $this->noPermission);
+            return redirect()->route('admin.home')->with('alert-danger', __($this->noPermission));
         }
         $view = [
             'title' => __('Payment'),
@@ -126,7 +126,7 @@ class PaymentController extends Controller
     public function create()
     {
         if ( ! auth()->guard('admin')->user()->can('create ' . $this->table)) {
-            return redirect()->route('admin.payment.index')->with('alert-danger', $this->noPermission);
+            return redirect()->route('admin.payment.index')->with('alert-danger', __($this->noPermission));
         }
         $view = [
             'title' => __('Create Payment Confirmation'),
@@ -152,7 +152,7 @@ class PaymentController extends Controller
     public function store(StorePayment $request)
     {
         if ( ! auth()->guard('admin')->user()->can('create ' . $this->table)) {
-            return redirect()->route('admin.payment.index')->with('alert-danger', $this->noPermission);
+            return redirect()->route('admin.payment.index')->with('alert-danger', __($this->noPermission));
         }
         $request->merge([
             'date' => date('Y-m-d', strtotime($request->date)),
@@ -173,7 +173,7 @@ class PaymentController extends Controller
     public function show(Payment $payment)
     {
         if ( ! auth()->guard('admin')->user()->can('read ' . $this->table)) {
-            return redirect()->route('admin.payment.index')->with('alert-danger', $this->noPermission);
+            return redirect()->route('admin.payment.index')->with('alert-danger', __($this->noPermission));
         }
         $view = [
             'title' => __('Payment Confirmation Detail'),
@@ -200,7 +200,7 @@ class PaymentController extends Controller
     public function edit(Payment $payment)
     {
         if ( ! auth()->guard('admin')->user()->can('update ' . $this->table)) {
-            return redirect()->route('admin.payment.index')->with('alert-danger', $this->noPermission);
+            return redirect()->route('admin.payment.index')->with('alert-danger', __($this->noPermission));
         }
         $view = [
             'title' => __('Edit Payment Confirmation'),
@@ -228,7 +228,7 @@ class PaymentController extends Controller
     public function update(StorePayment $request, Payment $payment)
     {
         if ( ! auth()->guard('admin')->user()->can('update ' . $this->table)) {
-            return redirect()->route('admin.payment.index')->with('alert-danger', $this->noPermission);
+            return redirect()->route('admin.payment.index')->with('alert-danger', __($this->noPermission));
         }
         $request->merge([
             'date' => date('Y-m-d', strtotime($request->date)),
@@ -259,7 +259,7 @@ class PaymentController extends Controller
     }
 
     /**
-     * Export payment listing as Excel
+     * Export listing as Excel
      * 
      * @param  \Illuminate\Http\Request  $request
      */
@@ -277,7 +277,7 @@ class PaymentController extends Controller
     public function destroy(Request $request)
     {
         if ( ! auth()->guard('admin')->user()->can('delete ' . $this->table)) {
-            return response()->json(['status' => false, 'message' => $this->noPermission], 422);
+            return response()->json(['status' => false, 'message' => __($this->noPermission)], 422);
         }
         Payment::destroy($request->selectedData);
         return response()->json(['status' => true, 'message' => __($this->deletedMessage)]);

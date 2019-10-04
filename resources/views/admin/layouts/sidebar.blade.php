@@ -58,7 +58,7 @@
         </a>
       </li>
       <!-- Confirmation -->
-      <li class="dropdown {{ (request()->is('admin/payment')||request()->is('admin/payment/*')?'active':'') }}">
+      <li class="dropdown {{ (request()->is('admin/payment')||request()->is('admin/payment/*')||request()->is('admin/attendance')||request()->is('admin/attendance/*')?'active':'') }}">
         <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-receipt"></i> <span>{{ __('Confirmation') }}</span></a>
         <ul class="dropdown-menu">
           <li class="{{ (request()->is('admin/attendance')||request()->is('admin/attendance/*')?'active':'') }}"><a class="nav-link" href="{{ route('admin.attendance.index') }}">{{ __('Attendance') }}</a></li>

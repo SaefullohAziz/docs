@@ -349,9 +349,9 @@ class StudentController extends Controller
     public function destroy(Request $request, StudentClass $studentClass)
     {
         if ( ! auth()->guard('admin')->user()->can('delete ' . $this->table)) {
-            return response()->json(['status' => false, 'message' => $this->noPermission], 422);
+            return response()->json(['status' => false, 'message' => __($this->noPermission)], 422);
         }
         Student::destroy($request->selectedData);
-        return response()->json(['status' => true, 'message' => 'Data successfully deleted.']);
+        return response()->json(['status' => true, 'message' => __($this->deletedMessage)]);
     }
 }

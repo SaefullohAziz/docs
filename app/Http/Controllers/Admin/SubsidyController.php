@@ -62,7 +62,7 @@ class SubsidyController extends Controller
     public function index()
     {
         if ( ! auth()->guard('admin')->user()->can('access ' . $this->table)) {
-            return redirect()->route('admin.home')->with('alert-danger', $this->noPermission);
+            return redirect()->route('admin.home')->with('alert-danger', __($this->noPermission));
         }
         $view = [
             'title' => __('Subsidy'),
@@ -118,7 +118,7 @@ class SubsidyController extends Controller
     public function create()
     {
         if ( ! auth()->guard('admin')->user()->can('create ' . $this->table)) {
-            return redirect()->route('admin.subsidy.index')->with('alert-danger', $this->noPermission);
+            return redirect()->route('admin.subsidy.index')->with('alert-danger', __($this->noPermission));
         }
         $view = [
             'title' => __('Create Subsidy'),
@@ -144,7 +144,7 @@ class SubsidyController extends Controller
     public function store(StoreSubsidy $request)
     {
         if ( ! auth()->guard('admin')->user()->can('create ' . $this->table)) {
-            return redirect()->route('admin.subsidy.index')->with('alert-danger', $this->noPermission);
+            return redirect()->route('admin.subsidy.index')->with('alert-danger', __($this->noPermission));
         }
         $subsidy = Subsidy::create($request->all());
         $subsidy->submission_letter = $this->uploadSubmissionLetter($subsidy, $request);
@@ -164,7 +164,7 @@ class SubsidyController extends Controller
     public function show(Subsidy $subsidy)
     {
         if ( ! auth()->guard('admin')->user()->can('read ' . $this->table)) {
-            return redirect()->route('admin.subsidy.index')->with('alert-danger', $this->noPermission);
+            return redirect()->route('admin.subsidy.index')->with('alert-danger', __($this->noPermission));
         }
         $view = [
             'title' => __('Subsidy Detail'),
@@ -191,7 +191,7 @@ class SubsidyController extends Controller
     public function edit(Subsidy $subsidy)
     {
         if ( ! auth()->guard('admin')->user()->can('update ' . $this->table)) {
-            return redirect()->route('admin.subsidy.index')->with('alert-danger', $this->noPermission);
+            return redirect()->route('admin.subsidy.index')->with('alert-danger', __($this->noPermission));
         }
         $view = [
             'title' => __('Edit Subsidy'),
@@ -219,7 +219,7 @@ class SubsidyController extends Controller
     public function update(StoreSubsidy $request, Subsidy $subsidy)
     {
         if ( ! auth()->guard('admin')->user()->can('update ' . $this->table)) {
-            return redirect()->route('admin.subsidy.index')->with('alert-danger', $this->noPermission);
+            return redirect()->route('admin.subsidy.index')->with('alert-danger', __($this->noPermission));
         }
         $subsidy->fill($request->all());
         $subsidy->submission_letter = $this->uploadSubmissionLetter($subsidy, $request, $subsidy->submission_letter);
@@ -329,10 +329,10 @@ class SubsidyController extends Controller
     {
         if ($request->ajax()) {
             if ( ! auth()->guard('admin')->user()->can('approval ' . $this->table)) {
-                return response()->json(['status' => false, 'message' => $this->noPermission], 422);
+                return response()->json(['status' => false, 'message' => __($this->noPermission)], 422);
             }
             event(new SubsidyCanceled($request));
-            return response()->json(['status' => true, 'message' => $this->updatedMessage]);
+            return response()->json(['status' => true, 'message' => __($this->updatedMessage)]);
         }
     }
 
@@ -345,10 +345,10 @@ class SubsidyController extends Controller
     {
         if ($request->ajax()) {
             if ( ! auth()->guard('admin')->user()->can('approval ' . $this->table)) {
-                return response()->json(['status' => false, 'message' => $this->noPermission], 422);
+                return response()->json(['status' => false, 'message' => __($this->noPermission)], 422);
             }
             event(new SubsidyRejected($request));
-            return response()->json(['status' => true, 'message' => $this->updatedMessage]);
+            return response()->json(['status' => true, 'message' => __($this->updatedMessage)]);
         }
     }
 
@@ -361,10 +361,10 @@ class SubsidyController extends Controller
     {
         if ($request->ajax()) {
             if ( ! auth()->guard('admin')->user()->can('approval ' . $this->table)) {
-                return response()->json(['status' => false, 'message' => $this->noPermission], 422);
+                return response()->json(['status' => false, 'message' => __($this->noPermission)], 422);
             }
             event(new SubsidyApproved($request));
-            return response()->json(['status' => true, 'message' => $this->updatedMessage]);
+            return response()->json(['status' => true, 'message' => __($this->updatedMessage)]);
         }
     }
 
@@ -388,7 +388,7 @@ class SubsidyController extends Controller
     {
         if ($request->ajax()) {
             if ( ! auth()->guard('admin')->user()->can('delete ' . $this->table)) {
-                return response()->json(['status' => false, 'message' => $this->noPermission], 422);
+                return response()->json(['status' => false, 'message' => __($this->noPermission)], 422);
             }
             Subsidy::destroy($request->selectedData);
             return response()->json(['status' => true, 'message' => __($this->deletedMessage)]);
