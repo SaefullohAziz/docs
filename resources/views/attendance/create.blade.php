@@ -181,12 +181,6 @@
 				swal("{{ __('Failed!') }}", "", "warning");
 			}
 		});
-	}
-
-	function deleteParticipant(id) {
-		$('input[name="participant_id[]"][value="'+id+'"]').closest('.participant').remove();
-		$('option[value="'+id+'"]').remove();
-        return false;
-	}
+	}\
 </script>
 @endsection

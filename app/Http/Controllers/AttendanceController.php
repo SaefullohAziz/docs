@@ -159,7 +159,28 @@ class AttendanceController extends Controller
      */
     public function show(Attendance $attendance)
     {
-        //
+        $view = [
+            'title' => __('Attendance Confirmation Detail'),
+            'breadcrumbs' => [
+                route('attendance.index') => __('Attendance Confirmation'),
+                null => __('Detail')
+            ],
+            'schools' => School::orderBy('name', 'asc')->pluck('name', 'id')->toArray(),
+            'types' => $this->types,
+            'participants' => $this->participants,
+            'participantPositions' => $this->participantPositions,
+            'transportations' => $this->transportations,
+            'arrivalPoints' => $this->arrivalPoints,
+            'destinations' => School::has('visitationDestination')->orderBy('name', 'asc')->pluck('name', 'name')->toArray(),
+            'contactPersons' => Teacher::whereHas('audience', function ($query) use ($attendance) {
+                $query->where('attendances.id', $attendance->id);
+            })->orderBy('name', 'asc')->pluck('name', 'id')->toArray(),
+            'contactPerson' => Teacher::whereHas('audience', function ($query) use ($attendance) {
+                $query->where('attendances.id', $attendance->id);
+            })->where('name', $attendance->contact_person)->first(),
+            'data' => $attendance
+        ];
+        return view('attendance.show', $view);
     }
 
     /**
@@ -170,7 +191,28 @@ class AttendanceController extends Controller
      */
     public function edit(Attendance $attendance)
     {
-        //
+        $view = [
+            'title' => __('Edit Attendance Confirmation'),
+            'breadcrumbs' => [
+                route('attendance.index') => __('Attendance Confirmation'),
+                null => __('Edit')
+            ],
+            'schools' => School::orderBy('name', 'asc')->pluck('name', 'id')->toArray(),
+            'types' => $this->types,
+            'participants' => $this->participants,
+            'participantPositions' => $this->participantPositions,
+            'transportations' => $this->transportations,
+            'arrivalPoints' => $this->arrivalPoints,
+            'destinations' => School::has('visitationDestination')->orderBy('name', 'asc')->pluck('name', 'name')->toArray(),
+            'contactPersons' => Teacher::whereHas('audience', function ($query) use ($attendance) {
+                $query->where('attendances.id', $attendance->id);
+            })->orderBy('name', 'asc')->pluck('name', 'id')->toArray(),
+            'contactPerson' => Teacher::whereHas('audience', function ($query) use ($attendance) {
+                $query->where('attendances.id', $attendance->id);
+            })->where('name', $attendance->contact_person)->first(),
+            'data' => $attendance
+        ];
+        return view('attendance.edit', $view);
     }
 
     /**
@@ -182,7 +224,25 @@ class AttendanceController extends Controller
      */
     public function update(Request $request, Attendance $attendance)
     {
-        //
+        $request->merge([
+            'participant' => ! empty($request->participant)?implode(', ', $request->participant):null,
+            'date' => ($request->type='Audiensi'?date('Y-m-d', strtotime($request->date)):null),
+            'until_date' => ($request->type=='Audiensi'?date('Y-m-d', strtotime($request->until_date)):null),
+        ]);
+        if ($request->type == 'Audiensi') {
+            $teacher = Teacher::find($request->contact_person);
+            $request->request->add([
+                'contact_person_phone_number' => $teacher->phone_number,
+            ]);
+            $request->merge([
+                'contact_person' => $teacher->name,
+            ]);
+        }
+        $attendance = $attendance->fill($request->except(['select_participant', 'participant_id', 'submit']));
+        $attendance->submission_letter = $this->uploadSubmissionLetter($attendance, $request, $attendance->submission_letter);
+        $attendance->save();
+        $this->saveParticipant($attendance, $request);
+        return redirect(url()->previous())->with('alert-success', __($this->updatedMessage));
     }
 
     /**

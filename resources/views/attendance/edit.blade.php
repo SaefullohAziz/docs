@@ -28,12 +28,12 @@
 
 		<div class="card card-primary">
 
-			{{ Form::open(['route' => ['admin.attendance.update', $data->id], 'files' => true, 'method' => 'put']) }}
+			{{ Form::open(['route' => ['attendance.update', $data->id], 'files' => true, 'method' => 'put']) }}
 				<div class="card-body">
 					<div class="row">
                         <div class="col-sm-6">
                             <fieldset>
-                                {{ Form::bsSelect(null, __('School'), 'school_id', $schools, $data->school_id, __('Select'), ['placeholder' => __('Select'), 'required' => '']) }}
+                                {{ Form::bsSelect(null, __('School'), 'school_id', $schools, $data->school_id, __('Select'), ['placeholder' => __('Select'), 'disabled' => '']) }}
 
                                 {{ Form::bsSelect(null, __('Type'), 'type', $types, $data->type, __('Select'), ['placeholder' => __('Select'), 'required' => '']) }}
 
@@ -87,7 +87,7 @@
 				</div>
 				<div class="card-footer bg-whitesmoke text-center">
 					{{ Form::submit(__('Save'), ['class' => 'btn btn-primary']) }}
-					{{ link_to(url()->previous(),__('Cancel'), ['class' => 'btn btn-danger']) }}
+					{{ link_to(route('attendance.index'),__('Cancel'), ['class' => 'btn btn-danger']) }}
 				</div>
 			{{ Form::close() }}
 
