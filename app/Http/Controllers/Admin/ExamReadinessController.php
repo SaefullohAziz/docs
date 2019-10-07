@@ -115,7 +115,7 @@ class ExamReadinessController extends Controller
     {
         dd($request);
         if ( ! auth()->guard('admin')->user()->can('create ' . $this->table)) {
-            return redirect()->route('admin.exam.readiness.index')->with('alert-danger', $this->noPermission);
+            return redirect()->route('admin.exam.readiness.index')->with('alert-danger', __($this->noPermission));
         }
         if ($request->exam_sub_types) {
             $exam_sub = implode($request->exam_sub_types, ', ');
@@ -212,7 +212,7 @@ class ExamReadinessController extends Controller
     public function destroy(Request $request)
     {
         ExamReadiness::destroy($request->selectedData);
-        return response()->json(['status' => true, 'message' => __('Data successfully deleted.')]);
+        return response()->json(['status' => true, 'message' => __($this->deletedMessage)]);
     }
 
     /**

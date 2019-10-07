@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 use App\Traits\Uuids;
 
-class SchoolStatusUpdate extends Pivot
+class AudienceParticipant extends Pivot
 {
     use Uuids;
 
@@ -15,7 +15,7 @@ class SchoolStatusUpdate extends Pivot
      *
      * @var string
      */
-    protected $table = 'school_status_updates';
+    protected $table = 'audience_participants';
 
     /**
      * The "booting" method of the model.
@@ -31,26 +31,18 @@ class SchoolStatusUpdate extends Pivot
     }
     
     /**
-     * Get the school that owns the status update.
+     * Get the audience that owns the audience participant.
      */
-    public function school()
+    public function audience()
     {
-        return $this->belongsTo('App\School');
+        return $this->belongsTo('App\Attendance', 'teacher_id', 'teacher_id');
     }
 
     /**
-     * Get the status that owns the status update.
+     * Get the participant that owns the audience participant.
      */
-    public function status()
+    public function participant()
     {
-        return $this->belongsTo('App\SchoolStatus');
-    }
-
-    /**
-     * Get the attendance status for the school status update.
-     */
-    public function attendanceStatus()
-    {
-        return $this->hasOne('App\AttendanceStatus');
+        return $this->belongsTo('App\Teacher', 'teacher_id');
     }
 }

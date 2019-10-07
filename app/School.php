@@ -154,6 +154,14 @@ class School extends Model
     }
 
     /**
+     * Get the visitation destination for the school.
+     */
+    public function visitationDestination()
+    {
+        return $this->hasMany('App\VisitationDestination');
+    }
+
+    /**
      * Get the user for the school.
      */
     public function user()

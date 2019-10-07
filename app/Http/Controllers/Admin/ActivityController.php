@@ -200,7 +200,7 @@ class ActivityController extends Controller
     public function update(Request $request, Activity $activity)
     {
         if ( ! auth()->guard('admin')->user()->can('update ' . $this->table)) {
-            return redirect()->route('admin.activity.index')->with('alert-danger', $this->noPermission);
+            return redirect()->route('admin.activity.index')->with('alert-danger', __($this->noPermission));
         }
         $request->merge([
             'date' => date('Y-m-d', strtotime($request->date)),

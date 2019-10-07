@@ -41,6 +41,14 @@ class ActivityLog extends Model
     }
 
     /**
+     * Get the attendance status for the activity log.
+     */
+    public function attendanceStatus()
+    {
+        return $this->hasOne('App\AttendanceStatus');
+    }
+
+    /**
      * Get the payment status for the activity log.
      */
     public function paymentStatus()

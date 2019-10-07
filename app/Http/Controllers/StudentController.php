@@ -347,6 +347,6 @@ class StudentController extends Controller
             return response()->json(['status' => false, 'message' => $this->unauthorizedMessage], 422);
         }
         Student::destroy($request->selectedData);
-        return response()->json(['status' => true, 'message' => 'Data successfully deleted.']);
+        return response()->json(['status' => true, 'message' => __($this->deletedMessage)]);
     }
 }

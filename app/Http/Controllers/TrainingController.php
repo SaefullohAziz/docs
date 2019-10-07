@@ -163,7 +163,7 @@ class TrainingController extends Controller
     public function show(Training $training)
     {
         if ( ! auth()->user()->can('view', $training)) {
-            return redirect()->route('training.index')->with('alert-danger', $this->noPermission);
+            return redirect()->route('training.index')->with('alert-danger', __($this->noPermission));
         }
         $view = [
             'title' => __('Training Detail'),
@@ -189,7 +189,7 @@ class TrainingController extends Controller
     public function edit(Training $training)
     {
         if (auth()->user()->cant('update', $training)) {
-            return redirect()->route('training.index')->with('alert-danger', $this->noPermission);
+            return redirect()->route('training.index')->with('alert-danger', __($this->noPermission));
         }
         $view = [
             'title' => __('Edit Training'),
@@ -216,7 +216,7 @@ class TrainingController extends Controller
     public function update(StoreTraining $request, Training $training)
     {
         if (auth()->user()->cant('update', $training)) {
-            return redirect()->route('training.index')->with('alert-danger', $this->noPermission);
+            return redirect()->route('training.index')->with('alert-danger', __($this->noPermission));
         }
         $request->request->add([
             'school_id' => auth()->user()->school->id,

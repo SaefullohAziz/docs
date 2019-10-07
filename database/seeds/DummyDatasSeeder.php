@@ -28,5 +28,6 @@ class DummyDatasSeeder extends Seeder
                                                 }
                                                 $school->user()->save(factory(App\User::class)->make());
                                             });
+        $visitationDestinations = factory(App\VisitationDestination::class, 3)->create();
     }
 }

@@ -168,7 +168,7 @@ class PaymentController extends Controller
     public function show(Payment $payment)
     {
         if (auth()->user()->cant('view', $payment)) {
-            return redirect()->route('payment.index')->with('alert-danger', $this->noPermission);
+            return redirect()->route('payment.index')->with('alert-danger', __($this->noPermission));
         }
         $view = [
             'title' => __('Payment Confirmation Detail'),
@@ -198,7 +198,7 @@ class PaymentController extends Controller
     public function edit(Payment $payment)
     {
         if (auth()->user()->cant('update', $payment)) {
-            return redirect()->route('payment.index')->with('alert-danger', $this->noPermission);
+            return redirect()->route('payment.index')->with('alert-danger', __($this->noPermission));
         }
         $view = [
             'title' => __('Edit Payment Confirmation'),
@@ -229,7 +229,7 @@ class PaymentController extends Controller
     public function update(StorePayment $request, Payment $payment)
     {
         if (auth()->user()->cant('update', $payment)) {
-            return redirect()->route('payment.index')->with('alert-danger', $this->noPermission);
+            return redirect()->route('payment.index')->with('alert-danger', __($this->noPermission));
         }
         $request->merge([
             'date' => date('Y-m-d', strtotime($request->date)),
@@ -250,7 +250,7 @@ class PaymentController extends Controller
     public function fill(Payment $payment)
     {
         if (auth()->user()->cant('confirm', $payment)) {
-            return redirect()->route('payment.index')->with('alert-danger', $this->noPermission);
+            return redirect()->route('payment.index')->with('alert-danger', __($this->noPermission));
         }
         $view = [
             'title' => __('Fill Payment Confirmation'),
@@ -285,7 +285,7 @@ class PaymentController extends Controller
     public function confirm(ConfirmPayment $request, Payment $payment)
     {
         if (auth()->user()->cant('confirm', $payment)) {
-            return redirect()->route('payment.index')->with('alert-danger', $this->noPermission);
+            return redirect()->route('payment.index')->with('alert-danger', __($this->noPermission));
         }
         if ($payment->training()->count()) {
             $request->merge(['repayment' => 'Paid in cash']);

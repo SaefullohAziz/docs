@@ -94,7 +94,7 @@ class Activity extends Model
     }
 
     /**
-     * Show subsidy list for datatable
+     * Show the list for datatable
      * 
      * @param  \Illuminate\Http\Request  $request
      */

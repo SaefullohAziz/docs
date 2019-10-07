@@ -43,6 +43,22 @@ class Teacher extends Model
     }
 
     /**
+     * Get the audience participant for the participant.
+     */
+    public function audienceParticipant()
+    {
+        return $this->hasMany('App\AudienceParticipant');
+    }
+
+    /**
+     * The audience that belong to the student.
+     */
+    public function audience()
+    {
+        return $this->belongsToMany('App\Attendance', 'audience_participants', 'teacher_id', 'attendance_id')->using('AudienceParticipant');
+    }
+
+    /**
      * Scope a query to only include specific teacher of given school.
      *
      * @param  \Illuminate\Database\Eloquent\Builder  $query

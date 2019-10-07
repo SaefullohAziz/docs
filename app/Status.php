@@ -97,6 +97,22 @@ class Status extends Model
     }
 
     /**
+     * Get the attendance status for the status.
+     */
+    public function attendanceStatus()
+    {
+        return $this->hasMany('App\AttendanceStatus');
+    }
+
+    /**
+     * The attendance that belong to the status.
+     */
+    public function attendance()
+    {
+        return $this->belongsToMany('App\Attendance', 'attendance_statuses')->using('App\AttendanceStatus');
+    }
+
+    /**
      * Get the payment status for the status.
      */
     public function paymentStatus()

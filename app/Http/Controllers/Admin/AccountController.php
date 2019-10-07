@@ -39,7 +39,7 @@ class AccountController extends Controller
         if (auth()->guard('admin')->user()->hasRole('user')) {
             return $this->me();
         } if ( ! auth()->guard('admin')->user()->can('access ' . $this->table)) {
-            return redirect()->route('admin.home')->with('alert-danger', $this->noPermission);
+            return redirect()->route('admin.home')->with('alert-danger', __($this->noPermission));
         }
         $view = [
             'title' => 'Account',
@@ -87,7 +87,7 @@ class AccountController extends Controller
     public function create()
     {
         if ( ! auth()->guard('admin')->user()->can('create ' . $this->table)) {
-            return redirect()->route('admin.account.index')->with('alert-danger', $this->noPermission);
+            return redirect()->route('admin.account.index')->with('alert-danger', __($this->noPermission));
         }
         $view = [
             'title' => 'Create Account',
@@ -108,7 +108,7 @@ class AccountController extends Controller
     public function store(StoreUser $request)
     {
         if ( ! auth()->guard('admin')->user()->can('create ' . $this->table)) {
-            return redirect()->route('admin.account.index')->with('alert-danger', $this->noPermission);
+            return redirect()->route('admin.account.index')->with('alert-danger', __($this->noPermission));
         }
         Validator::make($request->all(), User::rules())->validate();
         $request->merge(['password' => Hash::make($request->password)]);
@@ -128,7 +128,7 @@ class AccountController extends Controller
     {
         if ( ! $request->is('admin/account/me')) {
             if ( ! auth()->guard('admin')->user()->can('read ' . $this->table)) {
-                return redirect()->route('account.index')->with('alert-danger', $this->noPermission);
+                return redirect()->route('account.index')->with('alert-danger', __($this->noPermission));
             }
         }
         $view = [
@@ -168,7 +168,7 @@ class AccountController extends Controller
     public function edit(User $user)
     {
         if ( ! auth()->guard('admin')->user()->can('update ' . $this->table)) {
-            return redirect()->route('account.index')->with('alert-danger', $this->noPermission);
+            return redirect()->route('account.index')->with('alert-danger', __($this->noPermission));
         }
         $view = [
             'title' => 'Edit Account',
@@ -192,7 +192,7 @@ class AccountController extends Controller
     {
         if ( ! $request->is('admin/account/me')) {
             if ( ! auth()->guard('admin')->user()->can('update ' . $this->table)) {
-                return redirect()->route('account.index')->with('alert-danger', $this->noPermission);
+                return redirect()->route('account.index')->with('alert-danger', __($this->noPermission));
             }
         }
         $request->merge(['password' => $user->password]);
@@ -229,9 +229,9 @@ class AccountController extends Controller
     public function destroy(Request $request)
     {
         if ( ! auth()->guard('admin')->user()->can('delete ' . $this->table)) {
-            return response()->json(['status' => false, 'message' => $this->noPermission], 422);
+            return response()->json(['status' => false, 'message' => __($this->noPermission)], 422);
         }
         User::destroy($request->selectedData);
-        return response()->json(['status' => true, 'message' => 'Data successfully deleted.']);
+        return response()->json(['status' => true, 'message' => __($this->deletedMessage)]);
     }
 }

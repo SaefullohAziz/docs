@@ -178,7 +178,7 @@ class SubsidyController extends Controller
     public function edit(Subsidy $subsidy)
     {
         if (auth()->user()->cant('update', $subsidy)) {
-            return redirect()->route('subsidy.index')->with('alert-danger', $this->noPermission);
+            return redirect()->route('subsidy.index')->with('alert-danger', __($this->noPermission));
         }
         $view = [
             'title' => __('Edit Subsidy'),
@@ -205,7 +205,7 @@ class SubsidyController extends Controller
     public function update(StoreSubsidy $request, Subsidy $subsidy)
     {
         if (auth()->user()->cant('update', $subsidy)) {
-            return redirect()->route('subsidy.index')->with('alert-danger', $this->noPermission);
+            return redirect()->route('subsidy.index')->with('alert-danger', __($this->noPermission));
         }
         $request->request->add(['school_id' => auth()->user()->school->id]);
         $subsidy->fill($request->all());

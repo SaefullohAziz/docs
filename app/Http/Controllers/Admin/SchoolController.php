@@ -51,7 +51,7 @@ class SchoolController extends Controller
     public function index()
     {
         if ( ! Auth::guard('admin')->user()->can('access ' . $this->table)) {
-            return redirect()->route('admin.home')->with('alert-danger', $this->noPermission);
+            return redirect()->route('admin.home')->with('alert-danger', __($this->noPermission));
         }
         $view = [
             'title' => __('School'),
@@ -97,7 +97,7 @@ class SchoolController extends Controller
     public function create()
     {
         if ( ! Auth::guard('admin')->user()->can('create ' . $this->table)) {
-            return redirect()->route('admin.school.index')->with('alert-danger', $this->noPermission);
+            return redirect()->route('admin.school.index')->with('alert-danger', __($this->noPermission));
         }
         $view = [
             'title' => __('Create School'),
@@ -124,7 +124,7 @@ class SchoolController extends Controller
     public function store(StoreSchool $request)
     {
         if ( ! Auth::guard('admin')->user()->can('create ' . $this->table)) {
-            return redirect()->route('admin.school.index')->with('alert-danger', $this->noPermission);
+            return redirect()->route('admin.school.index')->with('alert-danger', __($this->noPermission));
         }
         $request->merge([
             'department' => implode(', ', $request->department),
@@ -163,7 +163,7 @@ class SchoolController extends Controller
     public function show(School $school)
     {
         if ( ! Auth::guard('admin')->user()->can('read ' . $this->table)) {
-            return redirect()->route('admin.school.index')->with('alert-danger', $this->noPermission);
+            return redirect()->route('admin.school.index')->with('alert-danger', __($this->noPermission));
         }
         $view = [
             'title' => __('School Detail'),
@@ -213,7 +213,7 @@ class SchoolController extends Controller
     public function edit(School $school)
     {
         if ( ! Auth::guard('admin')->user()->can('update ' . $this->table)) {
-            return redirect()->route('admin.school.index')->with('alert-danger', $this->noPermission);
+            return redirect()->route('admin.school.index')->with('alert-danger', __($this->noPermission));
         }
         $view = [
             'title' => __('Edit School'),
@@ -242,7 +242,7 @@ class SchoolController extends Controller
     public function update(StoreSchool $request, School $school)
     {
         if ( ! Auth::guard('admin')->user()->can('update ' . $this->table)) {
-            return redirect()->route('admin.school.index')->with('alert-danger', $this->noPermission);
+            return redirect()->route('admin.school.index')->with('alert-danger', __($this->noPermission));
         }
         $request->merge([
             'department' => implode(', ', $request->department),
@@ -326,7 +326,7 @@ class SchoolController extends Controller
     public function destroy(Request $request)
     {
         if ( ! Auth::guard('admin')->user()->can('delete ' . $this->table)) {
-            return response()->json(['status' => false, 'message' => $this->noPermission], 422);
+            return response()->json(['status' => false, 'message' => __($this->noPermission)], 422);
         }
         School::destroy($request->selectedData);
         return response()->json(['status' => true, 'message' => __($this->deletedMessage)]);

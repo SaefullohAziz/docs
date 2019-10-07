@@ -225,6 +225,6 @@ class StudentClassController extends Controller
     public function destroy(StudentClass $studentClass)
     {
         StudentClass::destroy($request->selectedData);
-        return response()->json(['status' => true, 'message' => 'Data successfully deleted.']);
+        return response()->json(['status' => true, 'message' => __($this->deletedMessage)]);
     }
 }
