@@ -51,6 +51,19 @@ class EventServiceProvider extends ServiceProvider
         'App\Events\AttendanceProcessed' => [
             'App\Listeners\ProcessAttendance',
         ],
+        // Payment
+        'App\Events\PaymentProcessed' => [
+            'App\Listeners\ProcessPayment',
+        ],
+        'App\Events\PaymentApproved' => [
+            'App\Listeners\ApprovePayment',
+        ],
+        'App\Events\PaymentSent' => [
+            'App\Listeners\SendPayment',
+        ],
+        'App\Events\PaymentRefunded' => [
+            'App\Listeners\RefundPayment',
+        ],
     ];
 
     /**

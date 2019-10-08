@@ -117,7 +117,7 @@
 			      	title: '{{ __("Are you sure want to restore this data?") }}',
 			      	text: '',
 			      	icon: 'warning',
-			      	buttons: true,
+			      	buttons: ['{{ __("Cancel") }}', true],
 			      	dangerMode: true,
 			    })
 			    .then((willRestore) => {
@@ -157,7 +157,7 @@
 			      	title: '{{ __("Are you sure want to delete permanently this data?") }}',
 			      	text: '{{ __("After this, data cannot be restored.") }}',
 			      	icon: 'warning',
-			      	buttons: true,
+			      	buttons: ['{{ __("Cancel") }}', true],
 			      	dangerMode: true,
 			    })
 			    .then((willDelete) => {

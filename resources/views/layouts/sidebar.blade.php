@@ -8,10 +8,18 @@
     </div>
     <ul class="sidebar-menu">
       <li class="menu-header">{{ __('Dashboard') }}</li>
-      <li><a class="nav-link" href="{{ route('home') }}"><i class="fa fa-home"></i> <span>{{ __('Home') }}</span></a></li>
+      <li class="{{ (request()->is('/')?'active':'') }}">
+        <a class="nav-link" href="{{ route('home') }}">
+          <i class="fa fa-home"></i> <span>{{ __('Home') }}</span>
+        </a>
+      </li>
       <li class="menu-header">{{ __('Menu') }}</li>
       <!-- School -->
-      <li><a class="nav-link" href="{{ route('school.index') }}"><i class="fa fa-university"></i> <span>{{ __('School') }}</span></a></li>
+      <li class="{{ (request()->is('school')||request()->is('school/*')?'active':'') }}">
+        <a class="nav-link" href="{{ route('school.index') }}">
+          <i class="fa fa-university"></i> <span>{{ __('School') }}</span>
+        </a>
+      </li>
       <!-- Teacher -->
       <li class="{{ (request()->is('teacher')||request()->is('teacher/*')?'active':'') }}">
         <a class="nav-link" href="{{ route('teacher.index') }}">
@@ -19,17 +27,37 @@
         </a>
       </li>
       <!-- Student -->
-      <li><a class="nav-link" href="{{ route('class.index') }}"><i class="fa fa-user-tie"></i> <span>{{ __('Student') }}</span></a></li>
+      <li class="{{ (request()->is('student')||request()->is('student/*')?'active':'') }}">
+        <a class="nav-link" href="{{ route('class.index') }}">
+          <i class="fa fa-user-tie"></i> <span>{{ __('Student') }}</span>
+        </a>
+      </li>
       <!-- Activity -->
-      <li><a class="nav-link" href="{{ route('activity.index') }}"><i class="fas fa-city"></i> <span>{{ __('Activity Submission') }}</span></a></li>
+      <li class="{{ (request()->is('activity')||request()->is('activity/*')?'active':'') }}">
+        <a class="nav-link" href="{{ route('activity.index') }}">
+          <i class="fas fa-city"></i> <span>{{ __('Activity Submission') }}</span>
+        </a>
+      </li>
       <!-- Subsidy -->
-      <li><a class="nav-link" href="{{ route('subsidy.index') }}"><i class="fa fa-briefcase"></i> <span>{{ __('Submission of Assistance') }}</span></a></li>
+      <li class="{{ (request()->is('subsidy')||request()->is('subsidy/*')?'active':'') }}">
+        <a class="nav-link" href="{{ route('subsidy.index') }}">
+          <i class="fa fa-briefcase"></i> <span>{{ __('Submission of Assistance') }}</span>
+        </a>
+      </li>
       <!-- Training -->
-      <li><a class="nav-link" href="{{ route('training.index') }}"><i class="fas fa-business-time"></i> <span>{{ __('Training') }}</span></a></li>
+      <li class="{{ (request()->is('training')||request()->is('training/*')?'active':'') }}">
+        <a class="nav-link" href="{{ route('training.index') }}">
+          <i class="fas fa-business-time"></i> <span>{{ __('Training') }}</span>
+        </a>
+      </li>
       <!-- Exam Readiness -->
-      <li><a class="nav-link" href="{{ route('exam.readiness.index') }}"><i class="far fa-list-alt"></i> <span>{{ __('Exam Readiness') }}</span></a></li>
+      <li class="{{ (request()->is('exam/readiness')||request()->is('exam/readiness/*')?'active':'') }}">
+        <a class="nav-link" href="{{ route('exam.readiness.index') }}">
+          <i class="far fa-list-alt"></i> <span>{{ __('Exam Readiness') }}</span>
+        </a>
+      </li>
       <!-- Confirmation -->
-      <li class="dropdown {{ (request()->is('payment')||request()->is('payment/*')?'active':'') }}">
+      <li class="dropdown {{ (request()->is('payment')||request()->is('payment/*')||request()->is('attendance')||request()->is('attendance/*')?'active':'') }}">
         <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-receipt"></i> <span>{{ __('Confirmation') }}</span></a>
         <ul class="dropdown-menu">
           <li class="{{ (request()->is('attendance')||request()->is('attendance/*')?'active':'') }}"><a class="nav-link" href="{{ route('attendance.index') }}">{{ __('Attendance') }}</a></li>
@@ -38,7 +66,11 @@
       </li>
       <!-- Account -->
       <li class="menu-header">{{ __('User') }}</li>
-      <li><a class="nav-link" href="{{ route('account.index') }}"><i class="fa fa-user"></i> <span>{{ __('Account') }}</span></a></li>
+      <li class="{{ (request()->is('account')||request()->is('account/*')?'active':'') }}">
+        <a class="nav-link" href="{{ route('account.index') }}">
+          <i class="fa fa-user"></i> <span>{{ __('Account') }}</span>
+        </a>
+      </li>
       <li class="menu-header">{{ __('Logout') }}</li>
       <li>
         <a class="nav-link text-danger" href="{{ route('logout') }}"

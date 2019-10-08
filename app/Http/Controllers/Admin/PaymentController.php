@@ -8,6 +8,10 @@ use App\School;
 use App\Status;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Events\PaymentProcessed;
+use App\Events\PaymentApproved;
+use App\Events\PaymentSent;
+use App\Events\PaymentRefunded;
 use App\Http\Requests\StorePayment;
 use DataTables;
 use Validator;
@@ -81,6 +85,13 @@ class PaymentController extends Controller
             'schools' => School::pluck('name', 'id')->toArray(),
             'types' => $this->types,
             'statuses' => Status::byNames(['Created', 'Processed', 'Approved', 'Sent', 'Refunded'])->pluck('name', 'id')->toArray(),
+            'kolis' => collect(range(1, 100))->combine(range(1, 100))->map(function ($number) {
+                return $number . ' koli';
+            })->toArray(),
+            'expeditions' => [
+                'Wali Pitue' => 'Wali Pitue',
+                'JN Cargo' => 'JN Cargo'
+            ],
         ];
         return view('admin.payment.index', $view);
     }
@@ -256,6 +267,70 @@ class PaymentController extends Controller
             return $payment->id.'/'.$filename;
         }
         return $oldFile;
+    }
+
+    /**
+     * Process data
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     */
+    public function process(Request $request)
+    {
+        if ($request->ajax()) {
+            if ( ! auth()->guard('admin')->user()->can('approval ' . $this->table)) {
+                return response()->json(['status' => false, 'message' => __($this->noPermission)], 422);
+            }
+            event(new PaymentProcessed($request));
+            return response()->json(['status' => true, 'message' => __($this->updatedMessage)]);
+        }
+    }
+
+    /**
+     * Approve data
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     */
+    public function approve(Request $request)
+    {
+        if ($request->ajax()) {
+            if ( ! auth()->guard('admin')->user()->can('approval ' . $this->table)) {
+                return response()->json(['status' => false, 'message' => __($this->noPermission)], 422);
+            }
+            event(new PaymentApproved($request));
+            return response()->json(['status' => true, 'message' => __($this->updatedMessage)]);
+        }
+    }
+
+     /**
+     * Send data
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     */
+    public function send(Request $request)
+    {
+        if ($request->ajax()) {
+            if ( ! auth()->guard('admin')->user()->can('approval ' . $this->table)) {
+                return response()->json(['status' => false, 'message' => __($this->noPermission)], 422);
+            }
+            event(new PaymentSent($request));
+            return response()->json(['status' => true, 'message' => __($this->updatedMessage)]);
+        }
+    }
+
+    /**
+     * Refund data
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     */
+    public function refund(Request $request)
+    {
+        if ($request->ajax()) {
+            if ( ! auth()->guard('admin')->user()->can('approval ' . $this->table)) {
+                return response()->json(['status' => false, 'message' => __($this->noPermission)], 422);
+            }
+            event(new PaymentRefunded($request));
+            return response()->json(['status' => true, 'message' => __($this->updatedMessage)]);
+        }
     }
 
     /**

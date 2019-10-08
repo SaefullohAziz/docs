@@ -131,7 +131,7 @@
 			      	title: '{{ __("Are you sure you want to cancel selected data?") }}',
 			      	text: '',
 			      	icon: 'warning',
-			      	buttons: true,
+			      	buttons: ['{{ __("Cancel") }}', true],
 			      	dangerMode: true,
 			    })
 			    .then((willReject) => {
@@ -171,7 +171,7 @@
 			      	title: '{{ __("Are you sure you want to process selected data?") }}',
 			      	text: '',
 			      	icon: 'warning',
-			      	buttons: true,
+			      	buttons: ['{{ __("Cancel") }}', true],
 			      	dangerMode: true,
 			    })
 			    .then((willReject) => {
@@ -242,7 +242,7 @@
 			      	title: '{{ __("Are you sure want to delete this data?") }}',
 			      	text: '',
 			      	icon: 'warning',
-			      	buttons: true,
+			      	buttons: ['{{ __("Cancel") }}', true],
 			      	dangerMode: true,
 			    })
 			    .then((willDelete) => {

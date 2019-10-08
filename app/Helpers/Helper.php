@@ -55,15 +55,17 @@ if ( ! function_exists('saveStatus')) {
      * @param  string $status Name of status
      * @param  string $desc   Description for log
      */
-    function saveStatus($model, $status, $desc)
+    function saveStatus($model, $status, $desc, $addonData = [])
     {
         $log = actlog($desc);
         $status = App\Status::byName($status)->first();
-        $model->status()->attach($status->id, [
+        $data = [
             'log_id' => $log,
             'created_at' => now(),
             'updated_at' => now(),
-        ]);
+        ];
+        $data = array_merge($data, $addonData);
+        $model->status()->attach($status->id, $data);
     }
 }
 

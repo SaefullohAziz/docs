@@ -212,7 +212,7 @@
 			      	title: '{{ __("Are you sure want to delete this data?") }}',
 			      	text: '',
 			      	icon: 'warning',
-			      	buttons: true,
+			      	buttons: ['{{ __("Cancel") }}', true],
 			      	dangerMode: true,
 			    })
 			    .then((willDelete) => {
