@@ -33,30 +33,31 @@
 					<div class="row">
 						<div class="col-sm-6">
 							<fieldset>
-                                {{ Form::bsSelect(null, __('School'), 'school_id', $schools, old('school_id'), __('Select'), ['placeholder' => __('Select'), 'required' => '']) }}
+                                {{ Form::bsSelect(null, __('School'), 'school_id', $schools, $examReadiness->school_id, __('Select'), ['placeholder' => __('Select'), 'required' => '']) }}
 
-                                {{ Form::bsSelect(null, __('Type'), 'exam_type', $types, old('exam_type'), __('Select'), ['placeholder' => __('Select'), 'required' => ''], ['']) }}
+                                {{ Form::bsSelect(null, __('Type'), 'exam_type', $types, $examReadiness->exam_type, __('Select'), ['placeholder' => __('Select'), 'required' => ''], ['']) }}
 
-                                {{ Form::bsSelect('d-none', __('Sub Type'), 'exam_sub_type', [''=>''], old('exam_sub_type'), __('Select'), ['placeholder' => __('Select'), 'required' => '']) }}
+                                {{ Form::bsSelect(null, __('Sub Type'), 'exam_sub_type', [''=>''], explode(', ', $examReadiness->sub_exam_type), __('Select'), ['placeholder' => __('Select'), 'multiple' => '']) }}
 
-								{{ Form::bsInlineRadio('d-none', __('Ma Status?'), 'ma_status', ['Sudah' => __('Already'), 'Belum' => __('Not yet')], old('pic'), [( ! empty(old('pic'))?'':'disabled') => '', 'required' => '']) }}
+								{{ Form::bsInlineRadio(null, __('Ma Status?'), 'ma_status', ['Sudah' => __('Already'), 'Belum' => __('Not yet')], $examReadiness->ma_status, [( ! empty($examReadiness->school_id)?'':'disabled') => '', 'required' => '']) }}
 
-								{{ Form::bsInlineRadio('d-none', __('Execution?'), 'execution', ['Mandiri' => __('Self'), 'Bergabung' => __('Together')], old('pic'), [( ! empty(old('pic'))?'':'disabled') => '', 'required' => '']) }}
+								{{ Form::bsInlineRadio(null, __('Execution?'), 'execution', ['Mandiri' => __('Self'), 'Bergabung' => __('Together')], $examReadiness->execution, [( ! empty($examReadiness->school_id)?'':'disabled') => '', 'required' => '']) }}
 
-                                {{ Form::bsSelect('d-none', __('School Reference'), 'reference_school', $referenceSchools , old('reference_school'), __('Select'), ['placeholder' => __('Select'), 'required' => '']) }}
-
-								{{ Form::bsInlineRadio('d-none', __('Important!'), 'confirmation_of_readiness', ['1' => __('Ready to provide transportation and accommodation for the MikroTik Trainer team')], old('pic'), [( ! empty(old('pic'))?'':'disabled') => '', 'required' => '']) }}
+                                {{ Form::bsSelect(null, __('School Reference'), 'reference_school', $reference_schools , $examReadiness->reference_school, __('Select'), ['placeholder' => __('Select'), 'required' => '']) }}
 
                             </fieldset>
                             <fieldset>
                                 <legend>{{ __('Student') }}</legend>
                                 <div class="row">
-                                    {{ Form::bsSelect('col-12', __('Generation'), 'generation', $generations, old('generation'), __('Select'), ['placeholder' => __('Select'), 'disabled' => '']) }}
+                                    {{ Form::bsSelect('col-12', __('Generation'), 'generation', $generations, $examReadiness->school_id, __('Select'), ['placeholder' => __('Select'), 'disabled' => '']) }}
                                 </div>
-                                <!-- {{ Form::bsSelect('null', __('Student'), 'student', [], old('student'), __('Select'), ['placeholder' => __('Select')]) }} -->
+                                {{ Form::bsSelect('null', __('Student'), 'student', [], $examReadiness->school_id, __('Select'), ['placeholder' => __('Select')]) }}
 								<fieldset>
 									<legend>{{ __('Selected Student') }}</legend>
 									<ul class="list-group list-group-flush students">
+										<?php foreach ($ExamReadinessStudents as $student): ?>
+											<li>{{ $student }}</li>
+										<?php endforeach ?>
 										
 									</ul>
 									@if ($errors->has('student_id'))
@@ -70,15 +71,15 @@
 						<div class="col-sm-6">
 							<fieldset>
 								<legend>{{ __('Person in Charge (PIC)') }}</legend>
-								{{ Form::bsInlineRadio(null, __('Person in Charge?'), 'pic', ['2' => __('Yes'), '1' => __('Not')], old('pic'), [( ! empty(old('pic'))?'':'disabled') => '', 'required' => '']) }}
-								<div class="{{ ( ! empty(old('type'))?'d-block':'d-none') }}">
-									{{ Form::bsText(null, __('PIC Name'), 'pic_name', old('pic_name'), __('PIC Name')) }}
+								{{ Form::bsInlineRadio(null, __('Person in Charge?'), 'pic', ['2' => __('Yes'), '1' => __('Not')], $examReadiness->school_id, [( ! empty($examReadiness->school_id)?'':'disabled') => '', 'required' => '']) }}
+								<div class="{{ ( ! empty($examReadiness->school_id)?'d-block':'d-none') }}">
+									{{ Form::bsText(null, __('PIC Name'), 'pic_name', $examReadiness->school_id, __('PIC Name')) }}
 
-									{{ Form::bsText(null, __('PIC Position'), 'pic_position', old('pic_position'), __('PIC Position')) }}
+									{{ Form::bsText(null, __('PIC Position'), 'pic_position', $examReadiness->school_id, __('PIC Position')) }}
 
-									{{ Form::bsPhoneNumber(null, __('PIC Phone Number'), 'pic_phone_number', old('pic_phone_number'), __('PIC Phone Number'), ['maxlength' => '13']) }}
+									{{ Form::bsPhoneNumber(null, __('PIC Phone Number'), 'pic_phone_number', $examReadiness->school_id, __('PIC Phone Number'), ['maxlength' => '13']) }}
 
-									{{ Form::bsText(null, __('PIC E-Mail'), 'pic_email', old('pic_email'), __('PIC E-Mail')) }}
+									{{ Form::bsText(null, __('PIC E-Mail'), 'pic_email', $examReadiness->school_id, __('PIC E-Mail')) }}
 								</div>
                             </fieldset>
 					</div>
@@ -94,12 +95,10 @@
 </div>
 @endsection
 
-
 @section('script')
 <script>
 	$(document).ready(function () {
 		$('select[name="school_id"]').change(function () {
-			$('[name="student_id[]"]').closest('.list-group-item').remove();
 			$('select[name="generation"], input[name="pic"]').prop('disabled', true);
             $('select[name="generation"]').val(null).change();
 			if ($(this).val() != '') {
@@ -187,81 +186,54 @@
 			}
 		});
 
-		$('select[name="generation"]').change(function (){
-			$('[name="student_id[]"]').closest('.list-group-item').remove();
-			if ($(this).val() != '') {
-				$.ajax({
+
+        $('select[name="generation"]').change(function () {
+			$('select[name="student"]').html('<option value="">{{ __('Select') }}</option>');
+	    	if ($(this).val() != '') {
+	    		$.ajax({
 					url : "{{ route('get.student') }}",
 					type: "POST",
 					dataType: "JSON",
-					data: {
-						'_token' : '{{ csrf_token() }}',
-						'generation' : $(this).val(),
-						'school' : $('select[name="school_id"]').val(),
-					},
+					data: {'_token' : '{{ csrf_token() }}', 'ssp' : true, 'school' : $('select[name="school_id"]').val(), 'generation' : $(this).val()},
 					success: function(data)
 					{
-						no = 1;
-						$.each(data.result, function( k, v ){
-							$('.students').append('<li class="student list-group-item d-flex justify-content-between align-items-center">' + no++ + ' <input type="hidden" name="student_id[]" value="'+k+'">'+v+'<a href="javascript:void()" onclick="deleteStudent('+"'"+k+"'"+')" class="badge badge-danger badge-pill badge-sm" title="{{ __('Delete') }}"><i class="fas fa-trash-alt"></i></a></li>');
-							$('select[name="student"]').val(null).change();
+						$.each(data.result, function(k, v) {
+						 	$('select[name="student"]').append('<option value="'+k+'">'+v+'</option>');
 						});
 					},
 					error: function (jqXHR, textStatus, errorThrown)
 					{
-						
+						$('.sub-type option[value=""]').remove();
+						$('select[name="student"]').html('<option value="">{{ __('Select') }}</option>').attr('name', 'exam_sub_type[]').select2();
 					}
 				});
-			}
+	    	}
 		});
 
-  //       $('select[name="generation"]').change(function () {
-		// 	$('select[name="student"]').html('<option value="">{{ __('Select') }}</option>');
-	 //    	if ($(this).val() != '') {
-	 //    		$.ajax({
-		// 			url : "{{ route('get.student') }}",
-		// 			type: "POST",
-		// 			dataType: "JSON",
-		// 			data: {'_token' : '{{ csrf_token() }}', 'ssp' : true, 'school' : $('select[name="school_id"]').val(), 'generation' : $(this).val()},
-		// 			success: function(data)
-		// 			{
-		// 				$.each(data.result, function(k, v) {
-		// 				 	$('select[name="student"]').append('<option value="'+k+'">'+v+'</option>');
-		// 				});
-		// 			},
-		// 			error: function (jqXHR, textStatus, errorThrown)
-		// 			{
-		// 				$('.sub-type option[value=""]').remove();
-		// 				$('select[name="student"]').html('<option value="">{{ __('Select') }}</option>').attr('name', 'exam_sub_type[]').select2();
-		// 			}
-		// 		});
-	 //    	}
-		// });
-
-    //     $('select[name="student"]').change(function () {
-	   //  	if ($(this).val() != '') {
-	   //  		if ($('[name="student_id[]"][value="'+$(this).val()+'"]').length) {
-				// 	swal('{{ __("Student have been selected.") }}', '', 'warning');
-				// 	$('select[name="student"]').val(null).change();
-				// } else {
-				// 	$.ajax({
-				// 		url : "{{ route('get.student') }}",
-				// 		type: "POST",
-				// 		dataType: "JSON",
-				// 		data: {'_token' : '{{ csrf_token() }}', 'student' : $(this).val()},
-				// 		success: function(data)
-				// 		{
-				// 			$('.students').append('<li class="student list-group-item d-flex justify-content-between align-items-center"><input type="hidden" name="student_id[]" value="'+data.result.id+'">'+data.result.name+'<a href="javascript:void()" onclick="deleteStudent('+"'"+data.result.id+"'"+')" class="badge badge-danger badge-pill" title="{{ __('Delete') }}"><i class="fas fa-trash-alt"></i></a></li>');
-				// 			$('select[name="student"]').val(null).change();
-				// 		},
-				// 		error: function (jqXHR, textStatus, errorThrown)
-				// 		{
+        $('select[name="student"]').change(function () {
+	    	if ($(this).val() != '') {
+	    		if ($('[name="student_id[]"][value="'+$(this).val()+'"]').length) {
+					swal('{{ __("Student have been selected.") }}', '', 'warning');
+					$('select[name="student"]').val(null).change();
+				} else {
+					$.ajax({
+						url : "{{ route('get.student') }}",
+						type: "POST",
+						dataType: "JSON",
+						data: {'_token' : '{{ csrf_token() }}', 'student' : $(this).val()},
+						success: function(data)
+						{
+							$('.students').append('<li class="student list-group-item d-flex justify-content-between align-items-center"><input type="hidden" name="student_id[]" value="'+data.result.id+'">'+data.result.name+'<a href="javascript:void()" onclick="deleteStudent('+"'"+data.result.id+"'"+')" class="badge badge-danger badge-pill" title="{{ __('Delete') }}"><i class="fas fa-trash-alt"></i></a></li>');
+							$('select[name="student"]').val(null).change();
+						},
+						error: function (jqXHR, textStatus, errorThrown)
+						{
 							
-				// 		}
-				// 	});
-				// }
-	   //  	}
-	   //  });
+						}
+					});
+				}
+	    	}
+	    });
 
         $('input[name="pic"]').click(function () {
 			if ($('input[name="pic"][value="2"]').is(':checked')) {

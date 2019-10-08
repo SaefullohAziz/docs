@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Pic;
 use App\School;
 use App\ExamType;
+use App\Student;
 use App\ExamReadiness;
 use App\ExamReadinessSchool;
 use App\ExamReadinessStudent;
@@ -49,6 +50,7 @@ class ExamReadinessController extends Controller
             'schools' => School::orderBy('name', 'asc')->pluck('name', 'id')->toArray(),
             'types' => ExamType::orderBy('name', 'asc')->pluck('name', 'name')->toArray(),
         ];
+
         return view('admin.exam.readiness.index', $view);
     }
 
@@ -111,6 +113,7 @@ class ExamReadinessController extends Controller
      */
     public function store(Request $request)
     {
+        dd($request);
         if ( ! auth()->guard('admin')->user()->can('create ' . $this->table)) {
             return redirect()->route('admin.exam.readiness.index')->with('alert-danger', __($this->noPermission));
         }
@@ -133,7 +136,28 @@ class ExamReadinessController extends Controller
      */
     public function show(ExamReadiness $examReadiness)
     {
-        //
+        if ( ! auth()->guard('admin')->user()->can('read ' . $this->table)) {
+            return redirect()->route('admin.exam.readiness.index')->with('alert-danger', $this->noPermission);
+        }
+        $view = [
+            'title' => __('Detail Exam Readiness'),
+            'breadcrumbs' => [
+                route('admin.exam.readiness.index') => __('Exam Readiness'),
+                null => __('Detail')
+            ],
+            'schools' => School::orderBy('name', 'asc')->pluck('name', 'id')->toArray(),
+            'types' => ExamType::orderBy('name', 'asc')->pluck('name', 'name')->toArray(),
+            'generations' => StudentClass::orderBy('generation', 'asc')->pluck('generation', 'generation')->toArray(),
+            'reference_schools' => School::has('ExamReadinessSchool')->pluck('name', 'name')->toArray(),
+            'reference_student' => $examReadiness->student(),
+            'generation' => School::has('StudentClass')->pluck('generation', 'generation')->toArray(),
+            'examReadinessStudents' => ExamReadinessStudent::has('Student')->get(),
+            'examReadiness' => $examReadiness
+        ];
+
+        dd($view['generation']);
+
+        return view('admin.exam.readiness.show', $view);
     }
 
     /**
@@ -144,7 +168,27 @@ class ExamReadinessController extends Controller
      */
     public function edit(ExamReadiness $examReadiness)
     {
-        //
+        if ( ! auth()->guard('admin')->user()->can('read ' . $this->table)) {
+            return redirect()->route('admin.exam.readiness.index')->with('alert-danger', $this->noPermission);
+        }
+        $view = [
+            'title' => __('Edit Exam Readiness'),
+            'breadcrumbs' => [
+                route('admin.exam.readiness.index') => __('Exam Readiness'),
+                null => __('Detail')
+            ],
+            'schools' => School::orderBy('name', 'asc')->pluck('name', 'id')->toArray(),
+            'types' => ExamType::orderBy('name', 'asc')->pluck('name', 'name')->toArray(),
+            'generations' => StudentClass::orderBy('generation', 'asc')->pluck('generation', 'generation')->toArray(),
+            'reference_schools' => School::has('ExamReadinessSchool')->pluck('name', 'name')->toArray(),
+            'reference_student' => $examReadiness->student(),
+            'examReadinessStudents' => ExamReadinessStudent::has('Student')->get(),
+            'exam_sub_types' => ExamType::where('name', $examReadiness->exam_type)->pluck('sub_name', 'id'),
+            'generation' => StudentClass::orderBy('generation', 'asc')->pluck('generation', 'generation')->toArray(),
+            'examReadiness' => $examReadiness
+        ];
+
+        return view('admin.exam.readiness.edit', $view);
     }
 
     /**
