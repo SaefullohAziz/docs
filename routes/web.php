@@ -127,14 +127,7 @@ Route::prefix('exam')->name('exam.')->group(function () {
 // Attendance
 Route::prefix('attendance')->name('attendance.')->group(function () {
 	Route::post('list', 'AttendanceController@list')->name('list');
-	Route::post('process', 'AttendanceController@process')->name('process');
-	Route::post('approve', 'AttendanceController@approve')->name('approve');
-	Route::get('bin', 'AttendanceController@bin')->name('bin');
-	Route::post('binList', 'AttendanceController@list')->name('binList');
-	Route::post('export', 'AttendanceController@export')->name('export');
 	Route::delete('destroy', 'AttendanceController@destroy')->name('destroy');
-	Route::post('restore', 'AttendanceController@restore')->name('restore');
-	Route::delete('destroyPermanently', 'AttendanceController@destroyPermanently')->name('destroyPermanently');
 });
 Route::resource('attendance', 'AttendanceController', ['except' => [
 	'destroy',

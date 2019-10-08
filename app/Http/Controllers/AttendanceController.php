@@ -88,7 +88,7 @@ class AttendanceController extends Controller
                     return '<a href="'.route('download', ['dir' => encrypt('attendance/submission-letter'), 'file' => encrypt($data->submission_letter)]).'" class="btn btn-sm btn-success '.( ! isset($data->submission_letter)?'disabled':'').'" title="'.__('Download').'" target="_blank"><i class="fa fa-file"></i>  '.__('Download').'</a>';
                 })
                 ->editColumn('status', function($data) {
-                    return $data->status.' by '.$data->status_by;
+                    return $data->status;
                 })
                 ->addColumn('action', function($data) {
                     return '<a class="btn btn-sm btn-success" href="'.route('attendance.show', $data->id).'" title="'.__("See detail").'"><i class="fa fa-eye"></i> '.__("See").'</a> <a class="btn btn-sm btn-warning" href="'.route('attendance.edit', $data->id).'" title="'.__("Edit").'"><i class="fa fa-edit"></i> '.__("Edit").'</a>';
@@ -246,17 +246,6 @@ class AttendanceController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Attendance  $attendance
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Attendance $attendance)
-    {
-        //
-    }
-
-    /**
      * Save participant
      * 
      * @param  \App\Attendance  $attendance
@@ -293,5 +282,16 @@ class AttendanceController extends Controller
             return $attendance->id.'/'.$filename;
         }
         return $oldFile;
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\Attendance  $attendance
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(Attendance $attendance)
+    {
+        //
     }
 }
