@@ -42,8 +42,6 @@ class TeacherController extends Controller
                 route('teacher.index') => __('Teacher'),
                 null => 'Data'
             ],
-            'levels' => SchoolLevel::pluck('name', 'id')->toArray(),
-            'schools' => School::orderBy('name', 'asc')->pluck('name', 'id')->toArray(),
         ];
         return view('teacher.index', $view);
     }
@@ -167,8 +165,7 @@ class TeacherController extends Controller
      */
     public function destroy(Request $request)
     {
-        Teacher::destroy($request->selectedData);
-        return response()->json(['status' => true, 'message' => __($this->deletedMessage)]);
+        // 
     }
 
     /**

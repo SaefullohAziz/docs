@@ -33,6 +33,7 @@
     "Yes": "Ya",
     "Not": "Bukan",
     "Not yet": "Belum",
+    "Cancel": "Batal",
     "Already": "Sudah",
     "Reject": "Tolak",
     "Approve": "Setujui",
@@ -42,6 +43,7 @@
     "Are you sure you want to reject selected data?": "Anda yakin ingin menolak data terpilih?",
     "Are you sure you want to process selected data?": "Anda yakin ingin memproses data terpilih",
     "Are you sure you want to approve selected data?": "Anda yakin ingin menyetujui data terpilih?",
+    "Are you sure you want to refund selected payment?": "Anda yakin ingin mengembalikan pembayaran terpilih?",
     "Data cannot be updated.": "Data tidak dapat diperbarui.",
     "After this, data cannot be restored.": "Setelah ini, data tidak dapat dikembalikan.",
 
@@ -269,6 +271,9 @@
     "Arrival Information": "Informasi Kedatangan",
     "Arrival Point": "Titik Kedatangan",
     "Return Information": "Informasi Kepulangan",
+    "Receipt/AWB Number": "Nomor Resi/AWB",
+    "Expedition": "Ekspedisi",
+    "Proof of Receipt": "Bukti Kirim",
 
     "Enter phone number without country code.": "Masukkan nomor handphone tanpa kode negara.",
     "Complete with an academic degree and or degree of expertise.": "Lengkapi dengan gelar akademi atau keahlian.",

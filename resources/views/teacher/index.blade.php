@@ -29,7 +29,6 @@
 		<div class="card card-primary">
 			<div class="card-header">
 				<a href="{{ route('teacher.create') }}" class="btn btn-icon btn-success" title="{{ __('Create') }}"><i class="fa fa-plus"></i></a>
-				<button class="btn btn-icon btn-secondary" title="{{ __('Filter') }}" data-toggle="modal" data-target="#filterModal"><i class="fa fa-filter"></i></button>
             	<button class="btn btn-icon btn-secondary" onclick="reloadTable()" title="{{ __('Refresh') }}"><i class="fa fa-sync"></i></i></button>
 			</div>
 			<div class="card-body">
@@ -127,84 +126,11 @@
 			}
 		});
 
-		$('[name="deleteData"]').click(function(event) {
-			if ($('[name="selectedData[]"]:checked').length > 0) {
-				event.preventDefault();
-				var selectedData = $('[name="selectedData[]"]:checked').map(function(){
-					return $(this).val();
-				}).get();
-				swal({
-			      	title: '{{ __("Are you sure want to delete this data?") }}',
-			      	text: '',
-			      	icon: 'warning',
-			      	buttons: true,
-			      	dangerMode: true,
-			    })
-			    .then((willDelete) => {
-			      	if (willDelete) {
-			      		$.ajax({
-							url : "{{ route('teacher.destroy') }}",
-							type: "DELETE",
-							dataType: "JSON",
-							data: {"selectedData" : selectedData, "_token" : "{{ csrf_token() }}"},
-							success: function(data)
-							{
-								reloadTable();
-							},
-							error: function (jqXHR, textStatus, errorThrown)
-							{
-								if (JSON.parse(jqXHR.responseText).status) {
-									swal("{{ __('Failed!') }}", "{{ __("Data cannot be deleted.") }}", "warning");
-								} else {
-									swal(JSON.parse(jqXHR.responseText).message, "", "error");
-								}
-							}
-						});
-			      	}
-    			});
-			} else {
-				swal("{{ __('Please select a data..') }}", "", "warning");
-			}
-		});
 	});
 
 	function reloadTable() {
 	    table.ajax.reload(null,false); //reload datatable ajax
 	    $('[name="selectData"]').iCheck('uncheck');
 	}
-
-	function filter() {
-		reloadTable();
-		$('#filterModal').modal('hide');
-	}
 </script>
-
-<!-- Modal -->
-<div class="modal fade" id="filterModal" tabindex="-1" role="dialog" aria-labelledby="filterModalLabel" aria-hidden="true">
-	<div class="modal-dialog modal-sm" role="document">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="modal-title" id="filterModallLabel">{{ __('Filter') }}</h5>
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-				</button>
-			</div>
-			{{ Form::open(['route' => 'teacher.export', 'files' => true]) }}
-				<div class="modal-body">
-					<div class="container-fluid">
-						<div class="row">
-							{{ Form::bsSelect('col-12', __('Level'), 'level', $levels, null, __('Select'), ['placeholder' => __('Select')]) }}
-							{{ Form::bsSelect('col-12', __('School'), 'school', $schools, null, __('Select'), ['placeholder' => __('Select')]) }}
-						</div>
-					</div>
-				</div>
-				<div class="modal-footer bg-whitesmoke d-flex justify-content-center">
-					{{ Form::submit(__('Export'), ['class' => 'btn btn-primary']) }}
-					{{ Form::button(__('Filter'), ['class' => 'btn btn-primary', 'onclick' => 'filter()']) }}
-					{{ Form::button(__('Cancel'), ['class' => 'btn btn-secondary', ' data-dismiss' => 'modal']) }}
-				</div>
-			{{ Form::close() }}
-		</div>
-	</div>
-</div>
 @endsection

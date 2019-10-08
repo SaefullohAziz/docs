@@ -113,7 +113,6 @@ class ExamReadinessController extends Controller
      */
     public function store(Request $request)
     {
-        dd($request);
         if ( ! auth()->guard('admin')->user()->can('create ' . $this->table)) {
             return redirect()->route('admin.exam.readiness.index')->with('alert-danger', __($this->noPermission));
         }

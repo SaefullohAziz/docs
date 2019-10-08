@@ -127,14 +127,7 @@ Route::prefix('exam')->name('exam.')->group(function () {
 // Attendance
 Route::prefix('attendance')->name('attendance.')->group(function () {
 	Route::post('list', 'AttendanceController@list')->name('list');
-	Route::post('process', 'AttendanceController@process')->name('process');
-	Route::post('approve', 'AttendanceController@approve')->name('approve');
-	Route::get('bin', 'AttendanceController@bin')->name('bin');
-	Route::post('binList', 'AttendanceController@list')->name('binList');
-	Route::post('export', 'AttendanceController@export')->name('export');
 	Route::delete('destroy', 'AttendanceController@destroy')->name('destroy');
-	Route::post('restore', 'AttendanceController@restore')->name('restore');
-	Route::delete('destroyPermanently', 'AttendanceController@destroyPermanently')->name('destroyPermanently');
 });
 Route::resource('attendance', 'AttendanceController', ['except' => [
 	'destroy',
@@ -317,6 +310,10 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
 	// Payment
 	Route::prefix('payment')->name('payment.')->group(function () {
     	Route::post('list', 'PaymentController@list')->name('list');
+    	Route::post('process', 'PaymentController@process')->name('process');
+    	Route::post('approve', 'PaymentController@approve')->name('approve');
+    	Route::post('send', 'PaymentController@send')->name('send');
+    	Route::post('refund', 'PaymentController@refund')->name('refund');
     	Route::post('export', 'PaymentController@export')->name('export');
     	Route::delete('destroy', 'PaymentController@destroy')->name('destroy');
     });
@@ -365,11 +362,18 @@ Route::get('download/{dir}/{file}', function ($dir, $file) {
 })->name('download');
 
 Route::get('check', function () {
-	factory(App\VisitationDestination::class, 3)->create();
+	if (env('APP_ENV') != 'development') {
+		$data = collect(range(1, 100))->combine(range(1, 100))->map(function ($number) {
+			return $number . ' koli';
+		})->toArray();
+		dd($data);
+	}
 });
 
 Route::get('mailable', function () {
-    $school = App\School::first();
-
-    return new App\Mail\SchoolCreated($school);
+	if (env('APP_ENV') == 'development') {
+		$school = App\School::first();
+	
+		return new App\Mail\SchoolCreated($school);
+	}
 });

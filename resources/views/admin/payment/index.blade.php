@@ -120,7 +120,172 @@
       				$('[name="selectedData[]"]').iCheck('uncheck');
       			});
       		},
-  		});
+		});
+		  
+		$('[name="processData"]').click(function(event) {
+	    	if ($('[name="selectedData[]"]:checked').length > 0) {
+	    		event.preventDefault();
+	    		var selectedData = $('[name="selectedData[]"]:checked').map(function(){
+	    			return $(this).val();
+	    		}).get();
+				swal({
+			      	title: '{{ __("Are you sure you want to process selected data?") }}',
+			      	text: '',
+			      	icon: 'warning',
+					buttons: ['{{ __("Cancel") }}', true],
+			      	dangerMode: true,
+			    })
+			    .then((willReject) => {
+			      	if (willReject) {
+			      		$.ajax({
+							url : "{{ route('admin.payment.process') }}",
+							type: "POST",
+							dataType: "JSON",
+							data: {"_token" : "{{ csrf_token() }}", "selectedData" : selectedData},
+							success: function(data)
+							{
+								reloadTable();
+							},
+							error: function (jqXHR, textStatus, errorThrown)
+							{
+								if (JSON.parse(jqXHR.responseText).status) {
+									swal("{{ __('Failed!') }}", '{{ __("Data cannot be updated.") }}', "warning");
+								} else {
+									swal(JSON.parse(jqXHR.responseText).message, "", "error");
+								}
+							}
+						});
+			      	}
+    			});
+	    	} else {
+	    		swal("{{ __('Please select a data..') }}", "", "warning");
+	    	}
+	    });
+
+	    $('[name="approveData"]').click(function(event) {
+	    	if ($('[name="selectedData[]"]:checked').length > 0) {
+	    		event.preventDefault();
+	    		var selectedData = $('[name="selectedData[]"]:checked').map(function(){
+	    			return $(this).val();
+	    		}).get();
+				swal({
+			      	title: '{{ __("Are you sure you want to approve selected data?") }}',
+			      	text: '',
+			      	icon: 'warning',
+			      	buttons: ['{{ __("Cancel") }}', true],
+			      	dangerMode: true,
+			    })
+			    .then((willReject) => {
+			      	if (willReject) {
+			      		$.ajax({
+							url : "{{ route('admin.payment.approve') }}",
+							type: "POST",
+							dataType: "JSON",
+							data: {"_token" : "{{ csrf_token() }}", "selectedData" : selectedData},
+							success: function(data)
+							{
+								reloadTable();
+							},
+							error: function (jqXHR, textStatus, errorThrown)
+							{
+								if (JSON.parse(jqXHR.responseText).status) {
+									swal("{{ __('Failed!') }}", '{{ __("Data cannot be updated.") }}', "warning");
+								} else {
+									swal(JSON.parse(jqXHR.responseText).message, "", "error");
+								}
+							}
+						});
+			      	}
+    			});
+	    	} else {
+	    		swal("{{ __('Please select a data..') }}", "", "warning");
+	    	}
+		});
+
+		$('[name="sendData"]').click(function(event) {
+	      	if ($('[name="selectedData[]"]:checked').length > 0) {
+				$('#send-form [name="awb_number"]').val('');
+				$('#send-form input[type="file"]').filestyle('clear');
+				$('#send-form [name="koli"], #send-form [name="expedition"]').val(null).change();
+				$('#sendModal').modal('show');
+	      	} else {
+	        	swal("{{ __('Please select a data..') }}", "", "warning");
+	      	}
+	    });
+
+		$('[name="saveSend"]').click(function(event) {
+			$('#send-form .invalid-feedback').remove();
+	        event.preventDefault();
+	        var selectedData = $('[name="selectedData[]"]:checked').map(function(){
+	          	return $(this).val();
+	        }).get();
+			var formData = new FormData($('#send-form')[0]);
+			for (var i = selectedData.length - 1; i >= 0; i--) {
+				formData.append('selectedData[]', selectedData[i]);
+			}
+	        $.ajax({
+	        	url : "{{ route('admin.payment.send') }}",
+	        	type: "POST",
+	        	dataType: "JSON",
+				async: false,
+				cache: false,
+				contentType: false,
+				processData: false,
+				data: formData,
+	        	success: function(data)
+	        	{
+	        		$('#sendModal').modal('hide');
+	        		reloadTable();
+	        	},
+	        	error: function (jqXHR, textStatus, errorThrown)
+	        	{
+					$.each(JSON.parse(jqXHR.responseText).errors, function(name, value) {
+              			$('#send-form [name="'+name+'"]').addClass('is-invalid');
+              			$('[name="'+name+'"]').parent().append('<div class="invalid-feedback" role="alert"><strong>'+value[0]+'</strong></div>');
+            		});
+	        	}
+	        });
+	    });
+		
+		$('[name="refundData"]').click(function(event) {
+	    	if ($('[name="selectedData[]"]:checked').length > 0) {
+	    		event.preventDefault();
+	    		var selectedData = $('[name="selectedData[]"]:checked').map(function(){
+	    			return $(this).val();
+	    		}).get();
+				swal({
+			      	title: '{{ __("Are you sure you want to refund selected payment?") }}',
+			      	text: '',
+			      	icon: 'warning',
+			      	buttons: ['{{ __("Cancel") }}', true],
+			      	dangerMode: true,
+			    })
+			    .then((willReject) => {
+			      	if (willReject) {
+			      		$.ajax({
+							url : "{{ route('admin.payment.refund') }}",
+							type: "POST",
+							dataType: "JSON",
+							data: {"_token" : "{{ csrf_token() }}", "selectedData" : selectedData},
+							success: function(data)
+							{
+								reloadTable();
+							},
+							error: function (jqXHR, textStatus, errorThrown)
+							{
+								if (JSON.parse(jqXHR.responseText).status) {
+									swal("{{ __('Failed!') }}", '{{ __("Data cannot be updated.") }}', "warning");
+								} else {
+									swal(JSON.parse(jqXHR.responseText).message, "", "error");
+								}
+							}
+						});
+			      	}
+    			});
+	    	} else {
+	    		swal("{{ __('Please select a data..') }}", "", "warning");
+	    	}
+	    });
 
 		$('[name="deleteData"]').click(function(event) {
 			if ($('[name="selectedData[]"]:checked').length > 0) {
@@ -132,7 +297,7 @@
 			      	title: '{{ __("Are you sure want to delete this data?") }}',
 			      	text: '',
 			      	icon: 'warning',
-			      	buttons: true,
+					buttons: ['{{ __("Cancel") }}', true],
 			      	dangerMode: true,
 			    })
 			    .then((willDelete) => {
@@ -197,6 +362,39 @@
 				<div class="modal-footer bg-whitesmoke d-flex justify-content-center">
 					{{ Form::submit(__('Export'), ['class' => 'btn btn-primary']) }}
 					{{ Form::button(__('Filter'), ['class' => 'btn btn-primary', 'onclick' => 'filter()']) }}
+					{{ Form::button(__('Cancel'), ['class' => 'btn btn-secondary', ' data-dismiss' => 'modal']) }}
+				</div>
+			{{ Form::close() }}
+		</div>
+	</div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="sendModal" tabindex="-1" role="dialog" aria-labelledby="sendModalLabel" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="sendModallLabel">{{ __('Send') }}</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			{{ Form::open(['url' => '#', 'files' => true, 'id' => 'send-form']) }}
+				<div class="modal-body">
+					<div class="container-fluid">
+						<div class="row">
+							{{ Form::bsSelect('col-sm-6', __('Koli'), 'koli', $kolis, null, __('Select'), ['placeholder' => __('Select')]) }}
+
+							{{ Form::bsText('col-sm-6', __('Receipt/AWB Number'), 'awb_number', null, __('Receipt/AWB Number'), ['required' => '']) }}
+
+							{{ Form::bsSelect('col-sm-6', __('Expedition'), 'expedition', $expeditions, null, __('Select'), ['placeholder' => __('Select')]) }}
+
+							{{ Form::bsFile('col-sm-6', __('Proof of Receipt'), 'proof_of_receipt', null, [], [__('File with PDF/JPG/PNG format up to 5MB.')]) }}
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer bg-whitesmoke d-flex justify-content-center">
+					{{ Form::button(__('Save'), ['class' => 'btn btn-primary', 'name' => 'saveSend']) }}
 					{{ Form::button(__('Cancel'), ['class' => 'btn btn-secondary', ' data-dismiss' => 'modal']) }}
 				</div>
 			{{ Form::close() }}

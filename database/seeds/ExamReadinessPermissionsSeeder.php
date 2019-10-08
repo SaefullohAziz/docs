@@ -1,8 +1,6 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use Spatie\Permission\Models\Permission;
-use Spatie\Permission\Models\Role;
 
 class ExamReadinessPermissionsSeeder extends Seeder
 {
@@ -20,12 +18,13 @@ class ExamReadinessPermissionsSeeder extends Seeder
     		'update exam_readinesses'=> ['supersu', 'admin'],
             'delete exam_readinesses' => ['supersu', 'admin'],
             'approval exam_readinesses'=> ['supersu', 'admin'],
+            'bin exam_readinesses' => ['supersu', 'admin'],
+            'restore exam_readinesses' => ['supersu', 'admin'],
+            'force_delete exam_readinesses' => ['supersu', 'admin']
     	];
     	foreach ($data as $k => $v) {
-    		$permission = Permission::create(['name' => $k, 'guard_name' => 'admin']);
-    		foreach ($v as $name) {
-                $permission->assignRole($name, 'admin');
-    		}
+    		$permission = \Spatie\Permission\Models\Permission::firstOrCreate(['name' => $k, 'guard_name' => 'admin']);
+    		$permission->syncRoles($v, 'admin');
     	}
     }
 }

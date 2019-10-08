@@ -18,6 +18,13 @@ class PaymentStatus extends Pivot
     protected $table = 'payment_statuses';
 
     /**
+     * The attributes that aren't mass assignable.
+     *
+     * @var array
+     */
+    protected $guarded = [];
+
+    /**
      * The "booting" method of the model.
      *
      * @return void

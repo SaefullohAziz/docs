@@ -12,6 +12,11 @@ class ExamReadiness extends Model
 {
     use Uuids, SoftDeletes;
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
     protected $fillable = ['school_id', 'exam_type', 'sub_exam_type', 'ma_status', 'reference_school', 'execution', 'token'];
 
     /**
