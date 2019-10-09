@@ -51,8 +51,8 @@ Route::resource('document', 'DocumentController', ['except' => [
 
 // Teacher
 Route::prefix('teacher')->name('teacher.')->group(function () {
-	// Route::post('list', 'TeacherController@list')->name('list');
-	// Route::post('export', 'TeacherController@export')->name('export');
+	Route::post('list', 'TeacherController@list')->name('list');
+	Route::post('export', 'TeacherController@export')->name('export');
 	Route::delete('destroy', 'TeacherController@destroy')->name('destroy');
 });
 Route::resource('teacher', 'TeacherController', ['except' => [
