@@ -188,6 +188,7 @@
 		});
 
 		$('select[name="generation"]').change(function (){
+			$('.students').html('');
 			$('select[name="student"]').html('<option value="">{{ __('Select') }}</option>');
 			$('select[name="student"]').val(null).change();
 			$('[name="student_id[]"]').closest('.list-group-item').remove();
