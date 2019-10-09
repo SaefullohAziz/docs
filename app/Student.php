@@ -45,9 +45,9 @@ class Student extends Model
     /**
      * Get the exam readiness student for the student.
      */
-    public function examReadinessStusent()
+    public function examReadinessStudent()
     {
-        return $this->hasMany('App\ExamReadinessStusent');
+        return $this->hasMany('App\examReadinessStudent');
     }
 
     /**
@@ -55,7 +55,7 @@ class Student extends Model
      */
     public function examReadiness()
     {
-        return $this->belongsToMany('App\ExamReadiness', 'exam_readiness_students')->using('App\ExamReadinessStusent');
+        return $this->belongsToMany('App\ExamReadiness', 'exam_readiness_students')->using('App\examReadinessStudent');
     }
 
     /**

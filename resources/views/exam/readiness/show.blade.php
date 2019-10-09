@@ -32,61 +32,71 @@
 				<div class="card-body">
 					<div class="row">
 						<div class="col-sm-6">
+							<legend>{{ __('Data') }}</legend>
 							<fieldset>
-                                {{ Form::bsSelect(null, __('Type'), 'exam_type', $types, old('exam_type'), __('Select'), ['placeholder' => __('Select'), 'required' => ''], ['']) }}
+                                {{ Form::bsSelect(null, __('School'), 'school_id', $schools, $examReadiness->school_id, __('Select'), ['placeholder' => __('Select'), 'disabled' => '']) }}
 
-                                {{ Form::bsSelect('d-none', __('Sub Type'), 'exam_sub_type', [''=>''], old('exam_sub_type'), __('Select'), ['placeholder' => __('Select'), 'required' => '']) }}
+                                {{ Form::bsSelect(null, __('Type'), 'exam_type', $types, $examReadiness->exam_type, __('Select'), ['placeholder' => __('Select'), 'disabled' => ''], ['']) }}
 
-								{{ Form::bsInlineRadio('d-none', __('Ma Status?'), 'ma_status', ['Sudah' => __('Already'), 'Belum' => __('Not yet')], old('pic'), [( ! empty(old('pic'))?'':'disabled') => '', 'required' => '']) }}
+                                {{ Form::bsText(null, __('Sub Type'), 'exam_sub_type', $examReadiness->sub_exam_type, __('Select'), ['disabled' => '']) }}
 
-								{{ Form::bsInlineRadio('d-none', __('Execution?'), 'execution', ['Mandiri' => __('Self'), 'Bergabung' => __('Together')], old('pic'), [( ! empty(old('pic'))?'':'disabled') => '', 'required' => '']) }}
+                                @if ($examReadiness->ma_status)
+									{{ Form::bsInlineRadio(null, __('Ma Status?'), 'ma_status', ['Sudah' => __('Already'), 'Belum' => __('Not yet')], $examReadiness->ma_status, ['disabled' => '', 'disabled' => '']) }}
+								@endif
 
-                                {{ Form::bsSelect('d-none', __('School Reference'), 'reference_school', $referenceSchools , old('reference_school'), __('Select'), ['placeholder' => __('Select'), 'required' => '']) }}
+                                @if ($examReadiness->execution)
+									{{ Form::bsInlineRadio(null, __('Execution?'), 'execution', ['Mandiri' => __('Self'), 'Bergabung' => __('Together')], $examReadiness->execution, ['disabled' => '', 'disabled' => '']) }}
+								@endif
 
-								{{ Form::bsInlineRadio('d-none', __('Important!'), 'confirmation_of_readiness', ['1' => __('Ready to provide transportation and accommodation for the MikroTik Trainer team')], old('pic'), [( ! empty(old('pic'))?'':'disabled') => '', 'required' => '']) }}
+								@if ($examReadiness->reference_school)
+                                	{{ Form::bsSelect(null, __('School Reference'), 'reference_school', $reference_schools , $examReadiness->reference_school, __('Select'), ['placeholder' => __('Select'), 'disabled' => '']) }}
+                                @endif
 
-                            </fieldset>
-                            <fieldset>
-                                <legend>{{ __('Student') }}</legend>
-                                <div class="row">
-                                    {{ Form::bsSelect('col-12', __('Generation'), 'generation', $generations, old('generation'), __('Select'), ['placeholder' => __('Select'), 'required' => '']) }}
-                                </div>
-								<fieldset>
-									<legend>{{ __('Selected Student') }}</legend>
-									<ul class="list-group list-group-flush students">
-                                	{{ Form::bsSelect('null', __('Add'), 'student', [], old('student'), __('Select'), ['placeholder' => __('Select')]) }}
-										
-									</ul>
-									@if ($errors->has('student_id'))
-										<div class="text-danger">
-											<strong>{{ $errors->first('student_id') }}</strong>
-										</div>
-									@endif
-								</fieldset>
                             </fieldset>
                         </div>
 						<div class="col-sm-6">
 							<fieldset>
 								<legend>{{ __('Person in Charge (PIC)') }}</legend>
-								{{ Form::bsInlineRadio(null, __('Person in Charge?'), 'pic', ['2' => __('Yes'), '1' => __('Not')], old('pic'), ['required' => '']) }}
-								<div class="{{ ( ! empty(old('type'))?'d-block':'d-none') }}">
-									{{ Form::bsText(null, __('PIC Name'), 'pic_name', old('pic_name'), __('PIC Name')) }}
+								<div class="{{ ( ! empty($examReadiness->school_id)?'d-block':'d-none') }}">
+									{{ Form::bsText(null, __('PIC Name'), 'pic_name', $examReadiness->pic[0]->name, __('PIC Name'), ['disabled' => '']) }}
 
-									{{ Form::bsText(null, __('PIC Position'), 'pic_position', old('pic_position'), __('PIC Position')) }}
+									{{ Form::bsText(null, __('PIC Position'), 'pic_position', $examReadiness->pic[0]->position, __('PIC Position'), ['disabled' => '']) }}
 
-									{{ Form::bsPhoneNumber(null, __('PIC Phone Number'), 'pic_phone_number', old('pic_phone_number'), __('PIC Phone Number'), ['maxlength' => '13']) }}
+									{{ Form::bsText(null, __('PIC Phone Number'), 'pic_phone_number', $examReadiness->pic[0]->phone_number, __('PIC Phone Number'), ['disabled' => '']) }}
 
-									{{ Form::bsText(null, __('PIC E-Mail'), 'pic_email', old('pic_email'), __('PIC E-Mail')) }}
+									{{ Form::bsText(null, __('PIC E-Mail'), 'pic_email', $examReadiness->pic[0]->email, __('PIC E-Mail'), ['disabled' => '']) }}
 								</div>
                             </fieldset>
+						</div>
 					</div>
-				</div>
-				<div class="card-footer bg-whitesmoke text-center">
-					{{ Form::submit(__('Save'), ['name' => 'submit', 'class' => 'btn btn-primary']) }}
-					{{ link_to(url()->previous(), __('Cancel'), ['class' => 'btn btn-danger']) }}
-				</div>
-			{{ Form::close() }}
+					<div class="row">
+						<div class="col">
+                            <fieldset>
+								<legend>{{ __('Selected Student') }}</legend>
+								<ul class="list-group list-group-flush students">
+									<div class="row py-3">
+										<?php foreach ($examReadinessStudents as $student): ?>
+											<div class="col-md-4">
+												<li class="list-group-item">{{ $student->name }}</li>
+											</div>
+											<!-- <li>{{ $student }}</li> -->
+										<?php endforeach ?>
+									</div>
+								</ul>
+								@if ($errors->has('student_id'))
+									<div class="text-danger">
+										<strong>{{ $errors->first('student_id') }}</strong>
+									</div>
+								@endif
+                            </fieldset>
+						</div>
+					</div>
+					<div class="card-footer bg-whitesmoke text-center">
+						{{ link_to(url()->previous(), __('Cancel'), ['class' => 'btn btn-danger']) }}
+					</div>
+				{{ Form::close() }}
 
+			</div>
 		</div>
 	</div>
 </div>
@@ -95,15 +105,6 @@
 @section('script')
 <script>
 	$(document).ready(function () {
-		$('select[name="school_id"]').change(function () {
-			$('input[name="pic"]').prop('disabled', true);
-			if ($(this).val() != '') {
-				$('input[name="pic"]').prop('disabled', false);
-                if ($('input[name="pic"][value="2"]').is(':checked')) {
-                    getPic();
-                }
-			}
-		});
 
 		$('select[name="exam_type"]').change(function() {
 			$('select[name="exam_sub_types[]"]').attr('name', 'exam_sub_type').select2();
@@ -190,20 +191,12 @@
 					url : "{{ route('get.student') }}",
 					type: "POST",
 					dataType: "JSON",
-					data: {'_token' : '{{ csrf_token() }}', 'generation' : $(this).val()},
+					data: {'_token' : '{{ csrf_token() }}', 'ssp' : true, 'school' : $('select[name="school_id"]').val(), 'generation' : $(this).val()},
 					success: function(data)
 					{
 						$.each(data.result, function(k, v) {
 						 	$('select[name="student"]').append('<option value="'+k+'">'+v+'</option>');
-
-						 	if ($('[name="student_id[]"][value="'+k+'"]').length) {
-								swal('{{ __("Student have been selected.") }}', '', 'warning');
-								$('select[name="student"]').val(null).change();
-							} else {
-								$('.students').append('<li class="student list-group-item d-flex justify-content-between align-items-center"><input type="hidden" name="student_id[]" value="'+k+'">'+v+'<a href="javascript:void()" onclick="deleteStudent('+"'"+k+"'"+')" class="badge badge-danger badge-pill" title="{{ __('Delete') }}"><i class="fas fa-trash-alt"></i></a></li>');
-							}
 						});
-
 					},
 					error: function (jqXHR, textStatus, errorThrown)
 					{

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Pic;
 use App\School;
+use App\Student;
 use App\ExamType;
 use App\ExamReadiness;
 use App\ExamReadinessSchool;
@@ -39,7 +40,7 @@ class ExamReadinessController extends Controller
         $view = [
             'title' => __('Exam Readiness'),
             'breadcrumbs' => [
-                route('admin.exam.readiness.index') => __('Exam Readiness'),
+                route('exam.readiness.index') => __('Exam Readiness'),
                 null => 'Data'
             ],
             'types' => ExamType::orderBy('name', 'asc')->pluck('name', 'name')->toArray(),
@@ -125,7 +126,23 @@ class ExamReadinessController extends Controller
      */
     public function show(ExamReadiness $examReadiness)
     {
-        //
+        $view = [
+            'title' => __('Detail Exam Readiness'),
+            'breadcrumbs' => [
+                route('exam.readiness.index') => __('Exam Readiness'),
+                null => __('Detail')
+            ],
+            'schools' => School::orderBy('name', 'asc')->pluck('name', 'id')->toArray(),
+            'types' => ExamType::orderBy('name', 'asc')->pluck('name', 'name')->toArray(),
+            'generations' => StudentClass::orderBy('generation', 'asc')->pluck('generation', 'generation')->toArray(),
+            'reference_schools' => School::has('ExamReadinessSchool')->pluck('name', 'name')->toArray(),
+            'reference_student' => $examReadiness->student(),
+            'generation' => ['Angkatan 1' => 'Angkatan 1'],
+            'examReadinessStudents' => Student::has('examReadinessStudent')->get(),
+            'examReadiness' => $examReadiness
+        ];
+
+        return view('exam.readiness.show', $view);
     }
 
     /**
