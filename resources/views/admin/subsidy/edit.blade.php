@@ -53,7 +53,7 @@
                                             <li class="student list-group-item d-flex justify-content-between align-items-center">
                                                 <input type="hidden" name="student_id[]" value="{{ $student->id }}">
                                                 {{ $student->name }}
-                                                <a href="javascript:void()" onclick="deleteStudent('{{ $student->id }}')" class="badge badge-danger badge-pill" title="{{ __('Delete') }}"><i class="fas fa-trash-alt"></i></a>
+                                                <a href="javascript:void(0);" onclick="deleteStudent('{{ $student->id }}')" class="badge badge-danger badge-pill" title="{{ __('Delete') }}"><i class="fas fa-trash-alt"></i></a>
                                             </li>
                                         @endforeach
 									</ul>
@@ -149,7 +149,7 @@
 						data: {'_token' : '{{ csrf_token() }}', 'student' : $(this).val()},
 						success: function(data)
 						{
-							$('.students').append('<li class="student list-group-item d-flex justify-content-between align-items-center"><input type="hidden" name="student_id[]" value="'+data.result.id+'">'+data.result.name+'<a href="javascript:void()" onclick="deleteStudent('+"'"+data.result.id+"'"+')" class="badge badge-danger badge-pill" title="{{ __('Delete') }}"><i class="fas fa-trash-alt"></i></a></li>');
+							$('.students').append('<li class="student list-group-item d-flex justify-content-between align-items-center"><input type="hidden" name="student_id[]" value="'+data.result.id+'">'+data.result.name+'<a href="javascript:void(0);" onclick="deleteStudent('+"'"+data.result.id+"'"+')" class="badge badge-danger badge-pill" title="{{ __('Delete') }}"><i class="fas fa-trash-alt"></i></a></li>');
 							$('select[name="student"]').val(null).change();
 						},
 						error: function (jqXHR, textStatus, errorThrown)

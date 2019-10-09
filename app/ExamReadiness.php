@@ -17,14 +17,9 @@ class ExamReadiness extends Model
      *
      * @var array
      */
-    protected $fillable = ['school_id', 'exam_type', 'sub_exam_type', 'ma_status', 'reference_school', 'execution', 'token'];
-
-    /**
-     * The attributes that aren't mass assignable.
-     *
-     * @var array
-     */
-    protected $guarded = [];
+    protected $fillable = [
+        'school_id', 'exam_type', 'sub_exam_type', 'ma_status', 'reference_school', 'execution', 'token'
+    ];
 
     /**
      * Get the school that owns the exam readiness.
@@ -91,6 +86,20 @@ class ExamReadiness extends Model
     }
 
     /**
+     * Get the sub type.
+     *
+     * @param  string  $value
+     * @return string
+     */
+    public function getSubTypeAttribute()
+    {
+        if (strpos($this->sub_exam_type, ', ') !== false) {
+            return explode(', ', $this->sub_exam_type);
+        }
+        return $this->sub_exam_type;
+    }
+
+    /**
      * Main query for listing
      * 
      * @param  \Illuminate\Http\Request  $request
@@ -113,9 +122,12 @@ class ExamReadiness extends Model
                 $query->where('schools.id', $request->school);
             })->when( ! empty($request->type), function ($query) use ($request) {
                 $query->where('exam_readinesses.exam_type', $request->type);
+            })->when($request->is('admin/exam/readiness/list')||$request->is('admin/exam/readiness/export'), function ($query) {
+                $query->whereNull('exam_readinesses.deleted_at');
+            })->when($request->is('admin/exam/readiness/binList'), function ($query) {
+                $query->whereNotNull('exam_readinesses.deleted_at');
             })
-            ->whereNull('schools.deleted_at')
-            ->whereNull('exam_readinesses.deleted_at');
+            ->whereNull('schools.deleted_at');
     }
 
     /**

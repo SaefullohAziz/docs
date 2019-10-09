@@ -25,6 +25,11 @@ class StorePayment extends FormRequest
     public function rules()
     {
         $rules = [
+            'school_id' => [
+                Rule::requiredIf(function () {
+                    return auth()->guard('admin')->check();
+                }),
+            ],
             'type' => ['required'],
             'invoice' => [
                 Rule::requiredIf(function () {
@@ -44,12 +49,6 @@ class StorePayment extends FormRequest
                 }),
             ],
         ];
-        if (auth()->guard('admin')->check()) {
-            $addonRules = [
-                'school_id' => ['required']
-            ];
-            $rules = array_merge($rules, $addonRules);
-        }
         return $rules;
     }
 }

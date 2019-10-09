@@ -75,7 +75,7 @@ class AttendanceController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
+     * Display a listing of the deleted resource.
      *
      * @return \Illuminate\Http\Response
      */

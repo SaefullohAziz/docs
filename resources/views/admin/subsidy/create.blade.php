@@ -45,7 +45,7 @@
                                 <div class="row">
                                     {{ Form::bsSelect('col-12', __('Generation'), 'generation', $generations, old('generation'), __('Select'), ['placeholder' => __('Select')]) }}
 								</div>
-                                {{ Form::bsSelect('null', __('Student'), 'student', [], old('student'), __('Select'), ['placeholder' => __('Select')]) }}
+                                {{ Form::bsSelect('null', __('Student'), 'student', [], null, __('Select'), ['placeholder' => __('Select')]) }}
 								<fieldset>
 									<legend>{{ __('Selected Student') }}</legend>
 									<ul class="list-group list-group-flush students">
@@ -156,7 +156,7 @@
 						data: {'_token' : '{{ csrf_token() }}', 'student' : $(this).val()},
 						success: function(data)
 						{
-							$('.students').append('<li class="student list-group-item d-flex justify-content-between align-items-center"><input type="hidden" name="student_id[]" value="'+data.result.id+'">'+data.result.name+'<a href="javascript:void()" onclick="deleteStudent('+"'"+data.result.id+"'"+')" class="badge badge-danger badge-pill" title="{{ __('Delete') }}"><i class="fas fa-trash-alt"></i></a></li>');
+							$('.students').append('<li class="student list-group-item d-flex justify-content-between align-items-center"><input type="hidden" name="student_id[]" value="'+data.result.id+'">'+data.result.name+'<a href="javascript:void(0);" onclick="deleteStudent('+"'"+data.result.id+"'"+')" class="badge badge-danger badge-pill" title="{{ __('Delete') }}"><i class="fas fa-trash-alt"></i></a></li>');
 							$('select[name="student"]').val(null).change();
 						},
 						error: function (jqXHR, textStatus, errorThrown)

@@ -28,14 +28,8 @@
 
 		<div class="card card-primary">
 			<div class="card-header">
-				@if(auth()->guard('admin')->user()->can('create exam_readinesses'))
-					<a href="{{ route('admin.exam.readiness.create') }}" class="btn btn-icon btn-success" title="{{ __('Create') }}"><i class="fa fa-plus"></i></a>
-				@endif
-				<button class="btn btn-icon btn-secondary" title="{{ __('Filter') }}" data-toggle="modal" data-target="#filterModal"><i class="fa fa-filter"></i></button>
+				<a href="{{ route('admin.exam.readiness.index') }}" class="btn btn-icon btn-success" title="{{ __('Back') }}"><i class="fas fa-chevron-left"></i></a>
             	<button class="btn btn-icon btn-secondary" onclick="reloadTable()" title="{{ __('Refresh') }}"><i class="fa fa-sync"></i></i></button>
-				@if(auth()->guard('admin')->user()->can('bin exam_readinesses'))
-					<a href="{{ route('admin.exam.readiness.bin') }}" class="btn btn-icon btn-danger" title="{{ __('Bin') }}"><i class="fas fa-trash"></i></a>
-				@endif
 			</div>
 			<div class="card-body">
 				<div class="table-responsive">
@@ -51,7 +45,6 @@
 								<th>{{ __('Execution') }}</th>
 								<th>{{ __('Student') }}</th>
                                 <th>{{ __('Status') }}</th>
-								<th>{{ __('Action') }}</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -60,8 +53,11 @@
 				</div>
 			</div>
 			<div class="card-footer bg-whitesmoke">
-				@if (auth()->guard('admin')->user()->can('delete exam_readinesses'))
-					<button class="btn btn-danger btn-sm" name="deleteData" title="{{ __('Delete') }}">{{ __('Delete') }}</button>
+				@if (auth()->guard('admin')->user()->can('restore exam_readinesses'))
+					<button class="btn btn-warning btn-sm" name="restoreData" title="{{ __('Restore') }}">{{ __('Restore') }}</button>
+				@endif
+				@if (auth()->guard('admin')->user()->can('force_delete exam_readinesses'))
+					<button class="btn btn-danger btn-sm" name="deleteData" title="{{ __('Delete Permanently') }}">{{ __('Delete Permanently') }}</button>
 				@endif
 			</div>
 		</div>
@@ -78,11 +74,10 @@
 			processing: true,
 			serverSide: true,
 			"ajax": {
-				"url": "{{ route('admin.exam.readiness.list') }}",
+				"url": "{{ route('admin.exam.readiness.binList') }}",
 				"type": "POST",
 				"data": function (d) {
 		          d._token = "{{ csrf_token() }}";
-				  d.type = $('select[name="type"]').val();
 		        }
 			},
 			columns: [
@@ -93,7 +88,6 @@
 				{ data: 'execution', name: 'exam_readinesses.execution' },
 				{ data: 'student', name: 'exam_readinesses.sub_exam_type' },
 				{ data: 'status', name: 'statuses.name' },
-				{ data: 'action', name: 'action' }
 			],
 			"columnDefs": [
 			{   
@@ -115,6 +109,46 @@
       		},
   		});
 
+          $('[name="restoreData"]').click(function(event) {
+			if ($('[name="selectedData[]"]:checked').length > 0) {
+				event.preventDefault();
+				var selectedData = $('[name="selectedData[]"]:checked').map(function(){
+					return $(this).val();
+				}).get();
+				swal({
+			      	title: '{{ __("Are you sure want to restore this data?") }}',
+			      	text: '',
+			      	icon: 'warning',
+			      	buttons: ['{{ __("Cancel") }}', true],
+			      	dangerMode: true,
+			    })
+			    .then((willRestore) => {
+			      	if (willRestore) {
+			      		$.ajax({
+							url : "{{ route('admin.exam.readiness.restore') }}",
+							type: "POST",
+							dataType: "JSON",
+							data: {"selectedData" : selectedData, "_token" : "{{ csrf_token() }}"},
+							success: function(data)
+							{
+								reloadTable();
+							},
+							error: function (jqXHR, textStatus, errorThrown)
+							{
+								if (JSON.parse(jqXHR.responseText).status) {
+									swal("{{ __('Failed!') }}", '{{ __("Data cannot be restored.") }}', "warning");
+								} else {
+									swal(JSON.parse(jqXHR.responseText).message, "", "error");
+								}
+							}
+						});
+			      	}
+    			});
+			} else {
+				swal("{{ __('Please select a data..') }}", "", "warning");
+			}
+		});
+
 		$('[name="deleteData"]').click(function(event) {
 			if ($('[name="selectedData[]"]:checked').length > 0) {
 				event.preventDefault();
@@ -122,8 +156,8 @@
 					return $(this).val();
 				}).get();
 				swal({
-			      	title: '{{ __("Are you sure want to delete this data?") }}',
-			      	text: '',
+			      	title: '{{ __("Are you sure want to delete permanently this data?") }}',
+			      	text: '{{ __("After this, data cannot be restored.") }}',
 			      	icon: 'warning',
 			      	buttons: ['{{ __("Cancel") }}', true],
 			      	dangerMode: true,
@@ -131,7 +165,7 @@
 			    .then((willDelete) => {
 			      	if (willDelete) {
 			      		$.ajax({
-							url : "{{ route('admin.exam.readiness.destroy') }}",
+							url : "{{ route('admin.exam.readiness.destroyPermanently') }}",
 							type: "DELETE",
 							dataType: "JSON",
 							data: {"selectedData" : selectedData, "_token" : "{{ csrf_token() }}"},
@@ -142,7 +176,7 @@
 							error: function (jqXHR, textStatus, errorThrown)
 							{
 								if (JSON.parse(jqXHR.responseText).status) {
-									swal("{{ __('Failed!') }}", "{{ __("Data cannot be deleted.") }}", "warning");
+									swal("{{ __('Failed!') }}", '{{ __("Data cannot be deleted.") }}', "warning");
 								} else {
 									swal(JSON.parse(jqXHR.responseText).message, "", "error");
 								}
@@ -160,39 +194,5 @@
 	    table.ajax.reload(null,false); //reload datatable ajax
 	    $('[name="selectData"]').iCheck('uncheck');
 	}
-
-	function filter() {
-		reloadTable();
-		$('#filterModal').modal('hide');
-	}
 </script>
-
-<!-- Modal -->
-<div class="modal fade" id="filterModal" tabindex="-1" role="dialog" aria-labelledby="filterModalLabel" aria-hidden="true">
-	<div class="modal-dialog modal-sm" role="document">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="modal-title" id="filterModallLabel">{{ __('Filter') }}</h5>
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-				</button>
-			</div>
-			{{ Form::open(['route' => 'admin.exam.readiness.export', 'files' => true]) }}
-				<div class="modal-body">
-					<div class="container-fluid">
-						<div class="row">
-							{{ Form::bsSelect('col-12', __('School'), 'school', $schools, null, __('Select'), ['placeholder' => __('Select')]) }}
-							{{ Form::bsSelect('col-12', __('Type'), 'type', $types, null, __('Select'), ['placeholder' => __('Select')]) }}
-						</div>
-					</div>
-				</div>
-				<div class="modal-footer bg-whitesmoke d-flex justify-content-center">
-					{{ Form::submit(__('Export'), ['class' => 'btn btn-primary']) }}
-					{{ Form::button(__('Filter'), ['class' => 'btn btn-primary', 'onclick' => 'filter()']) }}
-					{{ Form::button(__('Cancel'), ['class' => 'btn btn-secondary', ' data-dismiss' => 'modal']) }}
-				</div>
-			{{ Form::close() }}
-		</div>
-	</div>
-</div>
 @endsection

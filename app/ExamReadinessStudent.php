@@ -27,6 +27,8 @@ class ExamReadinessStudent extends Pivot
         parent::boot();
         Pivot::creating(function($pivot) {
             $pivot->id = (string) \Illuminate\Support\Str::uuid();
+            $pivot->created_at = now();
+            $pivot->updated_at = now();
         });
     }
     

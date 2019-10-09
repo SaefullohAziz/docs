@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreSubsidy extends FormRequest
+class StoreExamReadiness extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -26,34 +26,54 @@ class StoreSubsidy extends FormRequest
     {
         $rules = [
             'school_id' => [
-                Rule::requiredIf(function () {
-                    return auth()->guard('admin')->check();
-                }),
+                Rule::requiredIf(auth()->guard('admin')->check()),
             ],
-            'type' => ['required'],
-            'student_id' => [
+            'exam_type' => [
+                'required',
+            ],
+            'sub_exam_type' => [
                 Rule::requiredIf(function () {
-                    if ( ! empty($this->get('type'))) {
-                        return $this->get('type') == 'Student Starter Pack (SSP)';
-                    }
+                    $subExam = \App\ExamType::when( ! empty($this->get('exam_type')), function ($query) {
+                        $query->where('name', $this->get('exam_type'));
+                    })
+                    ->where('sub_name', '!=', '')
+                    ->whereNotNull('sub_name')
+                    ->pluck('sub_name', 'id')
+                    ->toArray();
+                    return count($subExam) > 0;
                 }),
+                function ($attribute, $value, $fail) {
+                    if ($this->get('exam_type') == 'Axioo' || $this->get('exam_type') == 'Remidial Axioo') {
+                        if (count($this->get('sub_exam_type')) == 0) {
+                            $fail('Choose at least one ' . $attribute);
+                        }
+                    }
+                },
+            ],
+            'sub_exam_type.*' => [
+                Rule::requiredIf(is_array($this->get('sub_exam_type'))),
+                'min:1'
+            ],
+            'ma_status' => [
+                Rule::requiredIf($this->get('exam_type') == 'MTCNA'),
+            ],
+            'execution' => [
+                Rule::requiredIf($this->get('ma_status') == 'Belum'),
+            ],
+            'reference_school' => [
+                Rule::requiredIf($this->get('execution') == 'Bergabung'),
+            ],
+            'confirmation_of_readiness' => [
+                Rule::requiredIf($this->get('execution') == 'Bergabung'),
+            ],
+            'student_id' => [
+                'required',
                 'array',
                 'min:1'
             ],
             'student_id.*' => [
-                Rule::requiredIf(function () {
-                    if ( ! empty($this->get('type'))) {
-                        return $this->get('type') == 'Student Starter Pack (SSP)';
-                    }
-                }),
+                'required',
                 'min:1'
-            ],
-            'student_year' => [
-                Rule::requiredIf(function () {
-                    if ( ! empty($this->get('type'))) {
-                        return $this->get('type') == 'Axioo Next Year Support';
-                    }
-                }),
             ],
             'pic_name' => [
                 'required',

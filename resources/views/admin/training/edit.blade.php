@@ -161,7 +161,7 @@
                                             <li class="participant list-group-item d-flex justify-content-between align-items-center">
                                                 <input type="hidden" name="participant_id[]" value="{{ $participant->id }}">
                                                 {{ $participant->name }}
-                                                <a href="javascript:void()" onclick="deleteParticipant('{{ $participant->id }}')" class="badge badge-danger badge-pill" title="{{ __('Delete') }}"><i class="fas fa-trash-alt"></i></a>
+                                                <a href="javascript:void(0);" onclick="deleteParticipant('{{ $participant->id }}')" class="badge badge-danger badge-pill" title="{{ __('Delete') }}"><i class="fas fa-trash-alt"></i></a>
                                             </li>
                                         @endforeach
 									</ul>
@@ -298,7 +298,7 @@
 						data: {'_token' : '{{ csrf_token() }}', 'teacher' : $(this).val()},
 						success: function(data)
 						{
-							$('.participants').append('<li class="participant list-group-item d-flex justify-content-between align-items-center"><input type="hidden" name="participant_id[]" value="'+data.result.id+'">'+data.result.name+'<a href="javascript:void()" onclick="deleteParticipant('+"'"+data.result.id+"'"+')" class="badge badge-danger badge-pill" title="{{ __('Delete') }}"><i class="fas fa-trash-alt"></i></a></li>');
+							$('.participants').append('<li class="participant list-group-item d-flex justify-content-between align-items-center"><input type="hidden" name="participant_id[]" value="'+data.result.id+'">'+data.result.name+'<a href="javascript:void(0);" onclick="deleteParticipant('+"'"+data.result.id+"'"+')" class="badge badge-danger badge-pill" title="{{ __('Delete') }}"><i class="fas fa-trash-alt"></i></a></li>');
 							$('select[name="participant"]').val(null).change();
 						},
 						error: function (jqXHR, textStatus, errorThrown)

@@ -33,16 +33,13 @@
 					<div class="row">
 						<fieldset class="col-sm-6">
 							<legend>{{ __('School Data') }}</legend>
-
 							{{ Form::bsSelect(null, __('School'), 'school', $schools, old('school'), __('School'), ['placeholder' => __('Select'), 'required' => '']) }}
 
-							{{ Form::bsSelect(null, __('Implementation'), 'implementation', $implementation, old('implementation'), __('implementation'), ['placeholder' => __('Implementation'), 'required' => '']) }}
+							{{ Form::bsSelect(null, __('Implementation'), 'implementation', $implementation, old('implementation'), __('implementation'), ['placeholder' => __('Select'), 'required' => '']) }}
 
-							{{ Form::bsSelect(null, __('Category'), 'category', $category, old('category'), __('category'), ['placeholder' => __('implementation'), 'required' => '']) }}
+							{{ Form::bsSelect(null, __('Category'), 'category', $category, old('category'), __('category'), ['placeholder' => __('Select'), 'required' => '']) }}
 
-							{{ Form::bsFile(null, __('Document F 	ile'), 'document', old('document'), [], [__('Please use *.ZIP if any document files')]) }}
-
-
+							{{ Form::bsFile(null, __('Document File'), 'document', old('document'), [], [__('Please use *.ZIP if any document files')]) }}
 						</fieldset>
 
 						<fieldset class="col-sm-6">

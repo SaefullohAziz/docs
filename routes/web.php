@@ -281,8 +281,12 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
 		// Exam: readiness
 		Route::prefix('readiness')->name('readiness.')->group(function () {
 			Route::post('list', 'ExamReadinessController@list')->name('list');
-			// Route::post('export', 'ExamReadinessController@export')->name('export');
+			Route::post('export', 'ExamReadinessController@export')->name('export');
 			Route::delete('destroy', 'ExamReadinessController@destroy')->name('destroy');
+			Route::get('bin', 'ExamReadinessController@bin')->name('bin');
+			Route::post('binList', 'ExamReadinessController@list')->name('binList');
+			Route::post('restore', 'ExamReadinessController@restore')->name('restore');
+			Route::delete('destroyPermanently', 'ExamReadinessController@destroyPermanently')->name('destroyPermanently');
 		});
 		Route::resource('readiness', 'ExamReadinessController', ['parameters' => [
 			'readiness' => 'examReadiness'
@@ -296,10 +300,10 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
     	Route::post('list', 'AttendanceController@list')->name('list');
     	Route::post('process', 'AttendanceController@process')->name('process');
     	Route::post('approve', 'AttendanceController@approve')->name('approve');
-    	Route::get('bin', 'AttendanceController@bin')->name('bin');
-    	Route::post('binList', 'AttendanceController@list')->name('binList');
     	Route::post('export', 'AttendanceController@export')->name('export');
     	Route::delete('destroy', 'AttendanceController@destroy')->name('destroy');
+    	Route::get('bin', 'AttendanceController@bin')->name('bin');
+    	Route::post('binList', 'AttendanceController@list')->name('binList');
     	Route::post('restore', 'AttendanceController@restore')->name('restore');
     	Route::delete('destroyPermanently', 'AttendanceController@destroyPermanently')->name('destroyPermanently');
     });
