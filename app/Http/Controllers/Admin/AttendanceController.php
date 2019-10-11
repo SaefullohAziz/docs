@@ -82,7 +82,7 @@ class AttendanceController extends Controller
     public function bin()
     {
         if ( ! auth()->guard('admin')->user()->can('bin ' . $this->table)) {
-            return redirect()->route('admin.home')->with('alert-danger', __($this->noPermission));
+            return redirect()->route('admin.attendance.index')->with('alert-danger', __($this->noPermission));
         }
         $view = [
             'title' => __('Deleted Attendance Confirmation'),
@@ -394,7 +394,7 @@ class AttendanceController extends Controller
         if ( ! auth()->guard('admin')->user()->can('restore ' . $this->table)) {
             return response()->json(['status' => false, 'message' => __($this->noPermission)], 422);
         }
-        Attendance::whereIn('id', $request->selectedData)->restore();
+        Attendance::onlyTrashed()->whereIn('id', $request->selectedData)->restore();
         return response()->json(['status' => true, 'message' => __($this->restoredMessage)]);
     }
 
@@ -409,7 +409,7 @@ class AttendanceController extends Controller
         if ( ! auth()->guard('admin')->user()->can('force_delete ' . $this->table)) {
             return response()->json(['status' => false, 'message' => __($this->noPermission)], 422);
         }
-        Attendance::whereIn('id', $request->selectedData)->forceDelete();
+        Attendance::onlyTrashed()->whereIn('id', $request->selectedData)->forceDelete();
         return response()->json(['status' => true, 'message' => __($this->deletedMessage)]);
     }
 }

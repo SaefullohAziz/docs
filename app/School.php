@@ -209,7 +209,11 @@ class School extends Model
                 $query->whereIn('school_levels.id', $request->level);
             })->when( ! empty($request->status), function ($query) use ($request) {
                 $query->where('school_statuses.id', $request->status);
-            })->whereNull('schools.deleted_at');
+            })->when($request->is('admin/school/list')||$request->is('admin/school/export'), function ($query) {
+                $query->whereNull('schools.deleted_at');
+            })->when($request->is('admin/school/binList'), function ($query) {
+                $query->whereNotNull('schools.deleted_at');
+            });
     }
 
     /**
