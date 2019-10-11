@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Auth;
 use App\Province;
 use App\Regency;
 use App\Department;
@@ -50,7 +49,7 @@ class SchoolController extends Controller
      */
     public function index()
     {
-        if ( ! Auth::guard('admin')->user()->can('access ' . $this->table)) {
+        if ( ! auth()->guard('admin')->user()->can('access ' . $this->table)) {
             return redirect()->route('admin.home')->with('alert-danger', __($this->noPermission));
         }
         $view = [
@@ -63,6 +62,28 @@ class SchoolController extends Controller
             'levels' => SchoolLevel::pluck('name', 'id')->toArray(),
         ];
         return view('admin.school.index', $view);
+    }
+
+    /**
+     * Display a listing of the deleted resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function bin()
+    {
+        if ( ! auth()->guard('admin')->user()->can('bin ' . $this->table)) {
+            return redirect()->route('admin.school.index')->with('alert-danger', __($this->noPermission));
+        }
+        $view = [
+            'title' => __('Deleted School'),
+            'breadcrumbs' => [
+                route('admin.school.index') => __('School'),
+                null => __('Deleted')
+            ],
+            'provinces' => Province::pluck('name', 'name')->toArray(),
+            'levels' => SchoolLevel::pluck('name', 'id')->toArray(),
+        ];
+        return view('admin.school.bin', $view);
     }
 
     /**
@@ -96,7 +117,7 @@ class SchoolController extends Controller
      */
     public function create()
     {
-        if ( ! Auth::guard('admin')->user()->can('create ' . $this->table)) {
+        if ( ! auth()->guard('admin')->user()->can('create ' . $this->table)) {
             return redirect()->route('admin.school.index')->with('alert-danger', __($this->noPermission));
         }
         $view = [
@@ -123,7 +144,7 @@ class SchoolController extends Controller
      */
     public function store(StoreSchool $request)
     {
-        if ( ! Auth::guard('admin')->user()->can('create ' . $this->table)) {
+        if ( ! auth()->guard('admin')->user()->can('create ' . $this->table)) {
             return redirect()->route('admin.school.index')->with('alert-danger', __($this->noPermission));
         }
         $request->merge([
@@ -146,7 +167,7 @@ class SchoolController extends Controller
         $status = SchoolStatus::byName('Daftar')->first();
         $school->status()->attach($status->id, [
             'created_by' => 'staff',
-            'staff_id' => Auth::guard('admin')->user()->id,
+            'staff_id' => auth()->guard('admin')->user()->id,
             'created_at' => now(),
             'updated_at' => now()
         ]);
@@ -162,7 +183,7 @@ class SchoolController extends Controller
      */
     public function show(School $school)
     {
-        if ( ! Auth::guard('admin')->user()->can('read ' . $this->table)) {
+        if ( ! auth()->guard('admin')->user()->can('read ' . $this->table)) {
             return redirect()->route('admin.school.index')->with('alert-danger', __($this->noPermission));
         }
         $view = [
@@ -212,7 +233,7 @@ class SchoolController extends Controller
      */
     public function edit(School $school)
     {
-        if ( ! Auth::guard('admin')->user()->can('update ' . $this->table)) {
+        if ( ! auth()->guard('admin')->user()->can('update ' . $this->table)) {
             return redirect()->route('admin.school.index')->with('alert-danger', __($this->noPermission));
         }
         $view = [
@@ -241,7 +262,7 @@ class SchoolController extends Controller
      */
     public function update(StoreSchool $request, School $school)
     {
-        if ( ! Auth::guard('admin')->user()->can('update ' . $this->table)) {
+        if ( ! auth()->guard('admin')->user()->can('update ' . $this->table)) {
             return redirect()->route('admin.school.index')->with('alert-danger', __($this->noPermission));
         }
         $request->merge([
@@ -325,10 +346,40 @@ class SchoolController extends Controller
      */
     public function destroy(Request $request)
     {
-        if ( ! Auth::guard('admin')->user()->can('delete ' . $this->table)) {
+        if ( ! auth()->guard('admin')->user()->can('delete ' . $this->table)) {
             return response()->json(['status' => false, 'message' => __($this->noPermission)], 422);
         }
         School::destroy($request->selectedData);
+        return response()->json(['status' => true, 'message' => __($this->deletedMessage)]);
+    }
+
+    /**
+     * Restore the specified resource from storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function restore(Request $request)
+    {
+        if ( ! auth()->guard('admin')->user()->can('restore ' . $this->table)) {
+            return response()->json(['status' => false, 'message' => __($this->noPermission)], 422);
+        }
+        School::onlyTrashed()->whereIn('id', $request->selectedData)->restore();
+        return response()->json(['status' => true, 'message' => __($this->restoredMessage)]);
+    }
+
+    /**
+     * Remove permanently the specified resource from storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function destroyPermanently(Request $request)
+    {
+        if ( ! auth()->guard('admin')->user()->can('force_delete ' . $this->table)) {
+            return response()->json(['status' => false, 'message' => __($this->noPermission)], 422);
+        }
+        School::onlyTrashed()->whereIn('id', $request->selectedData)->forceDelete();
         return response()->json(['status' => true, 'message' => __($this->deletedMessage)]);
     }
 }

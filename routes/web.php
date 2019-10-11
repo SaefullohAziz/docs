@@ -174,6 +174,10 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
     	Route::post('list', 'SchoolController@list')->name('list');
     	Route::post('export', 'SchoolController@export')->name('export');
 		Route::delete('destroy', 'SchoolController@destroy')->name('destroy');
+		Route::get('bin', 'SchoolController@bin')->name('bin');
+		Route::post('binList', 'SchoolController@list')->name('binList');
+		Route::post('restore', 'SchoolController@restore')->name('restore');
+		Route::delete('destroyPermanently', 'SchoolController@destroyPermanently')->name('destroyPermanently');
 		
 		// School: document
 		Route::prefix('document')->name('document.')->group(function () {
