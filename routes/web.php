@@ -226,6 +226,7 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
 		Route::prefix('{studentClass}/student')->name('student.')->group(function () {
 			Route::post('list', 'StudentController@list')->name('list');
 			Route::post('export', 'StudentController@export')->name('export');
+			Route::post('import', 'StudentController@importExcel')->name('import');
 			Route::delete('destroy', 'StudentController@destroy')->name('destroy');
 		});
 		Route::resource('{studentClass}/student', 'StudentController', ['except' => [

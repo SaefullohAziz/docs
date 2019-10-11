@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\Admin;
 
 use Auth;
+use Excel;
 use App\StudentClass;
 use App\Student;
 use App\Province;
 use App\School;
 use App\SchoolLevel;
 use Illuminate\Http\Request;
+use App\Imports\StudentImport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreStudent;
 use DataTables;
@@ -338,6 +340,34 @@ class StudentController extends Controller
     {
         $request->request->add(['class' => $studentClass->id]);
         return (new StudentsExport($request))->download('student-'.date('d-m-Y-h-m-s').'.xlsx');
+    }
+
+    /**
+     * Import student from Excel
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     */
+    public function importExcel(StudentClass $studentClass, Request $request)
+    {
+        // validasi file input
+        $this->validate($request, [
+            'import_file' => 'required|mimes:xls,xlsx'
+        ]);
+
+        // get data
+        $datas = Excel::toArray(new StudentImport, $request->file('import_file'));
+
+        $inserted = 0;
+        foreach ($datas[0] as $data) {
+            // konvert excel date dormat to php date format
+            $data['dateofbirth'] = date('Y-m-d', ($data['dateofbirth'] - 25569) * 86400);
+
+            if($studentClass->student()->create($data)) {
+                $inserted++;
+            }
+        }
+
+        return back()->with('alert-success', $inserted . ' datas has been imported!');
     }
 
     /**
