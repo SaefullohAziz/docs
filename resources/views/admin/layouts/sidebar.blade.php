@@ -65,6 +65,12 @@
           <li class="{{ (request()->is('admin/payment')||request()->is('admin/payment/*')?'active':'') }}"><a class="nav-link" href="{{ route('admin.payment.index') }}">{{ __('Payment') }}</a></li>
         </ul>
       </li>
+      <!-- Certification -->
+      <li>
+        <a class="nav-link" href="http://certificate.axiooclassprogram.org" target="blank">
+          <i class="far fa-list-alt"></i> <span>{{ __('Certification') }}</span>
+        </a>
+      </li>
       <!-- Account -->
       <li class="menu-header">{{ __('User') }}</li>
       <li class="{{ (request()->is('admin/account')||request()->is('admin/account/*')?'active':'') }}">
