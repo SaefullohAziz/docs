@@ -36,11 +36,18 @@
 								<legend></legend>
 								{{ Form::bsSelect(null, __('School'), 'school_id', $schools, old('school_id'), __('Select'), ['placeholder' => __('Select'), 'required' => '']) }}
 
+								{{ Form::bsText(null, __('NIP'), 'nip', old('nip'), __('NIP')) }}
+
 								{{ Form::bsText(null, __('Full Name'), 'name', old('name'), __('Full Name'), ['required' => '']) }}
+
+								{{ Form::bsText(null, __('Date of Birth'), 'date_of_birth', '01-01-1990', __('Date Of Birth'), ['required' => '']) }}
 
 								{{ Form::bsSelect(null, __('Gender'), 'gender', ['Laki-Laki' => 'Laki-Laki', 'Perempuan' => 'Perempuan'], old('gender'), __('Select'), ['placeholder' => __('Select'), 'required' => '']) }}
 
 								{{ Form::bsText(null, __('Position'), 'position', old('position'), __('Position'), ['required' => '']) }}
+
+								{{ Form::bsInlineRadio(null, __('Teaching Status?'), 'teaching_status', ['yes' => __('Yes'), 'No' => __('No')], old('teaching_status'), ['required' => '']) }}
+
 							</fieldset>
 						</div>
 						<div class="col-sm-6">
@@ -50,6 +57,8 @@
 
 								{{ Form::bsPhoneNumber(null, __('Phone Number'), 'phone_number', old('phone_number'), __('Phone Number'), ['maxlength' => '13', 'required' => '']) }}
 
+								{{ Form::bsTextarea(null, __('Address'), 'address', old('address'), __('Address')) }}
+
 								{{ Form::bsFile(null, __('Photo'), 'photo', old('photo'), [], [__('Photo with JPG/PNG format up to 5MB.')]) }}
 							</fieldset>
 						</div>
@@ -58,7 +67,7 @@
 				</div>
 				<div class="card-footer bg-whitesmoke text-center">
 					{{ Form::submit(__('Save'), ['name' => 'submit', 'class' => 'btn btn-primary']) }}
-					{{ link_to(url()->previous(), __('Cancel'), ['class' => 'btn btn-danger']) }}
+					{{ link_to(route('admin.teacher.index'), __('Cancel'), ['class' => 'btn btn-danger']) }}
 				</div>
 			{{ Form::close() }}
 
@@ -74,6 +83,13 @@
 			phone: true,
 			phoneRegionCode: 'id'
 		});
+
+		$('[name="date_of_birth"]').keypress(function(e) {
+            e.preventDefault();
+        }).daterangepicker({
+        	locale: {format: 'DD-MM-YYYY'},
+        	singleDatePicker: true,
+      	});
 	});
 </script>
 @endsection

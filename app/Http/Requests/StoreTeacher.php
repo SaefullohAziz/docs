@@ -28,9 +28,12 @@ class StoreTeacher extends FormRequest
         $rules = [
             'school_id' => Rule::requiredIf(auth()->guard('admin')->check()),
             'name' => ['required'],
+            'nip' => ['numeric', 'digits_between:14,20'],
             'gender' => ['required'],
             'position' => ['required'],
+            'teaching_status' => ['required'],
             'email' => ['required', 'email', 'unique:teachers,email'],
+            'date_of_birth' => ['required'],
             'phone_number' => ['required', 'numeric', 'digits_between:8,11', 'unique:teachers,phone_number'],
             'terms' => ['required']
         ];
