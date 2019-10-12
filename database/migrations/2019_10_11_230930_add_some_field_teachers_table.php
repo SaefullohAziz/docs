@@ -16,7 +16,7 @@ class AddSomeFieldTeachersTable extends Migration
         Schema::table('teachers', function (Blueprint $table) {
             $table->enum('teaching_status', ['yes', 'no'])->default('no')->after('position');
             $table->string('date_of_birth')->after('gender');
-            $table->string('address')->nullable()->after('photo');
+            $table->string('address')->nullable()->after('position');
             $table->unsignedInteger('nip')->nullable()->after('school_id');
         });
     }
@@ -28,8 +28,8 @@ class AddSomeFieldTeachersTable extends Migration
      */
     public function down()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropIfExists(['teaching_status', 'date_of_birth', 'address', 'nip']);
+        Schema::table('teachers', function (Blueprint $table) {
+            $table->dropColumn(['teaching_status', 'date_of_birth', 'address', 'nip']);
         });
     }
 }
