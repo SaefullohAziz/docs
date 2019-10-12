@@ -33,6 +33,7 @@
 				@endif
 				<button class="btn btn-icon btn-secondary" title="{{ __('Filter') }}" data-toggle="modal" data-target="#filterModal"><i class="fa fa-filter"></i></button>
             	<button class="btn btn-icon btn-secondary" onclick="reloadTable()" title="{{ __('Refresh') }}"><i class="fa fa-sync"></i></i></button>
+            	<button class="btn btn-icon btn-primary" title="{{ __('Import') }}" data-toggle="modal" data-target="#importModal">{{ __('Import') }}</button>
 			</div>
 			<div class="card-body">
 				<div class="table-responsive">
@@ -275,6 +276,34 @@
 				<div class="modal-footer bg-whitesmoke d-flex justify-content-center">
 					{{ Form::submit(__('Export'), ['class' => 'btn btn-primary']) }}
 					{{ Form::button(__('Filter'), ['class' => 'btn btn-primary', 'onclick' => 'filter()']) }}
+					{{ Form::button(__('Cancel'), ['class' => 'btn btn-secondary', ' data-dismiss' => 'modal']) }}
+				</div>
+			{{ Form::close() }}
+		</div>
+	</div>
+</div>
+<!-- Import Modal -->
+<div class="modal fade" id="importModal" tabindex="-1" role="dialog" aria-labelledby="importModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-sm" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="importModallLabel">{{ __('Import') }}</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			{{ Form::open(['route' => ['admin.class.student.import', $studentClass->id], 'files' => true]) }}
+				<div class="modal-body">
+					<div class="container-fluid">
+						<div class="row">
+							{{ Form::bsUploadedFile('d-block', __('Donwload Template'), 'template', 'file', 'student_import_template.xlsx') }}
+
+							{{ Form::bsFile(null, __('Import File'), 'import_file', old('import_file'), [], [__('Import file with xlx/xlsx format up to 5MB.')]) }}
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer bg-whitesmoke d-flex justify-content-center">
+					{{ Form::submit(__('Import'), ['class' => 'btn btn-primary']) }}
 					{{ Form::button(__('Cancel'), ['class' => 'btn btn-secondary', ' data-dismiss' => 'modal']) }}
 				</div>
 			{{ Form::close() }}
