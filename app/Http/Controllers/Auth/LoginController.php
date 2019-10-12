@@ -62,7 +62,9 @@ class LoginController extends Controller
     protected function attemptLogin(Request $request)
     {
         $staff = Staff::where('email', $request->username)->orWhere('username', $request->username)->first();
-        $user = User::where('email', $request->username)->orWhere('username', $request->username)->first();
+        $user = User::where('email', $request->username)->orWhere('username', $request->username)->orWhereHas('school', function ($query) use ($request) {
+            $query->where('school_email', $request->username);
+        })->first();
         if ($staff) {
             if (Hash::check($request->password, $staff->password)) {
                 return Auth::guard('admin')->login(

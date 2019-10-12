@@ -29,10 +29,10 @@
 		<div class="card card-primary">
 			<div class="card-header">
 				@if(auth()->guard('admin')->user()->can('create accounts'))
-					<a href="{{ route('admin.account.create') }}" class="btn btn-icon btn-success"><i class="fa fa-plus"></i></a>
+					<a href="{{ route('admin.account.create') }}" class="btn btn-icon btn-success" title="{{ __('Create') }}"><i class="fa fa-plus"></i></a>
 				@endif
-				<button class="btn btn-icon btn-secondary" onclick="filter()" title="Filter"><i class="fa fa-filter"></i></button>
-            	<button class="btn btn-icon btn-secondary" onclick="reloadTable()"><i class="fa fa-sync"></i></i></button>
+				<button class="btn btn-icon btn-secondary" data-toggle="modal" data-target="#filterModal" title="{{ __('Filter') }}"><i class="fa fa-filter"></i></button>
+            	<button class="btn btn-icon btn-secondary" onclick="reloadTable()" title="{{ __('Refresh') }}"><i class="fa fa-sync"></i></i></button>
 			</div>
 			<div class="card-body">
 				<div class="table-responsive">
@@ -42,12 +42,14 @@
 								<th>
 									<div class="checkbox icheck"><label><input type="checkbox" name="selectData"></label></div>
 								</th>
-								<th>Created At</th>
-								<th>Username</th>
-								<th>Name</th>
-								<th>E-Mail</th>
-								<th>Avatar</th>
-								<th>Action</th>
+								<th>{{ __('Created At') }}</th>
+								<th>{{ __('Type') }}</th>
+								<th>{{ __('Username') }}</th>
+								<th>{{ __('Name') }}</th>
+								<th>{{ __('Institution') }}</th>
+								<th>{{ __('E-Mail') }}</th>
+								<th>{{ __('Avatar') }}</th>
+								<th>{{ __('Action') }}</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -57,7 +59,7 @@
 			</div>
 			<div class="card-footer bg-whitesmoke">
 				@if (auth()->guard('admin')->user()->can('delete accounts'))
-					<button class="btn btn-danger btn-sm" name="deleteData">Delete</button>
+					<button class="btn btn-danger btn-sm" name="deleteData" title="{{ __('Delete') }}">{{ __('Delete') }}</button>
 				@endif
 			</div>
 		</div>
@@ -77,17 +79,20 @@
 				"url": "{{ route('admin.account.list') }}",
 				"type": "POST",
 				"data": function (d) {
-		          d._token = "{{ csrf_token() }}";
+				  d._token = "{{ csrf_token() }}";
+				  d.type = $('select[name="type"]').val();
 		        }
 			},
 			columns: [
 				{ data: 'DT_RowIndex', name: 'DT_RowIndex', 'searchable': false },
 				{ data: 'created_at', name: 'created_at' },
+				{ data: 'type', name: 'type', 'searchable': false },
 				{ data: 'username', name: 'username' },
 				{ data: 'name', name: 'name' },
+				{ data: 'institution', name: 'institution', 'searchable': false },
 				{ data: 'email', name: 'email' },
 				{ data: 'avatar', name: 'avatar', "orderable": false, 'searchable': false },
-				{ data: 'action', name: 'action' }
+				{ data: 'action', name: 'action', "orderable": false, 'searchable': false }
 			],
 			"columnDefs": [
 			{   
@@ -116,7 +121,7 @@
 					return $(this).val();
 				}).get();
 				swal({
-			      	title: 'Are you sure want to delete this data?',
+			      	title: '{{ __("Are you sure want to delete this data?") }}',
 			      	text: '',
 			      	icon: 'warning',
 			      	buttons: ['{{ __("Cancel") }}', true],
@@ -128,7 +133,7 @@
 							url : "{{ route('admin.account.destroy') }}",
 							type: "DELETE",
 							dataType: "JSON",
-							data: {"selectedData" : selectedData, "_token" : "{{ csrf_token() }}"},
+							data: {"_token" : "{{ csrf_token() }}", "selectedData" : selectedData},
 							success: function(data)
 							{
 								reloadTable();
@@ -136,7 +141,7 @@
 							error: function (jqXHR, textStatus, errorThrown)
 							{
 								if (JSON.parse(jqXHR.responseText).status) {
-									swal("Failed!", "Data cannot be deleted.", "warning");
+									swal("{{ __('Failed!') }}", '{{ __("Data cannot be deleted.") }}', "warning");
 								} else {
 									swal(JSON.parse(jqXHR.responseText).message, "", "error");
 								}
@@ -145,13 +150,46 @@
 			      	}
     			});
 			} else {
-				swal("Please select a data..", "", "warning");
+				swal("{{ __('Please select a data..') }}", "", "warning");
 			}
 		});
 	});
 
 	function reloadTable() {
 	    table.ajax.reload(null,false); //reload datatable ajax
+	    $('[name="selectData"]').iCheck('uncheck');
+	}
+
+	function filter() {
+		reloadTable();
+		$('#filterModal').modal('hide');
 	}
 </script>
+
+<!-- Modal -->
+<div class="modal fade" id="filterModal" tabindex="-1" role="dialog" aria-labelledby="filterModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-sm" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="filterModallLabel">{{ __('Filter') }}</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			{{ Form::open(['url' => '#', 'files' => true]) }}
+				<div class="modal-body">
+					<div class="container-fluid">
+						<div class="row">
+							{{ Form::bsSelect('col-12', __('Type'), 'type', $types, null, __('Select'), ['placeholder' => __('Select')]) }}
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer bg-whitesmoke d-flex justify-content-center">
+					{{ Form::button(__('Filter'), ['class' => 'btn btn-primary', 'onclick' => 'filter()']) }}
+					{{ Form::button(__('Cancel'), ['class' => 'btn btn-secondary', ' data-dismiss' => 'modal']) }}
+				</div>
+			{{ Form::close() }}
+		</div>
+	</div>
+</div>
 @endsection

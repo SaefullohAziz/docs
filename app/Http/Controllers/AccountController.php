@@ -33,14 +33,14 @@ class AccountController extends Controller
     {
         $user = User::find(auth()->user()->id);
         $view = [
-            'title' => 'Account Detail',
-            'subtitle' => 'Hi, ' . $user->name . '!',
-            'description' => 'Change information about yourself on this page.',
+            'title' => __('Account Detail'),
+            'subtitle' => __('Hi') . ', ' . $user->name . '!',
+            'description' => __('Change information about yourself on this page.'),
             'breadcrumbs' => [
-                route('account.index') => 'Account',
-                null => 'Detail'
+                route('account.index') => __('Account'),
+                null => __('Detail')
             ],
-            'user' => $user
+            'data' => $user
         ];
         return view('account.show', $view);
     }

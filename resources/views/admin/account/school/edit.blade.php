@@ -28,20 +28,20 @@
 
 		<div class="card card-primary">
 
-			{{ Form::open(['route' => ['admin.account.update', $data->id], 'method' => 'put', 'files' => true]) }}
+			{{ Form::open(['route' => ['admin.account.school.update', $data->id], 'method' => 'put', 'files' => true]) }}
 				<div class="card-body">
 					<div class="row">
-						{{ Form::bsText('col-sm-6', __('Username'), 'username', $data->username, __('Username'), ['required' => '']) }}
+                        {{ Form::bsText('col-sm-6', __('Username'), 'username', $data->username, __('Username'), ['disabled' => '']) }}
 
-						{{ Form::bsText('col-sm-6', __('Name'), 'name', $data->name, __('Name'), ['required' => '']) }}
+                        {{ Form::bsText('col-sm-6', __('Name'), 'name', $data->name, __('Name'), ['disabled' => '']) }}
 
-						{{ Form::bsEmail('col-sm-6', __('E-Mail'), 'email', $data->email, __('E-Mail'), ['required' => '']) }}
+                        {{ Form::bsEmail('col-sm-6', __('E-Mail'), 'email', $data->email, __('E-Mail'), ['required' => '']) }}
 
-						{{ Form::bsFile('col-sm-6', __('Photo'), 'photo', null, [], [__('Photo with JPG/PNG format up to 5MB.')]) }}
+                        {{ Form::bsFile('col-sm-6', __('Photo'), 'photo', null, [], [__('Photo with JPG/PNG format up to 5MB.')]) }}
 
-						{{ Form::bsPassword('col-sm-6', __('Password'), 'password', __('Password')) }}
-						
-						{{ Form::bsPassword('col-sm-6', __('Password Confirmation'), 'password_confirmation', __('Password Confirmation')) }}
+                        {{ Form::bsPassword('col-sm-6', __('Password'), 'password', __('Password')) }}
+
+                        {{ Form::bsPassword('col-sm-6', __('Password Confirmation'), 'password_confirmation', __('Password Confirmation')) }}
 					</div>
 				</div>
 				<div class="card-footer bg-whitesmoke text-center">

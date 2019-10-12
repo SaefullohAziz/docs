@@ -5,10 +5,10 @@
 	<div class="col-12 col-md-12 col-lg-5">
 		<div class="card profile-widget">
 			<div class="profile-widget-header">                     
-				<img alt="image" src="{{ asset($user->avatar) }}" class="rounded-circle profile-widget-picture">
+				<img alt="image" src="{{ asset($data->avatar) }}" class="rounded-circle profile-widget-picture">
 			</div>
 			<div class="profile-widget-description">
-				<div class="profile-widget-name">{{ $user->name }} <div class="text-muted d-inline font-weight-normal"><div class="slash"></div> {{ $user->email }}</div></div>
+				<div class="profile-widget-name">{{ $data->name }} <div class="text-muted d-inline font-weight-normal"><div class="slash"></div> {{ $data->email }}</div></div>
 			</div>
 		</div>
 	</div>
@@ -40,19 +40,24 @@
 			<div class="card-header">
 				<h4>Edit Profile</h4>
 			</div>
-			{{ Form::open(['route' => ['admin.account.update', $user->id], 'method' => 'put', 'files' => true]) }}
+			{{ Form::open(['route' => ['admin.account.update', $data->id], 'method' => 'put', 'files' => true]) }}
 			<div class="card-body">
 				<div class="row">
-					{{ Form::bsText('col-sm-6', 'Username:', 'username', $user->username, 'Username', ['required' => '']) }}
-					{{ Form::bsText('col-sm-6', 'Name:', 'name', $user->name, 'Name', ['required' => '']) }}
-					{{ Form::bsEmail('col-sm-6', 'E-Mail:', 'email', $user->email, 'E-Mail', ['required' => '']) }}
-					{{ Form::bsFile('col-sm-6', 'Photo:', 'photo', null, [], ['Photo must have extension *.PNG/*.JPG with size 5 MB or less.']) }}
-					{{ Form::bsPassword('col-sm-6', 'Password:', 'password', 'Password') }}
-					{{ Form::bsPassword('col-sm-6', 'Password Confirmation:', 'password_confirmation', 'Password Confirmation') }}
+					{{ Form::bsText('col-sm-6', __('Username'), 'username', $data->username, __('Username'), ['required' => '']) }}
+
+					{{ Form::bsText('col-sm-6', __('Name'), 'name', $data->name, __('Name'), ['required' => '']) }}
+
+					{{ Form::bsEmail('col-sm-6', __('E-Mail'), 'email', $data->email, __('E-Mail'), ['required' => '']) }}
+
+					{{ Form::bsFile('col-sm-6', __('Photo'), 'photo', null, [], [__('Photo with JPG/PNG format up to 5MB.')]) }}
+
+					{{ Form::bsPassword('col-sm-6', __('Password'), 'password', __('Password')) }}
+
+					{{ Form::bsPassword('col-sm-6', __('Password Confirmation'), 'password_confirmation', __('Password Confirmation')) }}
 				</div>
 			</div>
 			<div class="card-footer text-right">
-				{{ Form::submit('Save', ['name' => 'submit', 'class' => 'btn btn-primary']) }}
+				{{ Form::submit(__('Save'), ['name' => 'submit', 'class' => 'btn btn-primary']) }}
 			</div>
 			{{ Form::close() }}
 		</div>

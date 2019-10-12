@@ -40,7 +40,7 @@
 			<div class="card-header">
 				<h4>{{ __('Edit Profile') }}</h4>
 			</div>
-			{{ Form::open(['route' => 'account.update', 'method' => 'put', 'files' => true]) }}
+			{{ Form::open(['route' => ['admin.account.school.update', $data->id], 'method' => 'put', 'files' => true]) }}
 			<div class="card-body">
 				<div class="row">
 					{{ Form::bsText('col-sm-6', __('Username'), 'username', $data->username, __('Username'), ['disabled' => '']) }}

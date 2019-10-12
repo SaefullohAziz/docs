@@ -334,6 +334,9 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
     Route::prefix('account')->name('account.')->group(function () {
     	Route::post('list', 'AccountController@list')->name('list');
     	Route::get('me', 'AccountController@me')->name('me');
+    	Route::get('school/{user}', 'AccountController@showSchool')->name('school.show');
+    	Route::get('school/{user}/edit', 'AccountController@editSchool')->name('school.edit');
+    	Route::match(['put', 'patch'], 'school/{user}', 'AccountController@updateSchool')->name('school.update');
     	Route::delete('destroy', 'AccountController@destroy')->name('destroy');
     });
     Route::resource('account', 'AccountController', ['parameters' => [
