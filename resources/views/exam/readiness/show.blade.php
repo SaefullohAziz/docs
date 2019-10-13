@@ -28,7 +28,7 @@
 
 		<div class="card card-primary">
 
-			{{ Form::open(['route' => 'exam.readiness.store', 'files' => true]) }}
+			{{ Form::open(['url' => '#', 'files' => true]) }}
 				<div class="card-body">
 					<div class="row">
 						<div class="col-sm-6">
@@ -69,28 +69,36 @@
                             </fieldset>
 						</div>
 					</div>
-					<div class="row">
-						<div class="col">
+					<div class="col-12">
                             <fieldset>
-								<legend>{{ __('Selected Student') }}</legend>
-								<ul class="list-group list-group-flush students">
-									<div class="row py-3">
-										<?php foreach ($examReadinessStudents as $student): ?>
-											<div class="col-md-4">
-												<li class="list-group-item">{{ $student->name }}</li>
-											</div>
-											<!-- <li>{{ $student }}</li> -->
-										<?php endforeach ?>
-									</div>
-								</ul>
-								@if ($errors->has('student_id'))
-									<div class="text-danger">
-										<strong>{{ $errors->first('student_id') }}</strong>
-									</div>
-								@endif
+                                <legend>{{ __('Student') }}</legend>
+								<div class="table-responsive">
+									<table class="table table-sm table-striped" id="table4data">
+										<thead>
+											<tr>
+												<th>#</th>
+												<th>{{ __('Name') }}</th>
+												<th>{{ __('Generation') }}</th>
+												<th>{{ __('School Year') }}</th>
+												<th>{{ __('Department') }}</th>
+											</tr>
+										</thead>
+										<tbody>
+											@foreach ($examReadiness->student as $student)
+												<tr>
+													<td>{{ $loop->iteration }}</td>
+													<td>{{ $student->name }}</td>
+													<td>{{ $student->class->generation }}</td>
+													<td>{{ $student->class->school_year }}</td>
+													<td>{{ $student->class->department->name }}</td>
+												</tr>
+											@endforeach
+										</tbody>
+									</table>
+								</div>
                             </fieldset>
 						</div>
-					</div>
+
 					<div class="card-footer bg-whitesmoke text-center">
 						{{ link_to(url()->previous(), __('Cancel'), ['class' => 'btn btn-danger']) }}
 					</div>

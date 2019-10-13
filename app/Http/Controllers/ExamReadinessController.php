@@ -136,7 +136,6 @@ class ExamReadinessController extends Controller
             'types' => ExamType::orderBy('name', 'asc')->pluck('name', 'name')->toArray(),
             'generations' => StudentClass::orderBy('generation', 'asc')->pluck('generation', 'generation')->toArray(),
             'reference_schools' => School::has('ExamReadinessSchool')->pluck('name', 'name')->toArray(),
-            'reference_student' => $examReadiness->student(),
             'generation' => ['Angkatan 1' => 'Angkatan 1'],
             'examReadinessStudents' => Student::has('examReadinessStudent')->get(),
             'examReadiness' => $examReadiness
