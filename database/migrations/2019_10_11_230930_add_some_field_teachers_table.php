@@ -17,7 +17,7 @@ class AddSomeFieldTeachersTable extends Migration
             $table->enum('teaching_status', ['yes', 'no'])->default('no')->after('position');
             $table->string('date_of_birth')->after('gender');
             $table->string('address')->nullable()->after('position');
-            $table->unsignedBigInteger('nip', 20)->nullable()->after('school_id');
+            $table->integer('nip')->length(20)->nullable()->after('school_id');
         });
     }
 
