@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddSomeFieldTeachersTable extends Migration
+class ChangeNipColumnOnTeachersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,10 +14,7 @@ class AddSomeFieldTeachersTable extends Migration
     public function up()
     {
         Schema::table('teachers', function (Blueprint $table) {
-            $table->string('teaching_status')->default('no')->after('position');
-            $table->string('date_of_birth')->after('gender');
-            $table->string('address')->nullable()->after('position');
-            $table->integer('nip')->length(20)->nullable()->after('school_id');
+            $table->string('nip', 20)->nullable()->change();
         });
     }
 
@@ -29,7 +26,7 @@ class AddSomeFieldTeachersTable extends Migration
     public function down()
     {
         Schema::table('teachers', function (Blueprint $table) {
-            $table->dropColumn(['teaching_status', 'date_of_birth', 'address', 'nip']);
+            $table->integer('nip')->length(20)->nullable()->change();
         });
     }
 }
