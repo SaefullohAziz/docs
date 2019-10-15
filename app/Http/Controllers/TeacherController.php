@@ -165,8 +165,8 @@ class TeacherController extends Controller
      */
     public function destroy(Request $request)
     {
-        // 
-    }
+        Teacher::destroy($request->selectedData);
+        return response()->json(['status' => true, 'message' => __($this->deletedMessage)]);    }
 
     /**
      * Remove the specified resource from storage.
