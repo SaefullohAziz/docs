@@ -107,7 +107,7 @@ class AttendanceController extends Controller
     {
 
         if ( ! Auth::User()->school()->has('teacher')->first() ) {
-            return redirect(route('attendance.index'))->with('alert-danger', __('Please register at least 1 teacher first.'));
+            return redirect(route('teacher.create'))->with('alert-danger', __('Please register at least 1 teacher first.'));
         }
         $view = [
             'title' => __('Create Attendance Confirmation'),
