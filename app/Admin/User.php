@@ -14,11 +14,12 @@ use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 use Spatie\MediaLibrary\File;
 use Spatie\MediaLibrary\Models\Media;
 use Spatie\Image\Manipulations;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Traits\Uuids;
 
 class User extends Authenticatable implements HasMedia
 {
-	use Uuids, Notifiable, HasRoles, HasMediaTrait;
+	use Uuids, SoftDeletes, Notifiable, HasRoles, HasMediaTrait;
 
     protected $table = 'staffs';
     protected $guard = 'admin';
@@ -111,7 +112,15 @@ class User extends Authenticatable implements HasMedia
      */
     public static function get(Request $request)
     {
-        return DB::table('staffs');
+        $staffs = DB::table('staffs')->selectRaw('id, "Staff" as type, "Self Company" as institution, username, name, email, email_verified_at, created_at');
+        $users = DB::table('users')->join('schools', 'users.school_id', '=', 'schools.id')->selectRaw('users.id, "School" as type, schools.name as institution, users.username, users.name, users.email, users.email_verified_at, users.created_at');
+        $results = $users->union($staffs);
+        if ($request->type == 'Staff') {
+            $results = $staffs;
+        } elseif ($request->type == 'School') {
+            $results = $users;
+        }
+        return $results;
     }
 
     /**
@@ -121,6 +130,6 @@ class User extends Authenticatable implements HasMedia
      */
     public static function list(Request $request)
     {
-        return self::get($request)->select('*');
+        return self::get($request);
     }
 }

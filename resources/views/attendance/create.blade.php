@@ -98,16 +98,6 @@
         	singleDatePicker: true,
       	});
 
-      	$('select[name="school_id"]').change(function () {
-      		$('.participants').html('');
-			$('select[name="select_participant"]').prop('disabled', true).html('<option value="">{{ __('Select') }}</option>');
-      		if ($(this).val() != '') {
-      			if ($('select[name="type"]').val() == 'Audiensi') {
-					selectParticipant();
-      			}
-      		}
-		});
-
         $('select[name="type"]').change(function () {
         	$('select[name="destination"], select[name="transportation"], select[name="arrival_point"], select[name="contact_person"]').val(null).change();
        		$('input[name="submission_letter"], input[name="date"], input[name="until_date"]').val('');
@@ -122,9 +112,7 @@
         			$('select[name="transportation"], select[name="arrival_point"], select[name="contact_person"]').parent().addClass('d-block').removeClass('d-none');
         			$('select[name="select_participant"], input[name="date"], input[name="until_date"]').parent().parent().addClass('d-block').removeClass('d-none');
         			$('select[name="transportation"], select[name="arrival_point"], select[name="contact_person"], input[name="date"], input[name="until_date"]').prop('required', true);
-        			if ($('select[name="school_id"]').val() != '') {
         				selectParticipant();
-        			}
         		} else if ($(this).val() == 'Visitasi') {
         			$('select[name="transportation"], select[name="arrival_point"], select[name="contact_person"]').parent().addClass('d-none').removeClass('d-block');
         			$('select[name="select_participant"], input[name="date"], input[name="until_date"]').parent().parent().addClass('d-none').removeClass('d-block');
@@ -169,9 +157,10 @@
 			url : "{{ route('get.teacher') }}",
 			type: "POST",
 			dataType: "JSON",
-			data: {'_token' : '{{ csrf_token() }}', 'school' : $('select[name="school_id"]').val()},
+			data: {'_token' : '{{ csrf_token() }}'},
 			success: function(data)
 			{
+				if ($(data.result).length == 0) {swal('{{ __("Please register first at least 1 teacher with active teaching status.") }}', '', 'warning')}
 				$.each(data.result, function(key, value) {
 					$('select[name="select_participant"]').append('<option value="'+value.id+'">'+value.name+'</option>');
 				});
@@ -181,6 +170,6 @@
 				swal("{{ __('Failed!') }}", "", "warning");
 			}
 		});
-	}\
+	}
 </script>
 @endsection

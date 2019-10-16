@@ -119,6 +119,9 @@ class TrainingController extends Controller
      */
     public function create()
     {
+        if ( ! Auth::user()->school()->has('teacher')->first() ) {
+            return redirect(route('training.index'))->with('alert-danger', __('Please register at least 1 first.'));
+        }
         $view = [
             'title' => __('Register Training'),
             'breadcrumbs' => [

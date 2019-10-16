@@ -149,6 +149,9 @@
 
     "User": "Pengguna",
     "Account": "Akun",
+    "Create Account": "Membuat Akun",
+    "Edit Account": "Edit Akun",
+    "Account Detail": "Detail Akun",
 
     "Setting": "Pengaturan",
 
@@ -278,6 +281,9 @@
     "Receipt/AWB Number": "Nomor Resi/AWB",
     "Expedition": "Ekspedisi",
     "Proof of Receipt": "Bukti Kirim",
+    "Username": "Nama Pengguna",
+    "Password": "Kata Sandi",
+    "Password Confirmation": "Konfirmasi Kata Sandi",
 
     "Enter phone number without country code.": "Masukkan nomor handphone tanpa kode negara.",
     "Complete with an academic degree and or degree of expertise.": "Lengkapi dengan gelar akademi atau keahlian.",

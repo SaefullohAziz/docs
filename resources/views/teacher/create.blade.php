@@ -81,6 +81,13 @@
 			phone: true,
 			phoneRegionCode: 'id'
 		});
+
+		$('[name="date_of_birth"]').keypress(function(e) {
+            e.preventDefault();
+        }).daterangepicker({
+        	locale: {format: 'DD-MM-YYYY'},
+        	singleDatePicker: true,
+      	});
 	});
 </script>
 @endsection

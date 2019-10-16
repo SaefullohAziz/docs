@@ -166,7 +166,7 @@ class School extends Model
      */
     public function user()
     {
-        return $this->hasMany('App\User');
+        return $this->hasOne('App\User');
     }
 
     /**

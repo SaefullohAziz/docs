@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Auth;
-use App\Admin\User;
+use App\Admin\User as Staff;
+use App\User;
+use App\School;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreUser;
 use DataTables;
-use Validator;
 use Spatie\Image\Image;
 use Spatie\Image\Manipulations;
 use Illuminate\Support\Facades\Hash;
@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Hash;
 class AccountController extends Controller
 {
     private $table;
+    private $types;
 
     /**
      * Create a new controller instance.
@@ -27,6 +28,7 @@ class AccountController extends Controller
         parent::__construct();
         $this->middleware('auth:admin');
         $this->table = 'accounts';
+        $this->types = ['Staff' => 'Staff', 'School' => 'School'];
     }
 
     /**
@@ -42,11 +44,12 @@ class AccountController extends Controller
             return redirect()->route('admin.home')->with('alert-danger', __($this->noPermission));
         }
         $view = [
-            'title' => 'Account',
+            'title' => __('Account'),
             'breadcrumbs' => [
-                route('admin.account.index') => 'Account',
-                null => 'Data'
-            ]
+                route('admin.account.index') => __('Account'),
+                null => __('Data')
+            ],
+            'types' => $this->types
         ];
         return view('admin.account.index', $view);
     }
@@ -59,7 +62,7 @@ class AccountController extends Controller
     public function list(Request $request)
     {
         if ($request->ajax()) {
-            $accounts = User::list($request);
+            $accounts = Staff::list($request);
             return DataTables::of($accounts)
                 ->addColumn('DT_RowIndex', function ($data) {
                     return '<div class="checkbox icheck"><label><input type="checkbox" name="selectedData[]" value="'.$data->id.'"></label></div>';
@@ -68,11 +71,17 @@ class AccountController extends Controller
                     return (date('d-m-Y h:m:s', strtotime($data->created_at)));
                 })
                 ->editColumn('avatar', function($data) {
-                    $user = User::find($data->id);
+                    $user = Staff::find($data->id);
+                    if ($data->type == 'School') {
+                        $user = User::find($data->id);
+                    }
                     return '<img src="'.asset($user->avatar).'" height="30" width="auto" alt="">';
                 })
                 ->addColumn('action', function($data) {
-                    return '<a class="btn btn-sm btn-success" href="'.route('admin.account.show', $data->id).'" title="See detail"><i class="fa fa-eye"></i> See</a> <a class="btn btn-sm btn-warning" href="'.route('admin.account.edit', $data->id).'" title="Edit"><i class="fa fa-edit"></i> Edit</a>';
+                    if ($data->type == 'School') {
+                        return '<a class="btn btn-sm btn-success" href="'.route('admin.account.school.show', $data->id).'" title="'.__('See detail').'"><i class="fa fa-eye"></i> '.__('See').'</a> <a class="btn btn-sm btn-warning" href="'.route('admin.account.school.edit', $data->id).'" title="'.__('Edit').'"><i class="fa fa-edit"></i> '.__('Edit').'</a>';
+                    }
+                    return '<a class="btn btn-sm btn-success" href="'.route('admin.account.show', $data->id).'" title="'.__('See detail').'"><i class="fa fa-eye"></i> '.__('See').'</a> <a class="btn btn-sm btn-warning" href="'.route('admin.account.edit', $data->id).'" title="'.__('Edit').'"><i class="fa fa-edit"></i> '.__('Edit').'</a>';
                 })
                 ->rawColumns(['DT_RowIndex', 'avatar', 'action'])
                 ->make(true);
@@ -90,11 +99,13 @@ class AccountController extends Controller
             return redirect()->route('admin.account.index')->with('alert-danger', __($this->noPermission));
         }
         $view = [
-            'title' => 'Create Account',
+            'title' => __('Create Account'),
             'breadcrumbs' => [
-                route('admin.account.index') => 'Account',
-                null => 'Create'
-            ]
+                route('admin.account.index') => __('Account'),
+                null => __('Create')
+            ],
+            'types' => $this->types,
+            'schools' => School::doesntHave('user')->pluck('name', 'id')->toArray()
         ];
         return view('admin.account.create', $view);
     }
@@ -110,11 +121,15 @@ class AccountController extends Controller
         if ( ! auth()->guard('admin')->user()->can('create ' . $this->table)) {
             return redirect()->route('admin.account.index')->with('alert-danger', __($this->noPermission));
         }
-        Validator::make($request->all(), User::rules())->validate();
         $request->merge(['password' => Hash::make($request->password)]);
-        $user = User::create($request->all());
+        if ($request->type == 'Staff') {
+            $user = Staff::create($request->all());
+            $user->assignRole('user');
+        } elseif ($request->type == 'School') {
+            $request->merge(['username' => null]);
+            $user = User::create($request->all());
+        }
         $this->uploadPhoto($user, $request);
-        $user->assignRole('user');
         return redirect(url()->previous())->with('alert-success', __($this->createdMessage));
     }
 
@@ -124,7 +139,7 @@ class AccountController extends Controller
      * @param  \App\Admin\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function show(Request $request, User $user)
+    public function show(Request $request, Staff $user)
     {
         if ( ! $request->is('admin/account/me')) {
             if ( ! auth()->guard('admin')->user()->can('read ' . $this->table)) {
@@ -132,21 +147,43 @@ class AccountController extends Controller
             }
         }
         $view = [
-            'title' => 'Account Detail',
+            'title' => __('Account Detail'),
             'breadcrumbs' => [
-                route('admin.account.index') => 'Account',
-                null => 'Detail'
+                route('admin.account.index') => __('Account'),
+                null => __('Detail')
             ],
-            'user' => $user
+            'data' => $user
         ];
         if ($request->is('admin/account/me/*')) {
             $addonView = [
-                'subtitle' => 'Hi, ' . $user->name . '!',
-                'description' => 'Change information about yourself on this page.',
+                'subtitle' => __('Hi') . ', ' . $user->name . '!',
+                'description' => __('Change information about yourself on this page.'),
             ];
             $view = array_merge($view, $addonView);
         }
         return view('admin.account.show', $view);
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  \App\Admin\User  $user
+     * @return \Illuminate\Http\Response
+     */
+    public function showSchool(Request $request, User $user)
+    {
+        if ( ! auth()->guard('admin')->user()->can('read ' . $this->table)) {
+            return redirect()->route('account.index')->with('alert-danger', __($this->noPermission));
+        }
+        $view = [
+            'title' => __('Account Detail'),
+            'breadcrumbs' => [
+                route('admin.account.index') => __('Account'),
+                null => __('Detail')
+            ],
+            'data' => $user
+        ];
+        return view('admin.account.school.show', $view);
     }
 
     /**
@@ -165,20 +202,42 @@ class AccountController extends Controller
      * @param  \App\Admin\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function edit(User $user)
+    public function edit(Staff $user)
     {
         if ( ! auth()->guard('admin')->user()->can('update ' . $this->table)) {
             return redirect()->route('account.index')->with('alert-danger', __($this->noPermission));
         }
         $view = [
-            'title' => 'Edit Account',
+            'title' => __('Edit Account'),
             'breadcrumbs' => [
-                route('admin.account.index') => 'Account',
-                null => 'Edit'
+                route('admin.account.index') => __('Account'),
+                null => __('Edit')
             ],
-            'user' => $user
+            'data' => $user
         ];
         return view('admin.account.edit', $view);
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  \App\Admin\User  $user
+     * @return \Illuminate\Http\Response
+     */
+    public function editSchool(User $user)
+    {
+        if ( ! auth()->guard('admin')->user()->can('update ' . $this->table)) {
+            return redirect()->route('account.index')->with('alert-danger', __($this->noPermission));
+        }
+        $view = [
+            'title' => __('Edit Account'),
+            'breadcrumbs' => [
+                route('admin.account.index') => __('Account'),
+                null => __('Edit')
+            ],
+            'data' => $user
+        ];
+        return view('admin.account.school.edit', $view);
     }
 
     /**
@@ -188,7 +247,7 @@ class AccountController extends Controller
      * @param  \App\Admin\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function update(StoreUser $request, User $user)
+    public function update(StoreUser $request, Staff $user)
     {
         if ( ! $request->is('admin/account/me')) {
             if ( ! auth()->guard('admin')->user()->can('update ' . $this->table)) {
@@ -200,6 +259,25 @@ class AccountController extends Controller
             $request->merge(['password' => Hash::make($request->password)]);
         }
         $user->fill($request->all());
+        $user->save();
+        $this->uploadPhoto($user, $request);
+        return redirect(url()->previous())->with('alert-success', __($this->updatedMessage));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\User  $user
+     * @return \Illuminate\Http\Response
+     */
+    public function updateSchool(StoreUser $request, User $user)
+    {
+        $request->merge(['password' => $user->password]);
+        if ($request->filled('password')) {
+            $request->merge(['password' => Hash::make($request->password)]);
+        }
+        $user->fill($request->except(['username', 'name']));
         $user->save();
         $this->uploadPhoto($user, $request);
         return redirect(url()->previous())->with('alert-success', __($this->updatedMessage));
@@ -231,7 +309,7 @@ class AccountController extends Controller
         if ( ! auth()->guard('admin')->user()->can('delete ' . $this->table)) {
             return response()->json(['status' => false, 'message' => __($this->noPermission)], 422);
         }
-        User::destroy($request->selectedData);
+        Staff::destroy($request->selectedData);
         return response()->json(['status' => true, 'message' => __($this->deletedMessage)]);
     }
 }
