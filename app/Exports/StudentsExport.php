@@ -45,6 +45,7 @@ class StudentsExport implements ShouldAutoSize, WithEvents
     public function worksheets()
     {
     	return [
+            ['column' => 'id', 'title' => 'id'], 
     		['column' => 'created_at', 'title' => 'Created At'], 
     		['column' => 'name', 'title' => 'Name'], 
     		['column' => 'nickname', 'title' => 'Nickname'],
