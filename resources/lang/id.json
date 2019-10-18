@@ -57,6 +57,12 @@
 
     "Home": "Beranda",
     "Dashboard": "Dasbor",
+    "Latest Comment": "Komentar Terakhir",
+    "Status Movement": "Pergerakan Status",
+    "School Status": "Status Sekolah",
+    "School Statistic": "Statistik Sekolah",
+    "Student Statistic": "Statistik Siswa",
+
     "Gallery": "Galeri",
     "Comments": "Komentar",
     "There is no photo.": "Tidak ada foto.",
@@ -284,6 +290,12 @@
     "Username": "Nama Pengguna",
     "Password": "Kata Sandi",
     "Password Confirmation": "Konfirmasi Kata Sandi",
+    "All Island": "Semua Pulau",
+    "All Province": "Semua Provinsi",
+    "All Regency": "Semua Kabupaten",
+    "All Level": "Semua Level",
+    "All Status": "Semua Status",
+    "All Department": "Semua Jurusan",
 
     "Enter phone number without country code.": "Masukkan nomor handphone tanpa kode negara.",
     "Complete with an academic degree and or degree of expertise.": "Lengkapi dengan gelar akademi atau keahlian.",

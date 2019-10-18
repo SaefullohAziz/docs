@@ -29,7 +29,7 @@ class Training extends Model
     /**
      * Get the training participant for the training.
      */
-    public function trainingParticipant()
+    public function trainingParticipants()
     {
         return $this->hasMany('App\TrainingParticipant');
     }
@@ -37,7 +37,7 @@ class Training extends Model
     /**
      * The participant that belong to the training.
      */
-    public function participant()
+    public function participants()
     {
         return $this->belongsToMany('App\Teacher', 'training_participants', 'training_id', 'teacher_id')->using('App\TrainingParticipant');
     }
@@ -45,7 +45,7 @@ class Training extends Model
     /**
      * Get the training status for the training.
      */
-    public function trainingStatus()
+    public function trainingStatuses()
     {
         return $this->hasMany('App\TrainingStatus');
     }
@@ -53,7 +53,7 @@ class Training extends Model
     /**
      * Get the latest training status for the training.
      */
-    public function latestTrainingStatus()
+    public function trainingStatus()
     {
         return $this->hasOne('App\TrainingStatus')->orderBy('created_at', 'desc')->limit(1);
     }
@@ -61,7 +61,7 @@ class Training extends Model
     /**
      * The status that belong to the training.
      */
-    public function status()
+    public function statuses()
     {
         return $this->belongsToMany('App\Status', 'training_statuses')->using('App\TrainingStatus');
     }

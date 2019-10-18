@@ -19,7 +19,7 @@ class SchoolComment extends Model
     /**
      * Get the comment for the school.
      */
-    public function attachment()
+    public function attachments()
     {
         return $this->hasMany('App\SchoolCommentAttachment');
     }

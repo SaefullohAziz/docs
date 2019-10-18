@@ -262,12 +262,12 @@ class SubsidyController extends Controller
     public function saveSspStudent($subsidy, Request $request)
     {
         if ($request->isMethod('put')) {
-            $subsidy->student()->detach();
+            $subsidy->students()->detach();
         }
         if ($request->type == 'Student Starter Pack (SSP)') {
             if ($request->filled('student_id')) {
                 for ($i=0; $i < count($request->student_id); $i++) { 
-                    $subsidy->student()->attach($request->student_id[$i], [
+                    $subsidy->students()->attach($request->student_id[$i], [
                         'created_at' => now(),
                         'updated_at' => now(),
                     ]);

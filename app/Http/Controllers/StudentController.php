@@ -101,7 +101,7 @@ class StudentController extends Controller
             ],
             'generations' => StudentClass::where('school_id', auth()->user()->school->id)->pluck('generation', 'generation')->toArray(),
             'schoolYears' => StudentClass::where('school_id', auth()->user()->school->id)->pluck('school_year', 'school_year')->toArray(),
-            'departments' => Department::whereHas('schoolImplementation', function ($query) use ($studentClass) {
+            'departments' => Department::whereHas('schoolImplementations', function ($query) use ($studentClass) {
                 $query->where('school_id', $studentClass->school_id);
             })->pluck('name', 'id')->toArray(),
             'studentClass' => $studentClass
@@ -188,7 +188,7 @@ class StudentController extends Controller
         $request->merge([
             'dateofbirth' => date('Y-m-d', strtotime($request->dateofbirth)),
         ]);
-        $student = $studentClass->student()->create($request->except(['terms', 'submit']));
+        $student = $studentClass->students()->create($request->except(['terms', 'submit']));
         $student->photo = $this->uploadPhoto($student, $request);
         $student->save();
         return redirect(url()->previous())->with('alert-success', __($this->createdMessage));

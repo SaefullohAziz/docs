@@ -97,7 +97,7 @@
 										</tr>
 									</thead>
 									<tbody>
-										@foreach ($payment->installment as $installment)
+										@foreach ($payment->installments as $installment)
 											<tr>
 												<td>{{ $loop->iteration }}</td>
 												<td>{{ date('d-m-Y', strtotime($installment->date)) }}</td>

@@ -21,8 +21,16 @@ class Island extends Model
     /**
      * Get the province for the island.
      */
-    public function province()
+    public function provinces()
     {
         return $this->hasMany('App\Province');
+    }
+    
+    /**
+     * Get all of the schools for the islands.
+     */
+    public function schools()
+    {
+        return $this->hasManyThrough('App\School', 'App\Province', 'island_id', 'province', 'id', 'name');
     }
 }

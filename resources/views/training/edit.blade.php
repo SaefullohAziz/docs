@@ -155,7 +155,7 @@
 								<fieldset>
 									<legend>{{ __('Selected Participant') }}</legend>
 									<ul class="list-group list-group-flush participants">
-                                        @foreach ($training->participant as $participant)
+                                        @foreach ($training->participants as $participant)
                                             <li class="participant list-group-item d-flex justify-content-between align-items-center">
                                                 <input type="hidden" name="participant_id[]" value="{{ $participant->id }}">
                                                 {{ $participant->name }}

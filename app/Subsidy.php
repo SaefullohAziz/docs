@@ -50,7 +50,7 @@ class Subsidy extends Model
         return $this->hasMany('App\SubsidyStatus');
     }
 
-     /**
+    /**
      * Get the latest subsidy status for the subsidy.
      */
     public function latestSubsidyStatus()

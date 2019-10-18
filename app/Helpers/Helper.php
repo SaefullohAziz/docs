@@ -65,7 +65,7 @@ if ( ! function_exists('saveStatus')) {
             'updated_at' => now(),
         ];
         $data = array_merge($data, $addonData);
-        $model->status()->attach($status->id, $data);
+        $model->statuses()->attach($status->id, $data);
     }
 }
 

@@ -182,14 +182,14 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach ($training->trainingParticipant as $trainingParticipant)
+                                            @foreach ($training->participants as $participant)
                                                 <tr>
                                                     <td>{{ $loop->iteration }}</td>
-                                                    <td>{{ $trainingParticipant->participant->name }}</td>
-                                                    <td>{{ $trainingParticipant->participant->gender }}</td>
-                                                    <td>{{ $trainingParticipant->participant->position }}</td>
-                                                    <td>{{ $trainingParticipant->participant->phone_number }}</td>
-                                                    <td>{{ $trainingParticipant->participant->email }}</td>
+                                                    <td>{{ $participant->name }}</td>
+                                                    <td>{{ $participant->gender }}</td>
+                                                    <td>{{ $participant->position }}</td>
+                                                    <td>{{ $participant->phone_number }}</td>
+                                                    <td>{{ $participant->email }}</td>
                                                 </tr>
                                             @endforeach
                                         </tbody>

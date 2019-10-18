@@ -43,7 +43,15 @@ class SchoolStatusUpdate extends Pivot
      */
     public function status()
     {
-        return $this->belongsTo('App\SchoolStatus');
+        return $this->belongsTo('App\SchoolStatus', 'school_status_id', 'id');
+    }
+
+    /**
+     * Get the staff that owns the status update.
+     */
+    public function staff()
+    {
+        return $this->belongsTo('App\Admin\User', 'staff_id');
     }
 
     /**

@@ -237,7 +237,7 @@ class ExamReadinessController extends Controller
     public function saveStudentPartiticipant($examReadiness, Request $request)
     {
         if ($request->student_id) {
-            $examReadiness->student()->sync($request->student_id);
+            $examReadiness->students()->sync($request->student_id);
         }
     }
 

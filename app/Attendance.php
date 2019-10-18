@@ -30,7 +30,7 @@ class Attendance extends Model
     /**
      * Get the attendance status for the attendance.
      */
-    public function attendanceStatus()
+    public function attendanceStatuses()
     {
         return $this->hasMany('App\AttendanceStatus');
     }
@@ -38,7 +38,7 @@ class Attendance extends Model
      /**
      * Get the latest attendance status for the attendance.
      */
-    public function latestAttendanceStatus()
+    public function attendanceStatus()
     {
         return $this->hasOne('App\AttendanceStatus')->orderBy('created_at', 'desc')->limit(1);
     }
@@ -46,7 +46,7 @@ class Attendance extends Model
     /**
      * The status that belong to the attendance.
      */
-    public function status()
+    public function statuses()
     {
         return $this->belongsToMany('App\Status', 'attendance_statuses')->using('App\AttendanceStatus');
     }
@@ -54,7 +54,7 @@ class Attendance extends Model
     /**
      * Get the audience participant for the attendance.
      */
-    public function audienceParticipant()
+    public function audienceParticipants()
     {
         return $this->hasMany('App\AudienceParticipant');
     }

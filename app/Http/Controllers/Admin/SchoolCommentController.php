@@ -56,7 +56,7 @@ class SchoolCommentController extends Controller
             'staff_id' => Auth::guard('admin')->user()->id,
             'message' => htmlentities($request->message),
         ]);
-        $school->comment()->create($request->all());
+        $school->comments()->create($request->all());
         return redirect(url()->previous())->with('alert-success', __($this->createdMessage));
     }
 

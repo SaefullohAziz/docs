@@ -194,7 +194,7 @@ class StudentController extends Controller
         $request->merge([
             'dateofbirth' => date('Y-m-d', strtotime($request->dateofbirth)),
         ]);
-        $student = $studentClass->student()->create($request->except(['terms', 'submit']));
+        $student = $studentClass->students()->create($request->except(['terms', 'submit']));
         $student->photo = $this->uploadPhoto($student, $request);
         $student->save();
         return redirect(url()->previous())->with('alert-success', __($this->createdMessage));

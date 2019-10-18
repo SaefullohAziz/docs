@@ -205,10 +205,10 @@
 				<h4>{{ __('Comments') }}</h4>
 			</div>
 			<div class="card-body chat-content">
-				@foreach ($school->comment as $comment)
-					@if ($comment->staff->id == Auth::guard('admin')->user()->id)
+				@foreach ($school->comments as $comment)
+					@if ($comment->staff->id == auth()->guard('admin')->user()->id)
 						<div class="chat-item chat-right" style="">
-							<img src="{{ asset('storage/avatar/'.$comment->staff->avatar) }}">
+							<img src="{{ asset($comment->staff->avatar) }}">
 							<div class="chat-details">
 								<div class="chat-text">{!! html_entity_decode($comment->message) !!}</div>
 								<div class="chat-time">{{ $comment->created_at }}</div>
@@ -224,7 +224,7 @@
 						</div>
 					</div>
 				@endforeach
-				@if ($school->comment->count() == 0)
+				@if ($school->comments->count() == 0)
 					<div class="text-center">{{ __('There is no comment.') }}</div>
 				@endif
 			</div>

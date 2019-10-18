@@ -12,7 +12,7 @@ class ExamType extends Model
     /**
      * Get the exam readiness school for the exam type.
      */
-    public function examReadinessSchool()
+    public function examReadinessSchools()
     {
         return $this->hasMany('App\ExamReadinessSchool');
     }

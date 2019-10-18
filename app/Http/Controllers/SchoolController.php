@@ -70,7 +70,7 @@ class SchoolController extends Controller
                 'Kegiatan' => 'Kegiatan',
                 'Dokumentasi' => 'Dokumentasi'
             ],
-            'schoolPhotos' => $school->photo,
+            'schoolPhotos' => $school->photos,
         ];
         if (session('photoCategory')) {
             $addonView = [

@@ -348,7 +348,10 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
 
 // Custom
 Route::prefix('get')->name('get.')->middleware(['auth:web,admin'])->group(function () {
+	Route::post('schoolChart', 'GetController@schoolChart')->name('schoolChart');
+	Route::post('studentChart', 'GetController@studentChart')->name('studentChart');
 	Route::post('regency', 'GetController@regency')->name('regency');
+	Route::post('schoolStatus', 'GetController@schoolStatus')->name('schoolStatus');
 	Route::post('school', 'GetController@school')->name('school');
 	Route::post('teacher', 'GetController@teacher')->name('teacher');
 	Route::post('generation', 'GetController@generation')->name('generation');
@@ -373,17 +376,14 @@ Route::get('download/{dir}/{file}', function ($dir, $file) {
 	return response()->download($path);
 })->name('download');
 
-Route::get('check', function () {
-	if (env('APP_ENV') != 'development') {
-		$data = collect(range(1, 100))->combine(range(1, 100))->map(function ($number) {
-			return $number . ' koli';
-		})->toArray();
-		dd($data);
+Route::get('check', function (\Illuminate\Http\Request $request) {
+	if (env('APP_ENV') == 'local') {
+		
 	}
 });
 
 Route::get('mailable', function () {
-	if (env('APP_ENV') == 'development') {
+	if (env('APP_ENV') == 'local') {
 		$school = App\School::first();
 	
 		return new App\Mail\SchoolCreated($school);

@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Province;
 use App\Regency;
+use App\SchoolLevel;
+use App\SchoolStatus;
 use App\School;
 use App\Teacher;
 use App\Pic;
@@ -14,11 +17,78 @@ use Illuminate\Http\Request;
 
 class GetController extends Controller
 {
+    // Home
+    public function schoolChart(Request $request)
+    {
+        if ($request->ajax()) {
+            $data = [
+                'schoolPerProvince' => Province::when( ! empty($request->islands), function ($query) use ($request) {
+                    $query->whereHas('island', function ($subQuery) use ($request) {
+                        $subQuery->whereIn('id', $request->islands);
+                    });
+                })->when( ! empty($request->provinces), function ($query) use ($request) {
+                    $query->whereIn('id', $request->provinces);
+                })->withCount(['schools' => function ($query) use ($request) {
+                    $query->when( ! empty($request->levels), function ($subQuery) use ($request) {
+                        $subQuery->whereHas('statusUpdate.status.level', function ($subSubQuery) use ($request) {
+                            $subSubQuery->whereIn('id', $request->levels);
+                        });
+                    });
+                    $query->when( ! empty($request->statuses), function ($subQuery) use ($request) {
+                        $subQuery->whereHas('statusUpdate.status', function ($subSubQuery) use ($request) {
+                            $subSubQuery->whereIn('id', $request->statuses);
+                        });
+                    });
+                }])->get()->toArray(),
+                'schoolPerLevel' => SchoolLevel::when( ! empty($request->levels), function ($query) use ($request) {
+                    $query->whereIn('id', $request->levels);
+                })->when( ! empty($request->statuses), function ($query) use ($request) {
+                    $query->whereHas('statuses', function ($subQuery) use ($request) {
+                        $subQuery->whereIn('id', $request->statuses);
+                    });
+                })->withCount(['schools' => function ($query) use ($request) {
+                    $query->when( ! empty($request->islands), function ($subQuery) use ($request) {
+                        $subQuery->whereHas('province.island', function ($subSubQuery) use ($request) {
+                            $subSubQuery->whereIn('id', $request->islands);
+                        });
+                    })->when( ! empty($request->provinces), function ($subQuery) use ($request) {
+                        $subQuery->whereHas('province', function ($subSubQuery) use ($request) {
+                            $subSubQuery->whereIn('id', $request->provinces);
+                        });
+                    });
+                }])->get()->toArray(),
+            ];
+            return response()->json(['status' => true, 'result' => $data]);
+        }
+    }
+
+    public function studentChart(Request $request)
+    {
+        if ($request->ajax()) {
+            $data = [
+                'studentPerDepartment' => Department::when( ! empty($request->departments), function ($query) use ($request) {
+                    $query->whereIn('id', $request->departments);
+                })->withCount('students')->get()->toArray(),
+                'studentPerLevel' => SchoolLevel::whereIn('name', ['A', 'B', 'C'])->withCount(['students' => function ($query) use ($request) {
+                    $query->when( ! empty($request->departments), function ($subQuery) use ($request) {
+                        $subQuery->whereHas('department', function ($subSubQuery) use ($request) {
+                            $subSubQuery->whereIn('departments.id', $request->departments);
+                        });
+                    });
+                }])->get()->toArray()
+            ];
+            return response()->json(['status' => true, 'result' => $data]);
+        }
+        return response()->json(['status' => false]);
+    }
+
     // School
     public function regency(Request $request)
     {
         if ($request->ajax()) {
-            $data = Regency::when( ! empty($request->school), function ($query) use ($request) {
+            $data = Regency::when( ! empty($request->provinces), function ($query) use ($request) {
+                $query->whereIn('name', $request->provinces);
+            })->when( ! empty($request->province), function ($query) use ($request) {
                 $query->getByProvinceName($request->province);
             })->pluck('name')->toArray();
             return response()->json(['status' => true, 'result' => $data]);
@@ -31,6 +101,20 @@ class GetController extends Controller
             $data = School::when( ! empty($request->level), function ($query) use ($request) {
                 $query->byLevel($request->level);
             })->orderBy('name', 'asc')->pluck('name', 'id')->toArray();
+            return response()->json(['status' => true, 'result' => $data]);
+        }
+    }
+
+    public function schoolStatus(Request $request)
+    {
+        if ($request->ajax()) {
+            $data = SchoolStatus::whereHas('level', function ($query) use ($request) {
+                $query->when( ! empty($request->levels), function ($subQuery) use ($request) {
+                    $subQuery->whereIn('id', $request->levels);
+                })->when( ! empty($request->level), function ($subQuery) use ($request) {
+                    $subQuery->where('id', $request->level);
+                });
+            })->pluck('name', 'id')->toArray();
             return response()->json(['status' => true, 'result' => $data]);
         }
     }
@@ -117,7 +201,7 @@ class GetController extends Controller
             if (auth()->guard('web')->check()) {
                 $request->request->add(['school' => auth()->user()->school->id]);
             }
-            $data = Department::whereHas('schoolImplementation', function ($query) use ($request) {
+            $data = Department::whereHas('schoolImplementations', function ($query) use ($request) {
                 $query->when( ! empty($request->school), function ($subQuery) use ($request) {
                     $subQuery->where('school_id', $request->school);
                 });

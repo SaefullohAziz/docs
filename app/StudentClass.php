@@ -37,7 +37,7 @@ class StudentClass extends Model
     /**
      * Get the student for the student class.
      */
-    public function student()
+    public function students()
     {
         return $this->hasMany('App\Student', 'class_id');
     }

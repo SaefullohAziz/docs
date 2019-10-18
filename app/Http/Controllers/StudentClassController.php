@@ -93,7 +93,7 @@ class StudentClassController extends Controller
             'schoolYear' => schoolYear()
         ];
         $department = Department::find($school->implementation[0]->department->id);
-        if ($school->implementation->count() == 1) {
+        if ($school->implementations->count() == 1) {
             $addonView = [
                 'generation' => studentGeneration($school, $department),
             ];
@@ -111,10 +111,10 @@ class StudentClassController extends Controller
     public function store(Request $request)
     {
         $school = School::find(auth()->user()->school_id);
-        if ($school->implementation->count() > 1) {
+        if ($school->implementations->count() > 1) {
             $department = Department::find($request->department_id);
-        } elseif ($school->implementation->count() <= 1) {
-            $department = Department::find($school->implementation[0]->department->id);
+        } elseif ($school->implementations->count() <= 1) {
+            $department = Department::find($school->implementations[0]->department->id);
             $request->request->add([
                 'department_id' => $department->id
             ]);
@@ -142,7 +142,7 @@ class StudentClassController extends Controller
                 route('class.index') => __('Class'),
                 null => __('Detail')
             ],
-            'departments' => Department::whereHas('schoolImplementation', function ($query) use ($studentClass) {
+            'departments' => Department::whereHas('schoolImplementations', function ($query) use ($studentClass) {
                 $query->where('school_id', $studentClass->school_id);
             })->pluck('name', 'id')->toArray(),
             'data' => $studentClass,
@@ -167,7 +167,7 @@ class StudentClassController extends Controller
                 route('class.index') => __('Class'),
                 null => __('Edit')
             ],
-            'departments' => Department::whereHas('schoolImplementation', function ($query) use ($studentClass) {
+            'departments' => Department::whereHas('schoolImplementations', function ($query) use ($studentClass) {
                 $query->where('school_id', $studentClass->school_id);
             })->pluck('name', 'id')->toArray(),
             'data' => $studentClass,
@@ -188,10 +188,10 @@ class StudentClassController extends Controller
             return redirect()->route('class.index')->with('alert-danger', __($this->unauthorizedMessage) . ' ' . __('This class already has students.'));
         }
         $school = School::find(auth()->user()->school->id);
-        if ($school->implementation->count() > 1) {
+        if ($school->implementations->count() > 1) {
             $department = Department::find($request->department_id);
-        } elseif ($school->implementation->count() <= 1) {
-            $department = Department::find($school->implementation[0]->department->id);
+        } elseif ($school->implementations->count() <= 1) {
+            $department = Department::find($school->implementations[0]->department->id);
             $request->request->add([
                 'department_id' => $department->id
             ]);

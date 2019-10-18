@@ -6,10 +6,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\Uuids;
+use Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
 class Student extends Model
 {
-    use Uuids;
+    use Uuids, HasRelationships;
     
 	/**
      * The attributes that aren't mass assignable.
@@ -17,6 +18,22 @@ class Student extends Model
      * @var array
      */
     protected $guarded = ['approval', 'notif'];
+
+    /**
+     * Get the school that owns the student.
+     */
+    public function school()
+    {
+        return $this->hasManyDeep('App\School', ['App\StudentClass'], ['id', 'id'], ['class_id', 'school_id'])->latest('schools.created_at');
+    }
+
+    /**
+     * Get the department that owns the student.
+     */
+    public function department()
+    {
+        return $this->hasManyDeep('App\Department', ['App\StudentClass'], ['id', 'id'], ['class_id', 'department_id'])->latest('departments.created_at');
+    }
 
     /**
      * Get the class that owns the student.
@@ -77,7 +94,7 @@ class Student extends Model
      * 
      * @param  \Illuminate\Http\Request  $request
      */
-    public static function get(Request $request)
+    public static function getList(Request $request)
     {
         return DB::table('students')
             ->join('student_classes', 'students.class_id', '=', 'student_classes.id')
@@ -89,6 +106,8 @@ class Student extends Model
             ->join('school_levels', 'school_statuses.school_level_id', '=', 'school_levels.id')
             ->when(auth()->guard('web')->check(), function ($query) use ($request) {
                 $query->where('schools.id', auth()->user()->school->id);
+            })->when( ! empty($request->levels), function ($query) use ($request) {
+            	$query->whereIn('school_levels.id', $request->levels);
             })->when( ! empty($request->level), function ($query) use ($request) {
             	$query->where('school_levels.id', $request->level);
             })->when( ! empty($request->school), function ($query) use ($request) {
@@ -99,6 +118,8 @@ class Student extends Model
             	$query->where('student_classes.generation', $request->generation);
             })->when( ! empty($request->schoolYear), function ($query) use ($request) {
             	$query->where('student_classes.school_year', $request->schoolYear);
+            })->when( ! empty($request->departments), function ($query) use ($request) {
+            	$query->whereIn('departments.id', $request->departments);
             })->when( ! empty($request->department), function ($query) use ($request) {
             	$query->where('departments.id', $request->department);
             })->whereNull('schools.deleted_at');
@@ -111,6 +132,6 @@ class Student extends Model
      */
     public static function list(Request $request)
     {
-        return self::get($request)->select('students.*', 'schools.name as school', 'provinces.abbreviation as province_abbreviation', 'student_classes.generation', 'student_classes.school_year', 'student_classes.grade', 'departments.name as department');
+        return self::getList($request)->select('students.*', 'schools.name as school', 'provinces.abbreviation as province_abbreviation', 'student_classes.generation', 'student_classes.school_year', 'student_classes.grade', 'departments.name as department', 'school_levels.name as school_level');
     }
 }

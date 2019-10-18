@@ -49,7 +49,7 @@
 								<fieldset>
 									<legend>{{ __('Selected Student') }}</legend>
 									<ul class="list-group list-group-flush students">
-                                        @foreach ($subsidy->student as $student)
+                                        @foreach ($subsidy->students as $student)
                                             <li class="student list-group-item d-flex justify-content-between align-items-center">
                                                 <input type="hidden" name="student_id[]" value="{{ $student->id }}">
                                                 {{ $student->name }}
