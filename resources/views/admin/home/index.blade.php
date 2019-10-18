@@ -89,7 +89,7 @@
 								<div class="tab-content no-padding" id="statusMovementTabContent">
 									@foreach ($statusMovements as $statusMovement)
 										<div class="tab-pane fade {{ $loop->first?'active':'' }} show" id="status-movement-{{ $loop->iteration }}" role="tabpanel" aria-labelledby="status-movement-{{ $loop->iteration }}-tab">
-											<ul class="list-group" style="height: 300px; overflow-y: scroll;">
+											<ul class="list-group" style="height: 330px; overflow-y: scroll;">
 												@foreach ($statusMovement->statusUpdates as $statusUpdate)
 													<li class="list-group-item flex-column align-items-start">
 														<div class="d-flex w-100">

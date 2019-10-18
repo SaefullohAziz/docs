@@ -38,7 +38,7 @@ class HomeController extends Controller
             }])->orderBy('created_at', 'asc')->get(),
             'statusMovements' => SchoolLevel::with(['statusUpdates' => function ($query) {
                 $query->latest('created_at')->limit(10);
-            }, 'statusUpdates.school', 'statusUpdates.status', 'statusUpdates.staff'])->get(),
+            }, 'statusUpdates.school', 'statusUpdates.status', 'statusUpdates.staff'])->orderBy('created_at', 'asc')->get(),
             'schoolPerProvince' => Province::withCount('schools')->get()->toArray(),
             'islands' => Island::pluck('name', 'id')->toArray(),
             'provinces' => Province::pluck('name', 'id')->toArray(),

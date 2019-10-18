@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use Auth;
+use App\Department;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -24,6 +24,15 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('admin.home.index', ['title' => 'Home']);
+        $view = [
+            'title' => __('Home'),
+            'studentPerDepartment' => Department::withCount(['students' => function ($query) {
+                $query->whereHas('school', function ($subQuery) {
+                    $subQuery->where('schools.id', auth()->user()->school->id);
+                });
+            }])->get()->toArray(),
+            'departments' => Department::pluck('name', 'id')->toArray(),
+        ];
+        return view('home.index', $view);
     }
 }

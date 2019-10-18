@@ -68,9 +68,19 @@ class GetController extends Controller
             $data = [
                 'studentPerDepartment' => Department::when( ! empty($request->departments), function ($query) use ($request) {
                     $query->whereIn('id', $request->departments);
-                })->withCount('students')->get()->toArray(),
+                })->withCount(['students' => function ($query) {
+                    $query->whereHas('school', function ($subQuery) {
+                        $subQuery->when(auth()->guard('web')->check(), function ($subSubQuery) {
+                            $subSubQuery->where('schools.id', auth()->user()->school->id);
+                        });
+                    });
+                }])->get()->toArray(),
                 'studentPerLevel' => SchoolLevel::whereIn('name', ['A', 'B', 'C'])->withCount(['students' => function ($query) use ($request) {
-                    $query->when( ! empty($request->departments), function ($subQuery) use ($request) {
+                    $query->whereHas('school', function ($subQuery) {
+                        $subQuery->when(auth()->guard('web')->check(), function ($subSubQuery) {
+                            $subSubQuery->where('schools.id', auth()->user()->school->id);
+                        });
+                    })->when( ! empty($request->departments), function ($subQuery) use ($request) {
                         $subQuery->whereHas('department', function ($subSubQuery) use ($request) {
                             $subSubQuery->whereIn('departments.id', $request->departments);
                         });
