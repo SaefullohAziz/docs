@@ -12,7 +12,7 @@
 */
 
 // Auth
-Auth::routes(['register' => false]);
+Auth::routes(['register' => false, 'reset' => false]);
 
 // Home
 Route::get('/', 'HomeController@index')->name('home');

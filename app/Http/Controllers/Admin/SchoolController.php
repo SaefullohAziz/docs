@@ -186,6 +186,15 @@ class SchoolController extends Controller
         if ( ! auth()->guard('admin')->user()->can('read ' . $this->table)) {
             return redirect()->route('admin.school.index')->with('alert-danger', __($this->noPermission));
         }
+        $school->load(['documents' => function ($query) {
+            $query->when(session('documentCategory'), function ($subQuery) {
+                $subQuery->where('documents.category', session('documentCategory'));
+            });
+        }, 'photos' => function ($query) {
+            $query->when(session('photoCategory'), function ($subQuery) {
+                $subQuery->where('school_photos.category', session('photoCategory'));
+            });
+        }]);
         $view = [
             'title' => __('School Detail'),
             'breadcrumbs' => [
@@ -198,30 +207,17 @@ class SchoolController extends Controller
             'departments' => array_merge(Department::pluck('name')->toArray(), [__('Other')]),
             'isoCertificates' => $this->isoCertificates,
             'references' => $this->references,
-            'school' => $school,
+            'data' => $school,
             'documentCategories' => [
                 'Update Dokumen Persyaratan' => 'Update Dokumen Persyaratan', 
                 'Form Aplikasi & Komitmen' => 'Form Aplikasi & Komitmen', 
                 'MikroTik Academy' => 'MikroTik Academy'
             ],
-            'schoolDocuments' => $school->documents,
             'photoCategories' => [
                 'Kegiatan' => 'Kegiatan',
                 'Dokumentasi' => 'Dokumentasi'
             ],
-            'schoolPhotos' => $school->photos,
         ];
-        if (session('photoCategory')) {
-            $addonView = [
-                'schoolPhotos' => SchoolPhoto::where('school_id', $school->id)->where('category', session('photoCategory'))->get(),
-            ];
-            $view = array_merge($view, $addonView);
-        } if (session('documentCategory')) {
-            $addonView = [
-                'schoolDocuments' => Document::where('school_id', $school->id)->where('category', session('documentCategory'))->get(),
-            ];
-            $view = array_merge($view, $addonView);
-        }
         return view('admin.school.show', $view);
     }
 
