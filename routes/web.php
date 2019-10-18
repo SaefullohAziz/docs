@@ -378,7 +378,7 @@ Route::get('download/{dir}/{file}', function ($dir, $file) {
 
 Route::get('check', function (\Illuminate\Http\Request $request) {
 	if (env('APP_ENV') == 'local') {
-		
+		dd(setting('foo'));
 	}
 });
 
