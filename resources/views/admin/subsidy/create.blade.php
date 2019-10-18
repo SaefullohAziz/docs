@@ -97,6 +97,10 @@
 <script>
 	$(document).ready(function () {
 		$('select[name="school_id"]').change(function () {
+			$('select[name="type"]').val(null).change();
+			$('select[name="generation"]').val(null).change();
+			$('.students').html('');
+			$('select[name="student"]').html('<option value="">{{ __('Select') }}</option>');
 			$('input[name="pic"]').prop('disabled', true);
 			if ($(this).val() != '') {
 				$('input[name="pic"]').prop('disabled', false);
@@ -107,6 +111,9 @@
 		});
 
         $('select[name="type"]').change(function () {
+			$('select[name="generation"]').val(null).change();
+			$('.students').html('');
+			$('select[name="student"]').html('<option value="">{{ __('Select') }}</option>');
 			if ($(this).val() == 'Student Starter Pack (SSP)') {
 	    		$('select[name="student"]').closest('fieldset').removeClass('d-none').addClass('d-block');
 	    		$('select[name="student_year"]').closest('fieldset').removeClass('d-block').addClass('d-none');
@@ -122,6 +129,7 @@
 		});
 
 		$('select[name="generation"]').change(function () {
+			$('.students').html('');
 			$('select[name="student"]').html('<option value="">{{ __('Select') }}</option>');
 	    	if ($(this).val() != '') {
 	    		$.ajax({
@@ -132,12 +140,12 @@
 					success: function(data)
 					{
 						$.each(data.result, function(k, v) {
-						 	$('select[name="student"]').append('<option value="'+k+'">'+v+'</option>');
+							$('.students').append('<li class="student list-group-item d-flex justify-content-between align-items-center"><input type="hidden" name="student_id[]" value="'+k+'">'+v+'<a href="javascript:void(0);" onclick="deleteStudent('+"'"+k+"'"+')" class="badge badge-danger badge-pill badge-sm" title="{{ __('Delete') }}"><i class="fas fa-trash-alt"></i></a></li>');
 						});
 					},
 					error: function (jqXHR, textStatus, errorThrown)
 					{
-						$('select[name="student"]').html('<option value="">{{ __('Select') }}</option>');
+						
 					}
 				});
 	    	}
@@ -158,6 +166,7 @@
 						{
 							$('.students').append('<li class="student list-group-item d-flex justify-content-between align-items-center"><input type="hidden" name="student_id[]" value="'+data.result.id+'">'+data.result.name+'<a href="javascript:void(0);" onclick="deleteStudent('+"'"+data.result.id+"'"+')" class="badge badge-danger badge-pill" title="{{ __('Delete') }}"><i class="fas fa-trash-alt"></i></a></li>');
 							$('select[name="student"]').val(null).change();
+							$('select[name="student"] option[value="'+data.result.id+'"]').remove();
 						},
 						error: function (jqXHR, textStatus, errorThrown)
 						{
@@ -180,6 +189,21 @@
 
 	function deleteStudent(id) {
 		$('input[name="student_id[]"][value="'+id+'"]').closest('.student').remove();
+		$('select[name="student"]').val(null).change();
+		$.ajax({
+			url : "{{ route('get.student') }}",
+			type: "POST",
+			dataType: "JSON",
+			data: {'_token' : '{{ csrf_token() }}', 'student' : id },
+			success: function(data)
+			{
+				$('select[name="student"]').append('<option value="'+data.result.id+'">'+data.result.name+'</option>');
+			},
+			error: function (jqXHR, textStatus, errorThrown)
+			{
+				
+			}
+		});
         return false;
 	}
 
