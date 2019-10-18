@@ -88,6 +88,9 @@
                             </fieldset>
 						</div>
 					</div>
+					<div class="card-footer bg-whitesmoke text-center">
+						{{ link_to(url()->previous(), __('Cancel'), ['class' => 'btn btn-danger']) }}
+					</div>
 				</div>
 			{{ Form::close() }}
 

@@ -14,7 +14,18 @@
 				</div>
 			</div>
 		@endif
-
+		@if (session('import_file'))
+			@foreach (session('import_file')['message'] as $message)
+				<div class="alert alert-danger alert-dismissible show fade">
+				<div class="alert-body">
+					<button class="close" data-dismiss="alert">
+						<span>&times;</span>
+					</button>
+					@php echo $message @endphp
+				</div>
+			</div>
+			@endforeach
+		@endif
 		@if (session('alert-danger'))
 			<div class="alert alert-danger alert-dismissible show fade">
 				<div class="alert-body">
@@ -296,7 +307,7 @@
 				<div class="modal-body">
 					<div class="container-fluid">
 						<div class="row">
-							{{ Form::bsUploadedFile('d-block', __('Donwload Template'), 'template', 'file', 'student_import_template.xlsx') }}
+							{{ Form::bsUploadedFile('d-block', __('Download Template'), 'template', 'file', 'student_import_template.xlsx') }}
 
 							{{ Form::bsFile(null, __('Import File'), 'import_file', old('import_file'), [], [__('Import file with xlx/xlsx format up to 5MB.')]) }}
 						</div>

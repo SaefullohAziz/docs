@@ -126,6 +126,46 @@
 			}
 		});
 
+		$('[name="deleteData"]').click(function(event) {
+			if ($('[name="selectedData[]"]:checked').length > 0) {
+				event.preventDefault();
+				var selectedData = $('[name="selectedData[]"]:checked').map(function(){
+					return $(this).val();
+				}).get();
+				swal({
+			      	title: '{{ __("Are you sure want to delete this data?") }}',
+			      	text: '',
+			      	icon: 'warning',
+			      	buttons: ['{{ __("Cancel") }}', true],
+			      	dangerMode: true,
+			    })
+			    .then((willDelete) => {
+			      	if (willDelete) {
+			      		$.ajax({
+							url : "{{ route('teacher.destroy') }}",
+							type: "DELETE",
+							dataType: "JSON",
+							data: {"selectedData" : selectedData, "_token" : "{{ csrf_token() }}"},
+							success: function(data)
+							{
+								reloadTable();
+							},
+							error: function (jqXHR, textStatus, errorThrown)
+							{
+								if (JSON.parse(jqXHR.responseText).status) {
+									swal("{{ __('Failed!') }}", "{{ __("Data cannot be deleted.") }}", "warning");
+								} else {
+									swal(JSON.parse(jqXHR.responseText).message, "", "error");
+								}
+							}
+						});
+			      	}
+    			});
+			} else {
+				swal("{{ __('Please select a data..') }}", "", "warning");
+			}
+		});
+
 	});
 
 	function reloadTable() {
