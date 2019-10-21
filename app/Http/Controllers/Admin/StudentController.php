@@ -355,19 +355,19 @@ class StudentController extends Controller
         if (auth()->guard('admin')->user()->cant('adminCreateStudent', $studentClass)) {
             return redirect()->route('admin.class.student.index', $studentClass->id)->with('alert-danger', __($this->unauthorizedMessage));
         }
+        
         // validasi file input
         $this->validate($request, [
             'import_file' => 'required|mimes:xls,xlsx'
         ]);
-        // $datas = Excel::import(new StudentImport, $request->file('import_file'));
+        
         try {
-            $data = Excel::import(new StudentImport, $request->file('import_file'));
+            $data = Excel::import(new StudentImport($studentClass), $request->file('import_file'));
             return back()->with('alert-success', 'datas has been imported!');
         } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
             $failures = $e->failures();
-            // dd($failures);
             $message = [];
-            $row = 1;
+            $row = 0;
             $attribute = [];
             foreach ($failures as $failure) {
                 if ($row == $failure->row()) {
@@ -378,17 +378,18 @@ class StudentController extends Controller
                     if ($attribute) {
                         $message[] = 'Error detected on row '. $failure->row() . ' on attribute ' . ucwords(implode(" , ", $attribute)) .' !';
                     }
-                }
+                } 
 
                 // get last foreach
                 if( !next( $failures ) ) { 
                     $message[] = 'Error detected on row '. $failure->row() . ' on attribute ' . ucwords(implode(" , ", $attribute)) .' !';
-                } 
-                session()->flash( 'import_file', [
-                   'message' => $message
-                  ]);
+                }
+
             }
-            dd($message);
+            
+            session()->flash( 'import_file', [
+               'message' => $message
+              ]);
             return back();
         }
 
