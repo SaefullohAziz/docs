@@ -29,7 +29,7 @@ class Payment extends Model
      /**
      * Get the installment for the payment.
      */
-    public function installment()
+    public function installments()
     {
         return $this->hasMany('App\PaymentInstallment');
     }
@@ -37,7 +37,7 @@ class Payment extends Model
     /**
      * Get the payment status for the payment.
      */
-    public function paymentStatus()
+    public function paymentStatuses()
     {
         return $this->hasMany('App\PaymentStatus');
     }
@@ -45,7 +45,7 @@ class Payment extends Model
     /**
      * Get the latest payment status for the payment.
      */
-    public function latestPaymentStatus()
+    public function paymentStatus()
     {
         return $this->hasOne('App\PaymentStatus')->orderBy('created_at', 'desc')->limit(1);
     }
@@ -53,7 +53,7 @@ class Payment extends Model
     /**
      * The status that belong to the payment.
      */
-    public function status()
+    public function statuses()
     {
         return $this->belongsToMany('App\Status', 'payment_statuses')->using('App\PaymentStatus');
     }

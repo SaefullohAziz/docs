@@ -86,10 +86,10 @@
 				"type": "POST",
 				"data": function (d) {
 		          d._token = "{{ csrf_token() }}";
-		          d.province = $('select[name="province[]"]').val();
-		          d.regency = $('select[name="regency[]"]').val();
-		          d.level = $('select[name="level[]"]').val();
-		          d.status = $('select[name="status"]').val();
+		          d.provinces = $('select[name="provinces[]"]').val();
+		          d.regencies = $('select[name="regencies[]"]').val();
+		          d.levels = $('select[name="levels[]"]').val();
+		          d.statuses = $('select[name="statuses[]"]').val();
 		        }
 			},
 			columns: [
@@ -126,23 +126,53 @@
       		},
   		});
 
-  		$('select[name="province[]"]').change(function() {
+  		$('select[name="provinces[]"]').change(function(event) {
+			event.preventDefault();
+			var provinces = $('select[name="provinces[]"] option:selected').map(function(){
+				return $(this).val();
+			}).get();
+			$('select[name="regencies[]"]').html('');
 			if ($(this).val() != '') {
 				$.ajax({
 					url : "{{ route('get.regency') }}",
 					type: "POST",
 					dataType: "JSON",
-					cache: false,
-					data: {'_token' : '{{ csrf_token() }}', 'province' : $(this).val()},
+					data: {'_token' : '{{ csrf_token() }}', 'provinces' : provinces},
 					success: function(data)
 					{
 						$.each(data.result, function(key, value) {
-							$('select[name="regency[]"]').append('<option value="'+value+'">'+value+'</option>');
+							$('select[name="regencies[]"]').append('<option value="'+value+'">'+value+'</option>');
 						});
 					},
 					error: function (jqXHR, textStatus, errorThrown)
 					{
-						$('select[name="regency[]"]').html('<option value="">Select</option>');
+						$('select[name="regencies[]"]').html('');
+					}
+				});
+			}
+		});
+
+		$('select[name="levels[]"]').change(function(event) {
+			event.preventDefault();
+			var levels = $('select[name="levels[]"] option:selected').map(function(){
+				return $(this).val();
+			}).get();
+			$('select[name="statuses[]"]').html('');
+			if ($(this).val() != '') {
+				$.ajax({
+					url : "{{ route('get.schoolStatus') }}",
+					type: "POST",
+					dataType: "JSON",
+					data: {'_token' : '{{ csrf_token() }}', 'levels' : levels},
+					success: function(data)
+					{
+						$.each(data.result, function(key, value) {
+							$('select[name="statuses[]"]').append('<option value="'+value+'">'+value+'</option>');
+						});
+					},
+					error: function (jqXHR, textStatus, errorThrown)
+					{
+						$('select[name="statuses[]"]').html('');
 					}
 				});
 			}
@@ -214,10 +244,10 @@
 				<div class="modal-body">
 					<div class="container-fluid">
 						<div class="row">
-							{{ Form::bsSelect('col-sm-4', __('Province'), 'province[]', $provinces, null, __('Select'), ['multiple' => '']) }}
-							{{ Form::bsSelect('col-sm-4', __('Regency'), 'regency[]', [], null, __('Select'), ['multiple' => '']) }}
-							{{ Form::bsSelect('col-sm-4', __('Level'), 'level[]', $levels, null, __('Select'), ['multiple' => '']) }}
-							{{ Form::bsSelect('col-sm-4', __('Status'), 'status', [], null, __('Select'), ['placeholder' => __('Select')]) }}
+							{{ Form::bsSelect('col-sm-4', null, 'provinces[]', $provinces, null, __('All Province'), ['multiple' => '']) }}
+							{{ Form::bsSelect('col-sm-4', null, 'regencies[]', [], null, __('All Regency'), ['multiple' => '']) }}
+							{{ Form::bsSelect('col-sm-4', null, 'levels[]', $levels, null, __('All Level'), ['multiple' => '']) }}
+							{{ Form::bsSelect('col-sm-4', null, 'statuses[]', [], null, __('All Status'), ['multiple' => '']) }}
 						</div>
 					</div>
 				</div>

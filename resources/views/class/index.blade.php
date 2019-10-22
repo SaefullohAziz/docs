@@ -28,9 +28,7 @@
 
 		<div class="card card-primary">
 			<div class="card-header">
-				@if($school->implementation->count())
 					<a href="{{ route('class.create') }}" class="btn btn-icon btn-success" title="{{ __('Create') }}"><i class="fa fa-plus"></i></a>
-				@endif
 				<button class="btn btn-icon btn-secondary" title="{{ __('Filter') }}" data-toggle="modal" data-target="#filterModal"><i class="fa fa-filter"></i></button>
             	<button class="btn btn-icon btn-secondary" onclick="reloadTable()" title="{{ __('Refresh') }}"><i class="fa fa-sync"></i></i></button>
 			</div>

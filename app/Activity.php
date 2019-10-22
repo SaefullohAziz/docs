@@ -30,7 +30,7 @@ class Activity extends Model
     /**
      * Get the activity status for the activity.
      */
-    public function activityStatus()
+    public function activityStatuses()
     {
         return $this->hasMany('App\ActivityStatus');
     }
@@ -38,7 +38,7 @@ class Activity extends Model
      /**
      * Get the latest activity status for the activity.
      */
-    public function latestActivityStatus()
+    public function activityStatus()
     {
         return $this->hasOne('App\ActivityStatus')->orderBy('created_at', 'desc')->limit(1);
     }
@@ -46,7 +46,7 @@ class Activity extends Model
     /**
      * The status that belong to the activity.
      */
-    public function status()
+    public function statuses()
     {
         return $this->belongsToMany('App\Status', 'activity_statuses')->using('App\ActivityStatus');
     }

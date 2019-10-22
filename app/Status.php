@@ -19,7 +19,7 @@ class Status extends Model
     /**
      * Get the document status for the status.
      */
-    public function documentStatus()
+    public function documentStatuses()
     {
         return $this->hasMany('App\DocumentStatus');
     }
@@ -35,7 +35,7 @@ class Status extends Model
     /**
      * Get the activity status for the status.
      */
-    public function activityStatus()
+    public function activityStatuses()
     {
         return $this->hasMany('App\ActivityStatus');
     }
@@ -51,7 +51,7 @@ class Status extends Model
     /**
      * Get the subsidy status for the status.
      */
-    public function subsidyStatus()
+    public function subsidyStatuses()
     {
         return $this->hasMany('App\SubsidyStatus');
     }
@@ -67,7 +67,7 @@ class Status extends Model
     /**
      * Get the training status for the status.
      */
-    public function trainingStatus()
+    public function trainingStatuses()
     {
         return $this->hasMany('App\TrainingStatus');
     }
@@ -83,7 +83,7 @@ class Status extends Model
     /**
      * Get the exam readiness status for the status.
      */
-    public function ExamReadinessStatus()
+    public function examReadinessStatuses()
     {
         return $this->hasMany('App\ExamReadiness');
     }
@@ -99,7 +99,7 @@ class Status extends Model
     /**
      * Get the attendance status for the status.
      */
-    public function attendanceStatus()
+    public function attendanceStatuses()
     {
         return $this->hasMany('App\AttendanceStatus');
     }
@@ -115,7 +115,7 @@ class Status extends Model
     /**
      * Get the payment status for the status.
      */
-    public function paymentStatus()
+    public function paymentStatuses()
     {
         return $this->hasMany('App\PaymentStatus');
     }

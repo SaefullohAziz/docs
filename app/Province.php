@@ -21,7 +21,7 @@ class Province extends Model
     /**
      * Get the regency for the province.
      */
-    public function regency()
+    public function regencies()
     {
         return $this->hasMany('App\Regency');
     }
@@ -32,5 +32,13 @@ class Province extends Model
     public function island()
     {
         return $this->belongsTo('App\Island');
+    }
+
+    /**
+     * Get the school for the province.
+     */
+    public function schools()
+    {
+        return $this->hasMany('App\School', 'province', 'name');
     }
 }

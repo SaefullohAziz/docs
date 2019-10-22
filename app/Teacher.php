@@ -29,7 +29,7 @@ class Teacher extends Model
     /**
      * Get the training participant for the participant.
      */
-    public function trainingParticipant()
+    public function trainingParticipants()
     {
         return $this->hasMany('App\TrainingParticipant');
     }
@@ -45,7 +45,7 @@ class Teacher extends Model
     /**
      * Get the audience participant for the participant.
      */
-    public function audienceParticipant()
+    public function audienceParticipants()
     {
         return $this->hasMany('App\AudienceParticipant');
     }

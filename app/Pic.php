@@ -35,7 +35,7 @@ class Pic extends Model
     /**
      * Get the document status for the pic.
      */
-    public function documentPic()
+    public function documentPics()
     {
         return $this->hasMany('App\DocumentPic');
     }
@@ -51,7 +51,7 @@ class Pic extends Model
     /**
      * Get the activity status for the pic.
      */
-    public function activityPic()
+    public function activityPics()
     {
         return $this->hasMany('App\ActivityPic');
     }
@@ -67,7 +67,7 @@ class Pic extends Model
     /**
      * Get the subsidy status for the pic.
      */
-    public function subsidyPic()
+    public function subsidyPics()
     {
         return $this->hasMany('App\SubsidyPic');
     }
@@ -83,7 +83,7 @@ class Pic extends Model
     /**
      * Get the training status for the pic.
      */
-    public function trainingPic()
+    public function trainingPics()
     {
         return $this->hasMany('App\TrainingPic');
     }
@@ -99,7 +99,7 @@ class Pic extends Model
     /**
      * Get the exam readiness status for the pic.
      */
-    public function examReadinessPic()
+    public function examReadinessPics()
     {
         return $this->hasMany('App\ExamReadinessPic');
     }

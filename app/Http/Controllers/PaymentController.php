@@ -299,14 +299,14 @@ class PaymentController extends Controller
             $request->merge([
                 'total' => $request->installment_ammount
             ]);
-            $installment = $payment->installment()->create($request->only([
+            $installment = $payment->installments()->create($request->only([
                 'date', 'total', 'method', 'payment_receipt', 'bank_sender'
             ]));
             $installment->payment_receipt = $this->uploadPaymentReceipt($payment, $request);
             $installment->save();
         }
         $payment->updated_at = now();
-        if ($payment->installment()->count() == 0) {
+        if ($payment->installments()->count() == 0) {
             $payment->repayment = $request->repayment;
             $payment->invoice = $request->invoice;
             $payment->total = $request->total;

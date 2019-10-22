@@ -2329,12 +2329,12 @@ class AreasTableSeeder extends Seeder
         foreach ($areas as $area) {
         	$island = Island::firstOrCreate(['name' => $area['island']['name']]);
         	foreach ($area['island']['provinces'] as $provinces) {
-        		$province = $island->province()->firstOrCreate([
+        		$province = $island->provinces()->firstOrCreate([
         			'name' => $provinces['name'],
         			'abbreviation' => $provinces['abbreviation']
         		]);
         		foreach ($provinces['regencies'] as $regency) {
-        			$province->regency()->firstOrCreate([
+        			$province->regencies()->firstOrCreate([
         				'name' => $regency['name'],
         				'code' => $regency['code']
         			]);

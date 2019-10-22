@@ -12,7 +12,7 @@
 */
 
 // Auth
-Auth::routes(['register' => false]);
+Auth::routes(['register' => false, 'reset' => false]);
 
 // Home
 Route::get('/', 'HomeController@index')->name('home');
@@ -68,6 +68,7 @@ Route::prefix('class')->name('class.')->group(function () {
 	Route::prefix('{studentClass}/student')->name('student.')->group(function () {
 		Route::post('list', 'StudentController@list')->name('list');
 		// Route::post('export', 'StudentController@export')->name('export');
+		Route::post('import', 'StudentController@importExcel')->name('import');
 		// Route::delete('destroy', 'StudentController@destroy')->name('destroy');
 	});
 	Route::resource('{studentClass}/student', 'StudentController', ['except' => [
@@ -348,7 +349,10 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
 
 // Custom
 Route::prefix('get')->name('get.')->middleware(['auth:web,admin'])->group(function () {
+	Route::post('schoolChart', 'GetController@schoolChart')->name('schoolChart');
+	Route::post('studentChart', 'GetController@studentChart')->name('studentChart');
 	Route::post('regency', 'GetController@regency')->name('regency');
+	Route::post('schoolStatus', 'GetController@schoolStatus')->name('schoolStatus');
 	Route::post('school', 'GetController@school')->name('school');
 	Route::post('teacher', 'GetController@teacher')->name('teacher');
 	Route::post('generation', 'GetController@generation')->name('generation');
@@ -373,17 +377,14 @@ Route::get('download/{dir}/{file}', function ($dir, $file) {
 	return response()->download($path);
 })->name('download');
 
-Route::get('check', function () {
-	if (env('APP_ENV') != 'development') {
-		$data = collect(range(1, 100))->combine(range(1, 100))->map(function ($number) {
-			return $number . ' koli';
-		})->toArray();
-		dd($data);
+Route::get('check', function (\Illuminate\Http\Request $request) {
+	if (env('APP_ENV') == 'local') {
+		dd(setting('foo'));
 	}
 });
 
 Route::get('mailable', function () {
-	if (env('APP_ENV') == 'development') {
+	if (env('APP_ENV') == 'local') {
 		$school = App\School::first();
 	
 		return new App\Mail\SchoolCreated($school);

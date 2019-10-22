@@ -8,10 +8,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Notifications\Notifiable;
 use App\Traits\Uuids;
+use Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
 class School extends Model
 {
-    use Uuids, SoftDeletes, Notifiable;
+    use Uuids, HasRelationships, SoftDeletes, Notifiable;
 
     /**
      * The "booting" method of the model.
@@ -34,11 +35,27 @@ class School extends Model
     protected $fillable = ['type', 'name', 'address', 'province', 'regency', 'police_number', 'since', 'school_phone_number', 'school_email', 'school_web', 'total_student', 'department', 'iso_certificate', 'mikrotik_academy', 'headmaster_name', 'headmaster_phone_number', 'headmaster_email', 'reference', 'dealer_name', 'dealer_phone_number', 'dealer_email', 'proposal', 'code'];
 
     /**
+     * Get the province that owns the school.
+     */
+    public function province()
+    {
+        return $this->belongsTo('App\Province', 'province', 'name');
+    }
+
+    /**
      * Get the status update for the school.
+     */
+    public function statusUpdates()
+    {
+        return $this->hasMany('App\SchoolStatusUpdate');
+    }
+
+    /**
+     * Get the latest status update for the school.
      */
     public function statusUpdate()
     {
-        return $this->hasMany('App\SchoolStatusUpdate');
+        return $this->hasOne('App\SchoolStatusUpdate')->latest('created_at');
     }
 
     /**
@@ -68,7 +85,7 @@ class School extends Model
     /**
      * Get the implementation for the school.
      */
-    public function implementation()
+    public function implementations()
     {
         return $this->hasMany('App\SchoolImplementation');
     }
@@ -84,7 +101,7 @@ class School extends Model
     /**
      * Get the photo for the school.
      */
-    public function photo()
+    public function photos()
     {
         return $this->hasMany('App\SchoolPhoto');
     }
@@ -92,7 +109,7 @@ class School extends Model
     /**
      * Get the comment for the school.
      */
-    public function comment()
+    public function comments()
     {
         return $this->hasMany('App\SchoolComment');
     }
@@ -100,7 +117,7 @@ class School extends Model
     /**
      * Get the teacher for the school.
      */
-    public function teacher()
+    public function teachers()
     {
         return $this->hasMany('App\Teacher');
     }
@@ -108,23 +125,23 @@ class School extends Model
     /**
      * Get the student class for the school.
      */
-    public function studentClass()
+    public function studentClasses()
     {
         return $this->hasMany('App\StudentClass');
     }
 
     /**
-     * Get the student for the school.
+     * Get the students for the school.
      */
-    public function student()
+    public function students()
     {
-        return $this->hasMany('App\Student');
+        return $this->hasManyDeep('App\Student', ['App\StudentClass'], ['school_id', 'class_id'])->withIntermediate('App\StudentClass', ['generation', 'school_year', 'grade']);
     }
 
     /**
      * Get the subsidy for the school.
      */
-    public function subsidy()
+    public function subsidies()
     {
         return $this->hasMany('App\Subsidy');
     }
@@ -132,7 +149,7 @@ class School extends Model
     /**
      * Get the training for the school.
      */
-    public function training()
+    public function trainings()
     {
         return $this->hasMany('App\Training');
     }
@@ -140,7 +157,7 @@ class School extends Model
     /**
      * Get the exam readiness for the school.
      */
-    public function examReadiness()
+    public function examReadinesses()
     {
         return $this->hasMany('App\ExamReadiness');
     }
@@ -148,7 +165,7 @@ class School extends Model
     /**
      * Get the exam readiness school for the school.
      */
-    public function examReadinessSchool()
+    public function examReadinessSchools()
     {
         return $this->hasMany('App\ExamReadinessSchool');
     }
@@ -156,7 +173,7 @@ class School extends Model
     /**
      * Get the visitation destination for the school.
      */
-    public function visitationDestination()
+    public function visitationDestinations()
     {
         return $this->hasMany('App\VisitationDestination');
     }
@@ -185,10 +202,11 @@ class School extends Model
      * 
      * @param  \Illuminate\Http\Request  $request
      */
-    public static function get(Request $request)
+    public static function getList(Request $request)
     {
         return DB::table('schools')
             ->leftJoin('provinces', 'schools.province', '=', 'provinces.name')
+            ->leftJoin('islands', 'provinces.island_id', '=', 'islands.id')
             ->join('school_pics', 'schools.id', '=', 'school_pics.school_id')
             ->join('pics', 'school_pics.pic_id', '=', 'pics.id')
             ->join('school_status_updates', 'school_status_updates.id', '=', DB::raw('(SELECT id FROM school_status_updates WHERE school_status_updates.school_id = schools.id ORDER BY created_at DESC LIMIT 1)'))
@@ -201,14 +219,16 @@ class School extends Model
             ->leftJoin('users AS status_user', function ($join) {
                 $join->on('school_status_updates.user_id', '=', 'status_user.id')
                     ->where('school_status_updates.created_by', '=', 'user');
-            })->when( ! empty($request->province), function ($query) use ($request) {
-                $query->whereIn('schools.province', $request->province);
-            })->when( ! empty($request->regency), function ($query) use ($request) {
-                $query->whereIn('schools.regency', $request->regency);
-            })->when( ! empty($request->level), function ($query) use ($request) {
-                $query->whereIn('school_levels.id', $request->level);
-            })->when( ! empty($request->status), function ($query) use ($request) {
-                $query->where('school_statuses.id', $request->status);
+            })->when( ! empty($request->islands), function ($query) use ($request) {
+                $query->whereIn('islands.id', $request->islands);
+            })->when( ! empty($request->provinces), function ($query) use ($request) {
+                $query->whereIn('schools.province', $request->provinces);
+            })->when( ! empty($request->regencies), function ($query) use ($request) {
+                $query->whereIn('schools.regency', $request->regencies);
+            })->when( ! empty($request->levels), function ($query) use ($request) {
+                $query->whereIn('school_levels.id', $request->levels);
+            })->when( ! empty($request->statuses), function ($query) use ($request) {
+                $query->whereIn('school_statuses.id', $request->statuses);
             })->when($request->is('admin/school/list')||$request->is('admin/school/export'), function ($query) {
                 $query->whereNull('schools.deleted_at');
             })->when($request->is('admin/school/binList'), function ($query) {
@@ -223,7 +243,7 @@ class School extends Model
      */
     public static function list(Request $request)
     {
-        return self::get($request)->select('schools.*', 'provinces.abbreviation', 'pics.name AS pic_name', 'pics.position AS pic_position', 'pics.phone_number AS pic_phone_number', 'pics.email AS pic_email', 'school_statuses.id AS school_status_id', 'school_statuses.order_by AS status_order', 'school_statuses.name AS status_name', 'school_statuses.alias AS status_alias', DB::raw('(CASE WHEN status_staff.name IS NULL THEN status_user.name WHEN status_user.name IS NULL THEN status_staff.name ELSE status_staff.name END) AS status_by'), 'school_status_updates.created_at AS status_at', 'school_levels.id AS school_level_id', 'school_levels.name AS level_name');
+        return self::getList($request)->select('schools.*', 'provinces.abbreviation', 'pics.name AS pic_name', 'pics.position AS pic_position', 'pics.phone_number AS pic_phone_number', 'pics.email AS pic_email', 'school_statuses.id AS school_status_id', 'school_statuses.order_by AS status_order', 'school_statuses.name AS status_name', 'school_statuses.alias AS status_alias', DB::raw('(CASE WHEN status_staff.name IS NULL THEN status_user.name WHEN status_user.name IS NULL THEN status_staff.name ELSE status_staff.name END) AS status_by'), 'school_status_updates.created_at AS status_at', 'school_levels.id AS school_level_id', 'school_levels.name AS level_name');
     }
 
     /**

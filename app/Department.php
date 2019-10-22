@@ -19,7 +19,7 @@ class Department extends Model
     /**
      * Get the school implementation for the department.
      */
-    public function schoolImplementation()
+    public function schoolImplementations()
     {
         return $this->hasMany('App\SchoolImplementation');
     }
@@ -27,8 +27,16 @@ class Department extends Model
     /**
      * Get the student class for the department.
      */
-    public function studentClass()
+    public function studentClasses()
     {
         return $this->hasMany('App\StudentClass');
+    }
+
+    /**
+     * Get all of the students for the department.
+     */
+    public function students()
+    {
+        return $this->hasManyThrough('App\Student', 'App\StudentClass', 'department_id', 'class_id');
     }
 }

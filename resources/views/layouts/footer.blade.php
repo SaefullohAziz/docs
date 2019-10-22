@@ -23,6 +23,8 @@
     <script src="{{ asset('modules/chocolat/dist/js/jquery.chocolat.min.js') }}"></script>
     <script src="{{ asset('modules/summernote/summernote-bs4.js') }}"></script>
     <script src="{{ asset('modules/baguetteBox/baguetteBox.min.js') }}"></script>
+    <script src="{{ asset('modules/Chart.min.js') }}"></script>
+    <script src="{{ asset('modules/chartjs-plugin-colorschemes/chartjs-plugin-colorschemes.min.js') }}"></script>
 
     <!-- Template JS File -->
     <script src="{{ asset('js/scripts.js') }}"></script>

@@ -285,11 +285,11 @@ class TrainingController extends Controller
     public function saveParticipant($training, Request $request)
     {
         if ($request->isMethod('put')) {
-            $training->participant()->detach();
+            $training->participants()->detach();
         }
         if ($request->filled('participant_id')) {
             for ($i=0; $i < count($request->participant_id); $i++) { 
-                $training->participant()->attach($request->participant_id[$i], [
+                $training->participants()->attach($request->participant_id[$i], [
                     'created_at' => now(),
                     'updated_at' => now(),
                 ]);

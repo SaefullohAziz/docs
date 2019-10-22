@@ -33,72 +33,72 @@
 					<div class="row">
 						<fieldset class="col-sm-6">
 							<legend>{{ __('School Data') }}</legend>
-							{{ Form::bsSelect(null, __('Type'), 'type', ['Negeri' => 'Negeri', 'Swasta' => 'Swasta'], $school->type, __('Select'), ['placeholder' => __('Select'), 'disabled' => '']) }}
+							{{ Form::bsSelect(null, __('Type'), 'type', ['Negeri' => 'Negeri', 'Swasta' => 'Swasta'], $data->type, __('Select'), ['placeholder' => __('Select'), 'disabled' => '']) }}
 
-							{{ Form::bsText(null, __('Name'), 'name', $school->name, __('Name'), ['disabled' => '']) }}
+							{{ Form::bsText(null, __('Name'), 'name', $data->name, __('Name'), ['disabled' => '']) }}
 
-							{{ Form::bsTextarea(null, __('Address'), 'address', $school->address, __('Address'), ['disabled' => '']) }}
+							{{ Form::bsTextarea(null, __('Address'), 'address', $data->address, __('Address'), ['disabled' => '']) }}
 
-							{{ Form::bsSelect(null, __('Province'), 'province', $provinces, $school->province, __('Select'), ['placeholder' => __('Select'), 'disabled' => '']) }}
+							{{ Form::bsSelect(null, __('Province'), 'province', $provinces, $data->province, __('Select'), ['placeholder' => __('Select'), 'disabled' => '']) }}
 
-							{{ Form::bsSelect(null, __('Regency'), 'regency', $regencies, $school->regency, __('Select'), ['placeholder' => __('Select'), 'disabled' => '']) }}
+							{{ Form::bsSelect(null, __('Regency'), 'regency', $regencies, $data->regency, __('Select'), ['placeholder' => __('Select'), 'disabled' => '']) }}
 
-							{{ Form::bsSelect(null, __('Police Number'), 'police_number', $policeNumbers, $school->police_number, __('Select'), ['placeholder' => __('Select'), 'disabled' => '']) }}
+							{{ Form::bsSelect(null, __('Police Number'), 'police_number', $policeNumbers, $data->police_number, __('Select'), ['placeholder' => __('Select'), 'disabled' => '']) }}
 
-							{{ Form::bsText(null, __('Since'), 'since', $school->since, __('Since'), ['maxlength' => '4', 'disabled' => '']) }}
+							{{ Form::bsText(null, __('Since'), 'since', $data->since, __('Since'), ['maxlength' => '4', 'disabled' => '']) }}
 
-							{{ Form::bsPhoneNumber(null, __('School Phone Number'), 'school_phone_number', $school->school_phone_number, __('School Phone Number'), ['maxlength' => '13', 'disabled' => '']) }}
+							{{ Form::bsPhoneNumber(null, __('School Phone Number'), 'school_phone_number', $data->school_phone_number, __('School Phone Number'), ['maxlength' => '13', 'disabled' => '']) }}
 
-							{{ Form::bsEmail(null, __('School E-Mail'), 'school_email', $school->school_email, __('School E-Mail'), ['disabled' => '']) }}
+							{{ Form::bsEmail(null, __('School E-Mail'), 'school_email', $data->school_email, __('School E-Mail'), ['disabled' => '']) }}
 
-							{{ Form::bsText(null, __('School Website (URL)'), 'school_web', $school->school_web, __('School Website (URL)'), ['disabled' => '']) }}
+							{{ Form::bsText(null, __('School Website (URL)'), 'school_web', $data->school_web, __('School Website (URL)'), ['disabled' => '']) }}
 
-							{{ Form::bsText(null, __('Total Student'), 'total_student', $school->total_student, __('Total Student'), ['disabled' => '']) }}
+							{{ Form::bsText(null, __('Total Student'), 'total_student', $data->total_student, __('Total Student'), ['disabled' => '']) }}
 
-							{{ Form::bsCheckboxList(null, __('Department'), 'department[]', $departments, explode(', ', $school->department), ['disabled' => '']) }}
+							{{ Form::bsCheckboxList(null, __('Department'), 'department[]', $departments, explode(', ', $data->department), ['disabled' => '']) }}
 
-							{{ Form::bsSelect(null, __('ISO Certificate'), 'iso_certificate', $isoCertificates, $school->iso_certificate, __('Select'), ['placeholder' => __('Select'), 'disabled' => '']) }}
+							{{ Form::bsSelect(null, __('ISO Certificate'), 'iso_certificate', $isoCertificates, $data->iso_certificate, __('Select'), ['placeholder' => __('Select'), 'disabled' => '']) }}
 
-							{{ Form::bsInlineRadio(null, __('Mikrotik Academy'), 'mikrotik_academy', ['Sudah' => 'Sudah', 'Belum' => 'Belum'], $school->mikrotik_academy, ['disabled' => '']) }}
+							{{ Form::bsInlineRadio(null, __('Mikrotik Academy'), 'mikrotik_academy', ['Sudah' => 'Sudah', 'Belum' => 'Belum'], $data->mikrotik_academy, ['disabled' => '']) }}
 						</fieldset>
 						<div class="col-sm-6">
 							<fieldset>
 								<legend>{{ __('Headmaster Data') }}</legend>
-								{{ Form::bsText(null, __('Headmaster Name'), 'headmaster_name', $school->headmaster_name, __('Headmaster Name'), ['disabled' => ''], [__('Complete with an academic degree and or degree of expertise.')]) }}
+								{{ Form::bsText(null, __('Headmaster Name'), 'headmaster_name', $data->headmaster_name, __('Headmaster Name'), ['disabled' => ''], [__('Complete with an academic degree and or degree of expertise.')]) }}
 
-								{{ Form::bsPhoneNumber(null, __('Headmaster Phone Number'), 'headmaster_phone_number', $school->headmaster_phone_number, __('Headmaster Phone Number'), ['maxlength' => '13', 'disabled' => '']) }}
+								{{ Form::bsPhoneNumber(null, __('Headmaster Phone Number'), 'headmaster_phone_number', $data->headmaster_phone_number, __('Headmaster Phone Number'), ['maxlength' => '13', 'disabled' => '']) }}
 
-								{{ Form::bsEmail(null, __('Headmaster E-Mail'), 'headmaster_email', $school->headmaster_email, __('Headmaster E-Mail'), ['disabled' => '']) }}
+								{{ Form::bsEmail(null, __('Headmaster E-Mail'), 'headmaster_email', $data->headmaster_email, __('Headmaster E-Mail'), ['disabled' => '']) }}
 							</fieldset>
 							<fieldset>
 								<legend>{{ __('PIC Data') }}</legend>
-								{{ Form::bsText(null, __('PIC Name'), 'pic_name', $school->pic[0]->name, __('PIC Name'), ['disabled' => ''], [__('Complete with an academic degree and or degree of expertise.')]) }}
+								{{ Form::bsText(null, __('PIC Name'), 'pic_name', $data->pic[0]->name, __('PIC Name'), ['disabled' => ''], [__('Complete with an academic degree and or degree of expertise.')]) }}
 
-								{{ Form::bsText(null, __('PIC Position'), 'pic_position', $school->pic[0]->position, __('PIC Position'), ['disabled' => '']) }}
+								{{ Form::bsText(null, __('PIC Position'), 'pic_position', $data->pic[0]->position, __('PIC Position'), ['disabled' => '']) }}
 
-								{{ Form::bsPhoneNumber(null, __('PIC Phone Number'), 'pic_phone_number', $school->pic[0]->phone_number, __('PIC Phone Number'), ['maxlength' => '13', 'disabled' => '']) }}
+								{{ Form::bsPhoneNumber(null, __('PIC Phone Number'), 'pic_phone_number', $data->pic[0]->phone_number, __('PIC Phone Number'), ['maxlength' => '13', 'disabled' => '']) }}
 
-								{{ Form::bsEmail(null, __('PIC E-Mail'), 'pic_email', $school->pic[0]->email, __('PIC E-Mail'), ['disabled' => '']) }}
+								{{ Form::bsEmail(null, __('PIC E-Mail'), 'pic_email', $data->pic[0]->email, __('PIC E-Mail'), ['disabled' => '']) }}
 							</fieldset>
 							<fieldset>
 								<legend>{{ __('Reference') }}</legend>
-								{{ Form::bsCheckboxList(null, __('Reference'), 'reference[]', $references, explode(', ', $school->reference), ['disabled' => '']) }}
+								{{ Form::bsCheckboxList(null, __('Reference'), 'reference[]', $references, explode(', ', $data->reference), ['disabled' => '']) }}
 							</fieldset>
-							@if (in_array('Dealer', explode(', ', $school->reference)))
+							@if (in_array('Dealer', explode(', ', $data->reference)))
 								<fieldset class="dealer-data">
 									<legend>{{ __('Dealer Data') }}</legend>
-									{{ Form::bsText(null, __('Dealer Name'), 'dealer_name', $school->dealer_name, __('Dealer Name'), ['disabled' => '']) }}
+									{{ Form::bsText(null, __('Dealer Name'), 'dealer_name', $data->dealer_name, __('Dealer Name'), ['disabled' => '']) }}
 
-									{{ Form::bsPhoneNumber(null, __('Dealer Phone Number'), 'dealer_phone_number', $school->dealer_phone_number, __('Dealer Phone Number'), ['maxlength' => '13', 'disabled' => '']) }}
+									{{ Form::bsPhoneNumber(null, __('Dealer Phone Number'), 'dealer_phone_number', $data->dealer_phone_number, __('Dealer Phone Number'), ['maxlength' => '13', 'disabled' => '']) }}
 
-									{{ Form::bsEmail(null, __('Dealer E-Mail'), 'dealer_email', $school->dealer_email, __('Dealer E-Mail'), ['disabled' => '']) }}
+									{{ Form::bsEmail(null, __('Dealer E-Mail'), 'dealer_email', $data->dealer_email, __('Dealer E-Mail'), ['disabled' => '']) }}
 								</fieldset>
 							@endif
 							<fieldset>
 								<legend>{{ __('Other Data') }}</legend>
-								{{ Form::bsInlineRadio(null, 'Apakah Kepala Sekolah telah mempelajari proposal ACP?', 'proposal', ['Sudah' => 'Sudah', 'Belum' => 'Belum'], $school->mikrotik_academy, ['disabled' => '']) }}
+								{{ Form::bsInlineRadio(null, 'Apakah Kepala Sekolah telah mempelajari proposal ACP?', 'proposal', ['Sudah' => 'Sudah', 'Belum' => 'Belum'], $data->mikrotik_academy, ['disabled' => '']) }}
 								
-								{{ Form::bsUploadedFile(null, __('Requirement Document'), 'document', 'school/document', $school->document, [], [__('File must have extension *.ZIP/*.RAR with size 5 MB or less.')]) }}
+								{{ Form::bsUploadedFile(null, __('Requirement Document'), 'document', 'school/document', $data->document, [], [__('File must have extension *.ZIP/*.RAR with size 5 MB or less.')]) }}
 							</fieldset>
 						</div>
 					</div>
@@ -116,10 +116,10 @@
 							<a href="#" data-toggle="dropdown" class="btn btn-sm btn-warning dropdown-toggle">{{ (session('documentCategory')?session('documentCategory'):__('All Categories')) }}</a>
 							<div class="dropdown-menu">
 								@foreach ($documentCategories as $key => $category)
-									<a href="{{ route('admin.school.document.filter', ['school' => $school->id, 'token' => base64_encode($category)]) }}" class="dropdown-item">{{ $category }}</a>
+									<a href="{{ route('admin.school.document.filter', ['school' => $data->id, 'token' => base64_encode($category)]) }}" class="dropdown-item">{{ $category }}</a>
 								@endforeach
 								<div class="dropdown-divider"></div>
-								<a href="{{ route('admin.school.document.filter', ['school' => $school->id, 'token' => base64_encode('')]) }}" class="dropdown-item">{{ __('All Categories') }}</a>
+								<a href="{{ route('admin.school.document.filter', ['school' => $data->id, 'token' => base64_encode('')]) }}" class="dropdown-item">{{ __('All Categories') }}</a>
 							</div>
 						</div>
                     	<button class="btn btn-sm btn-warning" data-toggle="modal" data-target="#addDocumentModal">{{ __('Add') }}</button>
@@ -129,7 +129,7 @@
 			</div>
 			<div class="card-body">
 				<div class="row">
-					@foreach ($schoolDocuments as $document)
+					@foreach ($data->documents as $document)
 						<div class="col-sm-3 col-lg-2">
 							<div class="card card-warning">
 								<input type="checkbox" class="position-absolute mt-1 ml-2" name="schoolDocuments[]" value="{{ $document->id }}" id="photo-{{ $loop->iteration }}">
@@ -152,7 +152,7 @@
 							</div>
 						</div>
 					@endforeach
-					@if ($schoolDocuments->count() == 0)
+					@if ($data->documents->count() == 0)
 						<div class="col-12 text-center">{{ __('There is no document.') }}</div>
 					@endif
 				</div>
@@ -168,10 +168,10 @@
 							<a href="#" data-toggle="dropdown" class="btn btn-sm btn-warning dropdown-toggle">{{ (session('photoCategory')?session('photoCategory'):__('All Categories')) }}</a>
 							<div class="dropdown-menu">
 								@foreach ($photoCategories as $key => $category)
-									<a href="{{ route('admin.school.photo.filter', ['school' => $school->id, 'token' => base64_encode($category)]) }}" class="dropdown-item">{{ $category }}</a>
+									<a href="{{ route('admin.school.photo.filter', ['school' => $data->id, 'token' => base64_encode($category)]) }}" class="dropdown-item">{{ $category }}</a>
 								@endforeach
 								<div class="dropdown-divider"></div>
-								<a href="{{ route('admin.school.photo.filter', ['school' => $school->id, 'token' => base64_encode('')]) }}" class="dropdown-item">{{ __('All Categories') }}</a>
+								<a href="{{ route('admin.school.photo.filter', ['school' => $data->id, 'token' => base64_encode('')]) }}" class="dropdown-item">{{ __('All Categories') }}</a>
 							</div>
 						</div>
                     	<button class="btn btn-sm btn-warning" data-toggle="modal" data-target="#addPhotoModal">{{ __('Add') }}</button>
@@ -182,7 +182,7 @@
 			<div class="card-body">
 				<div class="gallery-block cards-gallery">
 					<div class="row">
-						@foreach ($schoolPhotos as $photo)
+						@foreach ($data->photos as $photo)
 							<div class="col-md-6 col-lg-4">
 								<div class="card border-0 transform-on-hover">
 									<input type="checkbox" class="position-absolute mt-1 ml-1" name="photoGallery[]" value="{{ $photo->id }}" id="photo-{{ $loop->iteration }}">
@@ -192,7 +192,7 @@
 								</div>
 							</div>
 						@endforeach
-						@if ($schoolPhotos->count() == 0)
+						@if ($data->photos->count() == 0)
 							<div class="col-12 text-center">{{ __('There is no photo.') }}</div>
 						@endif
 					</div>
@@ -205,10 +205,10 @@
 				<h4>{{ __('Comments') }}</h4>
 			</div>
 			<div class="card-body chat-content">
-				@foreach ($school->comment as $comment)
-					@if ($comment->staff->id == Auth::guard('admin')->user()->id)
+				@foreach ($data->comments as $comment)
+					@if ($comment->staff->id == auth()->guard('admin')->user()->id)
 						<div class="chat-item chat-right" style="">
-							<img src="{{ asset('storage/avatar/'.$comment->staff->avatar) }}">
+							<img src="{{ asset($comment->staff->avatar) }}">
 							<div class="chat-details">
 								<div class="chat-text">{!! html_entity_decode($comment->message) !!}</div>
 								<div class="chat-time">{{ $comment->created_at }}</div>
@@ -224,12 +224,12 @@
 						</div>
 					</div>
 				@endforeach
-				@if ($school->comment->count() == 0)
+				@if ($data->comments->count() == 0)
 					<div class="text-center">{{ __('There is no comment.') }}</div>
 				@endif
 			</div>
 			<div class="card-footer">
-				{{ Form::open(['route' => ['admin.school.comment.store', $school->id], 'files' => true]) }}
+				{{ Form::open(['route' => ['admin.school.comment.store', $data->id], 'files' => true]) }}
 					{{ Form::bsTextarea(null, __('Message'), 'message', old('message'), __('Type a message'), ['class' => 'summernote-simple', 'required' => '']) }}
 					<div class="text-center mt-4">
 						{{ Form::submit(__('Send'), ['class' => 'btn btn-primary']) }}
@@ -258,7 +258,7 @@
 			event.preventDefault();
 			var formData = new FormData($('#add-document-form')[0]);
 			$.ajax({
-				url : "{{ route('admin.school.document.store', $school->id) }}",
+				url : "{{ route('admin.school.document.store', $data->id) }}",
 				type: "POST",
 				contentType: false, // The content type used when sending data to the server.
 				cache: false, // To unable request pages to be cached
@@ -329,7 +329,7 @@
 			event.preventDefault();
 			var formData = new FormData($('#add-photo-form')[0]);
 			$.ajax({
-				url : "{{ route('admin.school.photo.store', $school->id) }}",
+				url : "{{ route('admin.school.photo.store', $data->id) }}",
 				type: "POST",
 				contentType: false, // The content type used when sending data to the server.
 				cache: false, // To unable request pages to be cached

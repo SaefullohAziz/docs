@@ -6,10 +6,10 @@ use App\Student;
 use App\StudentClass;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Illuminate\Validation\Rule;
-// use Maatwebsite\Excel\Concerns\WithValidation;
+use Maatwebsite\Excel\Concerns\WithValidation;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
-class StudentImport implements ToModel, WithHeadingRow
+class StudentImport implements ToModel, WithHeadingRow, WithValidation
 {
     public function __construct(StudentClass $studentClass)
     {
@@ -24,7 +24,7 @@ class StudentImport implements ToModel, WithHeadingRow
     public function model(array $row)
     {
         $row['dateofbirth'] = date('Y-m-d', ($row['dateofbirth'] - 25569) * 86400);
-        return $this->studentClass->Student()->create([
+        return $this->studentClass->students()->create([
             'name' => $row['name'],
             'nickname' => $row['nickname'],
             'province' => $row['province'],
@@ -70,35 +70,35 @@ class StudentImport implements ToModel, WithHeadingRow
         ]);
     }
 
-    // public function rules(): array
-    // {
-    //     return [
-    //         'name' => Rule::in(['required']),
-    //         'nickname' => Rule::in(['required']),
-    //         'province' => Rule::in(['required']),
-    //         'nisn' => Rule::in(['required', 'digits:10', 'unique:students,nisn']),
-    //         'email' => Rule::in(['required', 'email', 'unique:students,email']),
-    //         'gender' => Rule::in(['required']),
-    //         'father_earning_nominal' => Rule::in(['numeric']),
-    //         'mother_name' => Rule::in(['required']),
-    //         'mother_earning_nominal' => Rule::in(['numeric']),
-    //         'religion' => Rule::in(['required']),
-    //         'blood_type' => Rule::in(['required']),
-    //         'special_need' => Rule::in(['required']),
-    //         'distance' => Rule::in(['numeric']),
-    //         'height' => Rule::in(['required', 'integer']),
-    //         'weight' => Rule::in(['required', 'integer']),
-    //         'dateofbirth' => Rule::in(['required']),
-    //         'address' => Rule::in(['required']),
-    //         'phone_number' => Rule::in(['required', 'numeric', 'digits_between:8,11', 'unique:students,phone_number']),
-    //         'computer_basic_score' => Rule::in(['integer']),
-    //         'intelligence_score' => Rule::in(['integer']),
-    //         'reasoning_score' => Rule::in(['integer']),
-    //         'analogy_score' => Rule::in(['integer']),
-    //         'numerical_score' => Rule::in(['integer']),
-    //         'terms' => Rule::in(['required']),
-    //     ];
-    // }
+    public function rules(): array
+    {
+        return [
+            'name' => Rule::in(['required']),
+            'nickname' => Rule::in(['required']),
+            'province' => Rule::in(['required']),
+            'nisn' => Rule::in(['required', 'digits:10', 'unique:students,nisn']),
+            'email' => Rule::in(['required', 'email', 'unique:students,email']),
+            'gender' => Rule::in(['required']),
+            'father_earning_nominal' => Rule::in(['numeric']),
+            'mother_name' => Rule::in(['required']),
+            'mother_earning_nominal' => Rule::in(['numeric']),
+            'religion' => Rule::in(['required']),
+            'blood_type' => Rule::in(['required']),
+            'special_need' => Rule::in(['required']),
+            'distance' => Rule::in(['numeric']),
+            'height' => Rule::in(['required', 'integer']),
+            'weight' => Rule::in(['required', 'integer']),
+            'dateofbirth' => Rule::in(['required']),
+            'address' => Rule::in(['required']),
+            'phone_number' => Rule::in(['required', 'numeric', 'digits_between:8,11', 'unique:students,phone_number']),
+            'computer_basic_score' => Rule::in(['integer']),
+            'intelligence_score' => Rule::in(['integer']),
+            'reasoning_score' => Rule::in(['integer']),
+            'analogy_score' => Rule::in(['integer']),
+            'numerical_score' => Rule::in(['integer']),
+            'terms' => Rule::in(['required']),
+        ];
+    }
 }
 
             // 'father_name' => Rule::in([]),

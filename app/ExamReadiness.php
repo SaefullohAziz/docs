@@ -32,7 +32,7 @@ class ExamReadiness extends Model
     /**
      * Get the exam readiness students for the exam readiness.
      */
-    public function examReadinessStudent()
+    public function examReadinessStudents()
     {
         return $this->hasMany('App\ExamReadinessStudent');
     }
@@ -40,7 +40,7 @@ class ExamReadiness extends Model
     /**
      * The status that belong to the exam readiness.
      */
-    public function student()
+    public function students()
     {
         return $this->belongsToMany('App\Student', 'exam_readiness_students')->using('App\ExamReadinessStudent');
     }
@@ -48,7 +48,7 @@ class ExamReadiness extends Model
     /**
      * Get the exam readiness status for the exam readiness.
      */
-    public function examReadinessStatus()
+    public function examReadinessStatuses()
     {
         return $this->hasMany('App\ExamReadinessStatus');
     }
@@ -56,7 +56,7 @@ class ExamReadiness extends Model
      /**
      * Get the latest exam readiness status for the exam readiness.
      */
-    public function latestExamReadinessStatus()
+    public function examReadinessStatus()
     {
         return $this->hasOne('App\ExamReadinessStatus')->orderBy('created_at', 'desc')->limit(1);
     }
@@ -64,7 +64,7 @@ class ExamReadiness extends Model
     /**
      * The status that belong to the exam readiness.
      */
-    public function status()
+    public function statuses()
     {
         return $this->belongsToMany('App\Status', 'exam_readiness_statuses')->using('App\ExamReadinessStatus');
     }

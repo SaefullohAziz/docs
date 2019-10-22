@@ -177,7 +177,7 @@ class ExamReadinessController extends Controller
     {
         if ($request->student_id) {
             foreach ($request->student_id as $student_id) {
-                $examReadiness->student()->attach($student_id, [
+                $examReadiness->students()->attach($student_id, [
                     'created_at' => now(),
                     'updated_at' => now(),
                 ]);

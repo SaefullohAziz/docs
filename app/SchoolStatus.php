@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use App\Traits\Uuids;
 
 class SchoolStatus extends Model
@@ -21,7 +22,7 @@ class SchoolStatus extends Model
     /**
      * Get the update for the status.
      */
-    public function statusUpdate()
+    public function statusUpdates()
     {
         return $this->hasMany('App\SchoolStatusUpdate');
     }
@@ -31,15 +32,15 @@ class SchoolStatus extends Model
      */
     public function level()
     {
-        return $this->belongsTo('App\SchoolLevel');
+        return $this->belongsTo('App\SchoolLevel', 'school_level_id');
     }
 
     /**
      * The school that belong to the status.
      */
-    public function school()
+    public function schools()
     {
-        return $this->belongsToMany('App\School', 'school_status_updates')->using('App\SchoolStatusUpdate');
+        return $this->belongsToMany('App\School', 'school_status_updates')->using('App\SchoolStatusUpdate')->as('status_update')->withTimestamps();
     }
 
     /**

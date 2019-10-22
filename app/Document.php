@@ -28,7 +28,7 @@ class Document extends Model
     /**
      * Get the document status for the document.
      */
-    public function documentStatus()
+    public function documentStatuses()
     {
         return $this->hasMany('App\DocumentStatus');
     }
@@ -36,7 +36,7 @@ class Document extends Model
      /**
      * Get the latest document status for the document.
      */
-    public function latestDocumentStatus()
+    public function documentStatus()
     {
         return $this->hasOne('App\DocumentStatus')->orderBy('created_at', 'desc')->limit(1);
     }
@@ -44,7 +44,7 @@ class Document extends Model
     /**
      * The status that belong to the document.
      */
-    public function status()
+    public function statuses()
     {
         return $this->belongsToMany('App\Status', 'document_statuses')->using('App\DocumentStatus');
     }

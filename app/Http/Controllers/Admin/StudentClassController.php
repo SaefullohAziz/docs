@@ -111,10 +111,10 @@ class StudentClassController extends Controller
             return redirect()->route('admin.class.index')->with('alert-danger', __($this->noPermission));
         }
         $school = School::find($request->school_id);
-        if ($school->implementation->count() > 1) {
+        if ($school->implementations->count() > 1) {
             $department = Department::find($request->department_id);
-        } elseif ($school->implementation->count() <= 1) {
-            $department = Department::find($school->implementation[0]->department->id);
+        } elseif ($school->implementations->count() <= 1) {
+            $department = Department::find($school->implementations[0]->department->id);
             $request->request->add([
                 'department_id' => $department->id
             ]);
@@ -145,8 +145,8 @@ class StudentClassController extends Controller
                 route('admin.class.index') => __('Class'),
                 null => __('Detail')
             ],
-            'schools' => School::has('implementation')->orderBy('name', 'asc')->pluck('name', 'id')->toArray(),
-            'departments' => Department::whereHas('schoolImplementation', function ($query) use ($studentClass) {
+            'schools' => School::has('implementations')->orderBy('name', 'asc')->pluck('name', 'id')->toArray(),
+            'departments' => Department::whereHas('schoolImplementations', function ($query) use ($studentClass) {
                 $query->where('school_id', $studentClass->school_id);
             })->pluck('name', 'id')->toArray(),
             'data' => $studentClass,
@@ -174,8 +174,8 @@ class StudentClassController extends Controller
                 route('admin.class.index') => __('Class'),
                 null => __('Edit')
             ],
-            'schools' => School::has('implementation')->orderBy('name', 'asc')->pluck('name', 'id')->toArray(),
-            'departments' => Department::whereHas('schoolImplementation', function ($query) use ($studentClass) {
+            'schools' => School::has('implementations')->orderBy('name', 'asc')->pluck('name', 'id')->toArray(),
+            'departments' => Department::whereHas('schoolImplementations', function ($query) use ($studentClass) {
                 $query->where('school_id', $studentClass->school_id);
             })->pluck('name', 'id')->toArray(),
             'data' => $studentClass,
@@ -199,10 +199,10 @@ class StudentClassController extends Controller
             return redirect()->route('admin.class.index')->with('alert-danger', __($this->unauthorizedMessage) . ' ' . __('This class already has students.'));
         }
         $school = School::find($request->school_id);
-        if ($school->implementation->count() > 1) {
+        if ($school->implementations->count() > 1) {
             $department = Department::find($request->department_id);
-        } elseif ($school->implementation->count() <= 1) {
-            $department = Department::find($school->implementation[0]->department->id);
+        } elseif ($school->implementations->count() <= 1) {
+            $department = Department::find($school->implementations[0]->department->id);
             $request->request->add([
                 'department_id' => $department->id
             ]);
