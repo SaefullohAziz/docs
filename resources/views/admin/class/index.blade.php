@@ -59,6 +59,8 @@
 				@if (auth()->guard('admin')->user()->can('delete student_classes'))
 					<button class="btn btn-danger btn-sm" name="deleteData" title="{{ __('Delete') }}">{{ __('Delete') }}</button>
 				@endif
+				<button class="btn btn-primary btn-sm" name="openData" title="{{ __('Open Scholl Class For Add Data') }}">{{ __('Open') }}</button>
+				<button class="btn btn-danger btn-sm" name="closeData" title="{{ __('Close Scholl Class For Add Data') }}">{{ __('Close') }}</button>
 			</div>
 		</div>
 
@@ -221,6 +223,88 @@
 							{
 								if (JSON.parse(jqXHR.responseText).status) {
 									swal("{{ __('Failed!') }}", "{{ __("Data cannot be deleted.") }}", "warning");
+								} else {
+									swal(JSON.parse(jqXHR.responseText).message, "", "error");
+								}
+							}
+						});
+			      	}
+    			});
+			} else {
+				swal("{{ __('Please select a data..') }}", "", "warning");
+			}
+		});
+
+		$('[name="closeData"]').click(function(event) {
+			if ($('[name="selectedData[]"]:checked').length > 0) {
+				event.preventDefault();
+				var selectedData = $('[name="selectedData[]"]:checked').map(function(){
+					return $(this).val();
+				}).get();
+				swal({
+			      	title: '{{ __("Are you sure want to close this class?") }}',
+			      	text: '',
+			      	icon: 'warning',
+			      	buttons: ['{{ __("Cancel") }}', true],
+			      	dangerMode: true,
+			    })
+			    .then((willDelete) => {
+			      	if (willDelete) {
+			      		$.ajax({
+							url : "{{ route('admin.class.close') }}",
+							type: "POST",
+							dataType: "JSON",
+							data: {"selectedData" : selectedData, "_token" : "{{ csrf_token() }}"},
+							success: function(data)
+							{
+								swal("{{ __('Success!') }}", "{{ __("Data has be closed.") }}", "success");
+								reloadTable();
+							},
+							error: function (jqXHR, textStatus, errorThrown)
+							{
+								if (JSON.parse(jqXHR.responseText).status) {
+									swal("{{ __('Failed!') }}", "{{ __("Data cannot be closed.") }}", "warning");
+								} else {
+									swal(JSON.parse(jqXHR.responseText).message, "", "error");
+								}
+							}
+						});
+			      	}
+    			});
+			} else {
+				swal("{{ __('Please select a data..') }}", "", "warning");
+			}
+		});
+
+		$('[name="openData"]').click(function(event) {
+			if ($('[name="selectedData[]"]:checked').length > 0) {
+				event.preventDefault();
+				var selectedData = $('[name="selectedData[]"]:checked').map(function(){
+					return $(this).val();
+				}).get();
+				swal({
+			      	title: '{{ __("Are you sure want to open this class?") }}',
+			      	text: '',
+			      	icon: 'warning',
+			      	buttons: ['{{ __("Cancel") }}', true],
+			      	dangerMode: true,
+			    })
+			    .then((willDelete) => {
+			      	if (willDelete) {
+			      		$.ajax({
+							url : "{{ route('admin.class.open') }}",
+							type: "POST",
+							dataType: "JSON",
+							data: {"selectedData" : selectedData, "_token" : "{{ csrf_token() }}"},
+							success: function(data)
+							{
+								swal("{{ __('Success!') }}", "{{ __("Class has been opened.") }}", "success");
+								reloadTable();
+							},
+							error: function (jqXHR, textStatus, errorThrown)
+							{
+								if (JSON.parse(jqXHR.responseText).status) {
+									swal("{{ __('Failed!') }}", "{{ __("Data cannot been opened.") }}", "warning");
 								} else {
 									swal(JSON.parse(jqXHR.responseText).message, "", "error");
 								}

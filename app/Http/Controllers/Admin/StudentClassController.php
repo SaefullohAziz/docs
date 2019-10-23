@@ -241,4 +241,36 @@ class StudentClassController extends Controller
         StudentClass::destroy($request->selectedData);
         return response()->json(['status' => true, 'message' => __($this->deletedMessage)]);
     }
+
+    /**
+     * Open the class for deny some management.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function open(Request $request)
+    {
+        if ( ! auth()->guard('admin')->user()->can('open ' . $this->school)) {
+            return response()->json(['status' => false, 'message' => __($this->noPermission)], 422);
+        }
+        StudentClass::whereIn('id', $request->selectedData)->update(['closed_at' => null]);
+
+        return response()->json(['status' => true, 'message' => __($this->updatedMessage)]);
+    }
+
+    /**
+     * Close the class for deny some management.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function close(Request $request)
+    {
+        if ( ! auth()->guard('admin')->user()->can('close ' . $this->school)) {
+            return response()->json(['status' => false, 'message' => __($this->noPermission)], 422);
+        }
+        StudentClass::whereIn('id', $request->selectedData)->update(['closed_at' => now()]);
+
+        return response()->json(['status' => true, 'message' => __($this->updatedMessage)]);
+    }
 }

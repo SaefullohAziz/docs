@@ -20,6 +20,8 @@ class StudentClassPermissionsSeeder extends Seeder
     		'update student_classes'=> ['supersu', 'admin'],
             'delete student_classes' => ['supersu', 'admin'],
             'approval student_classes'=> ['supersu', 'admin'],
+            'close student_classes'=> ['supersu', 'admin'],
+            'open student_classes'=> ['supersu', 'admin'],
     	];
     	foreach ($data as $k => $v) {
     		$permission = Permission::create(['name' => $k, 'guard_name' => 'admin']);
