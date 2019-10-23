@@ -378,7 +378,11 @@ Route::get('download/{dir}/{file}', function ($dir, $file) {
 
 Route::get('check', function (\Illuminate\Http\Request $request) {
 	if (env('APP_ENV') == 'local') {
-		dd(setting('foo'));
+		$grade = (date('y')-substr('2013/2014', -2));
+		if ($grade > 4) {
+			$grade = 'Alumni';
+		}
+		return $grade;
 	}
 });
 
