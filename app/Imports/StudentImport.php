@@ -3,13 +3,19 @@
 namespace App\Imports;
 
 use App\Student;
+use App\StudentClass;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Illuminate\Validation\Rule;
 use Maatwebsite\Excel\Concerns\WithValidation;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
-class StudentImport implements ToModel, WithHeadingRow, WithValidation
+class StudentImport implements ToModel, WithHeadingRow
 {
+    public function __construct(StudentClass $studentClass)
+    {
+        $this->studentClass = $studentClass;
+    }
+
     /**
     * @param array $row
     *
@@ -17,7 +23,8 @@ class StudentImport implements ToModel, WithHeadingRow, WithValidation
     */
     public function model(array $row)
     {
-        return new Student([
+        $row['dateofbirth'] = date('Y-m-d', ($row['dateofbirth'] - 25569) * 86400);
+        return $this->studentClass->students()->create([
             'name' => $row['name'],
             'nickname' => $row['nickname'],
             'province' => $row['province'],

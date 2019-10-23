@@ -28,9 +28,7 @@
 
 		<div class="card card-primary">
 			<div class="card-header">
-				@if($school->implementation->count())
 					<a href="{{ route('class.create') }}" class="btn btn-icon btn-success" title="{{ __('Create') }}"><i class="fa fa-plus"></i></a>
-				@endif
 				<button class="btn btn-icon btn-secondary" title="{{ __('Filter') }}" data-toggle="modal" data-target="#filterModal"><i class="fa fa-filter"></i></button>
             	<button class="btn btn-icon btn-secondary" onclick="reloadTable()" title="{{ __('Refresh') }}"><i class="fa fa-sync"></i></i></button>
 			</div>
@@ -54,6 +52,9 @@
 						</tbody>
 					</table>
 				</div>
+			</div>
+			<div class="card-footer bg-whitesmoke">
+				<button class="btn btn-danger btn-sm" name="closeData" title="{{ __('Close Scholl Class For Add Data') }}">{{ __('Close') }}</button>
 			</div>
 		</div>
 
@@ -106,6 +107,47 @@
       			});
       		},
   		});
+
+  		$('[name="closeData"]').click(function(event) {
+			if ($('[name="selectedData[]"]:checked').length > 0) {
+				event.preventDefault();
+				var selectedData = $('[name="selectedData[]"]:checked').map(function(){
+					return $(this).val();
+				}).get();
+				swal({
+			      	title: '{{ __("Are you sure want to close this class?") }}',
+			      	text: '',
+			      	icon: 'warning',
+			      	buttons: ['{{ __("Cancel") }}', true],
+			      	dangerMode: true,
+			    })
+			    .then((willDelete) => {
+			      	if (willDelete) {
+			      		$.ajax({
+							url : "{{ route('class.close') }}",
+							type: "POST",
+							dataType: "JSON",
+							data: {"selectedData" : selectedData, "_token" : "{{ csrf_token() }}"},
+							success: function(data)
+							{
+								swal("{{ __('Success!') }}", "{{ __("Data has be closed.") }}", "success");
+								reloadTable();
+							},
+							error: function (jqXHR, textStatus, errorThrown)
+							{
+								if (JSON.parse(jqXHR.responseText).status) {
+									swal("{{ __('Failed!') }}", "{{ __("Data cannot be closed.") }}", "warning");
+								} else {
+									swal(JSON.parse(jqXHR.responseText).message, "", "error");
+								}
+							}
+						});
+			      	}
+    			});
+			} else {
+				swal("{{ __('Please select a data..') }}", "", "warning");
+			}
+		});
 	});
 
 	function reloadTable() {

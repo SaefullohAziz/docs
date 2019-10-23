@@ -15,6 +15,19 @@
 			</div>
 		@endif
 
+		@if (session('import_file'))
+			@foreach (session('import_file')['message'] as $message)
+				<div class="alert alert-danger alert-dismissible show fade">
+				<div class="alert-body">
+					<button class="close" data-dismiss="alert">
+						<span>&times;</span>
+					</button>
+					@php echo $message @endphp
+				</div>
+			</div>
+			@endforeach
+		@endif
+
 		@if (session('alert-danger'))
 			<div class="alert alert-danger alert-dismissible show fade">
 				<div class="alert-body">
@@ -29,6 +42,7 @@
 		<div class="card card-primary">
 			<div class="card-header">
 				<a href="{{ route('class.student.create', $studentClass->id) }}" class="btn btn-icon btn-success" title="{{ __('Create') }}"><i class="fa fa-plus"></i></a>
+        		<button class="btn btn-icon btn-primary" title="{{ __('Import') }}" data-toggle="modal" data-target="#importModal">{{ __('Import') }}</button>
 				<button class="btn btn-icon btn-secondary" title="{{ __('Filter') }}" data-toggle="modal" data-target="#filterModal"><i class="fa fa-filter"></i></button>
             	<button class="btn btn-icon btn-secondary" onclick="reloadTable()" title="{{ __('Refresh') }}"><i class="fa fa-sync"></i></i></button>
 			</div>
@@ -147,6 +161,34 @@
 				<div class="modal-footer bg-whitesmoke d-flex justify-content-center">
 					<!-- {{ Form::submit(__('Export'), ['class' => 'btn btn-primary']) }} -->
 					{{ Form::button(__('Filter'), ['class' => 'btn btn-primary', 'onclick' => 'filter()']) }}
+					{{ Form::button(__('Cancel'), ['class' => 'btn btn-secondary', ' data-dismiss' => 'modal']) }}
+				</div>
+			{{ Form::close() }}
+		</div>
+	</div>
+</div>
+<!-- Import Modal -->
+<div class="modal fade" id="importModal" tabindex="-1" role="dialog" aria-labelledby="importModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-sm" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="importModallLabel">{{ __('Import') }}</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			{{ Form::open(['route' => ['class.student.import', $studentClass->id], 'files' => true]) }}
+				<div class="modal-body">
+					<div class="container-fluid">
+						<div class="row">
+							{{ Form::bsUploadedFile('d-block', __('Download Template'), 'template', 'file', 'student_import_template.xlsx') }}
+
+							{{ Form::bsFile(null, __('Import File'), 'import_file', old('import_file'), [], [__('Import file with xlx/xlsx format up to 5MB.')]) }}
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer bg-whitesmoke d-flex justify-content-center">
+					{{ Form::submit(__('Import'), ['class' => 'btn btn-primary']) }}
 					{{ Form::button(__('Cancel'), ['class' => 'btn btn-secondary', ' data-dismiss' => 'modal']) }}
 				</div>
 			{{ Form::close() }}

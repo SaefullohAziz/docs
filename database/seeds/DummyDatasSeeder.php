@@ -26,7 +26,7 @@ class DummyDatasSeeder extends Seeder
                                                 foreach ($school->studentClasses as $class) {
                                                     $class->students()->createMany(factory(App\Student::class, 33)->make()->toArray());
                                                 }
-                                                $school->users()->save(factory(App\User::class)->make());
+                                                $school->user()->save(factory(App\User::class)->make());
                                             });
         $visitationDestinations = factory(App\VisitationDestination::class, 3)->create();
     }

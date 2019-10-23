@@ -182,7 +182,7 @@ class SchoolStatusesTableSeeder extends Seeder
         		'name' => $level['name']
         	]);
         	foreach ($level['statuses'] as $status) {
-        		$schoolLevel->status()->firstOrCreate([
+        		$schoolLevel->statuses()->firstOrCreate([
         			'order_by' => $status['order_by'],
         			'name' => $status['name'],
         			'alias' => $status['alias']

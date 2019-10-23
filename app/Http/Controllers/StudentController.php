@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Auth;
+use Excel;
 use App\StudentClass;
 use App\Student;
 use App\Province;
@@ -12,6 +13,7 @@ use App\Department;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreStudent;
+use App\Imports\StudentImport;
 use DataTables;
 use Validator;
 use App\Exports\StudentsExport;
@@ -192,6 +194,52 @@ class StudentController extends Controller
         $student->photo = $this->uploadPhoto($student, $request);
         $student->save();
         return redirect(url()->previous())->with('alert-success', __($this->createdMessage));
+    }
+
+    /**
+     * Import student from Excel
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     */
+    public function importExcel(StudentClass $studentClass, Request $request)
+    {        
+        // validasi file input
+        $this->validate($request, [
+            'import_file' => 'required|mimes:xls,xlsx'
+        ]);
+        
+        try {
+            $data = Excel::import(new StudentImport($studentClass), $request->file('import_file'));
+            return back()->with('alert-success', 'datas has been imported!');
+        } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
+            $failures = $e->failures();
+            $message = [];
+            $row = 0;
+            $attribute = [];
+            foreach ($failures as $failure) {
+                if ($row == $failure->row()) {
+                        $attribute[] = $failure->attribute();
+                }
+                else{
+                    $row++;
+                    if ($attribute) {
+                        $message[] = 'Error detected on row '. $failure->row() . ' on attribute ' . ucwords(implode(" , ", $attribute)) .' !';
+                    }
+                } 
+
+                // get last foreach
+                if( !next( $failures ) ) { 
+                    $message[] = 'Error detected on row '. $failure->row() . ' on attribute ' . ucwords(implode(" , ", $attribute)) .' !';
+                }
+
+            }
+            
+            session()->flash( 'import_file', [
+               'message' => $message
+              ]);
+            return back();
+        }
+
     }
 
     /**

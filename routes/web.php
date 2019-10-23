@@ -62,12 +62,14 @@ Route::resource('teacher', 'TeacherController', ['except' => [
 // Class
 Route::prefix('class')->name('class.')->group(function () {
 	Route::post('list', 'StudentClassController@list')->name('list');
+	Route::post('close', 'StudentClassController@close')->name('close');
 	// Route::post('export', 'StudentClassController@export')->name('export');
 	// Route::delete('destroy', 'StudentClassController@destroy')->name('destroy');
 	// Student
 	Route::prefix('{studentClass}/student')->name('student.')->group(function () {
 		Route::post('list', 'StudentController@list')->name('list');
 		// Route::post('export', 'StudentController@export')->name('export');
+		Route::post('import', 'StudentController@importExcel')->name('import');
 		// Route::delete('destroy', 'StudentController@destroy')->name('destroy');
 	});
 	Route::resource('{studentClass}/student', 'StudentController', ['except' => [
@@ -226,6 +228,8 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
     	Route::post('list', 'StudentClassController@list')->name('list');
     	Route::post('export', 'StudentClassController@export')->name('export');
 		Route::delete('destroy', 'StudentClassController@destroy')->name('destroy');
+		Route::post('close', 'StudentClassController@close')->name('close');
+		Route::post('open', 'StudentClassController@open')->name('open');
 		// Student
 		Route::prefix('{studentClass}/student')->name('student.')->group(function () {
 			Route::post('list', 'StudentController@list')->name('list');
