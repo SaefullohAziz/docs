@@ -9,7 +9,7 @@ use Illuminate\Validation\Rule;
 use Maatwebsite\Excel\Concerns\WithValidation;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
-class StudentImport implements ToModel, WithHeadingRow, WithValidation
+class StudentImport implements ToModel, WithHeadingRow
 {
     public function __construct(StudentClass $studentClass)
     {
