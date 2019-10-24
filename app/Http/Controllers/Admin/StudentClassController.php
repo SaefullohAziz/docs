@@ -250,7 +250,7 @@ class StudentClassController extends Controller
      */
     public function open(Request $request)
     {
-        if ( ! auth()->guard('admin')->user()->can('open ' . $this->school)) {
+        if ( ! auth()->guard('admin')->user()->can('open ' . $this->table)) {
             return response()->json(['status' => false, 'message' => __($this->noPermission)], 422);
         }
         StudentClass::whereIn('id', $request->selectedData)->update(['closed_at' => null]);
@@ -266,7 +266,7 @@ class StudentClassController extends Controller
      */
     public function close(Request $request)
     {
-        if ( ! auth()->guard('admin')->user()->can('close ' . $this->school)) {
+        if ( ! auth()->guard('admin')->user()->can('close ' . $this->table)) {
             return response()->json(['status' => false, 'message' => __($this->noPermission)], 422);
         }
         StudentClass::whereIn('id', $request->selectedData)->update(['closed_at' => now()]);

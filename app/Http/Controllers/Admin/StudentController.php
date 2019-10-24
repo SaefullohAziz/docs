@@ -148,6 +148,9 @@ class StudentController extends Controller
         if (auth()->guard('admin')->user()->cant('adminCreateStudent', $studentClass)) {
             return redirect()->route('admin.class.student.index', $studentClass->id)->with('alert-danger', __($this->unauthorizedMessage));
         }
+        if ($studentClass->closed_at != null ) {
+            return redirect()->route('admin.class.student.index', $studentClass->id)->with('alert-danger', __($this->unauthorizedMessage));
+        }
         for ($i=1; $i <= 20; $i++) { 
 			$childOrders[$i] = $i;
         }
@@ -353,6 +356,9 @@ class StudentController extends Controller
             return redirect()->route('admin.class.student.index', $studentClass->id)->with('alert-danger', __($this->noPermission));
         }
         if (auth()->guard('admin')->user()->cant('adminCreateStudent', $studentClass)) {
+            return redirect()->route('admin.class.student.index', $studentClass->id)->with('alert-danger', __($this->unauthorizedMessage));
+        }
+        if ($studentClass->closed_at != null ) {
             return redirect()->route('admin.class.student.index', $studentClass->id)->with('alert-danger', __($this->unauthorizedMessage));
         }
         

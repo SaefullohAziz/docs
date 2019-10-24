@@ -15,10 +15,10 @@ $factory->define(Teacher::class, function (Faker $faker) {
         'gender' => $genders[$gender],
         'position' => 'Guru Umum',
         'teaching_status' => $statuses[$status],
-        'date_of_birth' => $faker->dateTimeBetween('1970-01-01', '2000-12-30')
-    						->format('d/m/Y'),
         'phone_number' => $faker->unique()->phoneNumber,
         'address' => $faker->address,
         'email' => $faker->unique()->safeEmail,
     ];
+        // 'date_of_birth' => $faker->dateTimeBetween('1970-01-01', '2000-12-30')
+    				// 		->format('d/m/Y'),
 });
