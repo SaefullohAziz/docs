@@ -78,6 +78,6 @@ class StudentClass extends Model
      */
     public static function list(Request $request)
     {
-        return self::get($request)->select('student_classes.*', 'schools.name AS school', 'provinces.abbreviation AS province_abbreviation', 'departments.name AS department');
+        return self::get($request)->select('student_classes.*', 'schools.name AS school', 'provinces.abbreviation AS province_abbreviation', 'departments.name AS department', DB::raw('(CASE WHEN student_classes.closed_at IS NULL THEN "Open" ELSE "Closed" END) AS status'));
     }
 }

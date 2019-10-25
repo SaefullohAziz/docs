@@ -47,6 +47,7 @@
 								<th>{{ __('Generation') }}</th>
 								<th>{{ __('School Year') }}</th>
 								<th>{{ __('Department') }}</th>
+								<th>{{ __('Status') }}</th>
 								<th>{{ __('Action') }}</th>
 							</tr>
 						</thead>
@@ -56,11 +57,15 @@
 				</div>
 			</div>
 			<div class="card-footer bg-whitesmoke">
+				@if (auth()->guard('admin')->user()->can('open student_classes'))
+					<button class="btn btn-default btn-sm" name="openData" title="{{ __('Open Class') }}">{{ __('Open') }}</button>
+				@endif
+				@if (auth()->guard('admin')->user()->can('close student_classes'))
+					<button class="btn btn-default btn-sm" name="closeData" title="{{ __('Close Class') }}">{{ __('Close') }}</button>
+				@endif
 				@if (auth()->guard('admin')->user()->can('delete student_classes'))
 					<button class="btn btn-danger btn-sm" name="deleteData" title="{{ __('Delete') }}">{{ __('Delete') }}</button>
 				@endif
-				<button class="btn btn-primary btn-sm" name="openData" title="{{ __('Open Scholl Class For Add Data') }}">{{ __('Open') }}</button>
-				<button class="btn btn-danger btn-sm" name="closeData" title="{{ __('Close Scholl Class For Add Data') }}">{{ __('Close') }}</button>
 			</div>
 		</div>
 
@@ -93,6 +98,7 @@
 				{ data: 'generation', name: 'student_classes.generation' },
 				{ data: 'school_year', name: 'student_classes.school_year' },
 				{ data: 'department', name: 'departments.name' },
+				{ data: 'status', name: 'student_classes.closed_at' },
 				{ data: 'action', name: 'action' }
 			],
 			"columnDefs": [
@@ -195,41 +201,42 @@
 			}
 		});
 
-		$('[name="deleteData"]').click(function(event) {
+		$('[name="openData"]').click(function(event) {
 			if ($('[name="selectedData[]"]:checked').length > 0) {
 				event.preventDefault();
 				var selectedData = $('[name="selectedData[]"]:checked').map(function(){
 					return $(this).val();
 				}).get();
 				swal({
-			      	title: '{{ __("Are you sure want to delete this data?") }}',
-			      	text: '',
-			      	icon: 'warning',
-			      	buttons: ['{{ __("Cancel") }}', true],
-			      	dangerMode: true,
-			    })
-			    .then((willDelete) => {
-			      	if (willDelete) {
-			      		$.ajax({
-							url : "{{ route('admin.class.destroy') }}",
-							type: "DELETE",
+					title: '{{ __("Are you sure want to open this class?") }}',
+					text: '',
+					icon: 'warning',
+					buttons: ['{{ __("Cancel") }}', true],
+					dangerMode: true,
+				})
+				.then((willDo) => {
+					if (willDo) {
+						$.ajax({
+							url : "{{ route('admin.class.open') }}",
+							type: "POST",
 							dataType: "JSON",
 							data: {"selectedData" : selectedData, "_token" : "{{ csrf_token() }}"},
 							success: function(data)
 							{
+								swal("{{ __('Success!') }}", "{{ __("Class has been opened.") }}", "success");
 								reloadTable();
 							},
 							error: function (jqXHR, textStatus, errorThrown)
 							{
 								if (JSON.parse(jqXHR.responseText).status) {
-									swal("{{ __('Failed!') }}", "{{ __("Data cannot be deleted.") }}", "warning");
+									swal("{{ __('Failed!') }}", "{{ __("Data cannot been opened.") }}", "warning");
 								} else {
 									swal(JSON.parse(jqXHR.responseText).message, "", "error");
 								}
 							}
 						});
-			      	}
-    			});
+					}
+				});
 			} else {
 				swal("{{ __('Please select a data..') }}", "", "warning");
 			}
@@ -248,8 +255,8 @@
 			      	buttons: ['{{ __("Cancel") }}', true],
 			      	dangerMode: true,
 			    })
-			    .then((willDelete) => {
-			      	if (willDelete) {
+			    .then((willDo) => {
+			      	if (willDo) {
 			      		$.ajax({
 							url : "{{ route('admin.class.close') }}",
 							type: "POST",
@@ -276,42 +283,41 @@
 			}
 		});
 
-		$('[name="openData"]').click(function(event) {
+		$('[name="deleteData"]').click(function(event) {
 			if ($('[name="selectedData[]"]:checked').length > 0) {
 				event.preventDefault();
 				var selectedData = $('[name="selectedData[]"]:checked').map(function(){
 					return $(this).val();
 				}).get();
 				swal({
-			      	title: '{{ __("Are you sure want to open this class?") }}',
-			      	text: '',
-			      	icon: 'warning',
-			      	buttons: ['{{ __("Cancel") }}', true],
-			      	dangerMode: true,
-			    })
-			    .then((willDelete) => {
-			      	if (willDelete) {
-			      		$.ajax({
-							url : "{{ route('admin.class.open') }}",
-							type: "POST",
+					title: '{{ __("Are you sure want to delete this data?") }}',
+					text: '',
+					icon: 'warning',
+					buttons: ['{{ __("Cancel") }}', true],
+					dangerMode: true,
+				})
+				.then((willDelete) => {
+					if (willDelete) {
+						$.ajax({
+							url : "{{ route('admin.class.destroy') }}",
+							type: "DELETE",
 							dataType: "JSON",
 							data: {"selectedData" : selectedData, "_token" : "{{ csrf_token() }}"},
 							success: function(data)
 							{
-								swal("{{ __('Success!') }}", "{{ __("Class has been opened.") }}", "success");
 								reloadTable();
 							},
 							error: function (jqXHR, textStatus, errorThrown)
 							{
 								if (JSON.parse(jqXHR.responseText).status) {
-									swal("{{ __('Failed!') }}", "{{ __("Data cannot been opened.") }}", "warning");
+									swal("{{ __('Failed!') }}", "{{ __("Data cannot be deleted.") }}", "warning");
 								} else {
 									swal(JSON.parse(jqXHR.responseText).message, "", "error");
 								}
 							}
 						});
-			      	}
-    			});
+					}
+				});
 			} else {
 				swal("{{ __('Please select a data..') }}", "", "warning");
 			}

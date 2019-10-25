@@ -28,7 +28,7 @@
 
 		<div class="card card-primary">
 			<div class="card-header">
-					<a href="{{ route('class.create') }}" class="btn btn-icon btn-success" title="{{ __('Create') }}"><i class="fa fa-plus"></i></a>
+				<a href="{{ route('class.create') }}" class="btn btn-icon btn-success" title="{{ __('Create') }}"><i class="fa fa-plus"></i></a>
 				<button class="btn btn-icon btn-secondary" title="{{ __('Filter') }}" data-toggle="modal" data-target="#filterModal"><i class="fa fa-filter"></i></button>
             	<button class="btn btn-icon btn-secondary" onclick="reloadTable()" title="{{ __('Refresh') }}"><i class="fa fa-sync"></i></i></button>
 			</div>
@@ -54,7 +54,7 @@
 				</div>
 			</div>
 			<div class="card-footer bg-whitesmoke">
-				<button class="btn btn-danger btn-sm" name="closeData" title="{{ __('Close Scholl Class For Add Data') }}">{{ __('Close') }}</button>
+				<button class="btn btn-default btn-sm" name="closeData" title="{{ __('Close Class') }}">{{ __('Close') }}</button>
 			</div>
 		</div>
 

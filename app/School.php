@@ -61,7 +61,7 @@ class School extends Model
     /**
      * The status that belong to the school.
      */
-    public function status()
+    public function statuses()
     {
         return $this->belongsToMany('App\SchoolStatus', 'school_status_updates')->using('App\SchoolStatusUpdate');
     }
@@ -139,6 +139,14 @@ class School extends Model
     }
 
     /**
+     * Get the activity for the school.
+     */
+    public function activities()
+    {
+        return $this->hasMany('App\Activity');
+    }
+
+    /**
      * Get the subsidy for the school.
      */
     public function subsidies()
@@ -176,6 +184,22 @@ class School extends Model
     public function visitationDestinations()
     {
         return $this->hasMany('App\VisitationDestination');
+    }
+
+    /**
+     * Get the attendance for the school.
+     */
+    public function attendances()
+    {
+        return $this->hasMany('App\Attendance');
+    }
+
+    /**
+     * Get the payment for the school.
+     */
+    public function payments()
+    {
+        return $this->hasMany('App\Payment');
     }
 
     /**

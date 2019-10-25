@@ -20,10 +20,8 @@ class ActivityPermissionsTableSeeder extends Seeder
     		'approval activities' => ['supersu', 'admin']
     	];
     	foreach ($data as $k => $v) {
-    		$permission = \Spatie\Permission\Models\Permission::create(['name' => $k, 'guard_name' => 'admin']);
-    		foreach ($v as $name) {
-                $permission->assignRole($name, 'admin');
-    		}
+    		$permission = \Spatie\Permission\Models\Permission::firstOrCreate(['name' => $k, 'guard_name' => 'admin']);
+    		$permission->syncRoles($v, 'admin');
     	}
     }
 }

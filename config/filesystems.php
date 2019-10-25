@@ -62,6 +62,11 @@ return [
             'visibility' => 'public',
         ],
 
+        'acp' => [
+            'driver' => 'local',
+            'root' => env('ACP_DISK', '/var/www/html/codeigniter/acp-system/assets/uploads/'),
+        ],
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),

@@ -165,7 +165,7 @@ class SchoolController extends Controller
             'updated_at' => now()
         ]);
         $status = SchoolStatus::byName('Daftar')->first();
-        $school->status()->attach($status->id, [
+        $school->statuses()->attach($status->id, [
             'created_by' => 'staff',
             'staff_id' => auth()->guard('admin')->user()->id,
             'created_at' => now(),

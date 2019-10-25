@@ -228,21 +228,6 @@ class StudentClassController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Request $request)
-    {
-        if ( ! auth()->guard('admin')->user()->can('delete ' . $this->school)) {
-            return response()->json(['status' => false, 'message' => __($this->noPermission)], 422);
-        }
-        StudentClass::destroy($request->selectedData);
-        return response()->json(['status' => true, 'message' => __($this->deletedMessage)]);
-    }
-
-    /**
      * Open the class for deny some management.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -250,11 +235,10 @@ class StudentClassController extends Controller
      */
     public function open(Request $request)
     {
-        if ( ! auth()->guard('admin')->user()->can('open ' . $this->school)) {
+        if ( ! auth()->guard('admin')->user()->can('open ' . $this->table)) {
             return response()->json(['status' => false, 'message' => __($this->noPermission)], 422);
         }
         StudentClass::whereIn('id', $request->selectedData)->update(['closed_at' => null]);
-
         return response()->json(['status' => true, 'message' => __($this->updatedMessage)]);
     }
 
@@ -266,11 +250,25 @@ class StudentClassController extends Controller
      */
     public function close(Request $request)
     {
-        if ( ! auth()->guard('admin')->user()->can('close ' . $this->school)) {
+        if ( ! auth()->guard('admin')->user()->can('close ' . $this->table)) {
             return response()->json(['status' => false, 'message' => __($this->noPermission)], 422);
         }
         StudentClass::whereIn('id', $request->selectedData)->update(['closed_at' => now()]);
-
         return response()->json(['status' => true, 'message' => __($this->updatedMessage)]);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(Request $request)
+    {
+        if ( ! auth()->guard('admin')->user()->can('delete ' . $this->table)) {
+            return response()->json(['status' => false, 'message' => __($this->noPermission)], 422);
+        }
+        StudentClass::destroy($request->selectedData);
+        return response()->json(['status' => true, 'message' => __($this->deletedMessage)]);
     }
 }

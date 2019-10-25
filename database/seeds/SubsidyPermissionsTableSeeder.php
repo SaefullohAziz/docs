@@ -1,8 +1,6 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use Spatie\Permission\Models\Permission;
-use Spatie\Permission\Models\Role;
 
 class SubsidyPermissionsTableSeeder extends Seeder
 {
@@ -22,10 +20,8 @@ class SubsidyPermissionsTableSeeder extends Seeder
             'approval subsidies'=> ['supersu', 'admin'],
     	];
     	foreach ($data as $k => $v) {
-    		$permission = Permission::create(['name' => $k, 'guard_name' => 'admin']);
-    		foreach ($v as $name) {
-                $permission->assignRole($name, 'admin');
-    		}
+    		$permission = \Spatie\Permission\Models\Permission::firstOrCreate(['name' => $k, 'guard_name' => 'admin']);
+    		$permission->syncRoles($v, 'admin');
     	}
     }
 }

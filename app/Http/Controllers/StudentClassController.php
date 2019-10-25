@@ -217,18 +217,6 @@ class StudentClassController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\StudentClass  $studentClass
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(StudentClass $studentClass)
-    {
-        StudentClass::destroy($request->selectedData);
-        return response()->json(['status' => true, 'message' => __($this->deletedMessage)]);
-    }
-
-    /**
      * Close the class for deny some management.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -238,5 +226,17 @@ class StudentClassController extends Controller
     {
         StudentClass::whereIn('id', $request->selectedData)->update(['closed_at' => now()]);
         return response()->json(['status' => true, 'message' => __($this->updatedMessage)]);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\StudentClass  $studentClass
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(Request $request)
+    {
+        StudentClass::destroy($request->selectedData);
+        return response()->json(['status' => true, 'message' => __($this->deletedMessage)]);
     }
 }

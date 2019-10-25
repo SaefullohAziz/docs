@@ -14,68 +14,52 @@ class DepartmentsTableSeeder extends Seeder
     {
         $data = [
             ['name' => 'Teknik Komputer dan Jaringan',
-            'abbreviation' => 'TKJ',
-            'description' => ''],
+            'abbreviation' => 'TKJ'],
 
             ['name' => 'Rekayasa Perangkat Lunak',
-            'abbreviation' => 'RPL',
-            'description' => ''],
+            'abbreviation' => 'RPL'],
 
             ['name' => 'Multimedia',
-            'abbreviation' => 'MM',
-            'description' => ''],
+            'abbreviation' => 'MM'],
 
             ['name' => 'Animasi',
-            'abbreviation' => 'Animasi',
-            'description' => ''],
+            'abbreviation' => 'Animasi'],
 
             ['name' => 'Broadcasting',
-            'abbreviation' => 'Broadcasting',
-            'description' => ''],
+            'abbreviation' => 'Broadcasting'],
 
             ['name' => 'Teknik Audio dan Video',
-            'abbreviation' => 'TAV',
-            'description' => ''],
+            'abbreviation' => 'TAV'],
 
             ['name' => 'Teknik Elektronika',
-            'abbreviation' => 'TE',
-            'description' => ''],
+            'abbreviation' => 'TE'],
 
             ['name' => 'Teknik Elektronika dan Industri',
-            'abbreviation' => 'TELIN',
-            'description' => ''],
+            'abbreviation' => 'Telin'],
 
             ['name' => 'Teknik Sepeda Motor',
-            'abbreviation' => 'TSM',
-            'description' => ''],
+            'abbreviation' => 'TSM'],
 
             ['name' => 'Teknik Kendaraan Ringan',
-            'abbreviation' => 'TKR',
-            'description' => ''],
+            'abbreviation' => 'TKR'],
 
             ['name' => 'Teknik Gambar Bangunan',
-            'abbreviation' => 'TGB',
-            'description' => ''],
+            'abbreviation' => 'TGB'],
 
             ['name' => 'Administrasi Perkantoran',
-            'abbreviation' => 'AP',
-            'description' => ''],
+            'abbreviation' => 'AP'],
 
             ['name' => 'Pemasaran',
-            'abbreviation' => 'Pemasaran',
-            'description' => ''],
+            'abbreviation' => 'Pemasaran'],
 
             ['name' => 'Keuangan/Perbankan',
-            'abbreviation' => 'Keuangan/Perbankan',
-            'description' => ''],
+            'abbreviation' => 'Keuangan/Perbankan'],
 
             ['name' => 'Farmasi',
-            'abbreviation' => 'Farmasi',
-            'description' => ''],
+            'abbreviation' => 'Farmasi'],
 
             ['name' => 'Akuntansi',
-            'abbreviation' => 'Akuntansi',
-            'description' => ''],
+            'abbreviation' => 'Akuntansi'],
         ];
         foreach ($data as $record) {
             Department::firstOrCreate($record);

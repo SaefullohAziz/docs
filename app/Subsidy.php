@@ -37,7 +37,7 @@ class Subsidy extends Model
     /**
      * The student that belong to the subsidy.
      */
-    public function student()
+    public function students()
     {
         return $this->belongsToMany('App\Student', 'ssp_students')->using('App\SspStudent');
     }
@@ -61,7 +61,7 @@ class Subsidy extends Model
     /**
      * The status that belong to the subsidy.
      */
-    public function status()
+    public function statuses()
     {
         return $this->belongsToMany('App\Status', 'subsidy_statuses')->using('App\SubsidyStatus');
     }
