@@ -357,7 +357,7 @@ class ImportSystemDataSeeder extends Seeder
                     'sibling_number' => $student->sibling_number, 
                     'stepbrother_number' => $student->stepbrother_number, 
                     'step_sibling_number' => $student->step_sibling_number, 
-                    'dateofbirth' => (checkdate(date('d', strtotime($student->dateofbirth)), date('m', strtotime($student->dateofbirth)), date('Y', strtotime($student->dateofbirth)))?$student->dateofbirth:null),
+                    'dateofbirth' => (checkdate(date('m', strtotime($student->dateofbirth)), date('d', strtotime($student->dateofbirth)), date('Y', strtotime($student->dateofbirth)))?$student->dateofbirth:null),
                     'address' => (empty($student->address)?'-':$student->address),
                     'father_address' => $student->father_address, 
                     'trustee_address' => $student->trustee_address, 
@@ -832,7 +832,7 @@ class ImportSystemDataSeeder extends Seeder
                         'gender' => (empty($trainingParticipant->gender)?'-':$trainingParticipant->gender),
                         'phone_number' => (empty($trainingParticipant->phone_number)?'-':$trainingParticipant->phone_number), 
                         'position' => (empty($trainingParticipant->position)?'-':$trainingParticipant->position),
-                        'created_at' => $trainingParticipant->created_at,
+                        'created_at' => (checkdate(date('m', strtotime($trainingParticipant->created_at)), date('d', strtotime($trainingParticipant->created_at)), date('Y', strtotime($trainingParticipant->created_at)))?$trainingParticipant->created_at:null),
                         'updated_at' => $trainingParticipant->created_at]
                     );
                     $newTraining->participants()->attach($newTeacher->id, [
