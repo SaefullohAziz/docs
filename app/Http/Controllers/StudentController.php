@@ -147,6 +147,9 @@ class StudentController extends Controller
         if (auth()->user()->cant('createStudent', $studentClass)) {
             return redirect()->route('class.student.index', $studentClass->id)->with('alert-danger', __($this->unauthorizedMessage));
         }
+        if ($studentClass->closed_at != null ) {
+            return redirect()->route('class.student.index', $studentClass->id)->with('alert-danger', __($this->unauthorizedMessage));
+        }
         for ($i=1; $i <= 20; $i++) { 
 			$childOrders[$i] = $i;
         }
