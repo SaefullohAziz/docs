@@ -64,8 +64,8 @@ class ImportSystemDataSeeder extends Seeder
                 'dealer_email' => $school->dealer_email, 
                 'proposal' => $school->proposal, 
                 'code' => mt_rand(1000000, 9999999),
-                'created_at' => $school->created_at,
-                'updated_at' => $school->created_at
+                'created_at' => $this->validDate($school->created_at),
+                'updated_at' => $this->validDate($school->created_at)
             ]);
             \App\School::setEventDispatcher($dispatcher);
             if ( ! empty($school->documents)) {
@@ -87,12 +87,12 @@ class ImportSystemDataSeeder extends Seeder
                 'position' => $school->pic_position,
                 'phone_number' => $school->pic_phone_number,
                 'email' => $school->pic_email,
-                'created_at' => $school->pic_created_at,
-                'updated_at' => $school->pic_created_at
+                'created_at' => $this->validDate($school->pic_created_at),
+                'updated_at' => $this->validDate($school->pic_created_at)
             ]);
             $newSchool->pic()->attach($newPic->id, [
-                'created_at' => $school->school_pic_created_at,
-                'updated_at' => $school->school_pic_created_at,
+                'created_at' => $this->validDate($school->school_pic_created_at),
+                'updated_at' => $this->validDate($school->school_pic_created_at),
             ]);
 
             // Import School: Statuses
@@ -113,8 +113,8 @@ class ImportSystemDataSeeder extends Seeder
                     'email_status' => $schoolStatus->email_status,
                     'created_by' => 'staff',
                     'staff_id' => $admin->id,
-                    'created_at' => $schoolStatus->created_at,
-                    'updated_at' => $schoolStatus->created_at
+                    'created_at' => $this->validDate($schoolStatus->created_at),
+                    'updated_at' => $this->validDate($schoolStatus->created_at),
                 ]);
             }
 
@@ -161,8 +161,8 @@ class ImportSystemDataSeeder extends Seeder
                     'implementation' => $document->implementation, 
                     'category' => $document->document_category, 
                     'filename' => (empty($document->document_filename)?'-':$document->document_filename), 
-                    'created_at' => $document->created_at, 
-                    'updated_at' => $document->created_at
+                    'created_at' => $this->validDate($document->created_at),
+                    'updated_at' => $this->validDate($document->created_at),
                 ]);
                 \App\Document::setEventDispatcher($dispatcher);
 
@@ -204,15 +204,15 @@ class ImportSystemDataSeeder extends Seeder
                     }
                     $logData = array_merge($logData, [
                         'description' => $documentStatus->log,
-                        'created_at' => $documentStatus->created_at,
-                        'updated_at' => $documentStatus->created_at
+                        'created_at' => $this->validDate($documentStatus->created_at),
+                        'updated_at' => $this->validDate($documentStatus->created_at),
                     ]);
                     $log = \App\ActivityLog::create($logData);
                     $status = \App\Status::where('name', $documentStatus->status)->first();
                     $newDocument->statuses()->attach($status->id, [
                         'log_id' => $log->id,
-                        'created_at' => $documentStatus->created_at,
-                        'updated_at' => $documentStatus->created_at,
+                        'created_at' => $this->validDate($documentStatus->created_at),
+                        'updated_at' => $this->validDate($documentStatus->created_at),
                     ]);
                 }
             }
@@ -227,8 +227,8 @@ class ImportSystemDataSeeder extends Seeder
                 $newSchool->photos()->create([
                     'category' => 'Dokumentasi', 
                     'name' => $photo->photo_name, 
-                    'created_at' => $photo->created_at, 
-                    'updated_at' => $photo->created_at
+                    'created_at' => $this->validDate($photo->created_at),
+                    'updated_at' => $this->validDate($photo->created_at),
                 ]);
 
                 if ( ! empty($photo->photo_name)) {
@@ -256,9 +256,9 @@ class ImportSystemDataSeeder extends Seeder
                 $commentStaff = \App\Admin\User::where('username', $comment->username)->first();
                 $newSchool->comments()->create([
                     'staff_id' => ($commentStaff?$commentStaff->id:$admin->id), 
-                    'message' => $comment->message, 
-                    'created_at' => $comment->created_at, 
-                    'updated_at' => $comment->created_at
+                    'message' => $comment->message,
+                    'created_at' => $this->validDate($comment->created_at),
+                    'updated_at' => $this->validDate($comment->created_at), 
                 ]);
             }
 
@@ -357,7 +357,7 @@ class ImportSystemDataSeeder extends Seeder
                     'sibling_number' => $student->sibling_number, 
                     'stepbrother_number' => $student->stepbrother_number, 
                     'step_sibling_number' => $student->step_sibling_number, 
-                    'dateofbirth' => (checkdate(date('m', strtotime($student->dateofbirth)), date('d', strtotime($student->dateofbirth)), date('Y', strtotime($student->dateofbirth)))?$student->dateofbirth:null),
+                    'dateofbirth' => $this->validDate($student->dateofbirth),
                     'address' => (empty($student->address)?'-':$student->address),
                     'father_address' => $student->father_address, 
                     'trustee_address' => $student->trustee_address, 
@@ -368,8 +368,8 @@ class ImportSystemDataSeeder extends Seeder
                     'reasoning_score' => (is_int($student->reasoning_score)?$student->reasoning_score:null), 
                     'analogy_score' => (is_int($student->analogy_score)?$student->analogy_score:null), 
                     'numerical_score' => (is_int($student->numerical_score)?$student->numerical_score:null), 
-                    'created_at' => $student->created_at, 
-                    'updated_at' => $student->created_at
+                    'created_at' => $this->validDate($student->created_at),
+                    'updated_at' => $this->validDate($student->created_at),
                 ];
                 if ( ! empty($student->username)) {
                     $dispatcher = \App\Student::getEventDispatcher();
@@ -424,8 +424,8 @@ class ImportSystemDataSeeder extends Seeder
                     'period' => $activity->period, 
                     'submission_letter' => $activity->submission_letter, 
                     'detail' => $activity->detail, 
-                    'created_at' => $activity->created_at, 
-                    'updated_at' => $activity->created_at,
+                    'created_at' => $this->validDate($activity->created_at),
+                    'updated_at' => $this->validDate($activity->created_at),
                 ]);
                 \App\Activity::setEventDispatcher($dispatcher);
                 // Import Activity: PIC
@@ -434,12 +434,12 @@ class ImportSystemDataSeeder extends Seeder
                     ['name' => $activity->pic_name,
                     'position' => $activity->pic_position,
                     'phone_number' => $activity->pic_phone_number,
-                    'created_at' => $activity->pic_created_at,
-                    'updated_at' => $activity->pic_created_at]
+                    'created_at' => $this->validDate($activity->pic_created_at),
+                    'updated_at' => $this->validDate($activity->pic_created_at)]
                 );
                 $newActivity->pic()->attach($newPic->id, [
-                    'created_at' => $activity->pic_created_at,
-                    'updated_at' => $activity->pic_created_at
+                    'created_at' => $this->validDate($activity->pic_created_at),
+                    'updated_at' => $this->validDate($activity->pic_created_at),
                 ]);
                 // Import Activity: Statuses
                 $activityStatuses = DB::connection('mysql_2')
@@ -462,15 +462,15 @@ class ImportSystemDataSeeder extends Seeder
                     }
                     $logData = array_merge($logData, [
                         'description' => $activityStatus->log,
-                        'created_at' => $activityStatus->created_at,
-                        'updated_at' => $activityStatus->created_at
+                        'created_at' => $this->validDate($activityStatus->created_at),
+                        'updated_at' => $this->validDate($activityStatus->created_at),
                     ]);
                     $log = \App\ActivityLog::create($logData);
                     $status = \App\Status::where('name', $activityStatus->status)->first();
                     $newActivity->statuses()->attach($status->id, [
                         'log_id' => $log->id,
-                        'created_at' => $activityStatus->created_at,
-                        'updated_at' => $activityStatus->created_at,
+                        'created_at' => $this->validDate($activityStatus->created_at),
+                        'updated_at' => $this->validDate($activityStatus->created_at),
                     ]);
                 }
             }
@@ -498,8 +498,8 @@ class ImportSystemDataSeeder extends Seeder
                     'amount_of_student' => $industryVisit->amount_of_student,
                     'submission_letter' => $industryVisit->submission_letter, 
                     'detail' => $industryVisit->detail,
-                    'created_at' => $industryVisit->created_at, 
-                    'updated_at' => $industryVisit->created_at
+                    'created_at' => $this->validDate($industryVisit->created_at),
+                    'updated_at' => $this->validDate($industryVisit->created_at),
                 ]);
                 \App\Activity::setEventDispatcher($dispatcher);
                 // Copy Industry Visit: Participant
@@ -540,12 +540,12 @@ class ImportSystemDataSeeder extends Seeder
                     ['name' => $industryVisit->pic_name,
                     'position' => $industryVisit->pic_position,
                     'phone_number' => $industryVisit->pic_phone_number,
-                    'created_at' => $industryVisit->pic_created_at,
-                    'updated_at' => $industryVisit->pic_created_at]
+                    'created_at' => $this->validDate($industryVisit->pic_created_at),
+                    'updated_at' => $this->validDate($industryVisit->pic_created_at)]
                 );
                 $newIndustryVisit->pic()->attach($newPic->id, [
-                    'created_at' => $industryVisit->pic_created_at,
-                    'updated_at' => $industryVisit->pic_created_at
+                    'created_at' => $this->validDate($industryVisit->pic_created_at),
+                    'updated_at' => $this->validDate($industryVisit->pic_created_at),
                 ]);
                 // Import Industry Visit: Statuses
                 $industryVisitStatuses = DB::connection('mysql_2')
@@ -568,15 +568,15 @@ class ImportSystemDataSeeder extends Seeder
                     }
                     $logData = array_merge($logData, [
                         'description' => $industryVisitStatus->log,
-                        'created_at' => $industryVisitStatus->created_at,
-                        'updated_at' => $industryVisitStatus->created_at
+                        'created_at' => $this->validDate($industryVisitStatus->created_at),
+                        'updated_at' => $this->validDate($industryVisitStatus->created_at),
                     ]);
                     $log = \App\ActivityLog::create($logData);
                     $status = \App\Status::where('name', $industryVisitStatus->status)->first();
                     $newIndustryVisit->statuses()->attach($status->id, [
                         'log_id' => $log->id,
-                        'created_at' => $industryVisitStatus->created_at,
-                        'updated_at' => $industryVisitStatus->created_at,
+                        'created_at' => $this->validDate($industryVisitStatus->created_at),
+                        'updated_at' => $this->validDate($industryVisitStatus->created_at),
                     ]);
                 }
             }
@@ -598,8 +598,8 @@ class ImportSystemDataSeeder extends Seeder
                     'submission_letter' => (empty($subsidy->submission_letter)?'-':$subsidy->submission_letter), 
                     'report' => $subsidy->report, 
                     'student_year' => $subsidy->student_year, 
-                    'created_at' => $subsidy->created_at, 
-                    'updated_at' => $subsidy->created_at
+                    'created_at' => $this->validDate($subsidy->created_at),
+                    'updated_at' => $this->validDate($subsidy->created_at),
                 ]);
                 \App\Subsidy::setEventDispatcher($dispatcher);
                 // Copy Subsidy: Submission Letter
@@ -678,8 +678,8 @@ class ImportSystemDataSeeder extends Seeder
                     })->select('students.id')->first();
                     if ($sspStudent) {
                         $newSubsidy->students()->attach($sspStudent->id, [
-                            'created_at' => $subsidyStudent->created_at,
-                            'updated_at' => $subsidyStudent->created_at
+                            'created_at' => $this->validDate($subsidyStudent->created_at),
+                            'updated_at' => $this->validDate($subsidyStudent->created_at),
                         ]);
                     }
                 }
@@ -689,12 +689,12 @@ class ImportSystemDataSeeder extends Seeder
                     ['name' => $subsidy->pic_name,
                     'position' => $subsidy->pic_position,
                     'phone_number' => $subsidy->pic_phone_number,
-                    'created_at' => $subsidy->pic_created_at,
-                    'updated_at' => $subsidy->pic_created_at]
+                    'created_at' => $this->validDate($subsidy->pic_created_at),
+                    'updated_at' => $this->validDate($subsidy->pic_created_at)]
                 );
                 $newSubsidy->pic()->attach($newPic->id, [
-                    'created_at' => $subsidy->pic_created_at,
-                    'updated_at' => $subsidy->pic_created_at
+                    'created_at' => $this->validDate($subsidy->pic_created_at),
+                    'updated_at' => $this->validDate($subsidy->pic_created_at),
                 ]);
                 // Import Subsidy: Statuses
                 $subsidyStatuses = DB::connection('mysql_2')
@@ -717,15 +717,15 @@ class ImportSystemDataSeeder extends Seeder
                     }
                     $logData = array_merge($logData, [
                         'description' => $subsidyStatus->log,
-                        'created_at' => $subsidyStatus->created_at,
-                        'updated_at' => $subsidyStatus->created_at
+                        'created_at' => $this->validDate($subsidyStatus->created_at),
+                        'updated_at' => $this->validDate($subsidyStatus->created_at),
                     ]);
                     $log = \App\ActivityLog::create($logData);
                     $status = \App\Status::where('name', $subsidyStatus->status)->first();
                     $newSubsidy->statuses()->attach($status->id, [
                         'log_id' => $log->id,
-                        'created_at' => $subsidyStatus->created_at,
-                        'updated_at' => $subsidyStatus->created_at,
+                        'created_at' => $this->validDate($subsidyStatus->created_at),
+                        'updated_at' => $this->validDate($subsidyStatus->created_at),
                     ]);
                 }
             }
@@ -756,8 +756,8 @@ class ImportSystemDataSeeder extends Seeder
                     'batch' => $training->batch, 
                     'approval_letter_of_commitment_fee' => (empty($training->approval_letter_of_commitment_fee)?'-': $training->approval_letter_of_commitment_fee), 
                     'detail' => $training->detail, 
-                    'created_at' => $training->created_at, 
-                    'updated_at' => $training->created_at
+                    'created_at' => $this->validDate($training->created_at),
+                    'updated_at' => $this->validDate($training->created_at),
                 ]);
                 \App\Training::setEventDispatcher($dispatcher);
                 // Copy Training: Approval Letter
@@ -832,15 +832,15 @@ class ImportSystemDataSeeder extends Seeder
                         'gender' => (empty($trainingParticipant->gender)?'-':$trainingParticipant->gender),
                         'phone_number' => (empty($trainingParticipant->phone_number)?'-':$trainingParticipant->phone_number), 
                         'position' => (empty($trainingParticipant->position)?'-':$trainingParticipant->position),
-                        'created_at' => (checkdate(date('m', strtotime($trainingParticipant->created_at)), date('d', strtotime($trainingParticipant->created_at)), date('Y', strtotime($trainingParticipant->created_at)))?$trainingParticipant->created_at:null),
-                        'updated_at' => (checkdate(date('m', strtotime($trainingParticipant->created_at)), date('d', strtotime($trainingParticipant->created_at)), date('Y', strtotime($trainingParticipant->created_at)))?$trainingParticipant->created_at:null)]
+                        'created_at' => $this->validDate($trainingParticipant->created_at),
+                        'updated_at' => $this->validDate($trainingParticipant->created_at)]
                     );
                     $newTraining->participants()->attach($newTeacher->id, [
                         'status' => $trainingParticipant->status,
                         'presence_code' => $trainingParticipant->presence_code,
                         'presenced_at' => ($trainingParticipant->presenced_at=='0000-00-00 00:00:00'?null:$trainingParticipant->presenced_at),
-                        'created_at' => $trainingParticipant->created_at,
-                        'updated_at' => $trainingParticipant->created_at
+                        'created_at' => $this->validDate($trainingParticipant->created_at),
+                        'updated_at' => $this->validDate($trainingParticipant->created_at)
                     ]);
                 }
                 // Import Training: PIC
@@ -849,12 +849,12 @@ class ImportSystemDataSeeder extends Seeder
                     ['name' => $training->pic_name,
                     'position' => $training->pic_position,
                     'phone_number' => $training->pic_phone_number,
-                    'created_at' => $training->pic_created_at,
-                    'updated_at' => $training->pic_created_at]
+                    'created_at' => $this->validDate($training->pic_created_at),
+                    'updated_at' => $this->validDate($training->pic_created_at)]
                 );
                 $newTraining->pic()->attach($newPic->id, [
-                    'created_at' => $training->pic_created_at,
-                    'updated_at' => $training->pic_created_at
+                    'created_at' => $this->validDate($training->pic_created_at),
+                    'updated_at' => $this->validDate($training->pic_created_at),
                 ]);
                 // Import Training: Statuses
                 $trainingStatuses = DB::connection('mysql_2')
@@ -877,15 +877,15 @@ class ImportSystemDataSeeder extends Seeder
                     }
                     $logData = array_merge($logData, [
                         'description' => $trainingStatus->log,
-                        'created_at' => $trainingStatus->created_at,
-                        'updated_at' => $trainingStatus->created_at
+                        'created_at' => $this->validDate($trainingStatus->created_at),
+                        'updated_at' => $this->validDate($trainingStatus->created_at),
                     ]);
                     $log = \App\ActivityLog::create($logData);
                     $status = \App\Status::where('name', $trainingStatus->status)->first();
                     $newTraining->statuses()->attach($status->id, [
                         'log_id' => $log->id,
-                        'created_at' => $trainingStatus->created_at,
-                        'updated_at' => $trainingStatus->created_at,
+                        'created_at' => $this->validDate($trainingStatus->created_at),
+                        'updated_at' => $this->validDate($trainingStatus->created_at),
                     ]);
                 }
             }
@@ -910,8 +910,8 @@ class ImportSystemDataSeeder extends Seeder
                     'reference_school' => $examReadiness->reference_school, 
                     'execution' => $examReadiness->execution, 
                     'token' => (empty($examReadiness->random_code)?Str::random(10):$examReadiness->random_code), 
-                    'created_at' => $examReadiness->created_at, 
-                    'updated_at' => $examReadiness->created_at
+                    'created_at' => $this->validDate($examReadiness->created_at),
+                    'updated_at' => $this->validDate($examReadiness->created_at),
                 ]);
                 \App\ExamReadiness::setEventDispatcher($dispatcher);
                 // Import Exam Readiness: Students
@@ -934,8 +934,8 @@ class ImportSystemDataSeeder extends Seeder
                     })->select('students.id')->first();
                     if ($selectedStudent) {
                         $newExamReadiness->students()->attach($selectedStudent->id, [
-                            'created_at' => $examReadinessStudent->created_at,
-                            'updated_at' => $examReadinessStudent->created_at
+                            'created_at' => $this->validDate($examReadinessStudent->created_at),
+                            'updated_at' => $this->validDate($examReadinessStudent->created_at),
                         ]);
                     }
                 }
@@ -945,12 +945,12 @@ class ImportSystemDataSeeder extends Seeder
                     ['name' => $examReadiness->pic_name,
                     'position' => $examReadiness->pic_position,
                     'phone_number' => $examReadiness->pic_phone_number,
-                    'created_at' => $examReadiness->pic_created_at,
-                    'updated_at' => $examReadiness->pic_created_at]
+                    'created_at' => $this->validDate($examReadiness->pic_created_at),
+                    'updated_at' => $this->validDate($examReadiness->pic_created_at)]
                 );
                 $newExamReadiness->pic()->attach($newPic->id, [
-                    'created_at' => $examReadiness->pic_created_at,
-                    'updated_at' => $examReadiness->pic_created_at
+                    'created_at' => $this->validDate($examReadiness->pic_created_at),
+                    'updated_at' => $this->validDate($examReadiness->pic_created_at),
                 ]);
                 // Import Exam Readiness: Statuses
                 $examReadinessStatuses = DB::connection('mysql_2')
@@ -973,15 +973,15 @@ class ImportSystemDataSeeder extends Seeder
                     }
                     $logData = array_merge($logData, [
                         'description' => $examReadinessStatus->log,
-                        'created_at' => $examReadinessStatus->created_at,
-                        'updated_at' => $examReadinessStatus->created_at
+                        'created_at' => $this->validDate($examReadinessStatus->created_at),
+                        'updated_at' => $this->validDate($examReadinessStatus->created_at),
                     ]);
                     $log = \App\ActivityLog::create($logData);
                     $status = \App\Status::where('name', $examReadinessStatus->status)->first();
                     $newExamReadiness->statuses()->attach($status->id, [
                         'log_id' => $log->id,
-                        'created_at' => $examReadinessStatus->created_at,
-                        'updated_at' => $examReadinessStatus->created_at,
+                        'created_at' => $this->validDate($examReadinessStatus->created_at),
+                        'updated_at' => $this->validDate($examReadinessStatus->created_at),
                     ]);
                 }
             }
@@ -1001,8 +1001,8 @@ class ImportSystemDataSeeder extends Seeder
                     'destination' => $visitation->school_destination, 
                     'participant' => $visitation->participant, 
                     'submission_letter' => $visitation->submission_letter, 
-                    'created_at' => $visitation->created_at, 
-                    'updated_at' => $visitation->created_at
+                    'created_at' => $this->validDate($visitation->created_at),
+                    'updated_at' => $this->validDate($visitation->created_at),
                 ]);
                 \App\Attendance::setEventDispatcher($dispatcher);
                 // Copy Visitation: Submission Letter
@@ -1042,15 +1042,15 @@ class ImportSystemDataSeeder extends Seeder
                     }
                     $logData = array_merge($logData, [
                         'description' => $visitationStatus->log,
-                        'created_at' => $visitationStatus->created_at,
-                        'updated_at' => $visitationStatus->created_at
+                        'created_at' => $this->validDate($visitationStatus->created_at),
+                        'updated_at' => $this->validDate($visitationStatus->created_at),
                     ]);
                     $log = \App\ActivityLog::create($logData);
                     $status = \App\Status::where('name', $visitationStatus->status)->first();
                     $newVisitation->statuses()->attach($status->id, [
                         'log_id' => $log->id,
-                        'created_at' => $visitationStatus->created_at,
-                        'updated_at' => $visitationStatus->created_at,
+                        'created_at' => $this->validDate($visitationStatus->created_at),
+                        'updated_at' => $this->validDate($visitationStatus->created_at),
                     ]);
                 }
             }
@@ -1074,8 +1074,8 @@ class ImportSystemDataSeeder extends Seeder
                     'arrival_point' => $audience->arrival_point, 
                     'contact_person' => $audience->contact_person, 
                     'contact_person_phone_number' => $audience->contact_person_phone_number, 
-                    'created_at' => $audience->created_at,
-                    'updated_at' => $audience->created_at
+                    'created_at' => $this->validDate($audience->created_at),
+                    'updated_at' => $this->validDate($audience->created_at),
                 ]);
                 \App\Attendance::setEventDispatcher($dispatcher);
                 // Import Audience: Participants
@@ -1092,12 +1092,12 @@ class ImportSystemDataSeeder extends Seeder
                         ['name' => $audienceParticipant->name,
                         'phone_number' => $audienceParticipant->phone_number, 
                         'position' => $audienceParticipant->position,
-                        'created_at' => (checkdate(date('m', strtotime($audienceParticipant->created_at)), date('d', strtotime($audienceParticipant->created_at)), date('Y', strtotime($audienceParticipant->created_at)))?$audienceParticipant->created_at:null),
-                        'updated_at' => (checkdate(date('m', strtotime($audienceParticipant->created_at)), date('d', strtotime($audienceParticipant->created_at)), date('Y', strtotime($audienceParticipant->created_at)))?$audienceParticipant->created_at:null)]
+                        'created_at' => $this->validDate($audienceParticipant->created_at),
+                        'updated_at' => $this->validDate($audienceParticipant->created_at)]
                     );
                     $newAudience->participants()->attach($newTeacher->id, [
-                        'created_at' => $audienceParticipant->created_at,
-                        'updated_at' => $audienceParticipant->created_at
+                        'created_at' => $this->validDate($audienceParticipant->created_at),
+                        'updated_at' => $this->validDate($audienceParticipant->created_at)
                     ]);
                 }
                 if ($audienceParticipants->count() == 0) {
@@ -1107,12 +1107,12 @@ class ImportSystemDataSeeder extends Seeder
                             ['name' => $audience->participant_name_1st,
                             'phone_number' => $audience->participant_phone_number_1st, 
                             'position' => $audience->participant_position_1st,
-                            'created_at' => (checkdate(date('m', strtotime($audience->created_at)), date('d', strtotime($audience->created_at)), date('Y', strtotime($audience->created_at)))?$audience->created_at:null),
-                            'updated_at' => (checkdate(date('m', strtotime($audience->created_at)), date('d', strtotime($audience->created_at)), date('Y', strtotime($audience->created_at)))?$audience->created_at:null)]
+                            'created_at' => $this->validDate($audience->created_at),
+                            'updated_at' => $this->validDate($audience->created_at)]
                         );
                         $newAudience->participants()->attach($newTeacher->id, [
-                            'created_at' => $audience->created_at,
-                            'updated_at' => $audience->created_at
+                            'created_at' => $this->validDate($audience->created_at),
+                            'updated_at' => $this->validDate($audience->created_at)
                         ]);
                     }
                     if ( ! empty($audience->participant_name_2nd)) {
@@ -1121,12 +1121,12 @@ class ImportSystemDataSeeder extends Seeder
                             ['name' => $audience->participant_name_2nd,
                             'phone_number' => $audience->participant_phone_number_2nd, 
                             'position' => $audience->participant_position_2nd,
-                            'created_at' => (checkdate(date('m', strtotime($audience->created_at)), date('d', strtotime($audience->created_at)), date('Y', strtotime($audience->created_at)))?$audience->created_at:null),
-                            'updated_at' => (checkdate(date('m', strtotime($audience->created_at)), date('d', strtotime($audience->created_at)), date('Y', strtotime($audience->created_at)))?$audience->created_at:null)]
+                            'created_at' => $this->validDate($audience->created_at),
+                            'updated_at' => $this->validDate($audience->created_at)]
                         );
                         $newAudience->participants()->attach($newTeacher->id, [
-                            'created_at' => $audience->created_at,
-                            'updated_at' => $audience->created_at
+                            'created_at' => $this->validDate($audience->created_at),
+                            'updated_at' => $this->validDate($audience->created_at)
                         ]);
                     }
                 }
@@ -1151,15 +1151,15 @@ class ImportSystemDataSeeder extends Seeder
                     }
                     $logData = array_merge($logData, [
                         'description' => $audienceStatus->log,
-                        'created_at' => $audienceStatus->created_at,
-                        'updated_at' => $audienceStatus->created_at
+                        'created_at' => $this->validDate($audienceStatus->created_at),
+                        'updated_at' => $this->validDate($audienceStatus->created_at),
                     ]);
                     $log = \App\ActivityLog::create($logData);
                     $status = \App\Status::where('name', $audienceStatus->status)->first();
                     $newAudience->statuses()->attach($status->id, [
                         'log_id' => $log->id,
-                        'created_at' => $audienceStatus->created_at,
-                        'updated_at' => $audienceStatus->created_at,
+                        'created_at' => $this->validDate($audienceStatus->created_at),
+                        'updated_at' => $this->validDate($audienceStatus->created_at),
                     ]);
                 }
             }
@@ -1199,8 +1199,8 @@ class ImportSystemDataSeeder extends Seeder
                     'npwp_on_behalf_of' => $payment->npwp_in_the_name_of, 
                     'npwp_address' => $payment->npwp_address, 
                     'npwp_file' => $payment->npwp_file, 
-                    'created_at' => $payment->created_at, 
-                    'updated_at' => $payment->created_at
+                    'created_at' => $this->validDate($payment->created_at),
+                    'updated_at' => $this->validDate($payment->created_at),
                 ]);
                 \App\Payment::setEventDispatcher($dispatcher);
                 // Copy Payment: Payment Receipt
@@ -1298,18 +1298,29 @@ class ImportSystemDataSeeder extends Seeder
                     }
                     $logData = array_merge($logData, [
                         'description' => $paymentStatus->log,
-                        'created_at' => $paymentStatus->created_at,
-                        'updated_at' => $paymentStatus->created_at
+                        'created_at' => $this->validDate($paymentStatus->created_at),
+                        'updated_at' => $this->validDate($paymentStatus->created_at),
                     ]);
                     $log = \App\ActivityLog::create($logData);
                     $status = \App\Status::where('name', $paymentStatus->status)->first();
                     $newPayment->statuses()->attach($status->id, [
                         'log_id' => $log->id,
-                        'created_at' => $paymentStatus->created_at,
-                        'updated_at' => $paymentStatus->created_at,
+                        'created_at' => $this->validDate($paymentStatus->created_at),
+                        'updated_at' => $this->validDate($paymentStatus->created_at),
                     ]);
                 }
             }
         }
+    }
+
+    /**
+     * Validate the date
+     */
+    public function validDate($datetime)
+    {
+        if (checkdate(date('m', strtotime($datetime)), date('d', strtotime($datetime)), date('Y', strtotime($datetime)))) {
+            return $datetime;
+        }
+        return null;
     }
 }
