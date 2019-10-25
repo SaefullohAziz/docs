@@ -833,7 +833,7 @@ class ImportSystemDataSeeder extends Seeder
                         'phone_number' => (empty($trainingParticipant->phone_number)?'-':$trainingParticipant->phone_number), 
                         'position' => (empty($trainingParticipant->position)?'-':$trainingParticipant->position),
                         'created_at' => (checkdate(date('m', strtotime($trainingParticipant->created_at)), date('d', strtotime($trainingParticipant->created_at)), date('Y', strtotime($trainingParticipant->created_at)))?$trainingParticipant->created_at:null),
-                        'updated_at' => $trainingParticipant->created_at]
+                        'updated_at' => (checkdate(date('m', strtotime($trainingParticipant->created_at)), date('d', strtotime($trainingParticipant->created_at)), date('Y', strtotime($trainingParticipant->created_at)))?$trainingParticipant->created_at:null)]
                     );
                     $newTraining->participants()->attach($newTeacher->id, [
                         'status' => $trainingParticipant->status,
@@ -1092,8 +1092,8 @@ class ImportSystemDataSeeder extends Seeder
                         ['name' => $audienceParticipant->name,
                         'phone_number' => $audienceParticipant->phone_number, 
                         'position' => $audienceParticipant->position,
-                        'created_at' => $audienceParticipant->created_at,
-                        'updated_at' => $audienceParticipant->created_at]
+                        'created_at' => (checkdate(date('m', strtotime($audienceParticipant->created_at)), date('d', strtotime($audienceParticipant->created_at)), date('Y', strtotime($audienceParticipant->created_at)))?$audienceParticipant->created_at:null),
+                        'updated_at' => (checkdate(date('m', strtotime($audienceParticipant->created_at)), date('d', strtotime($audienceParticipant->created_at)), date('Y', strtotime($audienceParticipant->created_at)))?$audienceParticipant->created_at:null)]
                     );
                     $newAudience->participants()->attach($newTeacher->id, [
                         'created_at' => $audienceParticipant->created_at,
@@ -1107,8 +1107,8 @@ class ImportSystemDataSeeder extends Seeder
                             ['name' => $audience->participant_name_1st,
                             'phone_number' => $audience->participant_phone_number_1st, 
                             'position' => $audience->participant_position_1st,
-                            'created_at' => $audience->created_at,
-                            'updated_at' => $audience->created_at]
+                            'created_at' => (checkdate(date('m', strtotime($audience->created_at)), date('d', strtotime($audience->created_at)), date('Y', strtotime($audience->created_at)))?$audience->created_at:null),
+                            'updated_at' => (checkdate(date('m', strtotime($audience->created_at)), date('d', strtotime($audience->created_at)), date('Y', strtotime($audience->created_at)))?$audience->created_at:null)]
                         );
                         $newAudience->participants()->attach($newTeacher->id, [
                             'created_at' => $audience->created_at,
@@ -1121,8 +1121,8 @@ class ImportSystemDataSeeder extends Seeder
                             ['name' => $audience->participant_name_2nd,
                             'phone_number' => $audience->participant_phone_number_2nd, 
                             'position' => $audience->participant_position_2nd,
-                            'created_at' => $audience->created_at,
-                            'updated_at' => $audience->created_at]
+                            'created_at' => (checkdate(date('m', strtotime($audience->created_at)), date('d', strtotime($audience->created_at)), date('Y', strtotime($audience->created_at)))?$audience->created_at:null),
+                            'updated_at' => (checkdate(date('m', strtotime($audience->created_at)), date('d', strtotime($audience->created_at)), date('Y', strtotime($audience->created_at)))?$audience->created_at:null)]
                         );
                         $newAudience->participants()->attach($newTeacher->id, [
                             'created_at' => $audience->created_at,
