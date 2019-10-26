@@ -98,14 +98,14 @@ class TrainingController extends Controller
                 ->editColumn('selection_result', function($data) {
                     $file = $data->selection_result;
                     if (strpos($file, '/') == false) {
-                        $file = date('Y-m-d', strtotime($data->created_at)) . $file;
+                        $file = date('Y-m-d', strtotime($data->created_at)) . '/' . $file;
                     }
                     return '<a href="'.route('download', ['dir' => encrypt('training/selection-result'), 'file' => encrypt($file)]).'" class="btn btn-sm btn-success '.( ! isset($data->selection_result)?'disabled':'').'" title="'.__('Download').'" target="_blank"><i class="fa fa-file"></i>  '.__('Download').'</a>';
                 })
                 ->editColumn('approval_letter_of_commitment_fee', function($data) {
                     $file = $data->approval_letter_of_commitment_fee;
                     if (strpos($file, '/') == false) {
-                        $file = date('Y-m-d', strtotime($data->created_at)) . $file;
+                        $file = date('Y-m-d', strtotime($data->created_at)) . '/' . $file;
                     }
                     return '<a href="'.route('download', ['dir' => encrypt('training/commitment-letter'), 'file' => encrypt($file)]).'" class="btn btn-sm btn-success '.( ! isset($data->approval_letter_of_commitment_fee)?'disabled':'').'" title="'.__('Download').'" target="_blank"><i class="fa fa-file"></i>  '.__('Download').'</a>';
                 })

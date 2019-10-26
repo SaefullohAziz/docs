@@ -90,14 +90,14 @@ class SubsidyController extends Controller
                 ->editColumn('submission_letter', function($data) {
                     $file = $data->submission_letter;
                     if (strpos($file, '/') == false) {
-                        $file = date('Y-m-d', strtotime($data->created_at)) . $file;
+                        $file = date('Y-m-d', strtotime($data->created_at)) . '/' . $file;
                     }
                     return '<a href="'.route('download', ['dir' => encrypt('subsidy/submission-letter'), 'file' => encrypt($file)]).'" class="btn btn-sm btn-success '.( ! isset($data->submission_letter)?'disabled':'').'" title="'.__('Download').'" target="_blank"><i class="fa fa-file"></i>  '.__('Download').'</a>';
                 })
                 ->editColumn('report', function($data) {
                     $file = $data->report;
                     if (strpos($file, '/') == false) {
-                        $file = date('Y-m-d', strtotime($data->created_at)) . $file;
+                        $file = date('Y-m-d', strtotime($data->created_at)) . '/' . $file;
                     }
                     return '<a href="'.route('download', ['dir' => encrypt('subsidy/report'), 'file' => encrypt($file)]).'" class="btn btn-sm btn-success '.( ! isset($data->report)?'disabled':'').'" title="'.__('Download').'" target="_blank"><i class="fa fa-file"></i>  '.__('Download').'</a>';
                 })
