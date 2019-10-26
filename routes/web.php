@@ -382,11 +382,15 @@ Route::get('download/{dir}/{file}', function ($dir, $file) {
 
 Route::get('check', function (\Illuminate\Http\Request $request) {
 	if (env('APP_ENV') == 'local') {
-		$grade = (date('y')-substr('2013/2014', -2));
-		if ($grade > 4) {
-			$grade = 'Alumni';
+		$datetime = '1800-01-01';
+		if ( ! empty($datetime)) {
+			if (checkdate(date('m', strtotime($datetime)), date('d', strtotime($datetime)), date('Y', strtotime($datetime)))) {
+				if (date('Y-m-d h:m:s', strtotime($datetime)) > date('Y-m-d h:m:s', 0)) {
+                    return date('Y-m-d h:m:s', strtotime($datetime));
+				}
+			}
 		}
-		return $grade;
+        return null;
 	}
 });
 

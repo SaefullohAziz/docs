@@ -1318,9 +1318,13 @@ class ImportSystemDataSeeder extends Seeder
      */
     public function validDate($datetime)
     {
-        if (checkdate(date('m', strtotime($datetime)), date('d', strtotime($datetime)), date('Y', strtotime($datetime)))) {
-            return $datetime;
-        }
+		if ( ! empty($datetime)) {
+			if (checkdate(date('m', strtotime($datetime)), date('d', strtotime($datetime)), date('Y', strtotime($datetime)))) {
+				if (date('Y-m-d h:m:s', strtotime($datetime)) > date('Y-m-d h:m:s', 0)) {
+                    return $datetime;
+				}
+			}
+		}
         return null;
     }
 }
