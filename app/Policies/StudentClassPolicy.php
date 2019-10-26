@@ -65,7 +65,7 @@ class StudentClassPolicy
      */
     public function createStudent(User $user, StudentClass $studentClass)
     {
-        return $studentClass->school_year == schoolYear()?empty($studentClass->closed_at):null;
+        return $studentClass->school_year == schoolYear() && empty($studentClass->closed_at);
     }
 
     /**
@@ -76,7 +76,7 @@ class StudentClassPolicy
      */
     public function adminCreateStudent(Staff $staff, StudentClass $studentClass)
     {
-        return $studentClass->school_year == schoolYear()?empty($studentClass->closed_at):null;
+        return $studentClass->school_year == schoolYear() && empty($studentClass->closed_at);
     }
 
     /**

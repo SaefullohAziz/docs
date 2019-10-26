@@ -53,7 +53,7 @@ class StudentPolicy
      */
     public function create(User $user, Student $student)
     {
-
+        
     }
 
     /**
