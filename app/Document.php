@@ -46,7 +46,7 @@ class Document extends Model
      */
     public function statuses()
     {
-        return $this->belongsToMany('App\Status', 'document_statuses')->using('App\DocumentStatus');
+        return $this->belongsToMany('App\Status', 'document_statuses')->using('App\DocumentStatus')->withTimestamps();
     }
 
     /**
@@ -62,6 +62,6 @@ class Document extends Model
      */
     public function pic()
     {
-        return $this->belongsToMany('App\Pic', 'document_pics')->using('App\DocumentPic');
+        return $this->belongsToMany('App\Pic', 'document_pics')->using('App\DocumentPic')->withTimestamps();
     }
 }

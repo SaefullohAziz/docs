@@ -42,7 +42,7 @@ class ExamReadiness extends Model
      */
     public function students()
     {
-        return $this->belongsToMany('App\Student', 'exam_readiness_students')->using('App\ExamReadinessStudent');
+        return $this->belongsToMany('App\Student', 'exam_readiness_students')->using('App\ExamReadinessStudent')->withTimestamps();
     }
 
     /**
@@ -66,7 +66,7 @@ class ExamReadiness extends Model
      */
     public function statuses()
     {
-        return $this->belongsToMany('App\Status', 'exam_readiness_statuses')->using('App\ExamReadinessStatus');
+        return $this->belongsToMany('App\Status', 'exam_readiness_statuses')->using('App\ExamReadinessStatus')->withTimestamps();
     }
 
     /**
@@ -82,7 +82,7 @@ class ExamReadiness extends Model
      */
     public function pic()
     {
-        return $this->belongsToMany('App\Pic', 'exam_readiness_pics')->using('App\ExamReadinessPic');
+        return $this->belongsToMany('App\Pic', 'exam_readiness_pics')->using('App\ExamReadinessPic')->withTimestamps();
     }
 
     /**

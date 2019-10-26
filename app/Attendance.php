@@ -48,7 +48,7 @@ class Attendance extends Model
      */
     public function statuses()
     {
-        return $this->belongsToMany('App\Status', 'attendance_statuses')->using('App\AttendanceStatus');
+        return $this->belongsToMany('App\Status', 'attendance_statuses')->using('App\AttendanceStatus')->withTimestamps();
     }
 
     /**
@@ -64,7 +64,7 @@ class Attendance extends Model
      */
     public function participants()
     {
-        return $this->belongsToMany('App\Teacher', 'audience_participants', 'attendance_id', 'teacher_id')->using('App\AudienceParticipant');
+        return $this->belongsToMany('App\Teacher', 'audience_participants', 'attendance_id', 'teacher_id')->using('App\AudienceParticipant')->withTimestamps();
     }
 
     /**

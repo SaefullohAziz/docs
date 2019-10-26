@@ -48,7 +48,7 @@ class Activity extends Model
      */
     public function statuses()
     {
-        return $this->belongsToMany('App\Status', 'activity_statuses')->using('App\ActivityStatus');
+        return $this->belongsToMany('App\Status', 'activity_statuses')->using('App\ActivityStatus')->withTimestamps();
     }
 
     /**
@@ -64,7 +64,7 @@ class Activity extends Model
      */
     public function pic()
     {
-        return $this->belongsToMany('App\Pic', 'activity_pics')->using('App\ActivityPic');
+        return $this->belongsToMany('App\Pic', 'activity_pics')->using('App\ActivityPic')->withTimestamps();
     }
 
     /**

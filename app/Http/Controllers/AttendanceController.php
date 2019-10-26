@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Auth;
 use App\Attendance;
 use App\School;
 use App\Status;
@@ -30,6 +29,8 @@ class AttendanceController extends Controller
     public function __construct()
     {
         parent::__construct();
+        $this->middleware('auth');
+        $this->middleware('level:Dalam proses');
         $this->table = 'attendances';
         $this->types = [
             'Audiensi' => 'Audiensi',
@@ -105,9 +106,17 @@ class AttendanceController extends Controller
      */
     public function create()
     {
-
-        if ( ! Auth::User()->school()->has('teacher')->first() ) {
+        if (auth()->user()->cant('create', Attendance::class)) {
+            return redirect()->route('attendance.index')->with('alert-danger', __($this->unauthorizedMessage));
+        }
+        if ( ! auth()->user()->school()->has('teachers')->first()) {
             return redirect(route('teacher.create'))->with('alert-danger', __('Please register at least 1 teacher first.'));
+        }
+        $types = $this->types;
+        if (auth()->user()->status->order_by == '2a') {
+            $types = ['Visitasi' => 'Visitasi'];
+        } elseif (auth()->user()->status->order_by == '3a') {
+            $types = ['Audiensi' => 'Audiensi'];
         }
         $view = [
             'title' => __('Create Attendance Confirmation'),
@@ -115,12 +124,12 @@ class AttendanceController extends Controller
                 route('attendance.index') => __('Attendance Confirmation'),
                 null => __('Create')
             ],
-            'types' => $this->types,
+            'types' => $types,
             'participants' => $this->participants,
             'participantPositions' => $this->participantPositions,
             'transportations' => $this->transportations,
             'arrivalPoints' => $this->arrivalPoints,
-            'destinations' => School::has('visitationDestination')->orderBy('name', 'asc')->pluck('name', 'name')->toArray(),
+            'destinations' => School::has('visitationDestinations')->orderBy('name', 'asc')->pluck('name', 'name')->toArray(),
         ];
         return view('attendance.create', $view);
     }
@@ -134,7 +143,7 @@ class AttendanceController extends Controller
     public function store(Request $request)
     {
         $request->merge([
-            'school_id' => Auth::user()->school_id,
+            'school_id' => auth()->user()->school_id,
             'participant' => ! empty($request->participant)?implode(', ', $request->participant):null,
             'date' => ($request->type='Audiensi'?date('Y-m-d', strtotime($request->date)):null),
             'until_date' => ($request->type=='Audiensi'?date('Y-m-d', strtotime($request->until_date)):null),
@@ -175,7 +184,7 @@ class AttendanceController extends Controller
             'participantPositions' => $this->participantPositions,
             'transportations' => $this->transportations,
             'arrivalPoints' => $this->arrivalPoints,
-            'destinations' => School::has('visitationDestination')->orderBy('name', 'asc')->pluck('name', 'name')->toArray(),
+            'destinations' => School::has('visitationDestinations')->orderBy('name', 'asc')->pluck('name', 'name')->toArray(),
             'contactPersons' => Teacher::whereHas('audience', function ($query) use ($attendance) {
                 $query->where('attendances.id', $attendance->id);
             })->orderBy('name', 'asc')->pluck('name', 'id')->toArray(),
@@ -207,7 +216,7 @@ class AttendanceController extends Controller
             'participantPositions' => $this->participantPositions,
             'transportations' => $this->transportations,
             'arrivalPoints' => $this->arrivalPoints,
-            'destinations' => School::has('visitationDestination')->orderBy('name', 'asc')->pluck('name', 'name')->toArray(),
+            'destinations' => School::has('visitationDestinations')->orderBy('name', 'asc')->pluck('name', 'name')->toArray(),
             'contactPersons' => Teacher::whereHas('audience', function ($query) use ($attendance) {
                 $query->where('attendances.id', $attendance->id);
             })->orderBy('name', 'asc')->pluck('name', 'id')->toArray(),

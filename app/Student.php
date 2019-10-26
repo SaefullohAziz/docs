@@ -56,7 +56,7 @@ class Student extends Model
      */
     public function subsidy()
     {
-        return $this->belongsToMany('App\Subsidy', 'ssp_students')->using('App\SspStudent');
+        return $this->belongsToMany('App\Subsidy', 'ssp_students')->using('App\SspStudent')->withTimestamps();
     }
 
     /**
@@ -72,7 +72,7 @@ class Student extends Model
      */
     public function examReadiness()
     {
-        return $this->belongsToMany('App\ExamReadiness', 'exam_readiness_students')->using('App\examReadinessStudent');
+        return $this->belongsToMany('App\ExamReadiness', 'exam_readiness_students')->using('App\examReadinessStudent')->withTimestamps();
     }
 
     /**

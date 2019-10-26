@@ -27,6 +27,7 @@ class ExamReadinessController extends Controller
     {
         parent::__construct();
         $this->middleware('auth');
+        $this->middleware('level:C,B,A');
         $this->table = 'exam_readinesses';
     }
 

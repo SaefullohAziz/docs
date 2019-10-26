@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Auth;
 use App\Training;
 use App\School;
 use App\Status;
@@ -32,6 +31,7 @@ class TrainingController extends Controller
     {
         parent::__construct();
         $this->middleware('auth');
+        $this->middleware('level:C,B,A');
         $this->table = 'trainings';
         $this->types = [
             'Basic (ToT)' => 'Basic (ToT)', 
@@ -127,7 +127,7 @@ class TrainingController extends Controller
      */
     public function create()
     {
-        if ( ! Auth::user()->school()->has('teacher')->first() ) {
+        if ( ! auth()->user()->school()->has('teacher')->first() ) {
             return redirect(route('teacher.create'))->with('alert-danger', __('Please register at least 1 first.'));
         }
         $view = [

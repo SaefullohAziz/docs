@@ -55,7 +55,7 @@ class Payment extends Model
      */
     public function statuses()
     {
-        return $this->belongsToMany('App\Status', 'payment_statuses')->using('App\PaymentStatus');
+        return $this->belongsToMany('App\Status', 'payment_statuses')->using('App\PaymentStatus')->withTimestamps();
     }
 
     /**
@@ -71,7 +71,7 @@ class Payment extends Model
      */
     public function subsidy()
     {
-        return $this->belongsToMany('App\Subsidy', 'subsidy_payments')->using('App\SubsidyPayment');
+        return $this->belongsToMany('App\Subsidy', 'subsidy_payments')->using('App\SubsidyPayment')->withTimestamps();
     }
 
     /**
@@ -87,7 +87,7 @@ class Payment extends Model
      */
     public function training()
     {
-        return $this->belongsToMany('App\Training', 'training_payments')->using('App\TrainingPayment');
+        return $this->belongsToMany('App\Training', 'training_payments')->using('App\TrainingPayment')->withTimestamps();
     }
 
     /**

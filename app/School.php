@@ -63,7 +63,7 @@ class School extends Model
      */
     public function statuses()
     {
-        return $this->belongsToMany('App\SchoolStatus', 'school_status_updates')->using('App\SchoolStatusUpdate');
+        return $this->belongsToMany('App\SchoolStatus', 'school_status_updates')->using('App\SchoolStatusUpdate')->withTimestamps();
     }
 
     /**
@@ -79,7 +79,7 @@ class School extends Model
      */
     public function pic()
     {
-        return $this->belongsToMany('App\Pic', 'school_pics')->using('App\SchoolPic');
+        return $this->belongsToMany('App\Pic', 'school_pics')->using('App\SchoolPic')->withTimestamps();
     }
 
     /**

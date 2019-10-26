@@ -98,4 +98,43 @@ class User extends Authenticatable implements HasMedia
         }
         return '/img/avatar/default.png';
     }
+
+    /**
+     * Get the user's school status.
+     *
+     * @param  string  $value
+     * @return string
+     */
+    public function getStatusAttribute()
+    {
+        return $this->school->statusUpdate->status;
+    }
+
+    /**
+     * Determine user's school level
+     */
+    public function hasLevel($levels)
+    {
+        if ( ! is_array($levels)) {
+            $levels = [$levels];
+        }
+        if (in_array($this->school->statusUpdate->status->level->name, $levels)) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Determine user's school status
+     */
+    public function hasStatus($statuses)
+    {
+        if ( ! is_array($statuses)) {
+            $statuses = [$statuses];
+        }
+        if (in_array($this->school->statusUpdate->status->order_by, $statuses)) {
+            return true;
+        }
+        return false;
+    }
 }

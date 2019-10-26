@@ -382,15 +382,10 @@ Route::get('download/{dir}/{file}', function ($dir, $file) {
 
 Route::get('check', function (\Illuminate\Http\Request $request) {
 	if (env('APP_ENV') == 'local') {
-		$datetime = '1800-01-01';
-		if ( ! empty($datetime)) {
-			if (checkdate(date('m', strtotime($datetime)), date('d', strtotime($datetime)), date('Y', strtotime($datetime)))) {
-				if (date('Y-m-d h:m:s', strtotime($datetime)) > date('Y-m-d h:m:s', 0)) {
-                    return date('Y-m-d h:m:s', strtotime($datetime));
-				}
-			}
-		}
-        return null;
+		$data = \App\School::with(['statusUpdates' =>  function ($query) {
+			$query->orderBy('created_at', 'desc');
+		}, 'statusUpdates.status.level', 'user'])->where('id', '79ba62c9-1278-45bb-9532-b6b2629f388b')->first()->toArray();
+		dd($data);
 	}
 });
 

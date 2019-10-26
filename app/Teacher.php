@@ -39,7 +39,7 @@ class Teacher extends Model
      */
     public function training()
     {
-        return $this->belongsToMany('App\Training', 'training_participants', 'teacher_id')->using('TrainingParticipant');
+        return $this->belongsToMany('App\Training', 'training_participants', 'teacher_id')->using('TrainingParticipant')->withTimestamps();
     }
 
     /**
@@ -55,7 +55,7 @@ class Teacher extends Model
      */
     public function audience()
     {
-        return $this->belongsToMany('App\Attendance', 'audience_participants', 'teacher_id', 'attendance_id')->using('AudienceParticipant');
+        return $this->belongsToMany('App\Attendance', 'audience_participants', 'teacher_id', 'attendance_id')->using('AudienceParticipant')->withTimestamps();
     }
 
     /**

@@ -26,42 +26,56 @@
           <i class="fa fa-user-check"></i> <span>{{ __('Teacher') }}</span>
         </a>
       </li>
+      @if (auth()->user()->hasLevel('C', 'B', 'A'))
       <!-- Student -->
       <li class="{{ (request()->is('student')||request()->is('student/*')?'active':'') }}">
         <a class="nav-link" href="{{ route('class.index') }}">
           <i class="fa fa-user-tie"></i> <span>{{ __('Student') }}</span>
         </a>
       </li>
+      @endif
+      @if (auth()->user()->hasLevel('C', 'B', 'A'))
       <!-- Activity -->
       <li class="{{ (request()->is('activity')||request()->is('activity/*')?'active':'') }}">
         <a class="nav-link" href="{{ route('activity.index') }}">
           <i class="fas fa-city"></i> <span>{{ __('Activity Submission') }}</span>
         </a>
       </li>
+      @endif
+      @if (auth()->user()->hasLevel('C', 'B', 'A'))
       <!-- Subsidy -->
       <li class="{{ (request()->is('subsidy')||request()->is('subsidy/*')?'active':'') }}">
         <a class="nav-link" href="{{ route('subsidy.index') }}">
           <i class="fa fa-briefcase"></i> <span>{{ __('Submission of Assistance') }}</span>
         </a>
       </li>
+      @endif
+      @if (auth()->user()->hasLevel('C', 'B', 'A'))
       <!-- Training -->
       <li class="{{ (request()->is('training')||request()->is('training/*')?'active':'') }}">
         <a class="nav-link" href="{{ route('training.index') }}">
           <i class="fas fa-business-time"></i> <span>{{ __('Training') }}</span>
         </a>
       </li>
+      @endif
+      @if (auth()->user()->hasLevel('C', 'B', 'A'))
       <!-- Exam Readiness -->
       <li class="{{ (request()->is('exam/readiness')||request()->is('exam/readiness/*')?'active':'') }}">
         <a class="nav-link" href="{{ route('exam.readiness.index') }}">
           <i class="far fa-list-alt"></i> <span>{{ __('Exam Readiness') }}</span>
         </a>
       </li>
+      @endif
       <!-- Confirmation -->
       <li class="dropdown {{ (request()->is('payment')||request()->is('payment/*')||request()->is('attendance')||request()->is('attendance/*')?'active':'') }}">
         <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-receipt"></i> <span>{{ __('Confirmation') }}</span></a>
         <ul class="dropdown-menu">
+          @if (auth()->user()->hasLevel('Dalam proses'))
           <li class="{{ (request()->is('attendance')||request()->is('attendance/*')?'active':'') }}"><a class="nav-link" href="{{ route('attendance.index') }}">{{ __('Attendance') }}</a></li>
+          @endif
+          @if (auth()->user()->hasLevel('C', 'B', 'A'))
           <li class="{{ (request()->is('payment')||request()->is('payment/*')?'active':'') }}"><a class="nav-link" href="{{ route('payment.index') }}">{{ __('Payment') }}</a></li>
+          @endif
         </ul>
       </li>
       <!-- Certification -->

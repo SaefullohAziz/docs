@@ -29,7 +29,7 @@ class Pic extends Model
      */
     public function school()
     {
-        return $this->belongsToMany('App\School', 'school_pics')->using('App\SchoolPic');
+        return $this->belongsToMany('App\School', 'school_pics')->using('App\SchoolPic')->withTimestamps();
     }
 
     /**
@@ -45,7 +45,7 @@ class Pic extends Model
      */
     public function document()
     {
-        return $this->belongsToMany('App\Document', 'document_pics')->using('App\DocumentPic');
+        return $this->belongsToMany('App\Document', 'document_pics')->using('App\DocumentPic')->withTimestamps();
     }
 
     /**
@@ -61,7 +61,7 @@ class Pic extends Model
      */
     public function activity()
     {
-        return $this->belongsToMany('App\Activity', 'activity_pics')->using('App\ActivityPic');
+        return $this->belongsToMany('App\Activity', 'activity_pics')->using('App\ActivityPic')->withTimestamps();
     }
 
     /**
@@ -77,7 +77,7 @@ class Pic extends Model
      */
     public function subsidy()
     {
-        return $this->belongsToMany('App\Subsidy', 'subsidy_pics')->using('App\SubsidyPic');
+        return $this->belongsToMany('App\Subsidy', 'subsidy_pics')->using('App\SubsidyPic')->withTimestamps();
     }
 
     /**
@@ -93,7 +93,7 @@ class Pic extends Model
      */
     public function training()
     {
-        return $this->belongsToMany('App\Training', 'training_pics')->using('App\TrainingPic');
+        return $this->belongsToMany('App\Training', 'training_pics')->using('App\TrainingPic')->withTimestamps();
     }
 
     /**
@@ -109,7 +109,7 @@ class Pic extends Model
      */
     public function examReadiness()
     {
-        return $this->belongsToMany('App\ExamReadiness', 'exam_readiness_pics')->using('App\ExamReadinessPic');
+        return $this->belongsToMany('App\ExamReadiness', 'exam_readiness_pics')->using('App\ExamReadinessPic')->withTimestamps();
     }
 
     /**

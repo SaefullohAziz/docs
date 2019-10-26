@@ -39,13 +39,13 @@ class Subsidy extends Model
      */
     public function students()
     {
-        return $this->belongsToMany('App\Student', 'ssp_students')->using('App\SspStudent');
+        return $this->belongsToMany('App\Student', 'ssp_students')->using('App\SspStudent')->withTimestamps();
     }
 
     /**
      * Get the subsidy status for the subsidy.
      */
-    public function subsidyStatus()
+    public function subsidyStatuses()
     {
         return $this->hasMany('App\SubsidyStatus');
     }
@@ -53,7 +53,7 @@ class Subsidy extends Model
     /**
      * Get the latest subsidy status for the subsidy.
      */
-    public function latestSubsidyStatus()
+    public function subsidyStatus()
     {
         return $this->hasOne('App\SubsidyStatus')->orderBy('created_at', 'desc')->limit(1);
     }
@@ -63,7 +63,7 @@ class Subsidy extends Model
      */
     public function statuses()
     {
-        return $this->belongsToMany('App\Status', 'subsidy_statuses')->using('App\SubsidyStatus');
+        return $this->belongsToMany('App\Status', 'subsidy_statuses')->using('App\SubsidyStatus')->withTimestamps();
     }
 
     /**
@@ -79,7 +79,7 @@ class Subsidy extends Model
      */
     public function pic()
     {
-        return $this->belongsToMany('App\Pic', 'subsidy_pics')->using('App\SubsidyPic');
+        return $this->belongsToMany('App\Pic', 'subsidy_pics')->using('App\SubsidyPic')->withTimestamps();
     }
 
     /**
@@ -95,7 +95,7 @@ class Subsidy extends Model
      */
     public function payment()
     {
-        return $this->belongsToMany('App\Payment', 'subsidy_payments')->using('App\SubsidyPayment');
+        return $this->belongsToMany('App\Payment', 'subsidy_payments')->using('App\SubsidyPayment')->withTimestamps();
     }
 
     /**

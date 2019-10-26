@@ -29,7 +29,7 @@ class Status extends Model
      */
     public function document()
     {
-        return $this->belongsToMany('App\Document', 'document_statuses')->using('App\DocumentStatus');
+        return $this->belongsToMany('App\Document', 'document_statuses')->using('App\DocumentStatus')->withTimestamps();
     }
 
     /**
@@ -45,7 +45,7 @@ class Status extends Model
      */
     public function activity()
     {
-        return $this->belongsToMany('App\Activity', 'activity_statuses')->using('App\ActivityStatus');
+        return $this->belongsToMany('App\Activity', 'activity_statuses')->using('App\ActivityStatus')->withTimestamps();
     }
 
     /**
@@ -61,7 +61,7 @@ class Status extends Model
      */
     public function subsidy()
     {
-        return $this->belongsToMany('App\Subsidy', 'subsidy_statuses')->using('App\SubsidyStatus');
+        return $this->belongsToMany('App\Subsidy', 'subsidy_statuses')->using('App\SubsidyStatus')->withTimestamps();
     }
 
     /**
@@ -77,7 +77,7 @@ class Status extends Model
      */
     public function training()
     {
-        return $this->belongsToMany('App\Training', 'training_statuses')->using('App\TrainingStatus');
+        return $this->belongsToMany('App\Training', 'training_statuses')->using('App\TrainingStatus')->withTimestamps();
     }
 
     /**
@@ -93,7 +93,7 @@ class Status extends Model
      */
     public function examReadiness()
     {
-        return $this->belongsToMany('App\ExamReadiness', 'exam_readiness_statuses')->using('App\ExamReadinessStatus');
+        return $this->belongsToMany('App\ExamReadiness', 'exam_readiness_statuses')->using('App\ExamReadinessStatus')->withTimestamps();
     }
 
     /**
@@ -109,7 +109,7 @@ class Status extends Model
      */
     public function attendance()
     {
-        return $this->belongsToMany('App\Attendance', 'attendance_statuses')->using('App\AttendanceStatus');
+        return $this->belongsToMany('App\Attendance', 'attendance_statuses')->using('App\AttendanceStatus')->withTimestamps();
     }
 
     /**
@@ -125,7 +125,7 @@ class Status extends Model
      */
     public function payment()
     {
-        return $this->belongsToMany('App\Payment', 'payment_statuses')->using('App\PaymentStatus');
+        return $this->belongsToMany('App\Payment', 'payment_statuses')->using('App\PaymentStatus')->withTimestamps();
     }
 
     /**

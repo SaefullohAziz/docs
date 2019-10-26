@@ -39,7 +39,7 @@ class Training extends Model
      */
     public function participants()
     {
-        return $this->belongsToMany('App\Teacher', 'training_participants', 'training_id', 'teacher_id')->using('App\TrainingParticipant');
+        return $this->belongsToMany('App\Teacher', 'training_participants', 'training_id', 'teacher_id')->using('App\TrainingParticipant')->withTimestamps();
     }
 
     /**
@@ -63,7 +63,7 @@ class Training extends Model
      */
     public function statuses()
     {
-        return $this->belongsToMany('App\Status', 'training_statuses')->using('App\TrainingStatus');
+        return $this->belongsToMany('App\Status', 'training_statuses')->using('App\TrainingStatus')->withTimestamps();
     }
 
     /**
@@ -79,7 +79,7 @@ class Training extends Model
      */
     public function pic()
     {
-        return $this->belongsToMany('App\Pic', 'training_pics')->using('App\TrainingPic');
+        return $this->belongsToMany('App\Pic', 'training_pics')->using('App\TrainingPic')->withTimestamps();
     }
 
     /**
@@ -95,7 +95,7 @@ class Training extends Model
      */
     public function payment()
     {
-        return $this->belongsToMany('App\Payment', 'training_payments')->using('App\TrainingPayment');
+        return $this->belongsToMany('App\Payment', 'training_payments')->using('App\TrainingPayment')->withTimestamps();
     }
 
     /**

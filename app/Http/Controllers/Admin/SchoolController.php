@@ -59,7 +59,7 @@ class SchoolController extends Controller
                 null => __('Data')
             ],
             'provinces' => Province::pluck('name', 'name')->toArray(),
-            'levels' => SchoolLevel::pluck('name', 'id')->toArray(),
+            'levels' => SchoolLevel::orderBy('created_at', 'asc')->pluck('name', 'id')->toArray(),
         ];
         return view('admin.school.index', $view);
     }

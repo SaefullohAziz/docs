@@ -25,6 +25,9 @@ class ImportSystemDataSeeder extends Seeder
                 'password' => Hash::make('!Indonesia45!')],
             );
         }
+        if ( ! file_exists(storage_path('app/public/school/'))) {
+            mkdir(storage_path('app/public/school/'));
+        }
 
         // Import Schools
         $schools = DB::connection('mysql_2')
@@ -90,7 +93,8 @@ class ImportSystemDataSeeder extends Seeder
                 'created_at' => $this->validDate($school->pic_created_at),
                 'updated_at' => $this->validDate($school->pic_created_at)
             ]);
-            $newSchool->pic()->attach($newPic->id, [
+            $newSchool->schoolPic()->create([
+                'pic_id' => $newPic->id,
                 'created_at' => $this->validDate($school->school_pic_created_at),
                 'updated_at' => $this->validDate($school->school_pic_created_at),
             ]);
@@ -104,7 +108,8 @@ class ImportSystemDataSeeder extends Seeder
             ->get();
             foreach ($schoolStatuses as $schoolStatus) {
                 $newStatus = \App\SchoolStatus::where('order_by', $schoolStatus->order_by)->first();
-                $newSchool->statuses()->attach($newStatus->id, [
+                $newSchool->statusUpdates()->create([
+                    'school_status_id' => $newStatus->id,
                     'participant' => $schoolStatus->participant, 
                     'total' => $schoolStatus->total, 
                     'date' => $schoolStatus->date, 
@@ -209,7 +214,8 @@ class ImportSystemDataSeeder extends Seeder
                     ]);
                     $log = \App\ActivityLog::create($logData);
                     $status = \App\Status::where('name', $documentStatus->status)->first();
-                    $newDocument->statuses()->attach($status->id, [
+                    $newDocument->documentStatuses()->create([
+                        'status_id' => $status->id,
                         'log_id' => $log->id,
                         'created_at' => $this->validDate($documentStatus->created_at),
                         'updated_at' => $this->validDate($documentStatus->created_at),
@@ -437,7 +443,8 @@ class ImportSystemDataSeeder extends Seeder
                     'created_at' => $this->validDate($activity->pic_created_at),
                     'updated_at' => $this->validDate($activity->pic_created_at)]
                 );
-                $newActivity->pic()->attach($newPic->id, [
+                $newActivity->activityPic()->create([
+                    'pic_id' => $newPic->id,
                     'created_at' => $this->validDate($activity->pic_created_at),
                     'updated_at' => $this->validDate($activity->pic_created_at),
                 ]);
@@ -467,7 +474,8 @@ class ImportSystemDataSeeder extends Seeder
                     ]);
                     $log = \App\ActivityLog::create($logData);
                     $status = \App\Status::where('name', $activityStatus->status)->first();
-                    $newActivity->statuses()->attach($status->id, [
+                    $newActivity->activityStatuses()->create([
+                        'status_id' => $status->id,
                         'log_id' => $log->id,
                         'created_at' => $this->validDate($activityStatus->created_at),
                         'updated_at' => $this->validDate($activityStatus->created_at),
@@ -543,7 +551,8 @@ class ImportSystemDataSeeder extends Seeder
                     'created_at' => $this->validDate($industryVisit->pic_created_at),
                     'updated_at' => $this->validDate($industryVisit->pic_created_at)]
                 );
-                $newIndustryVisit->pic()->attach($newPic->id, [
+                $newIndustryVisit->activityPic()->create([
+                    'pic_id' => $newPic->id,
                     'created_at' => $this->validDate($industryVisit->pic_created_at),
                     'updated_at' => $this->validDate($industryVisit->pic_created_at),
                 ]);
@@ -573,7 +582,8 @@ class ImportSystemDataSeeder extends Seeder
                     ]);
                     $log = \App\ActivityLog::create($logData);
                     $status = \App\Status::where('name', $industryVisitStatus->status)->first();
-                    $newIndustryVisit->statuses()->attach($status->id, [
+                    $newIndustryVisit->activityStatuses()->create([
+                        'status_id' => $status->id,
                         'log_id' => $log->id,
                         'created_at' => $this->validDate($industryVisitStatus->created_at),
                         'updated_at' => $this->validDate($industryVisitStatus->created_at),
@@ -692,7 +702,8 @@ class ImportSystemDataSeeder extends Seeder
                     'created_at' => $this->validDate($subsidy->pic_created_at),
                     'updated_at' => $this->validDate($subsidy->pic_created_at)]
                 );
-                $newSubsidy->pic()->attach($newPic->id, [
+                $newSubsidy->subsidyPic()->create([
+                    'pic_id' => $newPic->id,
                     'created_at' => $this->validDate($subsidy->pic_created_at),
                     'updated_at' => $this->validDate($subsidy->pic_created_at),
                 ]);
@@ -722,7 +733,8 @@ class ImportSystemDataSeeder extends Seeder
                     ]);
                     $log = \App\ActivityLog::create($logData);
                     $status = \App\Status::where('name', $subsidyStatus->status)->first();
-                    $newSubsidy->statuses()->attach($status->id, [
+                    $newSubsidy->subsidyStatuses()->create([
+                        'status_id' => $status->id,
                         'log_id' => $log->id,
                         'created_at' => $this->validDate($subsidyStatus->created_at),
                         'updated_at' => $this->validDate($subsidyStatus->created_at),
@@ -852,7 +864,8 @@ class ImportSystemDataSeeder extends Seeder
                     'created_at' => $this->validDate($training->pic_created_at),
                     'updated_at' => $this->validDate($training->pic_created_at)]
                 );
-                $newTraining->pic()->attach($newPic->id, [
+                $newTraining->trainingPic()->create([
+                    'pic_id' => $newPic->id,
                     'created_at' => $this->validDate($training->pic_created_at),
                     'updated_at' => $this->validDate($training->pic_created_at),
                 ]);
@@ -882,7 +895,8 @@ class ImportSystemDataSeeder extends Seeder
                     ]);
                     $log = \App\ActivityLog::create($logData);
                     $status = \App\Status::where('name', $trainingStatus->status)->first();
-                    $newTraining->statuses()->attach($status->id, [
+                    $newTraining->trainingStatuses()->create([
+                        'status_id' => $status->id,
                         'log_id' => $log->id,
                         'created_at' => $this->validDate($trainingStatus->created_at),
                         'updated_at' => $this->validDate($trainingStatus->created_at),
@@ -948,7 +962,8 @@ class ImportSystemDataSeeder extends Seeder
                     'created_at' => $this->validDate($examReadiness->pic_created_at),
                     'updated_at' => $this->validDate($examReadiness->pic_created_at)]
                 );
-                $newExamReadiness->pic()->attach($newPic->id, [
+                $newExamReadiness->examReadinessPic()->create([
+                    'pic_id' => $newPic->id,
                     'created_at' => $this->validDate($examReadiness->pic_created_at),
                     'updated_at' => $this->validDate($examReadiness->pic_created_at),
                 ]);
@@ -978,7 +993,8 @@ class ImportSystemDataSeeder extends Seeder
                     ]);
                     $log = \App\ActivityLog::create($logData);
                     $status = \App\Status::where('name', $examReadinessStatus->status)->first();
-                    $newExamReadiness->statuses()->attach($status->id, [
+                    $newExamReadiness->examReadinessStatuses()->create([
+                        'status_id' => $status->id,
                         'log_id' => $log->id,
                         'created_at' => $this->validDate($examReadinessStatus->created_at),
                         'updated_at' => $this->validDate($examReadinessStatus->created_at),
@@ -1047,7 +1063,8 @@ class ImportSystemDataSeeder extends Seeder
                     ]);
                     $log = \App\ActivityLog::create($logData);
                     $status = \App\Status::where('name', $visitationStatus->status)->first();
-                    $newVisitation->statuses()->attach($status->id, [
+                    $newVisitation->attendanceStatuses()->create([
+                        'status_id' => $status->id,
                         'log_id' => $log->id,
                         'created_at' => $this->validDate($visitationStatus->created_at),
                         'updated_at' => $this->validDate($visitationStatus->created_at),
@@ -1156,7 +1173,8 @@ class ImportSystemDataSeeder extends Seeder
                     ]);
                     $log = \App\ActivityLog::create($logData);
                     $status = \App\Status::where('name', $audienceStatus->status)->first();
-                    $newAudience->statuses()->attach($status->id, [
+                    $newAudience->attendanceStatuses()->create([
+                        'status_id' => $status->id,
                         'log_id' => $log->id,
                         'created_at' => $this->validDate($audienceStatus->created_at),
                         'updated_at' => $this->validDate($audienceStatus->created_at),
@@ -1303,7 +1321,8 @@ class ImportSystemDataSeeder extends Seeder
                     ]);
                     $log = \App\ActivityLog::create($logData);
                     $status = \App\Status::where('name', $paymentStatus->status)->first();
-                    $newPayment->statuses()->attach($status->id, [
+                    $newPayment->paymentStatuses()->create([
+                        'status_id' => $status->id,
                         'log_id' => $log->id,
                         'created_at' => $this->validDate($paymentStatus->created_at),
                         'updated_at' => $this->validDate($paymentStatus->created_at),
