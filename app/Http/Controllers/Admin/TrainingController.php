@@ -103,10 +103,18 @@ class TrainingController extends Controller
                     return (date('d-m-Y h:m:s', strtotime($data->created_at)));
                 })
                 ->editColumn('selection_result', function($data) {
-                    return '<a href="'.route('download', ['dir' => encrypt('training/selection-result'), 'file' => encrypt($data->selection_result)]).'" class="btn btn-sm btn-success '.( ! isset($data->selection_result)?'disabled':'').'" title="'.__('Download').'" target="_blank"><i class="fa fa-file"></i>  '.__('Download').'</a>';
+                    $file = $data->selection_result;
+                    if (strpos($file, '/') == false) {
+                        $file = date('Y-m-d', strtotime($data->created_at)) . $file;
+                    }
+                    return '<a href="'.route('download', ['dir' => encrypt('training/selection-result'), 'file' => encrypt($file)]).'" class="btn btn-sm btn-success '.( ! isset($data->selection_result)?'disabled':'').'" title="'.__('Download').'" target="_blank"><i class="fa fa-file"></i>  '.__('Download').'</a>';
                 })
                 ->editColumn('approval_letter_of_commitment_fee', function($data) {
-                    return '<a href="'.route('download', ['dir' => encrypt('training/commitment-letter'), 'file' => encrypt($data->approval_letter_of_commitment_fee)]).'" class="btn btn-sm btn-success '.( ! isset($data->approval_letter_of_commitment_fee)?'disabled':'').'" title="'.__('Download').'" target="_blank"><i class="fa fa-file"></i>  '.__('Download').'</a>';
+                    $file = $data->approval_letter_of_commitment_fee;
+                    if (strpos($file, '/') == false) {
+                        $file = date('Y-m-d', strtotime($data->created_at)) . $file;
+                    }
+                    return '<a href="'.route('download', ['dir' => encrypt('training/commitment-letter'), 'file' => encrypt($file)]).'" class="btn btn-sm btn-success '.( ! isset($data->approval_letter_of_commitment_fee)?'disabled':'').'" title="'.__('Download').'" target="_blank"><i class="fa fa-file"></i>  '.__('Download').'</a>';
                 })
                 ->editColumn('status', function($data) {
                     return $data->status.' by '.$data->status_by;
