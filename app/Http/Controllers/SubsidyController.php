@@ -30,7 +30,7 @@ class SubsidyController extends Controller
     {
         parent::__construct();
         $this->middleware('auth');
-        $this->middleware('level:C,B,A');
+        $this->middleware('level:C|B|A');
         $this->table = 'subsidies';
         $this->types = [
             'ACP Getting started Pack (AGP) / Fast Track Program (FTP)' => 'ACP Getting started Pack (AGP) / Fast Track Program (FTP)',
@@ -149,7 +149,7 @@ class SubsidyController extends Controller
         $subsidy->save();
         $this->saveSspStudent($subsidy, $request);
         $this->savePic($subsidy, $request);
-        return redirect(url()->previous())->with('alert-success', __($this->createdMessage));
+        return redirect(url()->previous())->with('alert-success', __($this->createdMessage) . ' ' . __('Please wait for our approval for this submission.'));
     }
 
     /**

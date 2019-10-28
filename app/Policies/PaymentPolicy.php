@@ -80,7 +80,7 @@ class PaymentPolicy
     {
         if ($user->school_id == $payment->school_id) {
             if ($payment->type == 'Subsidi' || $payment->type == 'Commitment Fee') {
-                return $payment->latestPaymentStatus->status->name == 'Published';
+                return $payment->paymentStatus->status->name == 'Published';
             }
         }
     }

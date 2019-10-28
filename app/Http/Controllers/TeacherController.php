@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Auth;
 use App\SchoolLevel;
 use App\School;
 use App\Teacher;
@@ -96,7 +95,10 @@ class TeacherController extends Controller
      */
     public function store(Request $request)
     {
-        $request->merge(['school_id' => Auth::user()->school_id]);
+        $request->request->add(['school_id' => auth()->user()->school_id]);
+        $request->merge([
+            'date_of_birth' => date('Y-m-d', strtotime($request->date_of_birth)),
+        ]);
         $teacher = Teacher::create($request->except(['terms', 'submit']));
         $teacher->photo = $this->uploadPhoto($teacher, $request);
         $teacher->save();
@@ -152,7 +154,10 @@ class TeacherController extends Controller
      */
     public function update(Request $request, Teacher $teacher)
     {
-        $teacher->fill($request->except(['school_id','terms', 'submit']));
+        $request->merge([
+            'date_of_birth' => date('Y-m-d', strtotime($request->date_of_birth)),
+        ]);
+        $teacher->fill($request->except(['school_id', 'terms', 'submit']));
         $teacher->photo = $this->uploadPhoto($teacher, $request, $teacher->photo);
         $teacher->save();
         return redirect(url()->previous())->with('alert-success', __($this->updatedMessage));

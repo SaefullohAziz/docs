@@ -32,7 +32,7 @@ class PaymentController extends Controller
     {
         parent::__construct();
         $this->middleware('auth');
-        $this->middleware('level:C,B,A');
+        $this->middleware('level:C|B|A');
         $this->table = 'payments';
         $this->types = [
             // 'Subsidi' => 'Subsidi', 
@@ -80,8 +80,8 @@ class PaymentController extends Controller
             ],
             'types' => $this->types,
             'statuses' => Status::byNames(['Created', 'Processed', 'Approved', 'Sent', 'Refunded'])->pluck('name', 'id')->toArray(),
-            'subsidyPayments' => Payment::with(['latestPaymentStatus.status'])->has('subsidy')->join('payment_statuses', 'payment_statuses.id', '=', DB::raw('(SELECT id FROM payment_statuses WHERE payment_statuses.payment_id = payments.id ORDER BY created_at DESC LIMIT 1)'))->join('statuses', 'payment_statuses.status_id', '=', 'statuses.id')->where('statuses.name', 'Published')->select('payments.*')->get(),
-            'trainingPayments' => Payment::with(['latestPaymentStatus.status'])->has('training')->join('payment_statuses', 'payment_statuses.id', '=', DB::raw('(SELECT id FROM payment_statuses WHERE payment_statuses.payment_id = payments.id ORDER BY created_at DESC LIMIT 1)'))->join('statuses', 'payment_statuses.status_id', '=', 'statuses.id')->where('statuses.name', 'Published')->select('payments.*')->get(),
+            'subsidyPayments' => Payment::with(['paymentStatus.status'])->has('subsidy')->join('payment_statuses', 'payment_statuses.id', '=', DB::raw('(SELECT id FROM payment_statuses WHERE payment_statuses.payment_id = payments.id ORDER BY created_at DESC LIMIT 1)'))->join('statuses', 'payment_statuses.status_id', '=', 'statuses.id')->where('statuses.name', 'Published')->select('payments.*')->get(),
+            'trainingPayments' => Payment::with(['paymentStatus.status'])->has('training')->join('payment_statuses', 'payment_statuses.id', '=', DB::raw('(SELECT id FROM payment_statuses WHERE payment_statuses.payment_id = payments.id ORDER BY created_at DESC LIMIT 1)'))->join('statuses', 'payment_statuses.status_id', '=', 'statuses.id')->where('statuses.name', 'Published')->select('payments.*')->get(),
         ];
         return view('payment.index', $view);
     }

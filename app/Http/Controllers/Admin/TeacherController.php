@@ -107,6 +107,9 @@ class TeacherController extends Controller
         if ( ! auth()->guard('admin')->user()->can('create ' . $this->table)) {
             return redirect()->route('admin.teacher.index')->with('alert-danger', __($this->noPermission));
         }
+        $request->merge([
+            'date_of_birth' => date('Y-m-d', strtotime($request->date_of_birth)),
+        ]);
         $teacher = Teacher::create($request->except(['terms', 'submit']));
         $teacher->photo = $this->uploadPhoto($teacher, $request);
         $teacher->save();
@@ -171,6 +174,9 @@ class TeacherController extends Controller
         if ( ! auth()->guard('admin')->user()->can('update ' . $this->table)) {
             return redirect()->route('admin.teacher.index')->with('alert-danger', __($this->noPermission));
         }
+        $request->merge([
+            'date_of_birth' => date('Y-m-d', strtotime($request->date_of_birth)),
+        ]);
         $teacher->fill($request->except(['terms', 'submit']));
         $teacher->photo = $this->uploadPhoto($teacher, $request, $teacher->photo);
         $teacher->save();

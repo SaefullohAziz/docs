@@ -34,13 +34,13 @@
 				<ul class="list-group list-group-flush">
 					@foreach ($subsidyPayments as $subsidyPayment)
 						<li class="list-group-item d-flex justify-content-between align-items-center">
-							{{ __('Subsidy') }} {{ $subsidyPayment->subsidy[0]->type }} &middot; {{ __($subsidyPayment->subsidy[0]->latestSubsidyStatus->status->name) }} {{ __('at') }} {{ date('d-m-Y', strtotime($subsidyPayment->subsidy[0]->latestSubsidyStatus->created_at)) }}
+							{{ __('Subsidy') }} {{ $subsidyPayment->subsidy[0]->type }} &middot; {{ __($subsidyPayment->subsidy[0]->subsidyStatus->status->name) }} {{ __('at') }} {{ date('d-m-Y', strtotime($subsidyPayment->subsidy[0]->subsidyStatus->created_at)) }}
 							{{ link_to_route('payment.fill',__('Fill'), ['payment' => $subsidyPayment->id], ['class' => 'badge badge-primary badge-pill']) }}
 						</li>
 					@endforeach
 					@foreach ($trainingPayments as $trainingPayment)
 						<li class="list-group-item d-flex justify-content-between align-items-center">
-							{{ __('Training') }} {{ $trainingPayment->training[0]->type }} &middot; {{ __($trainingPayment->training[0]->latestTrainingStatus->status->name) }} {{ __('at') }} {{ date('d-m-Y', strtotime($trainingPayment->training[0]->latestTrainingStatus->created_at)) }}
+							{{ __('Training') }} {{ $trainingPayment->training[0]->type }} &middot; {{ __($trainingPayment->training[0]->trainingStatus->status->name) }} {{ __('at') }} {{ date('d-m-Y', strtotime($trainingPayment->training[0]->trainingStatus->created_at)) }}
 							{{ link_to_route('payment.fill',__('Fill'), ['payment' => $trainingPayment->id], ['class' => 'badge badge-primary badge-pill']) }}
 						</li>
 					@endforeach

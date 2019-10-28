@@ -13,9 +13,10 @@ class LevelCheck
      * @param  \Closure  $next
      * @return mixed
      */
-    public function handle($request, Closure $next, $level)
+    public function handle($request, Closure $next, $levels)
     {
-        if ( ! $request->user()->hasLevel($level)) {
+        $levels = explode('|', $levels);
+        if ( ! $request->user()->hasLevel($levels)) {
             return redirect()->route('home')->with('alert-danger', __('You have no related permission.'));
         }
         return $next($request);

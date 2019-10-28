@@ -382,10 +382,11 @@ Route::get('download/{dir}/{file}', function ($dir, $file) {
 
 Route::get('check', function (\Illuminate\Http\Request $request) {
 	if (env('APP_ENV') == 'local') {
-		$data = \App\School::with(['statusUpdates' =>  function ($query) {
-			$query->orderBy('created_at', 'desc');
-		}, 'statusUpdates.status.level', 'user'])->where('id', '79ba62c9-1278-45bb-9532-b6b2629f388b')->first()->toArray();
-		dd($data);
+		$levels = 'C';
+		if ( ! is_array($levels)) {
+            $levels = explode(',', $levels);
+        }
+		dd($levels);
 	}
 });
 

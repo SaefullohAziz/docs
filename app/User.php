@@ -116,7 +116,7 @@ class User extends Authenticatable implements HasMedia
     public function hasLevel($levels)
     {
         if ( ! is_array($levels)) {
-            $levels = [$levels];
+            $levels = explode(',', str_replace(', ', ',', $levels));
         }
         if (in_array($this->school->statusUpdate->status->level->name, $levels)) {
             return true;
@@ -130,7 +130,7 @@ class User extends Authenticatable implements HasMedia
     public function hasStatus($statuses)
     {
         if ( ! is_array($statuses)) {
-            $statuses = [$statuses];
+            $statuses = explode(',', str_replace(', ', ',', $statuses));
         }
         if (in_array($this->school->statusUpdate->status->order_by, $statuses)) {
             return true;

@@ -75,18 +75,20 @@ class TrainingObserver
      */
     public function createPayment($training)
     {
-        $training = Training::doesntHave('trainingPayment')->where('id', $training->id)->first();
+        $training = Training::withCount(['participants'])->doesntHave('trainingPayment')->where('id', $training->id)->first();
+        $total = 3000000;
         if ($training) {
             if ($training->batch != 'Waiting') {
+                if ($training->participants_count > 2) {
+                    $total = $total+(1500000*($training->participants_count-2));
+                }
                 $payment = Payment::create([
                     'school_id' => $training->school->id,
-                    'type' => 'Commitment Fee'
+                    'type' => 'Commitment Fee',
+                    'total' => $total,
                 ]);
                 saveStatus($payment, 'Published', 'Menerbitkan konfirmasi pembayaran.');
-                $training->payment()->attach($payment->id, [
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ]);
+                $training->payment()->attach($payment->id);
             }
         }
     }

@@ -160,7 +160,7 @@ class SubsidyController extends Controller
         $subsidy->save();
         $this->saveSspStudent($subsidy, $request);
         $this->savePic($subsidy, $request);
-        return redirect(url()->previous())->with('alert-success', __($this->createdMessage));
+        return redirect(url()->previous())->with('alert-success', __($this->createdMessage) . ' ' . __('Please wait for our approval for this submission.'));
     }
 
     /**

@@ -82,7 +82,7 @@
 							</fieldset>
                         </div>
 					</div>
-					@if ($payment->installment()->count() > 0)
+					@if ($payment->installments()->count() > 0)
 						<div class="row">
 							<fieldset class="col-12">
 								<legend>{{ __('Installment') }}</legend>

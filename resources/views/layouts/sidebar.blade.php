@@ -26,7 +26,7 @@
           <i class="fa fa-user-check"></i> <span>{{ __('Teacher') }}</span>
         </a>
       </li>
-      @if (auth()->user()->hasLevel('C', 'B', 'A'))
+      @if (auth()->user()->hasLevel(['C', 'B', 'A']))
       <!-- Student -->
       <li class="{{ (request()->is('student')||request()->is('student/*')?'active':'') }}">
         <a class="nav-link" href="{{ route('class.index') }}">
@@ -34,7 +34,7 @@
         </a>
       </li>
       @endif
-      @if (auth()->user()->hasLevel('C', 'B', 'A'))
+      @if (auth()->user()->hasLevel(['C', 'B', 'A']))
       <!-- Activity -->
       <li class="{{ (request()->is('activity')||request()->is('activity/*')?'active':'') }}">
         <a class="nav-link" href="{{ route('activity.index') }}">
@@ -42,7 +42,7 @@
         </a>
       </li>
       @endif
-      @if (auth()->user()->hasLevel('C', 'B', 'A'))
+      @if (auth()->user()->hasLevel(['C', 'B', 'A']))
       <!-- Subsidy -->
       <li class="{{ (request()->is('subsidy')||request()->is('subsidy/*')?'active':'') }}">
         <a class="nav-link" href="{{ route('subsidy.index') }}">
@@ -50,7 +50,7 @@
         </a>
       </li>
       @endif
-      @if (auth()->user()->hasLevel('C', 'B', 'A'))
+      @if (auth()->user()->hasLevel(['C', 'B', 'A']))
       <!-- Training -->
       <li class="{{ (request()->is('training')||request()->is('training/*')?'active':'') }}">
         <a class="nav-link" href="{{ route('training.index') }}">
@@ -58,7 +58,7 @@
         </a>
       </li>
       @endif
-      @if (auth()->user()->hasLevel('C', 'B', 'A'))
+      @if (auth()->user()->hasLevel(['C', 'B', 'A']))
       <!-- Exam Readiness -->
       <li class="{{ (request()->is('exam/readiness')||request()->is('exam/readiness/*')?'active':'') }}">
         <a class="nav-link" href="{{ route('exam.readiness.index') }}">
@@ -73,7 +73,7 @@
           @if (auth()->user()->hasLevel('Dalam proses'))
           <li class="{{ (request()->is('attendance')||request()->is('attendance/*')?'active':'') }}"><a class="nav-link" href="{{ route('attendance.index') }}">{{ __('Attendance') }}</a></li>
           @endif
-          @if (auth()->user()->hasLevel('C', 'B', 'A'))
+          @if (auth()->user()->hasLevel(['C', 'B', 'A']))
           <li class="{{ (request()->is('payment')||request()->is('payment/*')?'active':'') }}"><a class="nav-link" href="{{ route('payment.index') }}">{{ __('Payment') }}</a></li>
           @endif
         </ul>

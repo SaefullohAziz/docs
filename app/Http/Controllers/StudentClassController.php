@@ -23,7 +23,7 @@ class StudentClassController extends Controller
     {
         parent::__construct();
         $this->middleware('auth');
-        $this->middleware('level:C,B,A');
+        $this->middleware('level:C|B|A');
         $this->table = 'student_classes';
     }
 
