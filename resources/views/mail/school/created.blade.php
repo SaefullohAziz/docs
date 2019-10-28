@@ -2,15 +2,16 @@
 @component('mail::banner')
 @endcomponent
 
-Terima kasih telah melakukan pendaftaran sekolah binaan Axioo. Untuk pengecekan status pendaftaran, bisa langsung mengunjungi tautan dibawah ini:
+Terima kasih telah melakukan pendaftaran sekolah binaan Axioo. Berikut detail <i>username</i> dan <i>password</i> anda untuk masuk ke sistem.
 
-@component('mail::button', ['url' => $url.'/?code='.$code])
-Cek Status
+@component('mail::table')
+|                   |                 |
+| ----------------- | ----------------|
+| <i>Username</i>   | {{ $username }} |
+| <i>Password</i>   | {{ $password }} |
 @endcomponent
 
-<center>Atau</center>
-
-Kunjungi: {{ link_to($url, $url, ['title' => config('app.name')]) }} dan masukkan kode {{ ($code) }} pada kolom yang disediakan.
+Silahkan <i>login</i> melalui [www.axiooclassprogram.org](http://www.axiooclassprogram.org "www.axiooclassprogram.org") di menu <i>login</i> dengan menggunakan akun diatas.
 
 @component('mail::signature')
 @endcomponent

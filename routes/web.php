@@ -391,8 +391,7 @@ Route::get('check', function (\Illuminate\Http\Request $request) {
 
 Route::get('mailable', function () {
 	if (env('APP_ENV') == 'local') {
-		$school = App\School::first();
-	
+		$school = \App\School::first();
 		return new App\Mail\SchoolCreated($school);
 	}
 });

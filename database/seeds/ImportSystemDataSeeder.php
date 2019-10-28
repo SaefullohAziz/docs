@@ -148,7 +148,7 @@ class ImportSystemDataSeeder extends Seeder
                 $newUser = $newSchool->user()->create([
                     'name' => 'User', 
                     'email' => ($existUser?$schoolUserEmail:$newSchool->pic[0]->email), 
-                    'password' => Hash::make('!Indo!Joss!'),
+                    'password' => Hash::make('!Indo45!Joss!'),
                 ]);
             }
 

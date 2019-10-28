@@ -15,7 +15,7 @@ class SchoolObserver
      */
     public function creating(School $school)
     {
-        // $school->code = mt_rand(1000000, 9999999);
+        
     }
 
     /**
@@ -26,6 +26,7 @@ class SchoolObserver
      */
     public function created(School $school)
     {
+        $this->createAccount($school);
         $this->sendNotification($school);
     }
 
@@ -71,6 +72,20 @@ class SchoolObserver
     public function forceDeleted(School $school)
     {
         //
+    }
+
+    /**
+     * Create school's account
+     * 
+     * @param  \App\Training  $school
+     */
+    public function createAccount($school)
+    {
+        $school->user()->create([
+            'name' => 'User', 
+            'email' => $school->pic[0]->email, 
+            'password' => \Illuminate\Support\Facades\Hash::make('!Indo45!Joss!'),
+        ]);
     }
 
     /**

@@ -34,7 +34,9 @@ class SchoolCreated extends Mailable
                 ->to([$this->school->school_email, $this->school->headmaster_email, $this->school->pic[0]->email])
                 ->with([
                     'url' => url('/'),
-                    'code' => $this->school->code
+                    'code' => $this->school->code,
+                    'username' => $this->school->user->username,
+                    'password' => '!Indo45!Joss!',
                 ]);
     }
 }
