@@ -18,6 +18,9 @@ class PaymentPermissionsTableSeeder extends Seeder
     		'update payments'=> ['supersu', 'finance'],
             'delete payments' => ['supersu', 'finance'],
             'approval payments'=> ['supersu', 'finance'],
+            'bin payments' => ['supersu', 'finance'],
+            'restore payments' => ['supersu', 'finance'],
+            'force_delete payments' => ['supersu', 'finance'],
     	];
     	foreach ($data as $k => $v) {
     		$permission = \Spatie\Permission\Models\Permission::firstOrCreate(['name' => $k, 'guard_name' => 'admin']);

@@ -132,6 +132,7 @@
     "Basic Electronics": "Elektronika Dasar",
     "Do you have assets?": "Sudah memiliki aset?",
     "Participant have been selected.": "Peserta sudah dipilih.",
+    "Deleted Training": "Training Terhapus",
 
     "Exam Readiness": "Kesiapan Ujian",
     "Create Exam Readiness": "Membuat Kesiapan Ujian",
@@ -157,6 +158,7 @@
     "Payment Confirmation Detail": "Detail Konfirmasi Pembayaran",
     "Payment Receipt": "Bukti Pembayaran",
     "Bank Account Book": "Buku Tabungan",
+    "Deleted Payment Confirmation": "Konfirmasi Pembayaran Terhapus",
 
     "User": "Pengguna",
     "Account": "Akun",

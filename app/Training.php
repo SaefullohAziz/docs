@@ -3,13 +3,14 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Traits\Uuids;
 
 class Training extends Model
 {
-    use Uuids;
+    use Uuids, SoftDeletes;
     
     /**
      * The attributes that are mass assignable.
@@ -123,6 +124,10 @@ class Training extends Model
                 $query->where('trainings.type', $request->type);
             })->when( ! empty($request->status), function ($query) use ($request) {
                 $query->where('statuses.id', $request->status);
+            })->when($request->is('admin/training/list')||$request->is('admin/training/export'), function ($query) {
+                $query->whereNull('trainings.deleted_at');
+            })->when($request->is('admin/training/binList'), function ($query) {
+                $query->whereNotNull('trainings.deleted_at');
             })->whereNull('schools.deleted_at');
     }
 

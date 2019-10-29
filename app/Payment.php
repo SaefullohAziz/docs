@@ -3,13 +3,14 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Traits\Uuids;
 
 class Payment extends Model
 {
-    use Uuids;
+    use Uuids, SoftDeletes;
     
     /**
      * The attributes that aren't mass assignable.
@@ -118,7 +119,12 @@ class Payment extends Model
                 $query->where('payments.type', $request->type);
             })->when( ! empty($request->status), function ($query) use ($request) {
                 $query->where('statuses.id', $request->status);
-            })->whereNull('schools.deleted_at')
+            })->when($request->is('admin/payment/list')||$request->is('admin/payment/export'), function ($query) {
+                $query->whereNull('payments.deleted_at');
+            })->when($request->is('admin/payment/binList'), function ($query) {
+                $query->whereNotNull('payments.deleted_at');
+            })
+            ->whereNull('schools.deleted_at')
             ->where('statuses.name', '!=', 'Published');
     }
 

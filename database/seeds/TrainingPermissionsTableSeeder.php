@@ -18,6 +18,9 @@ class TrainingPermissionsTableSeeder extends Seeder
     		'update trainings'=> ['supersu', 'admin'],
             'delete trainings' => ['supersu', 'admin'],
             'approval trainings'=> ['supersu', 'admin'],
+            'bin trainings' => ['supersu', 'admin'],
+            'restore trainings' => ['supersu', 'admin'],
+            'force_delete trainings' => ['supersu', 'admin'],
     	];
     	foreach ($data as $k => $v) {
     		$permission = \Spatie\Permission\Models\Permission::firstOrCreate(['name' => $k, 'guard_name' => 'admin']);

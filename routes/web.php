@@ -284,6 +284,10 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
     	Route::post('approve', 'TrainingController@approve')->name('approve');
     	Route::post('export', 'TrainingController@export')->name('export');
     	Route::delete('destroy', 'TrainingController@destroy')->name('destroy');
+		Route::get('bin', 'TrainingController@bin')->name('bin');
+		Route::post('binList', 'TrainingController@list')->name('binList');
+		Route::post('restore', 'TrainingController@restore')->name('restore');
+		Route::delete('destroyPermanently', 'TrainingController@destroyPermanently')->name('destroyPermanently');
     });
 	Route::resource('training', 'TrainingController', ['except' => [
 		'destroy',
@@ -333,6 +337,10 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
     	Route::post('refund', 'PaymentController@refund')->name('refund');
     	Route::post('export', 'PaymentController@export')->name('export');
     	Route::delete('destroy', 'PaymentController@destroy')->name('destroy');
+		Route::get('bin', 'PaymentController@bin')->name('bin');
+		Route::post('binList', 'PaymentController@list')->name('binList');
+		Route::post('restore', 'PaymentController@restore')->name('restore');
+		Route::delete('destroyPermanently', 'PaymentController@destroyPermanently')->name('destroyPermanently');
     });
 	Route::resource('payment', 'PaymentController', ['except' => [
 		'destroy',

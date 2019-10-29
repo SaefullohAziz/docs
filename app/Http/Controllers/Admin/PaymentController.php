@@ -77,9 +77,9 @@ class PaymentController extends Controller
             return redirect()->route('admin.home')->with('alert-danger', __($this->noPermission));
         }
         $view = [
-            'title' => __('Payment'),
+            'title' => __('Payment Confirmation'),
             'breadcrumbs' => [
-                route('admin.payment.index') => __('Payment'),
+                route('admin.payment.index') => __('Payment Confirmation'),
                 null => __('Data')
             ],
             'schools' => School::pluck('name', 'id')->toArray(),
@@ -94,6 +94,27 @@ class PaymentController extends Controller
             ],
         ];
         return view('admin.payment.index', $view);
+    }
+
+    /**
+     * Display a listing of the deleted resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function bin()
+    {
+        if ( ! auth()->guard('admin')->user()->can('bin ' . $this->table)) {
+            return redirect()->route('admin.payment.index')->with('alert-danger', __($this->noPermission));
+        }
+        $view = [
+            'back' => route('admin.payment.index'),
+            'title' => __('Deleted Payment Confirmation'),
+            'breadcrumbs' => [
+                route('admin.payment.index') => __('Payment Confirmation'),
+                null => __('Deleted')
+            ],
+        ];
+        return view('admin.payment.bin', $view);
     }
 
     /**
@@ -355,6 +376,36 @@ class PaymentController extends Controller
             return response()->json(['status' => false, 'message' => __($this->noPermission)], 422);
         }
         Payment::destroy($request->selectedData);
+        return response()->json(['status' => true, 'message' => __($this->deletedMessage)]);
+    }
+
+    /**
+     * Restore the specified resource from storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function restore(Request $request)
+    {
+        if ( ! auth()->guard('admin')->user()->can('restore ' . $this->table)) {
+            return response()->json(['status' => false, 'message' => __($this->noPermission)], 422);
+        }
+        Payment::onlyTrashed()->whereIn('id', $request->selectedData)->restore();
+        return response()->json(['status' => true, 'message' => __($this->restoredMessage)]);
+    }
+
+    /**
+     * Remove permanently the specified resource from storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function destroyPermanently(Request $request)
+    {
+        if ( ! auth()->guard('admin')->user()->can('force_delete ' . $this->table)) {
+            return response()->json(['status' => false, 'message' => __($this->noPermission)], 422);
+        }
+        Payment::onlyTrashed()->whereIn('id', $request->selectedData)->forceDelete();
         return response()->json(['status' => true, 'message' => __($this->deletedMessage)]);
     }
 }

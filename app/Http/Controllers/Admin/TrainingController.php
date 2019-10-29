@@ -87,6 +87,27 @@ class TrainingController extends Controller
     }
 
     /**
+     * Display a listing of the deleted resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function bin()
+    {
+        if ( ! auth()->guard('admin')->user()->can('bin ' . $this->table)) {
+            return redirect()->route('admin.training.index')->with('alert-danger', __($this->noPermission));
+        }
+        $view = [
+            'back' => route('admin.training.index'),
+            'title' => __('Deleted Training'),
+            'breadcrumbs' => [
+                route('admin.training.index') => __('Training'),
+                null => __('Deleted')
+            ],
+        ];
+        return view('admin.training.bin', $view);
+    }
+
+    /**
      * Show a listing of the resource for datatable.
      * 
      * @param  \Illuminate\Http\Request  $request
@@ -406,6 +427,36 @@ class TrainingController extends Controller
             return response()->json(['status' => false, 'message' => __($this->noPermission)], 422);
         }
         Training::destroy($request->selectedData);
+        return response()->json(['status' => true, 'message' => __($this->deletedMessage)]);
+    }
+
+    /**
+     * Restore the specified resource from storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function restore(Request $request)
+    {
+        if ( ! auth()->guard('admin')->user()->can('restore ' . $this->table)) {
+            return response()->json(['status' => false, 'message' => __($this->noPermission)], 422);
+        }
+        Training::onlyTrashed()->whereIn('id', $request->selectedData)->restore();
+        return response()->json(['status' => true, 'message' => __($this->restoredMessage)]);
+    }
+
+    /**
+     * Remove permanently the specified resource from storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function destroyPermanently(Request $request)
+    {
+        if ( ! auth()->guard('admin')->user()->can('force_delete ' . $this->table)) {
+            return response()->json(['status' => false, 'message' => __($this->noPermission)], 422);
+        }
+        Training::onlyTrashed()->whereIn('id', $request->selectedData)->forceDelete();
         return response()->json(['status' => true, 'message' => __($this->deletedMessage)]);
     }
 }
