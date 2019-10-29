@@ -18,6 +18,9 @@ class SubsidyPermissionsTableSeeder extends Seeder
     		'update subsidies'=> ['supersu', 'admin'],
             'delete subsidies' => ['supersu', 'admin'],
             'approval subsidies'=> ['supersu', 'admin'],
+            'bin subsidies' => ['supersu', 'admin'],
+            'restore subsidies' => ['supersu', 'admin'],
+            'force_delete subsidies' => ['supersu', 'admin']
     	];
     	foreach ($data as $k => $v) {
     		$permission = \Spatie\Permission\Models\Permission::firstOrCreate(['name' => $k, 'guard_name' => 'admin']);

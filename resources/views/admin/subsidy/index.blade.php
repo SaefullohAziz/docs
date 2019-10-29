@@ -33,6 +33,9 @@
 				@endif
 				<button class="btn btn-icon btn-secondary" title="{{ __('Filter') }}" data-toggle="modal" data-target="#filterModal"><i class="fa fa-filter"></i></button>
             	<button class="btn btn-icon btn-secondary" onclick="reloadTable()" title="{{ __('Refresh') }}"><i class="fa fa-sync"></i></i></button>
+				@if(auth()->guard('admin')->user()->can('bin subsidies'))
+					<a href="{{ route('admin.subsidy.bin') }}" class="btn btn-icon btn-danger" title="{{ __('Bin') }}"><i class="fas fa-trash"></i></a>
+				@endif
 			</div>
 			<div class="card-body">
 				<div class="table-responsive">

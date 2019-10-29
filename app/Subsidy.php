@@ -3,13 +3,14 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Traits\Uuids;
 
 class Subsidy extends Model
 {
-    use Uuids;
+    use Uuids, SoftDeletes;
     
     /**
      * The attributes that are mass assignable.
@@ -123,6 +124,10 @@ class Subsidy extends Model
                 $query->where('subsidies.type', $request->type);
             })->when( ! empty($request->status), function ($query) use ($request) {
                 $query->where('statuses.id', $request->status);
+            })->when($request->is('admin/subsidy/list')||$request->is('admin/subsidy/export'), function ($query) {
+                $query->whereNull('subsidies.deleted_at');
+            })->when($request->is('admin/subsidy/binList'), function ($query) {
+                $query->whereNotNull('subsidies.deleted_at');
             })->whereNull('schools.deleted_at');
     }
 

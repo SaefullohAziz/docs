@@ -14,6 +14,7 @@
     "Filter": "Filter",
     "Refresh": "Segarkan",
     "Delete": "Hapus",
+    "Deleted": "Terhapus",
     "Restore": "Kembalikan",
     "Delete Permanently": "Hapus Permanen",
     "Bin": "Sampah",
@@ -120,6 +121,7 @@
     "Selected Student": "Siswa Terpilih",
     "Student have been selected.": "Siswa sudah dipilih.",
     "AGP/FTP Only": "Khusus AGP/FTP",
+    "Deleted Subsidy": "Subsidi Terhapus",
 
     "Training": "Training",
     "Register Training": "Daftar Training",

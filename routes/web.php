@@ -267,6 +267,10 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
     	Route::post('reject', 'SubsidyController@reject')->name('reject');
     	Route::post('approve', 'SubsidyController@approve')->name('approve');
     	Route::delete('destroy', 'SubsidyController@destroy')->name('destroy');
+		Route::get('bin', 'SubsidyController@bin')->name('bin');
+		Route::post('binList', 'SubsidyController@list')->name('binList');
+		Route::post('restore', 'SubsidyController@restore')->name('restore');
+		Route::delete('destroyPermanently', 'SubsidyController@destroyPermanently')->name('destroyPermanently');
     });
 	Route::resource('subsidy', 'SubsidyController', ['except' => [
 		'destroy',
