@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Admin\User as Staff;
 use App\Province;
 use App\Regency;
 use App\SchoolLevel;
@@ -17,6 +18,21 @@ use Illuminate\Http\Request;
 
 class GetController extends Controller
 {
+    // Staff
+    public function staff(Request $request)
+    {
+        if ($request->ajax()) {
+            $data = Staff::whereHas('roles', function ($query) use ($request) {
+                $query->when( ! empty($request->role), function ($subQuery) use ($request) {
+                    $subQuery->where('id', $request->role);
+                })->when( ! empty($request->not_role), function ($subQuery) use ($request) {
+                    $subQuery->where('id', '!=', $request->not_role);
+                });
+            })->get()->toArray();
+            return response()->json(['status' => true, 'result' => $data]);
+        }
+    }
+
     // Home
     public function schoolChart(Request $request)
     {

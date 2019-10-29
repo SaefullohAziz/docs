@@ -18,6 +18,11 @@
     <div class="main-content">
       <section class="section">
         <div class="section-header">
+          @if ( ! empty($back))
+            <div class="section-header-back">
+              <a href="{{ $back }}" class="btn btn-icon"><i class="fas fa-arrow-left"></i></a>
+            </div>
+          @endif
           <h1>{{ $title }}</h1>
           <div class="section-header-breadcrumb">
             <div class="breadcrumb-item active"><a href="{{ route('home') }}">{{ __('Dashboard') }}</a></div>

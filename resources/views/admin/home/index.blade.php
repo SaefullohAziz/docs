@@ -4,6 +4,15 @@
 <div class="row">
 	<div class="col-12">
 
+		@if (request()->is('login'))
+			<div class="hero bg-primary text-white mb-4">
+				<div class="hero-inner">
+					<h2>{{ __('Welcome Back') }}, {{ auth()->user()->guard('admin')->name }}!</h2>
+					<p class="lead"></p>
+				</div>
+			</div>
+		@endif
+
 		@if (session('alert-success'))
 			<div class="alert alert-success alert-dismissible show fade">
 				<div class="alert-body">

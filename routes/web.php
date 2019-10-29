@@ -334,6 +334,15 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
 		'destroy',
 	]]);
 
+	// Setting
+    Route::prefix('setting')->name('setting.')->group(function () {
+    	Route::get('/', 'SettingController@index')->name('index');
+		Route::prefix('role')->name('role.')->group(function () {
+			Route::get('/', 'SettingController@role')->name('index');
+			Route::post('/', 'SettingController@roleStore')->name('store');
+		});
+    });
+
     // Account
     Route::prefix('account')->name('account.')->group(function () {
     	Route::post('list', 'AccountController@list')->name('list');
@@ -352,6 +361,7 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
 
 // Custom
 Route::prefix('get')->name('get.')->middleware(['auth:web,admin'])->group(function () {
+	Route::post('staff', 'GetController@staff')->name('staff');
 	Route::post('schoolChart', 'GetController@schoolChart')->name('schoolChart');
 	Route::post('studentChart', 'GetController@studentChart')->name('studentChart');
 	Route::post('regency', 'GetController@regency')->name('regency');
@@ -382,11 +392,11 @@ Route::get('download/{dir}/{file}', function ($dir, $file) {
 
 Route::get('check', function (\Illuminate\Http\Request $request) {
 	if (env('APP_ENV') == 'local') {
-		$levels = 'C';
-		if ( ! is_array($levels)) {
-            $levels = explode(',', $levels);
-        }
-		dd($levels);
+		$data = \Spatie\Permission\Models\Role::pluck('name', 'id')->toArray();
+		$data = collect($data)->map(function ($item, $key) {
+			return ucwords($item);
+		})->toArray();
+		dd($data);
 	}
 });
 

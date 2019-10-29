@@ -163,6 +163,20 @@
     "Account Detail": "Detail Akun",
 
     "Setting": "Pengaturan",
+    "Change Setting": "Ubah Pengaturan",
+    "General": "Umum",
+    "General settings such as, site title, site description, address and so on.": "Pengaturan umum seperti, judul situs, deskripsi situs, alamat dan sebagainya.",
+    "Role": "Rol",
+    "Account role settings, such as supersu, admin, and user.": "Pengaturan peran akun, seperti supersu, admin, dan pengguna.",
+    "All About Role Settings": "Semua Pengaturan Rol",
+    "You can adjust all role settings here": "Anda dapat mengubah semua pengaturan rol disini.",
+    "Role Settings": "Pengaturan Rol",
+    "Permission": "Izin Akses",
+    "Role permission settings, such as manage data, CRUD, and approval.": "Pengaturan izin peran, seperti mengelola data, CRUD, dan persetujuan.",
+    "Form": "Formulir",
+    "Form settings, such as open or close the form.": "Pengaturan formulir, seperti membuka atau menutup formulir.",
+    "Training settings, such as quota limit, and payment nominal.": "Pengaturan pelatihan, seperti batas kuota, dan nominal pembayaran.",
+    "Exam readiness settings, such as reference school.": "Pengaturan kesiapan ujian, seperti sekolah referensi.",
 
     "Copyright": "Hak Cipta",
 
@@ -299,6 +313,8 @@
     "All Level": "Semua Level",
     "All Status": "Semua Status",
     "All Department": "Semua Jurusan",
+    "Overview": "Peninjauan",
+    "Organize and adjust all settings about this site.": "Atur dan sesuaikan semua pengaturan tentang situs ini.",
 
     "Enter phone number without country code.": "Masukkan nomor handphone tanpa kode negara.",
     "Complete with an academic degree and or degree of expertise.": "Lengkapi dengan gelar akademi atau keahlian.",

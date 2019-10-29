@@ -71,6 +71,13 @@
           <i class="far fa-list-alt"></i> <span>{{ __('Certification') }}</span>
         </a>
       </li>
+      <!-- Setting -->
+      <li class="menu-header">{{ __('Setting') }}</li>
+      <li class="{{ (request()->is('admin/setting')||request()->is('admin/setting/*')?'active':'') }}">
+        <a class="nav-link" href="{{ route('admin.setting.index') }}">
+          <i class="fa fa-cogs"></i> <span>{{ __('Setting') }}</span>
+        </a>
+      </li>
       <!-- Account -->
       <li class="menu-header">{{ __('User') }}</li>
       <li class="{{ (request()->is('admin/account')||request()->is('admin/account/*')?'active':'') }}">
