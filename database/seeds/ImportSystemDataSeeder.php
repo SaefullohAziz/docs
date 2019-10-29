@@ -24,6 +24,7 @@ class ImportSystemDataSeeder extends Seeder
                 'email' => $staff->email,
                 'password' => Hash::make('!Indonesia45!')],
             );
+            $newStaff->syncRoles(['user']);
         }
         if ( ! file_exists(storage_path('app/public/school/'))) {
             mkdir(storage_path('app/public/school/'));
