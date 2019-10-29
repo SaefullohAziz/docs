@@ -75,6 +75,7 @@ class SchoolController extends Controller
             return redirect()->route('admin.school.index')->with('alert-danger', __($this->noPermission));
         }
         $view = [
+            'back' => route('admin.school.index'),
             'title' => __('Deleted School'),
             'breadcrumbs' => [
                 route('admin.school.index') => __('School'),

@@ -20,7 +20,7 @@
         <div class="section-header">
           @if ( ! empty($back))
             <div class="section-header-back">
-              <a href="{{ $back }}" class="btn btn-icon"><i class="fas fa-arrow-left"></i></a>
+              <a href="{{ $back }}" class="btn btn-icon" title="{{ __('Back') }}"><i class="fas fa-arrow-left"></i></a>
             </div>
           @endif
           <h1>{{ $title }}</h1>

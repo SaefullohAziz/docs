@@ -28,7 +28,6 @@
 
 		<div class="card card-primary">
 			<div class="card-header">
-				<a href="{{ route('admin.school.index') }}" class="btn btn-icon btn-success" title="{{ __('Back') }}"><i class="fas fa-chevron-left"></i></a>
             	<button class="btn btn-icon btn-secondary" onclick="reloadTable()" title="{{ __('Refresh') }}"><i class="fa fa-sync"></i></i></button>
 			</div>
 			<div class="card-body">
