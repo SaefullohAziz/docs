@@ -56,19 +56,20 @@
 								<div class="tab-content no-padding" id="schoolCommentTabContent">
 									@foreach ($schoolComments as $schoolComment)
 										<div class="tab-pane fade {{ $loop->first?'active':'' }} show" id="school-comment-{{ $loop->iteration }}" role="tabpanel" aria-labelledby="school-comment-{{ $loop->iteration }}-tab">
-											<div class="card chat-box" id="school-comment-{{ $loop->iteration }}-box">
-												<div class="card-body chat-content" tabindex="2" style="overflow: hidden; outline: none;">
-													@foreach ($schoolComment->schoolComments as $comment)
-														<div class="chat-item {{ $loop->odd?'chat-left':'chat-right' }}">
-															<img src="{{ asset($comment->staff->avatar) }}">
-															<div class="chat-details">
-																<div class="chat-text">{!! html_entity_decode($comment->message) !!}</div>
-																<div class="chat-time">{{ $comment->created_at }}</div>
+											<ul class="list-unstyled list-unstyled-border list-unstyled-noborder" style="height: 330px; overflow-y: scroll;">
+												@foreach ($schoolComment->schoolComments as $comment)
+													<li class="media">
+														<img alt="image" class="rounded-circle {{ $loop->odd?'order-2 ml-2':'mr-2' }}" width="50" src="{{ asset($comment->staff->avatar) }}">
+														<div class="media-body">
+															<div class="media-title mt-0 mb-0">{{ $comment->staff->name }}</div>
+															<div class="text-time mt-0 mb-0">{{ $comment->created_at }}</div>
+															<div class="media-description text-muted mt-0 mb-0">
+																{!! html_entity_decode($comment->message) !!}
 															</div>
 														</div>
-													@endforeach
-												</div>
-											</div>
+													</li>
+												@endforeach
+											</ul>
 										</div>
 									@endforeach
 								</div>
