@@ -159,6 +159,9 @@
 					</div>
 				</div>
 			</div>
+			<div class="col-sm-6">
+				<iframe src="https://www.google.com/maps/d/embed?mid=1s_v5py930HD8iqWPIawu_Kj7ktI" class="card card-body p-0" style="width: 100% ; min-height: 95% ;"></iframe>
+			</div>
 		</div>
 	</div>
 </div>
