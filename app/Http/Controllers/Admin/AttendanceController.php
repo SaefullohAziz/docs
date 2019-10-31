@@ -135,6 +135,9 @@ class AttendanceController extends Controller
         if ( ! auth()->guard('admin')->user()->can('create ' . $this->table)) {
             return redirect()->route('admin.attendance.index')->with('alert-danger', __($this->noPermission));
         }
+        if (auth()->guard('admin')->user()->cant('adminCreate', Attendance::class)) {
+            return redirect()->route('admin.attendance.index')->with('alert-danger', __($this->unauthorizedMessage));
+        }
         $view = [
             'title' => __('Create Attendance Confirmation'),
             'breadcrumbs' => [
@@ -162,6 +165,9 @@ class AttendanceController extends Controller
     {
         if ( ! auth()->guard('admin')->user()->can('create ' . $this->table)) {
             return redirect()->route('admin.attendance.index')->with('alert-danger', __($this->noPermission));
+        }
+        if (auth()->guard('admin')->user()->cant('adminCreate', Attendance::class)) {
+            return redirect()->route('admin.attendance.index')->with('alert-danger', __($this->unauthorizedMessage));
         }
         $request->merge([
             'participant' => ! empty($request->participant)?implode(', ', $request->participant):null,

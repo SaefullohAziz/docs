@@ -19,6 +19,7 @@ Route::get('/', 'HomeController@index')->name('home');
 
 // School
 Route::prefix('school')->name('school.')->group(function () {
+	Route::get('register', 'SchoolController@create')->name('register');
 	Route::get('edit', 'SchoolController@edit')->name('edit');
 	Route::put('update', 'SchoolController@update')->name('update');
 
@@ -353,6 +354,10 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
 			Route::get('/', 'SettingController@role')->name('index');
 			Route::post('/', 'SettingController@roleStore')->name('store');
 		});
+		Route::prefix('form')->name('form.')->group(function () {
+			Route::get('/', 'SettingController@form')->name('index');
+			Route::post('/', 'SettingController@formStore')->name('store');
+		});
     });
 
     // Account
@@ -404,10 +409,7 @@ Route::get('download/{dir}/{file}', function ($dir, $file) {
 
 Route::get('check', function (\Illuminate\Http\Request $request) {
 	if (env('APP_ENV') == 'local') {
-		$data = \Spatie\Permission\Models\Role::pluck('name', 'id')->toArray();
-		$data = collect($data)->map(function ($item, $key) {
-			return ucwords($item);
-		})->toArray();
+		$data = \DB::table('schools')->where('created_at', '>=', '2019-10-30 16:27:56')->get()->count();
 		dd($data);
 	}
 });

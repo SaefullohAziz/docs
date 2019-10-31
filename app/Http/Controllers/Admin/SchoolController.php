@@ -121,6 +121,9 @@ class SchoolController extends Controller
         if ( ! auth()->guard('admin')->user()->can('create ' . $this->table)) {
             return redirect()->route('admin.school.index')->with('alert-danger', __($this->noPermission));
         }
+        if (auth()->guard('admin')->user()->cant('adminCreate', School::class)) {
+            return redirect()->route('admin.school.index')->with('alert-danger', __($this->unauthorizedMessage));
+        }
         $view = [
             'title' => __('Create School'),
             'breadcrumbs' => [

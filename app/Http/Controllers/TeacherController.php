@@ -77,6 +77,9 @@ class TeacherController extends Controller
      */
     public function create()
     {
+        if (auth()->user()->cant('create', Teacher::class)) {
+            return redirect()->route('teacher.index')->with('alert-danger', __($this->unauthorizedMessage));
+        }
         $view = [
             'title' => __('Create Teacher'),
             'breadcrumbs' => [
@@ -95,6 +98,9 @@ class TeacherController extends Controller
      */
     public function store(Request $request)
     {
+        if (auth()->user()->cant('create', Teacher::class)) {
+            return redirect()->route('teacher.index')->with('alert-danger', __($this->unauthorizedMessage));
+        }
         $request->request->add(['school_id' => auth()->user()->school_id]);
         $request->merge([
             'date_of_birth' => date('Y-m-d', strtotime($request->date_of_birth)),

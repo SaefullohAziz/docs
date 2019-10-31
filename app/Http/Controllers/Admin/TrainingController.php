@@ -158,6 +158,9 @@ class TrainingController extends Controller
         if ( ! auth()->guard('admin')->user()->can('create ' . $this->table)) {
             return redirect()->route('admin.training.index')->with('alert-danger', __($this->noPermission));
         }
+        if (auth()->guard('admin')->user()->cant('adminCreate', Training::class)) {
+            return redirect()->route('admin.training.index')->with('alert-danger', __($this->unauthorizedMessage));
+        }
         $view = [
             'title' => __('Register Training'),
             'breadcrumbs' => [
@@ -182,6 +185,9 @@ class TrainingController extends Controller
     {
         if ( ! auth()->guard('admin')->user()->can('create ' . $this->table)) {
             return redirect()->route('admin.training.index')->with('alert-danger', __($this->noPermission));
+        }
+        if (auth()->guard('admin')->user()->cant('adminCreate', Training::class)) {
+            return redirect()->route('admin.training.index')->with('alert-danger', __($this->unauthorizedMessage));
         }
         $request->request->add(['booking_code' => Str::random(12)]);
         $training = Training::create($request->all());

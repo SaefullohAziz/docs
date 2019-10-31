@@ -4,7 +4,7 @@
 <div class="row">
 	<div class="col-12">
 
-		@if (request()->is('login'))
+		@if (session('logged-in'))
 			<div class="hero bg-primary text-white mb-4">
 				<div class="hero-inner">
 					<h2>{{ __('Welcome Back') }}, {{ auth()->user()->guard('admin')->name }}!</h2>

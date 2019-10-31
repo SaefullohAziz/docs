@@ -12,12 +12,16 @@ class SettingPermissionsTableSeeder extends Seeder
     public function run()
     {
         $data = [
-    		'access settings' => ['supersu'],
+    		'access settings' => ['supersu', 'admin'],
     		'access role settings' => ['supersu'],
+    		'access permission settings' => ['supersu'],
+    		'access form settings' => ['supersu', 'admin'],
+    		'access training settings' => ['supersu', 'admin'],
+    		'access exam_readiness settings' => ['supersu', 'admin'],
     	];
     	foreach ($data as $k => $v) {
     		$permission = \Spatie\Permission\Models\Permission::firstOrCreate(['name' => $k, 'guard_name' => 'admin']);
     		$permission->syncRoles($v, 'admin');
-    	}
+		}
     }
 }

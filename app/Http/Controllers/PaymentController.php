@@ -127,6 +127,9 @@ class PaymentController extends Controller
      */
     public function create()
     {
+        if (auth()->user()->cant('create', Payment::class)) {
+            return redirect()->route('payment.index')->with('alert-danger', __($this->unauthorizedMessage));
+        }
         $view = [
             'title' => __('Create Payment Confirmation'),
             'breadcrumbs' => [
@@ -149,6 +152,9 @@ class PaymentController extends Controller
      */
     public function store(StorePayment $request)
     {
+        if (auth()->user()->cant('create', Payment::class)) {
+            return redirect()->route('payment.index')->with('alert-danger', __($this->unauthorizedMessage));
+        }
         $request->request->add(['school_id' => auth()->user()->school->id]);
         $request->merge([
             'date' => date('Y-m-d', strtotime($request->date)),

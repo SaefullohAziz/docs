@@ -34,6 +34,26 @@ class FormServiceProvider extends ServiceProvider
             'helpTexts' => [],
             'ajax' => false
         ]);
+        Form::component('bsDate', 'layouts.components.form.date', [
+            'class' => null, 
+            'label', 
+            'name', 
+            'value' => null, 
+            'placeholder', 
+            'attributes' => [], 
+            'helpTexts' => [],
+            'ajax' => false
+        ]);
+        Form::component('bsDatetime', 'layouts.components.form.datetime', [
+            'class' => null, 
+            'label', 
+            'name', 
+            'value' => null, 
+            'placeholder', 
+            'attributes' => [], 
+            'helpTexts' => [],
+            'ajax' => false
+        ]);
         Form::component('bsPhoneNumber', 'layouts.components.form.phoneNumber', [
             'class' => null, 
             'label', 
@@ -66,6 +86,18 @@ class FormServiceProvider extends ServiceProvider
             'label', 
             'name', 
             'option' => [], 
+            'value' => null, 
+            'dataPlaceholder', 
+            'attributes' => [], 
+            'helpTexts' => [],
+            'ajax' => false
+        ]);
+        Form::component('bsSelectRange', 'layouts.components.form.selectRange', [
+            'class' => null, 
+            'label', 
+            'name', 
+            'start',
+            'finish', 
             'value' => null, 
             'dataPlaceholder', 
             'attributes' => [], 

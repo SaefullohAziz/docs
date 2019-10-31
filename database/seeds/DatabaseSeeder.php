@@ -32,5 +32,6 @@ class DatabaseSeeder extends Seeder
         $this->call(TeacherPermissionsTableSeeder::class);
         $this->call(AttendancePermissionsTableSeeder::class);
         $this->call(SettingPermissionsTableSeeder::class);
+        $this->call(FormSettingsSeeder::class);
     }
 }

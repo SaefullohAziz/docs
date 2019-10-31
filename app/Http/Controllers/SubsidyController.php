@@ -120,6 +120,9 @@ class SubsidyController extends Controller
      */
     public function create()
     {
+        if (auth()->user()->cant('create', Subsidy::class)) {
+            return redirect()->route('subsidy.index')->with('alert-danger', __($this->unauthorizedMessage));
+        }
         $view = [
             'title' => __('Create Subsidy'),
             'breadcrumbs' => [
@@ -142,6 +145,9 @@ class SubsidyController extends Controller
      */
     public function store(StoreSubsidy $request)
     {
+        if (auth()->user()->cant('create', Subsidy::class)) {
+            return redirect()->route('subsidy.index')->with('alert-danger', __($this->unauthorizedMessage));
+        }
         $request->request->add(['school_id' => auth()->user()->school->id]);
         $subsidy = Subsidy::create($request->all());
         $subsidy->submission_letter = $this->uploadSubmissionLetter($subsidy, $request);

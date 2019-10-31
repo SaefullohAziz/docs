@@ -117,6 +117,9 @@ class ExamReadinessController extends Controller
         if ( ! auth()->guard('admin')->user()->can('create ' . $this->table)) {
             return redirect()->route('admin.exam.readiness.index')->with('alert-danger', __($this->noPermission));
         }
+        if (auth()->guard('admin')->user()->cant('adminCreate', ExamReadiness::class)) {
+            return redirect()->route('admin.exam.readiness.index')->with('alert-danger', __($this->unauthorizedMessage));
+        }
         $view = [
             'title' => __('Create Exam Readiness'),
             'breadcrumbs' => [
@@ -141,6 +144,9 @@ class ExamReadinessController extends Controller
     {
         if ( ! auth()->guard('admin')->user()->can('create ' . $this->table)) {
             return redirect()->route('admin.exam.readiness.index')->with('alert-danger', __($this->noPermission));
+        }
+        if (auth()->guard('admin')->user()->cant('adminCreate', ExamReadiness::class)) {
+            return redirect()->route('admin.exam.readiness.index')->with('alert-danger', __($this->unauthorizedMessage));
         }
         if ($request->sub_exam_type && is_array($request->sub_exam_type)) {
             $request->merge(['sub_exam_type' => implode(', ', $request->sub_exam_type)]);

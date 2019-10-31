@@ -45,7 +45,7 @@ class SettingController extends Controller
                 'title' => __('Form'),
                 'description' => __('Form settings, such as open or close the form.'),
                 'icon' => 'fas fa-stopwatch',
-                'url' => '#',
+                'url' => route('admin.setting.form.index'),
             ],
             [
                 'title' => __('Training'),
@@ -85,6 +85,9 @@ class SettingController extends Controller
         return view('admin.setting.index', $view);
     }
 
+    /**
+     * Show role settings page
+     */
     public function role()
     {
         if ( ! auth()->guard('admin')->user()->can('access role ' . $this->table)) {
@@ -106,13 +109,69 @@ class SettingController extends Controller
         return view('admin.setting.role.index', $view);
     }
 
+    /**
+     * Save role settings into database
+     */
     public function roleStore(Request $request)
     {
+        if ( ! auth()->guard('admin')->user()->can('access role ' . $this->table)) {
+            return redirect()->route('admin.setting.index')->with('alert-danger', __($this->noPermission));
+        }
         $role = Role::find($request->role);
         foreach ($request->potential_staffs as $id) {
             $staff = Staff::find($id);
             $staff->syncRoles([$role->name]);
         }
+        return redirect(url()->previous())->with('alert-success', __($this->updatedMessage));
+    }
+
+    /**
+     * Show form settings page
+     */
+    public function form()
+    {
+        if ( ! auth()->guard('admin')->user()->can('access form ' . $this->table)) {
+            return redirect()->route('admin.setting.index')->with('alert-danger', __($this->noPermission));
+        }
+        $view = [
+            'back' => route('admin.setting.index'),
+            'title' => __('Form Settings'),
+            'breadcrumbs' => [
+                route('admin.setting.index') => __('Setting'),
+                route('admin.setting.role.index') => __('Form'),
+                null => __('Edit')
+            ],
+            'subtitle' => __('All About Form Settings'),
+            'description' => __('You can adjust all form settings here'),
+            'settings' => $this->settings,
+            'forms' => json_decode(setting('form_settings')),
+            'formLimiters' => [
+                'None' => __('None'),
+                'Quota' => __('Quota'),
+                'Datetime' => __('Datetime'),
+                'Both' => __('Both'),
+            ]
+        ];
+        return view('admin.setting.form.index', $view);
+    }
+
+    /**
+     * Save form settings into database
+     */
+    public function formStore(Request $request)
+    {
+        if ( ! auth()->guard('admin')->user()->can('access form ' . $this->table)) {
+            return redirect()->route('admin.setting.index')->with('alert-danger', __($this->noPermission));
+        }
+        foreach (json_decode(setting('form_settings')) as $formSetting) {
+            if (setting($formSetting->quota_limit_slug) != $request->{$formSetting->quota_limit_slug}) {
+                $request->request->add([$formSetting->setting_created_at_slug => now()->toDateTimeString()]);
+            }
+            if ($request->filled($formSetting->time_limit_slug)) {
+                $request->merge([$formSetting->time_limit_slug => date('Y-m-d h:m:s', strtotime($request->{$formSetting->time_limit_slug}))]);
+            }
+        }
+        setting($request->except(['_token']))->save();
         return redirect(url()->previous())->with('alert-success', __($this->updatedMessage));
     }
 }

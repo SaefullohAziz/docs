@@ -83,6 +83,9 @@ class ExamReadinessController extends Controller
      */
     public function create()
     {
+        if (auth()->user()->cant('create', ExamReadiness::class)) {
+            return redirect()->route('exam.readiness.index')->with('alert-danger', __($this->unauthorizedMessage));
+        }
         $view = [
             'title' => __('Create Exam Readiness'),
             'breadcrumbs' => [
@@ -107,6 +110,9 @@ class ExamReadinessController extends Controller
      */
     public function store(Request $request)
     {
+        if (auth()->user()->cant('create', ExamReadiness::class)) {
+            return redirect()->route('exam.readiness.index')->with('alert-danger', __($this->unauthorizedMessage));
+        }
         $request->request->add(['school_id' => auth()->user()->school->id]);
         if ($request->filled('exam_sub_types')) {
             $exam_sub = implode($request->exam_sub_types, ', ');

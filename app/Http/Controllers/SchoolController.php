@@ -33,7 +33,7 @@ class SchoolController extends Controller
     public function __construct()
     {
         parent::__construct();
-        $this->middleware('auth');
+        $this->middleware('auth', ['except' => ['create']]);
         $this->table = 'schools';
         $this->isoCertificates = ['Sudah' => 'Sudah', 'Dalam Proses (persiapan dokumen / pembentukan team audit internal / pendampingan)' => 'Dalam Proses (persiapan dokumen / pembentukan team audit internal / pendampingan)', 'Belum' => 'Belum'];
         $this->references = ['Sekolah Peserta / Sekolah Binaan', 'Dealer', 'Internet (Facebook Page/Web)', 'Lain-Lain'];
@@ -88,7 +88,9 @@ class SchoolController extends Controller
      */
     public function create()
     {
-        //
+        if (setting('school_form_status') == 0) {
+            return redirect()->route('home')->with('alert-danger', __($this->unauthorizedMessage));
+        }
     }
 
     /**

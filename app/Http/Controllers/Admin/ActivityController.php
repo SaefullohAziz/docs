@@ -101,6 +101,9 @@ class ActivityController extends Controller
         if ( ! auth()->guard('admin')->user()->can('create ' . $this->table)) {
             return redirect()->route('admin.activity.index')->with('alert-danger', __($this->noPermission));
         }
+        if (auth()->guard('admin')->user()->cant('adminCreate', Activity::class)) {
+            return redirect()->route('admin.activity.index')->with('alert-danger', __($this->unauthorizedMessage));
+        }
         $view = [
             'title' => __('Create Activity Submission'),
             'breadcrumbs' => [
@@ -123,6 +126,9 @@ class ActivityController extends Controller
     {
         if ( ! auth()->guard('admin')->user()->can('create ' . $this->table)) {
             return redirect()->route('admin.activity.index')->with('alert-danger', __($this->noPermission));
+        }
+        if (auth()->guard('admin')->user()->cant('adminCreate', Activity::class)) {
+            return redirect()->route('admin.activity.index')->with('alert-danger', __($this->unauthorizedMessage));
         }
         $request->merge([
             'date' => date('Y-m-d', strtotime($request->date)),

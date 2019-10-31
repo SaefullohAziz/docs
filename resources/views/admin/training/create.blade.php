@@ -314,7 +314,7 @@
 				$('input[name="pic_name"]').parent().parent('div').removeClass('d-none').addClass('d-block');
 	    		$('[name="pic_name"], [name="pic_position"], [name="pic_phone_number"], [name="pic_email"]').prop('required', true).prop('disabled', false).val('');
 			}
-		})
+		});
 	});
 
 	function deleteParticipant(id) {

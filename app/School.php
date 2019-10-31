@@ -173,9 +173,9 @@ class School extends Model
     /**
      * Get the exam readiness school for the school.
      */
-    public function examReadinessSchools()
+    public function examReadinessSchool()
     {
-        return $this->hasMany('App\ExamReadinessSchool');
+        return $this->hasOne('App\ExamReadinessSchool');
     }
 
     /**

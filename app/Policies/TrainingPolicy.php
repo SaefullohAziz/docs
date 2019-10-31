@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Admin\User as Staff;
 use App\User;
 use App\Training;
 use Illuminate\Auth\Access\HandlesAuthorization;
@@ -47,12 +48,26 @@ class TrainingPolicy
     /**
      * Determine whether the user can create trainings.
      *
+     * @param  \App\Admin\User  $user
+     * @return mixed
+     */
+    public function adminCreate(Staff $user)
+    {
+        return \Gate::allows('create-training');
+    }
+
+    /**
+     * Determine whether the user can create trainings.
+     *
      * @param  \App\User  $user
      * @return mixed
      */
     public function create(User $user)
     {
-        //
+        if (\Gate::allows('create-training')) {
+            return $user->school()->has('teachers')->first();
+        }
+        return false;
     }
 
     /**

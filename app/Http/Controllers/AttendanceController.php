@@ -109,9 +109,6 @@ class AttendanceController extends Controller
         if (auth()->user()->cant('create', Attendance::class)) {
             return redirect()->route('attendance.index')->with('alert-danger', __($this->unauthorizedMessage));
         }
-        if ( ! auth()->user()->school()->has('teachers')->first()) {
-            return redirect(route('teacher.create'))->with('alert-danger', __('Please register at least 1 teacher first.'));
-        }
         $types = $this->types;
         if (auth()->user()->status->order_by == '2a') {
             $types = ['Visitasi' => 'Visitasi'];
@@ -142,6 +139,9 @@ class AttendanceController extends Controller
      */
     public function store(Request $request)
     {
+        if (auth()->user()->cant('create', Attendance::class)) {
+            return redirect()->route('attendance.index')->with('alert-danger', __($this->unauthorizedMessage));
+        }
         $request->merge([
             'school_id' => auth()->user()->school_id,
             'participant' => ! empty($request->participant)?implode(', ', $request->participant):null,

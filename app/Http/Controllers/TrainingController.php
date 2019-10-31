@@ -127,8 +127,8 @@ class TrainingController extends Controller
      */
     public function create()
     {
-        if ( ! auth()->user()->school()->has('teachers')->first() ) {
-            return redirect()->route('teacher.create')->with('alert-danger', __('Please register at least 1 first.'));
+        if (auth()->user()->cant('create', Training::class)) {
+            return redirect()->route('training.index')->with('alert-danger', __($this->unauthorizedMessage));
         }
         $view = [
             'title' => __('Register Training'),
@@ -152,6 +152,9 @@ class TrainingController extends Controller
      */
     public function store(StoreTraining $request)
     {
+        if (auth()->user()->cant('create', Training::class)) {
+            return redirect()->route('training.index')->with('alert-danger', __($this->unauthorizedMessage));
+        }
         $request->request->add([
             'school_id' => auth()->user()->school->id,
             'booking_code' => Str::random(12),

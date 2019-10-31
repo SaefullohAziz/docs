@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Admin\User as Staff;
 use App\User;
 use App\Attendance;
 use Illuminate\Auth\Access\HandlesAuthorization;
@@ -36,12 +37,28 @@ class AttendancePolicy
     /**
      * Determine whether the user can create attendances.
      *
+     * @param  \App\Admin\User  $user
+     * @return mixed
+     */
+    public function adminCreate(Staff $user)
+    {
+        return \Gate::allows('create-attendance');
+    }
+
+    /**
+     * Determine whether the user can create attendances.
+     *
      * @param  \App\User  $user
      * @return mixed
      */
     public function create(User $user)
     {
-        return $user->hasStatus('2a', '3a');
+        if (\Gate::allows('create-attendance')) {
+            if ($user->hasStatus('2a', '3a')) {
+                return $user->school()->has('teachers')->first();
+            }
+        }
+        return false;
     }
 
     /**

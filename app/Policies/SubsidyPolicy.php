@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Admin\User as Staff;
 use App\User;
 use App\Subsidy;
 use Illuminate\Auth\Access\HandlesAuthorization;
@@ -47,12 +48,23 @@ class SubsidyPolicy
     /**
      * Determine whether the user can create subsidies.
      *
+     * @param  \App\Admin\User  $user
+     * @return mixed
+     */
+    public function adminCreate(Staff $user)
+    {
+        return \Gate::allows('create-subsidy');
+    }
+
+    /**
+     * Determine whether the user can create subsidies.
+     *
      * @param  \App\User  $user
      * @return mixed
      */
     public function create(User $user)
     {
-        //
+        return \Gate::allows('create-subsidy');
     }
 
     /**

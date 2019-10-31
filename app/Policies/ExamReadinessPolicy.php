@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Admin\User as Staff;
 use App\User;
 use App\ExamReadiness;
 use Illuminate\Auth\Access\HandlesAuthorization;
@@ -36,17 +37,31 @@ class ExamReadinessPolicy
     /**
      * Determine whether the user can create exam readinesses.
      *
+     * @param  \App\Admin\User  $user
+     * @return mixed
+     */
+    public function adminCreate(Staff $user)
+    {
+        return \Gate::allows('create-exam-readiness');
+    }
+
+    /**
+     * Determine whether the user can create exam readinesses.
+     *
      * @param  \App\User  $user
      * @return mixed
      */
     public function create(User $user)
     {
-        $student = \App\Student::whereHas('subsidy.latestSubsidyStatus.status', function ($query) {
+        $student = \App\Student::whereHas('subsidy.subsidyStatus.status', function ($query) {
             $query->where('name', 'Paid');
         })->whereHas('class', function ($query) {
             $query->where('school_id', auth()->user()->school->id);
         })->get();
-        return $student->count() > 0;
+        if (\Gate::allows('create-exam-readiness')) {
+            return $student->count() > 0;
+        }
+        return false;
     }
 
     /**

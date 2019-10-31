@@ -85,6 +85,9 @@ class TeacherController extends Controller
         if ( ! auth()->guard('admin')->user()->can('create ' . $this->table)) {
             return redirect()->route('admin.teacher.index')->with('alert-danger', __($this->noPermission));
         }
+        if (auth()->guard('admin')->user()->cant('adminCreate', Teacher::class)) {
+            return redirect()->route('admin.teacher.index')->with('alert-danger', __($this->unauthorizedMessage));
+        }
         $view = [
             'title' => __('Create Teacher'),
             'breadcrumbs' => [
@@ -106,6 +109,9 @@ class TeacherController extends Controller
     {
         if ( ! auth()->guard('admin')->user()->can('create ' . $this->table)) {
             return redirect()->route('admin.teacher.index')->with('alert-danger', __($this->noPermission));
+        }
+        if (auth()->guard('admin')->user()->cant('adminCreate', Teacher::class)) {
+            return redirect()->route('admin.teacher.index')->with('alert-danger', __($this->unauthorizedMessage));
         }
         $request->merge([
             'date_of_birth' => date('Y-m-d', strtotime($request->date_of_birth)),

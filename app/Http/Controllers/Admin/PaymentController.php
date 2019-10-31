@@ -160,6 +160,9 @@ class PaymentController extends Controller
         if ( ! auth()->guard('admin')->user()->can('create ' . $this->table)) {
             return redirect()->route('admin.payment.index')->with('alert-danger', __($this->noPermission));
         }
+        if (auth()->guard('admin')->user()->cant('adminCreate', Payment::class)) {
+            return redirect()->route('admin.payment.index')->with('alert-danger', __($this->unauthorizedMessage));
+        }
         $view = [
             'title' => __('Create Payment Confirmation'),
             'breadcrumbs' => [
@@ -185,6 +188,9 @@ class PaymentController extends Controller
     {
         if ( ! auth()->guard('admin')->user()->can('create ' . $this->table)) {
             return redirect()->route('admin.payment.index')->with('alert-danger', __($this->noPermission));
+        }
+        if (auth()->guard('admin')->user()->cant('adminCreate', Payment::class)) {
+            return redirect()->route('admin.payment.index')->with('alert-danger', __($this->unauthorizedMessage));
         }
         $request->merge([
             'date' => date('Y-m-d', strtotime($request->date)),

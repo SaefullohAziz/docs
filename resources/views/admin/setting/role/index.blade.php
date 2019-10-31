@@ -43,7 +43,6 @@
             </div>
             <div class="col-md-9">
                 {{ Form::open(['route' => 'admin.setting.role.store', 'files' => true]) }}
-                <form id="setting-form">
                     <div class="card">
                         <div class="card-header">
                             <h4>{{ $title }}</h4>

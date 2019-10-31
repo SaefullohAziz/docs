@@ -149,6 +149,9 @@ class SubsidyController extends Controller
         if ( ! auth()->guard('admin')->user()->can('create ' . $this->table)) {
             return redirect()->route('admin.subsidy.index')->with('alert-danger', __($this->noPermission));
         }
+        if (auth()->guard('admin')->user()->cant('adminCreate', Subsidy::class)) {
+            return redirect()->route('admin.subsidy.index')->with('alert-danger', __($this->unauthorizedMessage));
+        }
         $view = [
             'title' => __('Create Subsidy'),
             'breadcrumbs' => [
@@ -174,6 +177,9 @@ class SubsidyController extends Controller
     {
         if ( ! auth()->guard('admin')->user()->can('create ' . $this->table)) {
             return redirect()->route('admin.subsidy.index')->with('alert-danger', __($this->noPermission));
+        }
+        if (auth()->guard('admin')->user()->cant('adminCreate', Subsidy::class)) {
+            return redirect()->route('admin.subsidy.index')->with('alert-danger', __($this->unauthorizedMessage));
         }
         $subsidy = Subsidy::create($request->all());
         $subsidy->submission_letter = $this->uploadSubmissionLetter($subsidy, $request);

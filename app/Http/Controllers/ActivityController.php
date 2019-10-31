@@ -87,6 +87,9 @@ class ActivityController extends Controller
      */
     public function create()
     {
+        if (auth()->user()->cant('create', Activity::class)) {
+            return redirect()->route('activity.index')->with('alert-danger', __($this->unauthorizedMessage));
+        }
         $view = [
             'title' => __('Activity_Submission'),
             'breadcrumbs' => [
@@ -106,6 +109,9 @@ class ActivityController extends Controller
      */
     public function store(StoreActivity $request)
     {
+        if (auth()->user()->cant('create', Activity::class)) {
+            return redirect()->route('activity.index')->with('alert-danger', __($this->unauthorizedMessage));
+        }
         $request->request->add(['school_id' => auth()->user()->school->id]);
         $request->merge([
             'date' => date('Y-m-d', strtotime($request->date)),
