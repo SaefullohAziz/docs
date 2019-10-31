@@ -6,7 +6,11 @@
       <div class="row">
         <div class="col-12 col-sm-8 offset-sm-2 col-md-6 offset-md-3 col-lg-6 offset-lg-3 col-xl-4 offset-xl-4">
           <div class="login-brand">
-            {{ config('app.name', 'Laravel') }}
+            @if (setting('site_logo'))
+              <img src="{{ asset('storage/' . setting('site_logo')) }}" class="img-fluid p-2" alt="{{ __('Site Logo') }}">
+            @else
+              {{ config('app.name', 'Laravel') }}
+            @endif
           </div>
 
           <div class="card card-primary">

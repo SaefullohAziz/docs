@@ -164,16 +164,11 @@ class SchoolController extends Controller
             'phone_number' => $request->pic_phone_number,
             'email' => $request->pic_email
         ]);
-        $school->pic()->attach($pic->id, [
-            'created_at' => now(),
-            'updated_at' => now()
-        ]);
+        $school->pic()->attach($pic->id);
         $status = SchoolStatus::byName('Daftar')->first();
         $school->statuses()->attach($status->id, [
             'created_by' => 'staff',
             'staff_id' => auth()->guard('admin')->user()->id,
-            'created_at' => now(),
-            'updated_at' => now()
         ]);
         $this->uploadPhoto($school, $request);
         return redirect(url()->previous())->with('alert-success', __($this->createdMessage));

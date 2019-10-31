@@ -1,7 +1,13 @@
 <div class="main-sidebar sidebar-style-2">
   <aside id="sidebar-wrapper">
     <div class="sidebar-brand">
-      <a href="{{ route('admin.home') }}">{{ config('app.name', 'Laravel') }}</a>
+      <a href="{{ route('admin.home') }}">
+        @if (setting('site_logo'))
+          <img src="{{ asset('storage/' . setting('site_logo')) }}" class="img-fluid p-2" alt="{{ __('Site Logo') }}">
+        @else
+          {{ config('app.name', 'Laravel') }}
+        @endif
+      </a>
     </div>
     <div class="sidebar-brand sidebar-brand-sm">
       <a href="{{ route('admin.home') }}">{{ config('app.shortname', 'LV') }}</a>

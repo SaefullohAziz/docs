@@ -33,7 +33,7 @@ class SchoolController extends Controller
     public function __construct()
     {
         parent::__construct();
-        $this->middleware('auth', ['except' => ['create']]);
+        $this->middleware('auth', ['except' => ['create', 'store']]);
         $this->table = 'schools';
         $this->isoCertificates = ['Sudah' => 'Sudah', 'Dalam Proses (persiapan dokumen / pembentukan team audit internal / pendampingan)' => 'Dalam Proses (persiapan dokumen / pembentukan team audit internal / pendampingan)', 'Belum' => 'Belum'];
         $this->references = ['Sekolah Peserta / Sekolah Binaan', 'Dealer', 'Internet (Facebook Page/Web)', 'Lain-Lain'];
@@ -91,6 +91,16 @@ class SchoolController extends Controller
         if (setting('school_form_status') == 0) {
             return redirect()->route('home')->with('alert-danger', __($this->unauthorizedMessage));
         }
+        $view = [
+            'title' => __('Register School'),
+            'provinces' => Province::pluck('name', 'name')->toArray(),
+            'regencies' => Regency::pluck('name', 'name')->toArray(),
+            'policeNumbers' => PoliceNumber::pluck('name', 'name')->toArray(),
+            'departments' => array_merge(Department::pluck('name')->toArray(), [__('Other')]),
+            'isoCertificates' => $this->isoCertificates,
+            'references' => $this->references
+        ];
+        return view('school.register', $view);
     }
 
     /**
@@ -99,9 +109,31 @@ class SchoolController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreSchool $request)
     {
-        //
+        $request->merge([
+            'department' => implode(', ', $request->department),
+            'reference' => implode(', ', $request->reference),
+        ]);
+        $school = School::create($request->all());
+        $school->document = $this->uploadDocument($school, $request);
+        $school->save();
+        $pic = Pic::create([
+            'name' => $request->pic_name,
+            'position' => $request->pic_position,
+            'phone_number' => $request->pic_phone_number,
+            'email' => $request->pic_email
+        ]);
+        $school->pic()->attach($pic->id, [
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
+        $status = SchoolStatus::byName('Daftar')->first();
+        $school->statuses()->attach($status->id, [
+            'created_by' => 'school',
+        ]);
+        $this->uploadPhoto($school, $request);
+        return redirect(url()->previous())->with('alert-success', __('Thank you! Your registration has been successful. Please check your email for the next step.'));
     }
 
     /**
@@ -179,7 +211,7 @@ class SchoolController extends Controller
      * @param  string  $oldFile
      * @return string
      */
-    public function uploadDocument($school, Request $request, $oldFile = 'null')
+    public function uploadDocument($school, Request $request, $oldFile = null)
     {
         if ($request->hasFile('document')) {
             $filename = 'document_'.date('d_m_y_h_m_s_').md5(uniqid(rand(), true)).'.'.$request->document->extension();

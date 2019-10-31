@@ -6,6 +6,8 @@ use App\Admin\User as Staff;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Spatie\Permission\Models\Role;
+use Spatie\Image\Image;
+use Spatie\Image\Manipulations;
 
 class SettingController extends Controller
 {
@@ -27,7 +29,7 @@ class SettingController extends Controller
                 'title' => __('General'),
                 'description' => __('General settings such as, site title, site description, address and so on.'),
                 'icon' => 'fas fa-cog',
-                'url' => '#',
+                'url' => route('admin.setting.general.index'),
             ],
             [
                 'title' => __('Role'),
@@ -83,6 +85,65 @@ class SettingController extends Controller
             'settings' => $this->settings,
         ];
         return view('admin.setting.index', $view);
+    }
+
+    /**
+     * Show general settings page
+     */
+    public function general()
+    {
+        if ( ! auth()->guard('admin')->user()->can('access general ' . $this->table)) {
+            return redirect()->route('admin.setting.index')->with('alert-danger', __($this->noPermission));
+        }
+        $view = [
+            'back' => route('admin.setting.index'),
+            'title' => __('General Settings'),
+            'breadcrumbs' => [
+                route('admin.setting.index') => __('Setting'),
+                route('admin.setting.general.index') => __('General'),
+                null => __('Edit')
+            ],
+            'subtitle' => __('All About General Settings'),
+            'description' => __('You can adjust all general settings here'),
+            'settings' => $this->settings,
+        ];
+        return view('admin.setting.general.index', $view);
+    }
+
+    /**
+     * Save general settings into database
+     */
+    public function generalStore(Request $request)
+    {
+        if ( ! auth()->guard('admin')->user()->can('access general ' . $this->table)) {
+            return redirect()->route('admin.setting.index')->with('alert-danger', __($this->noPermission));
+        }
+        setting([
+            'site_logo' => $this->uploadLogo($request, setting('site_logo')),
+        ])->save();
+        return redirect(url()->previous())->with('alert-success', __($this->updatedMessage));
+    }
+
+    /**
+     * Upload logo
+     * 
+     * @param  \App\Student  $student
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string  $oldFile
+     * @return string
+     */
+    public function uploadLogo(Request $request, $oldFile = null)
+    {
+        if ($request->hasFile('site_logo')) {
+            Image::load($request->site_logo)
+                ->fit(Manipulations::FIT_CROP, 500, 115)
+                ->optimize()
+                ->save();
+            $filename = 'logo_'.date('d_m_y_h_m_s_').md5(uniqid(rand(), true)).'.'.$request->site_logo->extension();
+            $path = $request->site_logo->storeAs('public/file/', $filename);
+            return 'file/' . $filename;
+        }
+        return $oldFile;
     }
 
     /**

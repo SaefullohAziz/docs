@@ -174,6 +174,10 @@
     "Change Setting": "Ubah Pengaturan",
     "General": "Umum",
     "General settings such as, site title, site description, address and so on.": "Pengaturan umum seperti, judul situs, deskripsi situs, alamat dan sebagainya.",
+    "General Settings": "Pengaturan Umum",
+    "All About General Settings": "Semua Pengaturan Umum",
+    "You can adjust all general settings here": "Anda dapat mengubah semua pengaturan general disini.",
+    "Site Settings": "Pengaturan Situs",
     "Role": "Rol",
     "Account role settings, such as supersu, admin, and user.": "Pengaturan peran akun, seperti supersu, admin, dan pengguna.",
     "All About Role Settings": "Semua Pengaturan Rol",
@@ -333,6 +337,8 @@
     "Both": "Keduanya",
     "Limiter": "Pembatas",
     "Limitation": "Pembatasan",
+    "Choose file": "Pilih berkas",
+    "Site Logo": "Logo Situs",
 
     "Enter phone number without country code.": "Masukkan nomor handphone tanpa kode negara.",
     "Complete with an academic degree and or degree of expertise.": "Lengkapi dengan gelar akademi atau keahlian.",
@@ -353,6 +359,7 @@
     "For the return process to run without problems, the photo must show the account number.": "Agar proses pengembalian berjalan tanpa masalah, foto harus menunjukkan nomor rekening.",
 
     "This school has no SSP students.": "Sekolah ini tidak memiliki siswa SSP.",
+    "Thank you! Your registration has been successful. Please check your email for the next step.": "Terima kasih! Pendaftaran anda sudah berhasil. Silahkan cek email untuk langkah selanjutnya.",
 
     "Ready to provide transportation and accommodation for the MikroTik Trainer team.": "Siap menyediakan transportasi dan akomodasi tim Trainer MikroTik.",
 

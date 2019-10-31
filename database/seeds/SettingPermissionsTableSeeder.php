@@ -13,6 +13,7 @@ class SettingPermissionsTableSeeder extends Seeder
     {
         $data = [
     		'access settings' => ['supersu', 'admin'],
+    		'access general settings' => ['supersu'],
     		'access role settings' => ['supersu'],
     		'access permission settings' => ['supersu'],
     		'access form settings' => ['supersu', 'admin'],

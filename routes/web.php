@@ -42,7 +42,7 @@ Route::prefix('school')->name('school.')->group(function () {
 	]]);
 });
 Route::resource('school', 'SchoolController', ['only' => [
-	'index'
+	'index', 'store'
 ]]);
 
 // Document
@@ -350,6 +350,10 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
 	// Setting
     Route::prefix('setting')->name('setting.')->group(function () {
     	Route::get('/', 'SettingController@index')->name('index');
+		Route::prefix('general')->name('general.')->group(function () {
+			Route::get('/', 'SettingController@general')->name('index');
+			Route::post('/', 'SettingController@generalStore')->name('store');
+		});
 		Route::prefix('role')->name('role.')->group(function () {
 			Route::get('/', 'SettingController@role')->name('index');
 			Route::post('/', 'SettingController@roleStore')->name('store');
