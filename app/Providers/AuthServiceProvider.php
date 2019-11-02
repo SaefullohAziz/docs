@@ -64,24 +64,26 @@ class AuthServiceProvider extends ServiceProvider
         });
         */
 
-        foreach (json_decode(setting('form_settings')) as $formSetting) {
-            Gate::define('create-' . str_replace(' ', '-', strtolower($formSetting->name)), function ($user) use ($formSetting) {
-                if (setting($formSetting->status_slug) == 1) {
-                    $quota = \DB::table($formSetting->table)->where('created_at', '>=', setting($formSetting->setting_created_at_slug))->get()->count();
-                    if (setting($formSetting->limiter_slug) == 'Quota') {
-                        return setting($formSetting->quota_limit_slug) < $quota;
-                    } elseif (setting($formSetting->limiter_slug) == 'Datetime') {
-                        return date('Y-m-d h:m:s', strtotime(setting($formSetting->setting_created_at_slug))) <= date('Y-m-d h:m:s', strtotime(now()->toDateTimeString()));
-                    } elseif (setting($formSetting->limiter_slug) == 'Both') {
-                        if (setting($formSetting->quota_limit_slug) > $quota) {
-                            return false;
-                        } elseif (date('Y-m-d h:m:s', strtotime(setting($formSetting->setting_created_at_slug))) >= date('Y-m-d h:m:s', strtotime(now()->toDateTimeString()))) {
-                            return false;
-                        } 
+        if (setting('form_settings')) {
+            foreach (json_decode(setting('form_settings')) as $formSetting) {
+                Gate::define('create-' . str_replace(' ', '-', strtolower($formSetting->name)), function ($user) use ($formSetting) {
+                    if (setting($formSetting->status_slug) == 1) {
+                        $quota = \DB::table($formSetting->table)->where('created_at', '>=', setting($formSetting->setting_created_at_slug))->get()->count();
+                        if (setting($formSetting->limiter_slug) == 'Quota') {
+                            return setting($formSetting->quota_limit_slug) < $quota;
+                        } elseif (setting($formSetting->limiter_slug) == 'Datetime') {
+                            return date('Y-m-d h:m:s', strtotime(setting($formSetting->setting_created_at_slug))) <= date('Y-m-d h:m:s', strtotime(now()->toDateTimeString()));
+                        } elseif (setting($formSetting->limiter_slug) == 'Both') {
+                            if (setting($formSetting->quota_limit_slug) > $quota) {
+                                return false;
+                            } elseif (date('Y-m-d h:m:s', strtotime(setting($formSetting->setting_created_at_slug))) >= date('Y-m-d h:m:s', strtotime(now()->toDateTimeString()))) {
+                                return false;
+                            } 
+                        }
+                        return true;
                     }
-                    return true;
-                }
-            });
+                });
+            }
         }
     }
 }
