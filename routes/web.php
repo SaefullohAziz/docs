@@ -372,6 +372,7 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
     	Route::get('school/{user}/edit', 'AccountController@editSchool')->name('school.edit');
     	Route::match(['put', 'patch'], 'school/{user}', 'AccountController@updateSchool')->name('school.update');
     	Route::delete('destroy', 'AccountController@destroy')->name('destroy');
+    	Route::delete('reset', 'AccountController@reset')->name('reset');
     });
     Route::resource('account', 'AccountController', ['parameters' => [
 	    'account' => 'user'

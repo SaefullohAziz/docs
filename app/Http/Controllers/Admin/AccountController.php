@@ -65,7 +65,7 @@ class AccountController extends Controller
             $accounts = Staff::list($request);
             return DataTables::of($accounts)
                 ->addColumn('DT_RowIndex', function ($data) {
-                    return '<div class="checkbox icheck"><label><input type="checkbox" name="selectedData[]" value="'.$data->id.'"></label></div>';
+                    return '<div class="checkbox icheck"><label><input type="checkbox" name="selectedData[]" value="'.$data->id.'/'.$data->type.'"></label></div>';
                 })
                 ->editColumn('created_at', function($data) {
                     return (date('d-m-Y h:m:s', strtotime($data->created_at)));
@@ -309,7 +309,41 @@ class AccountController extends Controller
         if ( ! auth()->guard('admin')->user()->can('delete ' . $this->table)) {
             return response()->json(['status' => false, 'message' => __($this->noPermission)], 422);
         }
-        Staff::destroy($request->selectedData);
+        $staffs = [];
+        $schools = [];
+        foreach ($request->selectedData as $data) {
+            $explode = explode('/', $data);
+            if(strtolower(end($explode)) == 'school'){
+                $schools[] = $explode[0];
+            } else {
+                $staffs[] = $explode[0];
+            }
+        }
+        Staff::destroy($staffs);
+        User::destroy($schools);
         return response()->json(['status' => true, 'message' => __($this->deletedMessage)]);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\Admin\User  $user
+     * @return \Illuminate\Http\Response
+     */
+    public function reset(Request $request)
+    {
+        $staffs = [];
+        $schools = [];
+        foreach ($request->selectedData as $data) {
+            $explode = explode('/', $data);
+            if(strtolower(end($explode)) == 'school'){
+                $schools[] = $explode[0];
+            } else {
+                $staffs[] = $explode[0];
+            }
+        }
+        Staff::whereIn('id', $staffs)->update(['password' => Hash::make('!Indo!Joss!')]);
+        User::whereIn('id', $schools)->update(['password' => Hash::make('rememberthat')]);
+        return response()->json(['status' => true, 'message' => __($this->updatedMessage)]);
     }
 }
