@@ -362,6 +362,10 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
 			Route::get('/', 'SettingController@form')->name('index');
 			Route::post('/', 'SettingController@formStore')->name('store');
 		});
+		Route::prefix('training')->name('training.')->group(function () {
+			Route::get('/', 'SettingController@training')->name('index');
+			Route::post('/', 'SettingController@trainingStore')->name('store');
+		});
     });
 
     // Account

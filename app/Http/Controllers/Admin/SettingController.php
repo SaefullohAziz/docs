@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use Spatie\Permission\Models\Role;
 use Spatie\Image\Image;
 use Spatie\Image\Manipulations;
+use App\Department;
 
 class SettingController extends Controller
 {
@@ -53,7 +54,7 @@ class SettingController extends Controller
                 'title' => __('Training'),
                 'description' => __('Training settings, such as quota limit, and payment nominal.'),
                 'icon' => 'fas fa-business-time',
-                'url' => '#',
+                'url' => route('admin.setting.training.index'),
             ],
             [
                 'title' => __('Exam Readiness'),
@@ -230,6 +231,64 @@ class SettingController extends Controller
             }
             if ($request->filled($formSetting->time_limit_slug)) {
                 $request->merge([$formSetting->time_limit_slug => date('Y-m-d h:m:s', strtotime($request->{$formSetting->time_limit_slug}))]);
+            }
+        }
+        setting($request->except(['_token']))->save();
+        return redirect(url()->previous())->with('alert-success', __($this->updatedMessage));
+    }
+
+    /**
+     * Show Training settings page
+     */
+    public function training()
+    {
+        // dd(json_decode(setting('training_settings')));
+        // if ( ! auth()->guard('admin')->user()->can('access training ' . $this->table)) {
+        //     return redirect()->route('admin.setting.index')->with('alert-danger', __($this->noPermission));
+        // }
+        $view = [
+            'back' => route('admin.setting.index'),
+            'title' => __('Training Settings'),
+            'breadcrumbs' => [
+                route('admin.setting.index') => __('Setting'),
+                route('admin.setting.training.index') => __('Training'),
+                null => __('Edit')
+            ],
+            'subtitle' => __('All About Training Settings'),
+            'description' => __('You can adjust all training settings here'),
+            'settings' => $this->settings,
+            'forms' => json_decode(setting('training_settings')),
+            'formLimiters' => [
+                'None' => __('None'),
+                'Quota' => __('Quota'),
+                'Datetime' => __('Datetime'),
+                'Both' => __('Both'),
+            ],
+            'schoolLevels' => [
+                'None' => __('None'),
+                'Binaan' => __('Binaan'),
+                'Rintisan' => __('Rintisan'),
+                'Both' => __('Both'),
+            ],
+            'schoolImplementations' => Department::pluck('abbreviation', 'abbreviation')->toArray(),
+        ];
+        return view('admin.setting.training.index', $view);
+    }
+
+    /**
+     * Save form settings into database
+     */
+    public function trainingStore(Request $request)
+    {
+        // if ( ! auth()->guard('admin')->user()->can('access form ' . $this->table)) {
+        //     return redirect()->route('admin.setting.index')->with('alert-danger', __($this->noPermission));
+        // }
+        foreach (json_decode(setting('training_settings')) as $trainingSetting) {
+            if (setting($trainingSetting->quota_limit_slug) != $request->{$trainingSetting->quota_limit_slug}) {
+                $request->request->add([$trainingSetting->setting_created_at_slug => now()->toDateTimeString()]);
+            }
+            if ($request->filled($trainingSetting->time_limit_slug)) {
+                $request->merge([$trainingSetting->time_limit_slug => date('Y-m-d h:m:s', strtotime($request->{$trainingSetting->time_limit_slug}))]);
             }
         }
         setting($request->except(['_token']))->save();
