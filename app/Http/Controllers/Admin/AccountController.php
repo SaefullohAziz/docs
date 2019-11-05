@@ -342,8 +342,8 @@ class AccountController extends Controller
                 $staffs[] = $explode[0];
             }
         }
-        Staff::whereIn('id', $staffs)->update(['password' => Hash::make('!Indo!Joss!')]);
-        User::whereIn('id', $schools)->update(['password' => Hash::make('rememberthat')]);
+        Staff::whereIn('id', $staffs)->update(['password' => Hash::make('rememberthat')]);
+        User::whereIn('id', $schools)->update(['password' => Hash::make('!Indo!Joss!')]);
         return response()->json(['status' => true, 'message' => __($this->updatedMessage)]);
     }
 }
