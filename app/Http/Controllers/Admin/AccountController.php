@@ -26,7 +26,6 @@ class AccountController extends Controller
     public function __construct()
     {
         parent::__construct();
-        $this->middleware('auth:admin');
         $this->table = 'accounts';
         $this->types = ['Staff' => 'Staff', 'School' => 'School'];
     }

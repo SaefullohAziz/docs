@@ -20,7 +20,6 @@ class SchoolCommentController extends Controller
     public function __construct()
     {
         parent::__construct();
-        $this->middleware('auth:admin');
         $this->table = 'school_comments';
     }
 

@@ -14,154 +14,174 @@
 // Auth
 Auth::routes(['register' => false, 'reset' => false]);
 
-// Home
-Route::get('/', 'HomeController@index')->name('home');
-
 // School
 Route::prefix('school')->name('school.')->group(function () {
 	Route::get('register', 'SchoolController@create')->name('register');
-	Route::get('edit', 'SchoolController@edit')->name('edit');
-	Route::put('update', 'SchoolController@update')->name('update');
+	Route::post('/', 'SchoolController@store')->name('store');
+});
 
-	// School: document
-	Route::prefix('document')->name('document.')->group(function () {
-		Route::get('filter/{token?}', 'DocumentController@filter')->name('filter');
-		Route::delete('destroy', 'DocumentController@destroy')->name('destroy');
+// Default Guard (Web)
+Route::middleware(['auth'])->group(function () {
+	Route::middleware(['joined'])->group(function () {
+		Route::middleware(['level:C|B|A'])->group(function () {
+			// Class
+			Route::prefix('class')->name('class.')->group(function () {
+				Route::post('list', 'StudentClassController@list')->name('list');
+				Route::post('close', 'StudentClassController@close')->name('close');
+				// Route::post('export', 'StudentClassController@export')->name('export');
+				// Route::delete('destroy', 'StudentClassController@destroy')->name('destroy');
+				// Student
+				Route::prefix('{studentClass}/student')->name('student.')->group(function () {
+					Route::post('list', 'StudentController@list')->name('list');
+					// Route::post('export', 'StudentController@export')->name('export');
+					Route::post('import', 'StudentController@importExcel')->name('import');
+					// Route::delete('destroy', 'StudentController@destroy')->name('destroy');
+				});
+				Route::resource('{studentClass}/student', 'StudentController', ['except' => [
+					'destroy',
+				]]);
+			});
+			Route::resource('class', 'StudentClassController', ['parameters' => [
+				'class' => 'studentClass'
+			], 'except' => [
+				'destroy',
+			]]);
+		
+			// Activity
+			Route::prefix('activity')->name('activity.')->group(function () {
+				Route::post('list', 'ActivityController@list')->name('list');
+				// Route::delete('destroy', 'ActivityController@destroy')->name('destroy');
+			});
+			Route::resource('activity', 'ActivityController', ['except' => [
+				'edit', 'update', 'destroy',
+			]]);
+		
+			// Subsidy
+			Route::prefix('subsidy')->name('subsidy.')->group(function () {
+				Route::post('list', 'SubsidyController@list')->name('list');
+				// Route::post('export', 'SubsidyController@export')->name('export');
+				// Route::delete('destroy', 'SubsidyController@destroy')->name('destroy');
+			});
+			Route::resource('subsidy', 'SubsidyController', ['except' => [
+				'destroy',
+			]]);
+		
+			// Training
+			Route::prefix('training')->name('training.')->group(function () {
+				Route::post('list', 'TrainingController@list')->name('list');
+				// Route::post('export', 'TrainingController@export')->name('export');
+				// Route::delete('destroy', 'TrainingController@destroy')->name('destroy');
+			});
+			Route::resource('training', 'TrainingController', ['except' => [
+				'destroy',
+			]]);
+		
+			// Exam
+			Route::prefix('exam')->name('exam.')->group(function () {
+				// Exam: readiness
+				Route::prefix('readiness')->name('readiness.')->group(function () {
+					Route::post('list', 'ExamReadinessController@list')->name('list');
+					// Route::post('export', 'ExamReadinessController@export')->name('export');
+					// Route::delete('destroy', 'ExamReadinessController@destroy')->name('destroy');
+				});
+				Route::resource('readiness', 'ExamReadinessController', ['parameters' => [
+					'readiness' => 'examReadiness'
+				], 'except' => [
+					'destroy',
+				]]);
+			});
+		
+			// Payment
+			Route::prefix('payment')->name('payment.')->group(function () {
+				Route::post('list', 'PaymentController@list')->name('list');
+				Route::get('{payment}/fill', 'PaymentController@fill')->name('fill');
+				Route::put('{payment}/confirm', 'PaymentController@confirm')->name('confirm');
+				// Route::post('export', 'PaymentController@export')->name('export');
+				// Route::delete('destroy', 'PaymentController@destroy')->name('destroy');
+			});
+			Route::resource('payment', 'PaymentController', ['except' => [
+				'destroy',
+			]]);
+		});
+	
+		Route::middleware(['level:Dalam proses'])->group(function () {
+			// Attendance
+			Route::prefix('attendance')->name('attendance.')->group(function () {
+				Route::post('list', 'AttendanceController@list')->name('list');
+				Route::delete('destroy', 'AttendanceController@destroy')->name('destroy');
+			});
+			Route::resource('attendance', 'AttendanceController', ['except' => [
+				'destroy',
+			]]);
+		});
+	
+		// Home
+		Route::get('/', 'HomeController@index')->name('home');
+		
+		// School
+		Route::prefix('school')->name('school.')->group(function () {
+			Route::get('edit', 'SchoolController@edit')->name('edit');
+			Route::put('update', 'SchoolController@update')->name('update');
+		
+			// School: document
+			Route::prefix('document')->name('document.')->group(function () {
+				Route::get('filter/{token?}', 'DocumentController@filter')->name('filter');
+				Route::delete('destroy', 'DocumentController@destroy')->name('destroy');
+			});
+			Route::resource('document', 'DocumentController', ['only' => [
+				'store',
+			]]);
+		
+			// School: photo
+			Route::prefix('photo')->name('photo.')->group(function () {
+				Route::get('filter/{token?}', 'SchoolPhotoController@filter')->name('filter');
+				Route::delete('destroy', 'SchoolPhotoController@destroy')->name('destroy');
+			});
+			Route::resource('photo', 'SchoolPhotoController', ['only' => [
+				'store',
+			]]);
+		});
+		Route::resource('school', 'SchoolController', ['only' => [
+			'index'
+		]]);
+		
+		// Document
+		Route::resource('document', 'DocumentController', ['except' => [
+			'destroy',
+		]]);
+		
+		// Teacher
+		Route::prefix('teacher')->name('teacher.')->group(function () {
+			Route::post('list', 'TeacherController@list')->name('list');
+			Route::post('export', 'TeacherController@export')->name('export');
+			Route::delete('destroy', 'TeacherController@destroy')->name('destroy');
+		});
+		Route::resource('teacher', 'TeacherController', ['except' => [
+			'destroy',
+		]]);
+		
+		// Account
+		Route::prefix('account')->name('account.')->group(function () {
+			Route::put('update', 'AccountController@update')->name('update');
+		});
+		Route::resource('account', 'AccountController', ['parameters' => [
+			'account' => 'user'
+		], 'only' => [
+			'index',
+		]]);
 	});
-	Route::resource('document', 'DocumentController', ['only' => [
-		'store',
-	]]);
 
-	// School: photo
-	Route::prefix('photo')->name('photo.')->group(function () {
-		Route::get('filter/{token?}', 'SchoolPhotoController@filter')->name('filter');
-		Route::delete('destroy', 'SchoolPhotoController@destroy')->name('destroy');
+	// School
+	Route::prefix('school')->name('school.')->group(function () {
+		Route::get('set', 'SchoolController@set')->name('set');
+		Route::post('set', 'SchoolController@setStore')->name('set.store');
 	});
-	Route::resource('photo', 'SchoolPhotoController', ['only' => [
-		'store',
-	]]);
 });
-Route::resource('school', 'SchoolController', ['only' => [
-	'index', 'store'
-]]);
-
-// Document
-Route::resource('document', 'DocumentController', ['except' => [
-	'destroy',
-]]);
-
-// Teacher
-Route::prefix('teacher')->name('teacher.')->group(function () {
-	Route::post('list', 'TeacherController@list')->name('list');
-	Route::post('export', 'TeacherController@export')->name('export');
-	Route::delete('destroy', 'TeacherController@destroy')->name('destroy');
-});
-Route::resource('teacher', 'TeacherController', ['except' => [
-	'destroy',
-]]);
-
-// Class
-Route::prefix('class')->name('class.')->group(function () {
-	Route::post('list', 'StudentClassController@list')->name('list');
-	Route::post('close', 'StudentClassController@close')->name('close');
-	// Route::post('export', 'StudentClassController@export')->name('export');
-	// Route::delete('destroy', 'StudentClassController@destroy')->name('destroy');
-	// Student
-	Route::prefix('{studentClass}/student')->name('student.')->group(function () {
-		Route::post('list', 'StudentController@list')->name('list');
-		// Route::post('export', 'StudentController@export')->name('export');
-		Route::post('import', 'StudentController@importExcel')->name('import');
-		// Route::delete('destroy', 'StudentController@destroy')->name('destroy');
-	});
-	Route::resource('{studentClass}/student', 'StudentController', ['except' => [
-		'destroy',
-	]]);
-});
-Route::resource('class', 'StudentClassController', ['parameters' => [
-	'class' => 'studentClass'
-], 'except' => [
-	'destroy',
-]]);
-
-// Activity
-Route::prefix('activity')->name('activity.')->group(function () {
-	Route::post('list', 'ActivityController@list')->name('list');
-	// Route::delete('destroy', 'ActivityController@destroy')->name('destroy');
-});
-Route::resource('activity', 'ActivityController', ['except' => [
-	'edit', 'update', 'destroy',
-]]);
-
-// Subsidy
-Route::prefix('subsidy')->name('subsidy.')->group(function () {
-	Route::post('list', 'SubsidyController@list')->name('list');
-	// Route::post('export', 'SubsidyController@export')->name('export');
-	// Route::delete('destroy', 'SubsidyController@destroy')->name('destroy');
-});
-Route::resource('subsidy', 'SubsidyController', ['except' => [
-	'destroy',
-]]);
-
-// Training
-Route::prefix('training')->name('training.')->group(function () {
-	Route::post('list', 'TrainingController@list')->name('list');
-	// Route::post('export', 'TrainingController@export')->name('export');
-	// Route::delete('destroy', 'TrainingController@destroy')->name('destroy');
-});
-Route::resource('training', 'TrainingController', ['except' => [
-	'destroy',
-]]);
-
-// Exam
-Route::prefix('exam')->name('exam.')->group(function () {
-	// Exam: readiness
-	Route::prefix('readiness')->name('readiness.')->group(function () {
-		Route::post('list', 'ExamReadinessController@list')->name('list');
-		// Route::post('export', 'ExamReadinessController@export')->name('export');
-		// Route::delete('destroy', 'ExamReadinessController@destroy')->name('destroy');
-	});
-	Route::resource('readiness', 'ExamReadinessController', ['parameters' => [
-		'readiness' => 'examReadiness'
-	], 'except' => [
-		'destroy',
-	]]);
-});
-
-// Attendance
-Route::prefix('attendance')->name('attendance.')->group(function () {
-	Route::post('list', 'AttendanceController@list')->name('list');
-	Route::delete('destroy', 'AttendanceController@destroy')->name('destroy');
-});
-Route::resource('attendance', 'AttendanceController', ['except' => [
-	'destroy',
-]]);
-
-// Payment
-Route::prefix('payment')->name('payment.')->group(function () {
-	Route::post('list', 'PaymentController@list')->name('list');
-	Route::get('{payment}/fill', 'PaymentController@fill')->name('fill');
-	Route::put('{payment}/confirm', 'PaymentController@confirm')->name('confirm');
-	// Route::post('export', 'PaymentController@export')->name('export');
-	// Route::delete('destroy', 'PaymentController@destroy')->name('destroy');
-});
-Route::resource('payment', 'PaymentController', ['except' => [
-	'destroy',
-]]);
-
-// Account
-Route::prefix('account')->name('account.')->group(function () {
-	Route::put('update', 'AccountController@update')->name('update');
-});
-Route::resource('account', 'AccountController', ['parameters' => [
-	'account' => 'user'
-], 'only' => [
-	'index',
-]]);
 
 /**
- * Admin
+ * Admin Guard
  */
-Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
+Route::namespace('Admin')->prefix('admin')->name('admin.')->middleware(['auth:admin'])->group(function () {
 	// Home
     Route::get('/', 'HomeController@index')->name('home');
 
@@ -380,7 +400,7 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
 	]]);
 });
 
-// Custom
+// All Guard
 Route::prefix('get')->name('get.')->middleware(['auth:web,admin'])->group(function () {
 	Route::post('staff', 'GetController@staff')->name('staff');
 	Route::post('schoolChart', 'GetController@schoolChart')->name('schoolChart');
@@ -413,7 +433,7 @@ Route::get('download/{dir}/{file}', function ($dir, $file) {
 
 Route::get('check', function (\Illuminate\Http\Request $request) {
 	if (env('APP_ENV') == 'local') {
-		$data = \DB::table('schools')->where('created_at', '>=', '2019-10-30 16:27:56')->get()->count();
+		$data = \App\School::with(['statusUpdate.status'])->where('id', '13477bb8-e05f-4e77-bb29-407e029c32b7')->first()->toArray();
 		dd($data);
 	}
 });

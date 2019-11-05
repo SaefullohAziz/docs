@@ -21,7 +21,6 @@ class SchoolPhotoController extends Controller
     public function __construct()
     {
         parent::__construct();
-        $this->middleware('auth');
         $this->table = 'school_photos';
     }
 

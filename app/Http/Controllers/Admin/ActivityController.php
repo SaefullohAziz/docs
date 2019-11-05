@@ -27,7 +27,6 @@ class ActivityController extends Controller
     {
 
         parent::__construct();
-        $this->middleware('auth:admin');
         $this->table = 'activities';
         $this->types = [
                 'MOU' => 'M.O.U',

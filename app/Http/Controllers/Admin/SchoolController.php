@@ -36,7 +36,6 @@ class SchoolController extends Controller
     public function __construct()
     {
         parent::__construct();
-        $this->middleware('auth:admin');
         $this->table = 'schools';
         $this->isoCertificates = ['Sudah' => 'Sudah', 'Dalam Proses (persiapan dokumen / pembentukan team audit internal / pendampingan)' => 'Dalam Proses (persiapan dokumen / pembentukan team audit internal / pendampingan)', 'Belum' => 'Belum'];
         $this->references = ['Sekolah Peserta / Sekolah Binaan', 'Dealer', 'Internet (Facebook Page/Web)', 'Lain-Lain'];
@@ -243,7 +242,7 @@ class SchoolController extends Controller
             'departments' => array_merge(Department::pluck('name')->toArray(), [__('Other')]),
             'isoCertificates' => $this->isoCertificates,
             'references' => $this->references,
-            'school' => $school
+            'data' => $school
         ];
         return view('admin.school.edit', $view);
     }
@@ -267,15 +266,22 @@ class SchoolController extends Controller
         $school = $school->fill($request->all());
         $school->document = $this->uploadDocument($school, $request);
         $school->save();
-        $pic = Pic::find($school->schoolPic->pic_id);
-        $pic->fill([
-            'name' => $request->pic_name,
-            'position' => $request->pic_position,
-            'phone_number' => $request->pic_phone_number,
-            'email' => $request->pic_email
+        $pic = $school->pic[0]->fill([
+            'name' => $request->pic[0]['name'],
+            'position' => $request->pic[0]['position'],
+            'phone_number' => $request->pic[0]['phone_number'],
+            'email' => $request->pic[0]['email']
         ]);
         $pic->save();
-        $school->pic()->sync([$pic->id]);
+        if ($school->pic()->count() > 1) {
+            $pic = $school->pic[1]->fill([
+                'name' => $request->pic[1]['name'],
+                'position' => $request->pic[1]['position'],
+                'phone_number' => $request->pic[1]['phone_number'],
+                'email' => $request->pic[1]['email']
+            ]);
+            $pic->save();
+        }
         $this->uploadPhoto($school, $request);
         return redirect(url()->previous())->with('alert-success', __($this->updatedMessage));
     }

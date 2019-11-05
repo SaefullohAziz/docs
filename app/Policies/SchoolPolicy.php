@@ -69,6 +69,20 @@ class SchoolPolicy
     }
 
     /**
+     * Determine whether the user can set the second school PIC and implemented department.
+     *
+     * @param  \App\User  $user
+     * @param  \App\School  $school
+     * @return mixed
+     */
+    public function set(User $user)
+    {
+        if ($user->hasStatus(['4a'])) {
+            return $user->school->pic->count() < 2 || $user->school->implementations->count() < 1;
+        }
+    }
+
+    /**
      * Determine whether the user can delete the school.
      *
      * @param  \App\User  $user

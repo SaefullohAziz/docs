@@ -339,6 +339,13 @@
     "Limitation": "Pembatasan",
     "Choose file": "Pilih berkas",
     "Site Logo": "Logo Situs",
+    "Requirements": "Persyaratan",
+    "Etc": "Lain-Lain",
+    "Implemented Department": "Jurusan Implementasi",
+    "Other Department": "Jurusan Lain",
+    "Second PIC Data": "Data PIC Kedua",
+    "PIC 1 Data": "Data PIC 1",
+    "PIC 2 Data": "Data PIC 2",
 
     "Enter phone number without country code.": "Masukkan nomor handphone tanpa kode negara.",
     "Complete with an academic degree and or degree of expertise.": "Lengkapi dengan gelar akademi atau keahlian.",
@@ -350,6 +357,7 @@
     "This is only used for export.": "Ini hanya digunakan untuk eksport.",
     "As per the name on the account": "Sesuai nama di rekening",
     "No punctuation or comma or strip. 10 digits minimum.": "Tanpa tanda baca titik/koma/strip. Minimal 10 digit.",
+    "Only 1 department is permitted. Don't use commas.": "Hanya 1 jurusan yang diizinkan. Jangan gunakan tanda koma.",
 
     "File must have extension *.ZIP/*.RAR with size 5 MB or less.": "File harus berektensi *.ZIP/*.RAR dengan ukuran 5 MB atau kurang.",
     "Don't compress photos on RAR/ZIP. Because, some photos can be uploaded at once. Maximum size is 5 MB per file.": "Jangan satukan foto menjadi RAR/ZIP. Karena, beberapa foto dapat diunggah sekaligus. Ukuran maksimal 5 MB per berkas.",
@@ -360,6 +368,8 @@
 
     "This school has no SSP students.": "Sekolah ini tidak memiliki siswa SSP.",
     "Thank you! Your registration has been successful. Please check your email for the next step.": "Terima kasih! Pendaftaran anda sudah berhasil. Silahkan cek email untuk langkah selanjutnya.",
+    "You must determine the department to be implemented and the second PIC.": "Anda harus menentukan jurusan yang akan diimplementasikan dan PIC kedua.",
+    "Requirements for Join": "Persyaratan untuk bergabung",
 
     "Ready to provide transportation and accommodation for the MikroTik Trainer team.": "Siap menyediakan transportasi dan akomodasi tim Trainer MikroTik.",
 

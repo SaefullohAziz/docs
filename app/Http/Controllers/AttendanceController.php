@@ -29,8 +29,6 @@ class AttendanceController extends Controller
     public function __construct()
     {
         parent::__construct();
-        $this->middleware('auth');
-        $this->middleware('level:Dalam proses');
         $this->table = 'attendances';
         $this->types = [
             'Audiensi' => 'Audiensi',
