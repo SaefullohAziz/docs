@@ -61,6 +61,7 @@
 				@if (auth()->guard('admin')->user()->can('delete accounts'))
 					<button class="btn btn-danger btn-sm" name="deleteData" title="{{ __('Delete') }}">{{ __('Delete') }}</button>
 				@endif
+				<button class="btn btn-dark btn-sm" name="resetPassword" title="{{ __('Reset password') }}">{{ __('Reset') }}</button>
 			</div>
 		</div>
 
@@ -142,6 +143,47 @@
 							{
 								if (JSON.parse(jqXHR.responseText).status) {
 									swal("{{ __('Failed!') }}", '{{ __("Data cannot be deleted.") }}', "warning");
+								} else {
+									swal(JSON.parse(jqXHR.responseText).message, "", "error");
+								}
+							}
+						});
+			      	}
+    			});
+			} else {
+				swal("{{ __('Please select a data..') }}", "", "warning");
+			}
+		});
+
+		$('[name="resetPassword"]').click(function(event) {
+			if ($('[name="selectedData[]"]:checked').length > 0) {
+				event.preventDefault();
+				var selectedData = $('[name="selectedData[]"]:checked').map(function(){
+					return $(this).val();
+				}).get();
+				swal({
+			      	title: '{{ __("Are you sure want to reset this account?") }}',
+			      	text: '',
+			      	icon: 'warning',
+			      	buttons: ['{{ __("Cancel") }}', true],
+			      	dangerMode: true,
+			    })
+			    .then((willReset) => {
+			      	if (willReset) {
+			      		$.ajax({
+							url : "{{ route('admin.account.reset') }}",
+							type: "DELETE",
+							dataType: "JSON",
+							data: {"_token" : "{{ csrf_token() }}", "selectedData" : selectedData},
+							success: function(data)
+							{
+								swal("{{ __('Success!') }}", '{{ __("Reseting succeed.") }}', "success");
+								reloadTable();
+							},
+							error: function (jqXHR, textStatus, errorThrown)
+							{
+								if (JSON.parse(jqXHR.responseText).status) {
+									swal("{{ __('Failed!') }}", '{{ __("Data cannot be reseted.") }}', "warning");
 								} else {
 									swal(JSON.parse(jqXHR.responseText).message, "", "error");
 								}
