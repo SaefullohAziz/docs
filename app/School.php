@@ -71,7 +71,15 @@ class School extends Model
      */
     public function schoolPic()
     {
-        return $this->hasOne('App\SchoolPic');
+        return $this->hasOne('App\SchoolPic')->first();
+    }
+
+    /**
+     * Get the school pic for the school.
+     */
+    public function schoolPics()
+    {
+        return $this->hasMany('App\SchoolPic')->first();
     }
 
     /**
@@ -79,7 +87,7 @@ class School extends Model
      */
     public function pic()
     {
-        return $this->belongsToMany('App\Pic', 'school_pics')->using('App\SchoolPic')->withTimestamps();
+        return $this->belongsToMany('App\Pic', 'school_pics')->using('App\SchoolPic')->withTimestamps()->withPivot('created_at')->orderBy('school_pics.created_at', 'asc');
     }
 
     /**
@@ -231,7 +239,7 @@ class School extends Model
         return DB::table('schools')
             ->leftJoin('provinces', 'schools.province', '=', 'provinces.name')
             ->leftJoin('islands', 'provinces.island_id', '=', 'islands.id')
-            ->join('school_pics', 'schools.id', '=', 'school_pics.school_id')
+            ->join('school_pics', 'school_pics.id', '=', DB::raw('(SELECT id FROM school_pics WHERE school_pics.school_id = schools.id ORDER BY school_pics.created_at ASC LIMIT 1)'))
             ->join('pics', 'school_pics.pic_id', '=', 'pics.id')
             ->join('school_status_updates', 'school_status_updates.id', '=', DB::raw('(SELECT id FROM school_status_updates WHERE school_status_updates.school_id = schools.id ORDER BY created_at DESC LIMIT 1)'))
             ->join('school_statuses', 'school_status_updates.school_status_id', '=', 'school_statuses.id')

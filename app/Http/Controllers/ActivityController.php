@@ -21,8 +21,6 @@ class ActivityController extends Controller
     public function __construct()
     {
         parent::__construct();
-        $this->middleware('auth');
-        $this->middleware('level:C|B|A');
         $this->table = 'activities';
         $this->types = [
             'MOU' => 'M.O.U',

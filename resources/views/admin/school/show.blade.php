@@ -70,16 +70,18 @@
 
 								{{ Form::bsEmail(null, __('Headmaster E-Mail'), 'headmaster_email', $data->headmaster_email, __('Headmaster E-Mail'), ['disabled' => '']) }}
 							</fieldset>
-							<fieldset>
-								<legend>{{ __('PIC Data') }}</legend>
-								{{ Form::bsText(null, __('PIC Name'), 'pic_name', $data->pic[0]->name, __('PIC Name'), ['disabled' => ''], [__('Complete with an academic degree and or degree of expertise.')]) }}
+							@foreach ($data->pic as $pic)
+								<fieldset>
+									<legend>{{ __('PIC ' .$loop->iteration. ' Data') }}</legend>
+									{{ Form::bsText(null, __('PIC Name'), 'pic['.$loop->index.'][name]', $pic->name, __('PIC Name'), ['disabled' => ''], [__('Complete with an academic degree and or degree of expertise.')]) }}
 
-								{{ Form::bsText(null, __('PIC Position'), 'pic_position', $data->pic[0]->position, __('PIC Position'), ['disabled' => '']) }}
+									{{ Form::bsText(null, __('PIC Position'), 'pic['.$loop->index.'][position]', $pic->position, __('PIC Position'), ['disabled' => '']) }}
 
-								{{ Form::bsPhoneNumber(null, __('PIC Phone Number'), 'pic_phone_number', $data->pic[0]->phone_number, __('PIC Phone Number'), ['maxlength' => '13', 'disabled' => '']) }}
+									{{ Form::bsPhoneNumber(null, __('PIC Phone Number'), 'pic['.$loop->index.'][phone_number]', $pic->phone_number, __('PIC Phone Number'), ['maxlength' => '13', 'disabled' => '']) }}
 
-								{{ Form::bsEmail(null, __('PIC E-Mail'), 'pic_email', $data->pic[0]->email, __('PIC E-Mail'), ['disabled' => '']) }}
-							</fieldset>
+									{{ Form::bsEmail(null, __('PIC E-Mail'), 'pic['.$loop->index.'][email]', $pic->email, __('PIC E-Mail'), ['disabled' => '']) }}
+								</fieldset>
+							@endforeach
 							<fieldset>
 								<legend>{{ __('Reference') }}</legend>
 								{{ Form::bsCheckboxList(null, __('Reference'), 'reference[]', $references, explode(', ', $data->reference), ['disabled' => '']) }}

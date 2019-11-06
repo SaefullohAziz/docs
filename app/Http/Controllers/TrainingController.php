@@ -30,8 +30,6 @@ class TrainingController extends Controller
     public function __construct()
     {
         parent::__construct();
-        $this->middleware('auth');
-        $this->middleware('level:C|B|A');
         $this->table = 'trainings';
         $this->types = [
             'Basic (ToT)' => 'Basic (ToT)', 

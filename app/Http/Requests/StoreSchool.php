@@ -80,14 +80,35 @@ class StoreSchool extends FormRequest
                 'different:pic_email',
                 'different:dealer_email'
             ],
-            'pic_name' => ['required'],
-            'pic_position' => ['required'],
+            'pic_name' => [
+                Rule::requiredIf($this->isMethod('post')),
+            ],
+            'pic_position' => [
+                Rule::requiredIf($this->isMethod('post')),
+            ],
             'pic_phone_number' => [
-                'required',
+                Rule::requiredIf($this->isMethod('post')),
                 'numeric',
             ],
             'pic_email' => [
-                'required',
+                Rule::requiredIf($this->isMethod('post')),
+                'email',
+                'different:school_email',
+                'different:headmaster_email',
+                'different:dealer_email'
+            ],
+            'pic.*.name' => [
+                Rule::requiredIf($this->isMethod('put')),
+            ],
+            'pic.*.position' => [
+                Rule::requiredIf($this->isMethod('put')),
+            ],
+            'pic.*.phone_number' => [
+                Rule::requiredIf($this->isMethod('put')),
+                'numeric',
+            ],
+            'pic.*.email' => [
+                Rule::requiredIf($this->isMethod('put')),
                 'email',
                 'different:school_email',
                 'different:headmaster_email',
@@ -115,7 +136,7 @@ class StoreSchool extends FormRequest
                         return in_array('Dealer', $this->get('reference'));
                     }
                 }),
-                'numeric'
+                // 'numeric'
             ],
             'dealer_email' => [
                 Rule::requiredIf(function () {
@@ -123,7 +144,7 @@ class StoreSchool extends FormRequest
                         return in_array('Dealer', $this->get('reference'));
                     }
                 }),
-                'email',
+                // 'email',
                 'different:school_email',
                 'different:headmaster_email',
                 'different:pic_email'
@@ -132,10 +153,50 @@ class StoreSchool extends FormRequest
         ];
         if ($this->isMethod('put')) {
             $addonRules = [
-                'name' => ['required']
+                'name' => ['required'],
+                'school_email' => [
+                    'required',
+                    'email',
+                    'different:headmaster_email',
+                    // 'different:pic.0.email',
+                    'different:dealer_email'
+                ],
+                'headmaster_email' => [
+                    'required',
+                    'email',
+                    'different:school_email',
+                    // 'different:pic.*.email',
+                    'different:dealer_email'
+                ],
+                'dealer_email' => [
+                    Rule::requiredIf(function () {
+                        if ( ! empty($this->get('reference'))) {
+                            return in_array('Dealer', $this->get('reference'));
+                        }
+                    }),
+                    // 'email',
+                    'different:school_email',
+                    'different:headmaster_email',
+                    // 'different:pic_email'
+                ],
             ];
             $rules = array_merge($rules, $addonRules);
         }
         return $rules;
+    }
+
+    /**
+     * Get the error messages for the defined validation rules.
+     *
+     * @return array
+     */
+    public function messages()
+    {
+        return [
+            'pic.*.name.required' => 'Each pic name field is required.',
+            'pic.*.position.required' => 'Each pic position field is required.',
+            'pic.*.phone_number.required' => 'Each pic phone number field is required.',
+            'pic.*.email.required' => 'Each pic email field is required.',
+        ];
     }
 }

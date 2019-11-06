@@ -38,8 +38,6 @@ class StudentController extends Controller
     public function __construct()
     {
         parent::__construct();
-        $this->middleware('auth');
-        $this->middleware('level:C|B|A');
         $this->table = 'students';
         $this->parentEducations = [
 			'' => 'Pilih',
