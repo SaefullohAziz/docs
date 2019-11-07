@@ -241,7 +241,6 @@ class SettingController extends Controller
      */
     public function training()
     {
-        // dd(json_decode(setting('training_settings')));
         // if ( ! auth()->guard('admin')->user()->can('access training ' . $this->table)) {
         //     return redirect()->route('admin.setting.index')->with('alert-danger', __($this->noPermission));
         // }
@@ -279,7 +278,7 @@ class SettingController extends Controller
      */
     public function trainingStore(Request $request)
     {
-        // if ( ! auth()->guard('admin')->user()->can('access form ' . $this->table)) {
+        // if ( ! auth()->guard('admin')->user()->can('access Training ' . $this->table)) {
         //     return redirect()->route('admin.setting.index')->with('alert-danger', __($this->noPermission));
         // }
         foreach (json_decode(setting('training_settings')) as $trainingSetting) {

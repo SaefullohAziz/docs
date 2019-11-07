@@ -80,10 +80,10 @@
 
 								                        {{ Form::bsSelectRange('col-sm-6 ' . (setting($form->school_level_slug)=='rintisan'||setting($form->school_level_slug)=='Both'?'d-block':'d-none'), __('Rintisan'), $form->limit_by_level_slug.'_rintisan', 1, 100, setting($form->limit_by_level_slug.'_rintisan'), __('Select'), ['placeholder' => __('Select'), (setting($form->limit_by_level_slug)=='Quota'||setting($form->limit_by_level_slug)=='Both'?'required':'') => '']) }}
 
-								                        {{ Form::bsSelect('col-12', __('Limit by school implementation'), $form->school_implementation_slug, $schoolImplementations, explode(',', setting($form->school_implementation_slug)), __('Select'), ['placeholder' => __('Select'), (setting($form->status_slug)==1?'required':'') => '', 'multiple' => '']) }}
+								                        {{ Form::bsSelect('col-12', __('Limit by school implementation'), $form->school_implementation_slug, $schoolImplementations, setting($form->school_implementation_slug), __('Select'), ['placeholder' => __('Select'), (setting($form->status_slug)==1?'required':'') => '', 'multiple' => '']) }}
 
 								                        @foreach ($schoolImplementations as $implementation)
-								                        	{{ Form::bsSelectRange('col-sm-4 ' . (array_keys(explode(':', setting($form->limit_by_implementation_slug)), $implementation)?'d-block':'d-none'), __($implementation), $form->limit_by_implementation_slug.'_'.$implementation, 1, 100, setting($form->limit_by_implementation_slug.'_'.$implementation), __('Select'), ['placeholder' => __('Select'), (array_keys(explode(':', setting($form->limit_by_implementation_slug)), $implementation)?'required':'') => '']) }}
+								                        	{{ Form::bsSelectRange('col-sm-4 ' . (setting($form->limit_by_implementation_slug)[$implementation]?'d-block':'d-none'), __($implementation), $form->limit_by_implementation_slug.'['.$implementation.']', 1, 100, setting($form->limit_by_implementation_slug)[$implementation], __('Select'), ['placeholder' => __('Select'), (array_keys(explode(':', setting($form->limit_by_implementation_slug)[$implementation]), $implementation)?'required':'') => '']) }}
 								                        @endforeach
 								                       
                                                     </div>
@@ -172,16 +172,26 @@
             		let values = $(this).val();
 
             		@foreach ($schoolImplementations as $implementation)
-            			$('[name="{{ $form->limit_by_implementation_slug.'_'.$implementation }}"]').val(null).change().prop('required', false);
-            			$('[name="{{ $form->limit_by_implementation_slug.'_'.$implementation }}"]').parent().removeClass('d-block').addClass('d-none');
+                    if( ! inArray("<?= $implementation; ?>", values)){
+            			$('[name="{{ $form->limit_by_implementation_slug }}[<?= $implementation; ?>]"]').val(null).change().prop('required', false);
+            			$('[name="{{ $form->limit_by_implementation_slug }}[<?= $implementation; ?>]"]').parent().removeClass('d-block').addClass('d-none');
+                    }
             		@endforeach
 
             		values.forEach(function(value){
-            			$('[name="{{ $form->limit_by_implementation_slug.'_' }}'+value+'"]').prop('required', true);
-            			$('[name="{{ $form->limit_by_implementation_slug.'_' }}'+value+'"]').parent().removeClass('d-none').addClass('d-block');
+            			$('[name="{{ $form->limit_by_implementation_slug }}['+value+']"]').prop('required', true);
+            			$('[name="{{ $form->limit_by_implementation_slug }}['+value+']"]').parent().removeClass('d-none').addClass('d-block');
             		});
             	});
             @endforeach
         });
+
+        function inArray(key, array) {
+            var length = array.length;
+            for(var i = 0; i < length; i++) {
+                if(array[i] == key) return true;
+            }
+            return false;
+        }
     </script>
 @endsection

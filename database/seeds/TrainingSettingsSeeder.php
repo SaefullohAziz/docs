@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use App\Department;
 
 class TrainingSettingsSeeder extends Seeder
 {
@@ -11,6 +12,11 @@ class TrainingSettingsSeeder extends Seeder
      */
     public function run()
     {
+		$department_names = Department::Pluck('abbreviation')->toArray();
+		$departments = [];
+		foreach ($department_names as $department) {
+			$departments += [$department => 5];
+		}
 		$trainingSettings = collect([
 			[
 				'name' => 'basic_tot',
@@ -20,6 +26,7 @@ class TrainingSettingsSeeder extends Seeder
 				'quota_limit_slug' => 'basic_tot_quota_limit',
 				'school_level_slug' => 'basic_tot_school_level',
 				'limit_by_level_slug' => 'basic_tot_limit_by_level',
+				'limit_by_level_binaan_slug' => 'basic_tot_limit_by_level_binaan',
 				'school_implementation_slug' => 'basic_tot_school_implementation',
 				'limit_by_implementation_slug' => 'basic_tot_limit_by_implementation',
 				'default_participant_price_slug' => 'basic_tot_2_participant_price',
@@ -35,6 +42,7 @@ class TrainingSettingsSeeder extends Seeder
 				'quota_limit_slug' => 'mikrotik_quota_limit',
 				'school_level_slug' => 'mikrotik_school_level',
 				'limit_by_level_slug' => 'mikrotik_limit_by_level',
+				'limit_by_level_binaan_slug' => 'mikrotik_limit_by_level_binaan',
 				'school_implementation_slug' => 'mikrotik_school_implementation',
 				'limit_by_implementation_slug' => 'mikrotik_limit_by_implementation',
 				'default_participant_price_slug' => 'mikrotik_2_participant_price',
@@ -50,6 +58,7 @@ class TrainingSettingsSeeder extends Seeder
 				'quota_limit_slug' => 'seagate_quota_limit',
 				'school_level_slug' => 'seagate_school_level',
 				'limit_by_level_slug' => 'seagate_limit_by_level',
+				'limit_by_level_binaan_slug' => 'seagate_limit_by_level_binaan',
 				'school_implementation_slug' => 'seagate_school_implementation',
 				'limit_by_implementation_slug' => 'seagate_limit_by_implementation',
 				'default_participant_price_slug' => 'seagate_2_participant_price',
@@ -65,6 +74,7 @@ class TrainingSettingsSeeder extends Seeder
 				'quota_limit_slug' => 'iot_quota_limit',
 				'school_level_slug' => 'iot_school_level',
 				'limit_by_level_slug' => 'iot_limit_by_level',
+				'limit_by_level_binaan_slug' => 'iot_limit_by_level_binaan',
 				'school_implementation_slug' => 'iot_school_implementation',
 				'limit_by_implementation_slug' => 'iot_limit_by_implementation',
 				'default_participant_price_slug' => 'iot_2_participant_price',
@@ -80,6 +90,7 @@ class TrainingSettingsSeeder extends Seeder
 				'quota_limit_slug' => 'dicoding_quota_limit',
 				'school_level_slug' => 'dicoding_school_level',
 				'limit_by_level_slug' => 'dicoding_limit_by_level',
+				'limit_by_level_binaan_slug' => 'dicoding_limit_by_level_binaan',
 				'school_implementation_slug' => 'dicoding_school_implementation',
 				'limit_by_implementation_slug' => 'dicoding_limit_by_implementation',
 				'default_participant_price_slug' => 'dicoding_2_participant_price',
@@ -95,6 +106,7 @@ class TrainingSettingsSeeder extends Seeder
 				'quota_limit_slug' => 'ls_cable_quota_limit',
 				'school_level_slug' => 'ls_cable_school_level',
 				'limit_by_level_slug' => 'ls_cable_limit_by_level',
+				'limit_by_level_binaan_slug' => 'ls_cable_limit_by_level_binaan',
 				'school_implementation_slug' => 'ls_cable_school_implementation',
 				'limit_by_implementation_slug' => 'ls_cable_limit_by_implementation',
 				'default_participant_price_slug' => 'ls_cable_2_participant_price',
@@ -110,6 +122,7 @@ class TrainingSettingsSeeder extends Seeder
 				'quota_limit_slug' => 'surveillance_quota_limit',
 				'school_level_slug' => 'surveillance_school_level',
 				'limit_by_level_slug' => 'surveillance_limit_by_level',
+				'limit_by_level_binaan_slug' => 'surveillance_limit_by_level_binaan',
 				'school_implementation_slug' => 'surveillance_school_implementation',
 				'limit_by_implementation_slug' => 'surveillance_limit_by_implementation',
 				'default_participant_price_slug' => 'surveillance_2_participant_price',
@@ -125,6 +138,7 @@ class TrainingSettingsSeeder extends Seeder
 				'quota_limit_slug' => 'elektronika_dasar_quota_limit',
 				'school_level_slug' => 'elektronika_dasar_school_level',
 				'limit_by_level_slug' => 'elektronika_dasar_limit_by_level',
+				'limit_by_level_binaan_slug' => 'elektronika_dasar_limit_by_level_binaan',
 				'school_implementation_slug' => 'elektronika_dasar_school_implementation',
 				'limit_by_implementation_slug' => 'elektronika_dasar_limit_by_implementation',
 				'default_participant_price_slug' => 'elektronika_dasar_2_participant_price',
@@ -140,6 +154,7 @@ class TrainingSettingsSeeder extends Seeder
 				'quota_limit_slug' => 'adobe_photoshop_quota_limit',
 				'school_level_slug' => 'adobe_photoshop_school_level',
 				'limit_by_level_slug' => 'adobe_photoshop_limit_by_level',
+				'limit_by_level_binaan_slug' => 'adobe_photoshop_limit_by_level_binaan',
 				'school_implementation_slug' => 'adobe_photoshop_school_implementation',
 				'limit_by_implementation_slug' => 'adobe_photoshop_limit_by_implementation',
 				'default_participant_price_slug' => 'adobe_photoshop_2_participant_price',
@@ -155,6 +170,7 @@ class TrainingSettingsSeeder extends Seeder
 				'quota_limit_slug' => 'microsoft_software_fundamental_quota_limit',
 				'school_level_slug' => 'microsoft_software_fundamental_school_level',
 				'limit_by_level_slug' => 'microsoft_software_fundamental_limit_by_level',
+				'limit_by_level_binaan_slug' => 'microsoft_software_fundamental_limit_by_level_binaan',
 				'school_implementation_slug' => 'microsoft_software_fundamental_school_implementation',
 				'limit_by_implementation_slug' => 'microsoft_software_fundamental_limit_by_implementation',
 				'default_participant_price_slug' => 'microsoft_software_fundamental_2_participant_price',
@@ -170,6 +186,7 @@ class TrainingSettingsSeeder extends Seeder
 				'quota_limit_slug' => 'starter_kit_klinik_komputer_quota_limit',
 				'school_level_slug' => 'starter_kit_klinik_komputer_school_level',
 				'limit_by_level_slug' => 'starter_kit_klinik_komputer_limit_by_level',
+				'limit_by_level_binaan_slug' => 'starter_kit_klinik_komputer_limit_by_level_binaan',
 				'school_implementation_slug' => 'starter_kit_klinik_komputer_school_implementation',
 				'limit_by_implementation_slug' => 'starter_kit_klinik_komputer_limit_by_implementation',
 				'default_participant_price_slug' => 'starter_kit_klinik_komputer_2_participant_price',
@@ -186,8 +203,9 @@ class TrainingSettingsSeeder extends Seeder
 			setting([$trainingSetting['quota_limit_slug'] => ''])->save();
 			setting([$trainingSetting['school_level_slug'] => 'Binaan'])->save();
 			setting([$trainingSetting['limit_by_level_slug'] => 'Binaan: 10'])->save();
-			setting([$trainingSetting['school_implementation_slug'] => 'RPL, TKJ'])->save();
-			setting([$trainingSetting['limit_by_implementation_slug'] => 'RPL: 5'])->save();
+			setting([$trainingSetting['limit_by_level_binaan_slug'] => '10'])->save();
+			setting([$trainingSetting['school_implementation_slug'] => $department_names])->save();
+			setting([$trainingSetting['limit_by_implementation_slug'] => $departments])->save();
 			setting([$trainingSetting['default_participant_price_slug'] => '3000000'])->save();
 			setting([$trainingSetting['more_participant_slug'] => '1500000'])->save();
 			setting([$trainingSetting['unimplementation_scholl_price_slug'] => '5000000'])->save();
