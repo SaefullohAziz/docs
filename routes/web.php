@@ -382,6 +382,12 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->middleware(['auth:ad
 			Route::get('/', 'SettingController@form')->name('index');
 			Route::post('/', 'SettingController@formStore')->name('store');
 		});
+		Route::prefix('exam')->name('exam.')->group(function () {
+			Route::prefix('readiness')->name('readiness.')->group(function () {
+				Route::get('/', 'SettingController@examReadiness')->name('index');
+				Route::post('/', 'SettingController@examReadinessStore')->name('store');
+			});
+		});
     });
 
     // Account
@@ -434,7 +440,17 @@ Route::get('download/{dir}/{file}', function ($dir, $file) {
 
 Route::get('check', function (\Illuminate\Http\Request $request) {
 	if (env('APP_ENV') == 'local') {
-		$data = \App\School::with(['statusUpdate.status'])->where('id', '13477bb8-e05f-4e77-bb29-407e029c32b7')->first()->toArray();
+		$data = [
+			['TKJ', 'RPL'],
+			['MM'],
+			[]
+		];
+		$data = array_filter($data, function ($item) {
+			return count($item) == 0;
+		});
+		if (count($data) > 0) {
+			$data = true;
+		}
 		dd($data);
 	}
 });

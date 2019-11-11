@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Admin\User as Staff;
+use App\Department;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Spatie\Permission\Models\Role;
@@ -23,6 +24,7 @@ class SettingController extends Controller
     {
         parent::__construct();
         $this->table = 'settings';
+        $this->updatedMessage = 'All settings have been successfully saved.';
         $this->settings = [
             [
                 'title' => __('General'),
@@ -58,7 +60,7 @@ class SettingController extends Controller
                 'title' => __('Exam Readiness'),
                 'description' => __('Exam readiness settings, such as reference school.'),
                 'icon' => 'fas fa-book-reader',
-                'url' => '#',
+                'url' => route('admin.setting.exam.readiness.index'),
             ],
         ];
     }
@@ -230,6 +232,43 @@ class SettingController extends Controller
             if ($request->filled($formSetting->time_limit_slug)) {
                 $request->merge([$formSetting->time_limit_slug => date('Y-m-d h:m:s', strtotime($request->{$formSetting->time_limit_slug}))]);
             }
+        }
+        setting($request->except(['_token']))->save();
+        return redirect(url()->previous())->with('alert-success', __($this->updatedMessage));
+    }
+
+    /**
+     * Show exam readiness settings page
+     */
+    public function examReadiness()
+    {   
+        if ( ! auth()->guard('admin')->user()->can('access exam_readiness ' . $this->table)) {
+            return redirect()->route('admin.setting.index')->with('alert-danger', __($this->noPermission));
+        }
+        $view = [
+            'back' => route('admin.setting.index'),
+            'title' => __('Exam Readiness Settings'),
+            'breadcrumbs' => [
+                route('admin.setting.index') => __('Setting'),
+                route('admin.setting.exam.readiness.index') => __('Exam Readiness'),
+                null => __('Edit')
+            ],
+            'subtitle' => __('All About Exam Readiness Settings'),
+            'description' => __('You can adjust all exam readiness settings here'),
+            'settings' => $this->settings,
+            'examReadinesses' => json_decode(setting('exam_readiness_settings')),
+            'departments' => Department::orderBy('name', 'asc')->pluck('name', 'abbreviation')->toArray(),
+        ];
+        return view('admin.setting.exam.readiness.index', $view);
+    }
+
+    /**
+     * Save exam readiness settings into database
+     */
+    public function examReadinessStore(Request $request)
+    {
+        if ( ! auth()->guard('admin')->user()->can('access form ' . $this->table)) {
+            return redirect()->route('admin.setting.index')->with('alert-danger', __($this->noPermission));
         }
         setting($request->except(['_token']))->save();
         return redirect(url()->previous())->with('alert-success', __($this->updatedMessage));

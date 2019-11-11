@@ -24,7 +24,9 @@ class ImportSystemDataSeeder extends Seeder
                 'email' => $staff->email,
                 'password' => Hash::make('!Indonesia45!')],
             );
-            $newStaff->syncRoles(['user']);
+            if ($newStaff->getRoleNames()->count() == 0) {
+                $newStaff->syncRoles(['user']);
+            }
         }
         if ( ! file_exists(storage_path('app/public/school/'))) {
             mkdir(storage_path('app/public/school/'));
@@ -37,6 +39,8 @@ class ImportSystemDataSeeder extends Seeder
         ->join('pics', 'school_pics.pic_id', '=', 'pics.pic_id')
         ->where('schools.school_name', '!=', 'ACP')
         ->select('schools.*', 'pics.pic_name', 'pics.pic_position', 'pics.pic_phone_number', 'pics.pic_email', 'pics.created_at as pic_created_at', 'school_pics.created_at as school_pic_created_at')
+        // ->inRandomOrder()
+        // ->limit(25)
         ->get();
         $admin = \App\Admin\User::where('username', 'admin')->first();
         $faker = Faker::create('id_ID');
@@ -94,7 +98,7 @@ class ImportSystemDataSeeder extends Seeder
                 'created_at' => $this->validDate($school->pic_created_at),
                 'updated_at' => $this->validDate($school->pic_created_at)
             ]);
-            $newSchool->schoolPic()->create([
+            $newSchool->schoolPics()->create([
                 'pic_id' => $newPic->id,
                 'created_at' => $this->validDate($school->school_pic_created_at),
                 'updated_at' => $this->validDate($school->school_pic_created_at),
@@ -273,7 +277,11 @@ class ImportSystemDataSeeder extends Seeder
             $studentDepartments = DB::connection('mysql_2')
             ->table('students')
             ->where('school_id', $school->school_id)
-            ->selectRaw('DISTINCT("department") as department')
+            ->where(function ($query) {
+                $query->whereNotNull('department')
+                ->orWhere('department', '!=', '');
+            })
+            ->selectRaw('DISTINCT(department) as department')
             ->get();
             foreach ($studentDepartments as $studentDepartment) {
                 $department = \App\Department::where('name', $studentDepartment->department)

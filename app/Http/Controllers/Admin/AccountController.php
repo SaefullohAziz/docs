@@ -38,7 +38,7 @@ class AccountController extends Controller
     public function index()
     {
         if (auth()->guard('admin')->user()->hasRole('user')) {
-            return $this->me();
+            return redirect()->route('admin.account.me');
         } if ( ! auth()->guard('admin')->user()->can('access ' . $this->table)) {
             return redirect()->route('admin.home')->with('alert-danger', __($this->noPermission));
         }
@@ -303,6 +303,29 @@ class AccountController extends Controller
      * @param  \App\Admin\User  $user
      * @return \Illuminate\Http\Response
      */
+    public function reset(Request $request)
+    {
+        $staffs = [];
+        $schools = [];
+        foreach ($request->selectedData as $data) {
+            $explode = explode('/', $data);
+            if(strtolower(end($explode)) == 'school'){
+                $schools[] = $explode[0];
+            } else {
+                $staffs[] = $explode[0];
+            }
+        }
+        Staff::whereIn('id', $staffs)->update(['password' => Hash::make('rememberthat')]);
+        User::whereIn('id', $schools)->update(['password' => Hash::make('!Indo!Joss!')]);
+        return response()->json(['status' => true, 'message' => __($this->updatedMessage)]);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\Admin\User  $user
+     * @return \Illuminate\Http\Response
+     */
     public function destroy(Request $request)
     {
         if ( ! auth()->guard('admin')->user()->can('delete ' . $this->table)) {
@@ -321,28 +344,5 @@ class AccountController extends Controller
         Staff::destroy($staffs);
         User::destroy($schools);
         return response()->json(['status' => true, 'message' => __($this->deletedMessage)]);
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Admin\User  $user
-     * @return \Illuminate\Http\Response
-     */
-    public function reset(Request $request)
-    {
-        $staffs = [];
-        $schools = [];
-        foreach ($request->selectedData as $data) {
-            $explode = explode('/', $data);
-            if(strtolower(end($explode)) == 'school'){
-                $schools[] = $explode[0];
-            } else {
-                $staffs[] = $explode[0];
-            }
-        }
-        Staff::whereIn('id', $staffs)->update(['password' => Hash::make('rememberthat')]);
-        User::whereIn('id', $schools)->update(['password' => Hash::make('!Indo!Joss!')]);
-        return response()->json(['status' => true, 'message' => __($this->updatedMessage)]);
     }
 }

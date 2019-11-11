@@ -242,22 +242,68 @@ class GetController extends Controller
             if (auth()->guard('web')->check()) {
                 $request->request->add(['school' => auth()->user()->school->id]);
             }
-            $data = Student::whereHas('class', function ($query) use ($request) {
-                $query->when( ! empty($request->school), function ($subQuery) use ($request) {
-                    $subQuery->where('student_classes.school_id', $request->school);
+            $data = Student::when(auth()->guard('web')->check(), function ($query) use ($request) {
+                $query->whereHas('class', function ($subQuery) {
+                    $subQuery->where('student_classes.school_id', auth()->user()->school->id);
+                })->when( ! empty($request->exam_type), function ($subQuery) use ($request) {
+                    $examType = \App\ExamType::where('name', $request->exam_type);
+                    if ( ! empty($request->sub_exam_type)) {
+                        if ( ! is_array($request->sub_exam_type)) {
+                            $request->merge(['sub_exam_type' => [$request->sub_exam_type]]);
+                        }
+                        $examType->whereIn('sub_name', $request->sub_exam_type);
+                    }
+                    $slugs = $examType->pluck('slug')->toArray();
+                    $settings = json_decode(setting('exam_readiness_settings'), true);
+                    $settings = array_filter($settings, function ($item) use ($slugs) {
+                        return in_array($item['slug'], $slugs);
+                    });
+                    // Department
+                    $departments = array_column($settings, 'department_limiter_slug');
+                    $departments = array_map(function ($item) {
+                        return json_decode(setting($item), true);
+                    }, $departments);
+                    $allDepartmentAllowed = array_filter($departments, function ($item) {
+                        return count($item) == 0;
+                    });
+                    if (count($allDepartmentAllowed) == 0) {
+                        $departments = collect($departments)->flatten()->unique()->toArray();
+                        $subQuery->whereHas('department', function ($subSubQuery) use ($departments) {
+                            $subSubQuery->whereIn('abbreviation', $departments);
+                        });
+                    }
+                    // SSP
+                    $sspStudent = array_column($settings, 'ssp_limiter_slug');
+                    $sspStudent = array_map(function ($item) {
+                        return json_decode(setting($item), true);
+                    }, $sspStudent);
+                    $nonSspStudentAllowed = array_filter($sspStudent, function ($item) {
+                        return count($item) == 0;
+                    });
+                    if (count($nonSspStudentAllowed) == 0) {
+                        $sspStudent = collect($sspStudent)->flatten()->unique()->toArray();
+                        $subQuery->whereHas('subsidy.subsidyStatus.status', function ($subSubQuery) {
+                            $subSubQuery->where('name', 'Paid');
+                        });
+                    }
                 });
-                $query->when( ! empty($request->generation), function ($subQuery) use ($request) {
-                    $subQuery->where('student_classes.generation', $request->generation);
+            })->when(empty($request->student), function ($query) use ($request) {
+                $query->whereHas('class', function ($subQuery) use ($request) {
+                    $subQuery->when( ! empty($request->school), function ($subSubQuery) use ($request) {
+                        $subSubQuery->where('student_classes.school_id', $request->school);
+                    })->when( ! empty($request->generation), function ($subSubQuery) use ($request) {
+                        $subSubQuery->where('student_classes.generation', $request->generation);
+                    })->when( ! empty($request->grade), function ($subSubQuery) use ($request) {
+                        $subSubQuery->where('student_classes.grade', $request->grade);
+                    });
                 });
-                $query->when( ! empty($request->grade), function ($subQuery) use ($request) {
-                    $subQuery->where('student_classes.grade', $request->grade);
-                });
-            })
-            ->when( ! empty($request->ssp), function ($query) {
-                $query->has('sspStudent');
-            })->pluck('name', 'id');
-            if ( ! empty($request->student)) {
-                $data = Student::find($request->student);
+            })->when( ! empty($request->student), function ($query) use ($request) {
+                $query->where('id', $request->student);
+            });
+            if (empty($request->student)) {
+                $data = $data->pluck('name', 'id');
+            } else {
+                $data = $data->select('students.*')->first();
             }
             $data = $data->toArray();
             return response()->json(['status' => true, 'result' => $data]);
@@ -268,6 +314,36 @@ class GetController extends Controller
         if ($request->ajax()) {
             $data = ExamType::when( ! empty($request->type), function ($query) use ($request) {
                 $query->where('name', $request->type);
+            })->when(auth()->guard('web')->check(), function ($query) {
+                $sspStudent = Student::whereHas('subsidy.subsidyStatus.status', function ($query) {
+                    $query->where('name', 'Paid');
+                })->whereHas('class', function ($query) {
+                    $query->where('school_id', auth()->user()->school->id);
+                })->get();
+                $departments = auth()->user()->school->implementedDepartments->pluck('abbreviation')->toArray();
+                $data = json_decode(setting('exam_readiness_settings'), true);
+                // Filter opened type
+                $filter = array_filter($data, function ($item) {
+                    return setting($item['is_opened_slug']) == 1;
+                });
+                // Filter by implemented department
+                $filter = array_filter($filter, function ($item) {
+                    $selectedDepartments = json_decode(setting($item['department_limiter_slug']), true);
+                    if (auth()->user()->school->implementedDepartments->count()) {
+                        $departments = auth()->user()->school->implementedDepartments->pluck('abbreviation')->toArray();
+                        return count($selectedDepartments) == 0 || count(array_intersect($selectedDepartments, $departments)) > 0;
+                    }
+                    return count($selectedDepartments) == 0;
+                });
+                // Filter by SSP student
+                $filter = array_filter($filter, function ($item) use ($sspStudent) {
+                    if ($sspStudent->count() > 0) {
+                        return setting($item['ssp_limiter_slug']) == 0 || setting($item['ssp_limiter_slug']) == 1;
+                    }
+                    return setting($item['ssp_limiter_slug']) == 0;
+                });
+                $slugs = array_column($filter, 'slug');
+                $query->whereIn('slug', $slugs);
             })
             ->where('sub_name', '!=', '')
             ->whereNotNull('sub_name')

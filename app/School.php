@@ -71,7 +71,7 @@ class School extends Model
      */
     public function schoolPic()
     {
-        return $this->hasOne('App\SchoolPic')->first();
+        return $this->hasOne('App\SchoolPic')->orderBy('created_at', 'asc');
     }
 
     /**
@@ -79,7 +79,7 @@ class School extends Model
      */
     public function schoolPics()
     {
-        return $this->hasMany('App\SchoolPic')->first();
+        return $this->hasMany('App\SchoolPic');
     }
 
     /**
@@ -96,6 +96,14 @@ class School extends Model
     public function implementations()
     {
         return $this->hasMany('App\SchoolImplementation');
+    }
+
+    /**
+     * The status that belong to the school.
+     */
+    public function implementedDepartments()
+    {
+        return $this->belongsToMany('App\Department', 'school_implementations')->using('App\SchoolImplementation')->withTimestamps();
     }
 
     /**

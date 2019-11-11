@@ -53,15 +53,7 @@ class ExamReadinessPolicy
      */
     public function create(User $user)
     {
-        $student = \App\Student::whereHas('subsidy.subsidyStatus.status', function ($query) {
-            $query->where('name', 'Paid');
-        })->whereHas('class', function ($query) {
-            $query->where('school_id', auth()->user()->school->id);
-        })->get();
-        if (\Gate::allows('create-exam-readiness')) {
-            return $student->count() > 0;
-        }
-        return false;
+        return \Gate::allows('create-exam-readiness');
     }
 
     /**

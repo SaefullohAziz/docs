@@ -115,7 +115,6 @@
 				type: "POST",
 				dataType: "JSON",
 				data: {
-			        // '_token' : '{{ csrf_token() }}', 'ssp' : true , 'type' : $('select[name="exam_type"]').val()
 			        '_token' : '{{ csrf_token() }}', 'type' : $('select[name="exam_type"]').val()
 			    },
 				success: function(data)
@@ -197,6 +196,8 @@
 						'_token' : '{{ csrf_token() }}',
 						'generation' : $(this).val(),
 						'school' : $('select[name="school_id"]').val(),
+						'exam_type': $('select[name="exam_type"]').val(),
+						'sub_exam_type': $('#exam_sub_type').val(),
 					},
 					success: function(data)
 					{

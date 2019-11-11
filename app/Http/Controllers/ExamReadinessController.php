@@ -90,10 +90,7 @@ class ExamReadinessController extends Controller
                 route('exam.readiness.index') => __('Exam Readiness'),
                 null => __('Create')
             ],
-            'types' => ExamType::when(auth()->user()->cant('create', ExamReadiness::class), function ($query) {
-                $query->where('name', 'Axioo');
-                $query->orWhere('name', 'Remidial Axioo');
-            })->orderBy('name', 'asc')->pluck('name', 'name')->toArray(),
+            'types' => $this->types(),
             'generations' => StudentClass::where('school_id', auth()->user()->school->id)->orderBy('generation', 'asc')->pluck('generation', 'generation')->toArray(),
             'referenceSchools' => School::has('ExamReadinessSchool')->pluck('name', 'name')->toArray()
         ];
@@ -170,6 +167,40 @@ class ExamReadinessController extends Controller
     public function update(Request $request, ExamReadiness $examReadiness)
     {
         //
+    }
+
+
+    public function types()
+    {
+        $sspStudent = Student::whereHas('subsidy.subsidyStatus.status', function ($query) {
+            $query->where('name', 'Paid');
+        })->whereHas('class', function ($query) {
+            $query->where('school_id', auth()->user()->school->id);
+        })->get();
+        $departments = auth()->user()->school->implementedDepartments->pluck('abbreviation')->toArray();
+        $data = json_decode(setting('exam_readiness_settings'), true);
+        // Filter opened type
+        $filter = array_filter($data, function ($item) {
+			return setting($item['is_opened_slug']) == 1;
+        });
+        // Filter by implemented department
+        $filter = array_filter($filter, function ($item) {
+            $selectedDepartments = json_decode(setting($item['department_limiter_slug']), true);
+            if (auth()->user()->school->implementedDepartments->count()) {
+                $departments = auth()->user()->school->implementedDepartments->pluck('abbreviation')->toArray();
+                return count($selectedDepartments) == 0 || count(array_intersect($selectedDepartments, $departments)) > 0;
+            }
+            return count($selectedDepartments) == 0;
+        });
+        // Filter by SSP student
+        $filter = array_filter($filter, function ($item) use ($sspStudent) {
+            if ($sspStudent->count() > 0) {
+                return setting($item['ssp_limiter_slug']) == 0 || setting($item['ssp_limiter_slug']) == 1;
+            }
+            return setting($item['ssp_limiter_slug']) == 0;
+        });
+        $where = array_column($filter, 'slug');
+        return ExamType::whereIn('slug', $where)->orderBy('name', 'asc')->pluck('name', 'name')->toArray();
     }
 
     /**
