@@ -9,7 +9,6 @@ use App\Http\Controllers\Controller;
 use Spatie\Permission\Models\Role;
 use Spatie\Image\Image;
 use Spatie\Image\Manipulations;
-use App\Department;
 
 class SettingController extends Controller
 {
