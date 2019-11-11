@@ -15,7 +15,7 @@ class ChangeNullableGenderAndDateOfBirthOnTeachersTable extends Migration
     {
         Schema::table('teachers', function (Blueprint $table) {
             $table->string('gender')->nullable()->change();
-            $table->date('date_of_birth')->nullable()->change();
+            $table->string('date_of_birth')->nullable()->change();
         });
     }
 
@@ -28,7 +28,7 @@ class ChangeNullableGenderAndDateOfBirthOnTeachersTable extends Migration
     {
         Schema::table('teachers', function (Blueprint $table) {
             $table->string('gender')->nullable(false)->change();
-            $table->date('date_of_birth')->nullable(false)->change();
+            $table->string('date_of_birth')->nullable(false)->change();
         });
     }
 }
