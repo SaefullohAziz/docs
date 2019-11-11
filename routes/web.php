@@ -382,11 +382,17 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->middleware(['auth:ad
 			Route::get('/', 'SettingController@form')->name('index');
 			Route::post('/', 'SettingController@formStore')->name('store');
 		});
+<<<<<<< HEAD
 		Route::prefix('exam')->name('exam.')->group(function () {
 			Route::prefix('readiness')->name('readiness.')->group(function () {
 				Route::get('/', 'SettingController@examReadiness')->name('index');
 				Route::post('/', 'SettingController@examReadinessStore')->name('store');
 			});
+=======
+		Route::prefix('training')->name('training.')->group(function () {
+			Route::get('/', 'SettingController@training')->name('index');
+			Route::post('/', 'SettingController@trainingStore')->name('store');
+>>>>>>> bfa03aa7d2b7f52bf9b255b04a80f5209143b6fe
 		});
     });
 
