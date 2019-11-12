@@ -152,19 +152,19 @@
                 });
 
                 $('select[name="{{ $form->school_level_slug }}"]').change(function () {
-                    $('select[name="{{ $form->limit_by_level_slug }}.binaan"], select[name="{{ $form->limit_by_level_slug }}.rintisan"]').val(null).change();
-                    $('select[name="{{ $form->limit_by_level_slug }}.binaan"], select[name="{{ $form->limit_by_level_slug }}.rintisan"]').prop('required', false);
-                    $('select[name="{{ $form->limit_by_level_slug }}.binaan"], select[name="{{ $form->limit_by_level_slug }}.rintisan"]').parent().removeClass('d-block').addClass('d-none');
+                    $('select[name="{{ $form->limit_by_level_slug }}_binaan"], select[name="{{ $form->limit_by_level_slug }}_rintisan"]').val(null).change();
+                    $('select[name="{{ $form->limit_by_level_slug }}_binaan"], select[name="{{ $form->limit_by_level_slug }}_rintisan"]').prop('required', false);
+                    $('select[name="{{ $form->limit_by_level_slug }}_binaan"], select[name="{{ $form->limit_by_level_slug }}_rintisan"]').parent().removeClass('d-block').addClass('d-none');
                     if ($(this).val() == 'Binaan') {
-                        $('select[name="{{ $form->limit_by_level_slug }}.binaan"]').prop('required', true);
-                        $('select[name="{{ $form->limit_by_level_slug }}.binaan"]').parent().removeClass('d-none').addClass('d-block');
+                        $('select[name="{{ $form->limit_by_level_slug }}_binaan"]').prop('required', true);
+                        $('select[name="{{ $form->limit_by_level_slug }}_binaan"]').parent().removeClass('d-none').addClass('d-block');
                     } else if ($(this).val() == 'Rintisan') {
-                        $('select[name="{{ $form->limit_by_level_slug }}.rintisan"]').val('').prop('required', true);
-                        $('select[name="{{ $form->limit_by_level_slug }}.rintisan"]').parent().removeClass('d-none').addClass('d-block');
+                        $('select[name="{{ $form->limit_by_level_slug }}_rintisan"]').val('').prop('required', true);
+                        $('select[name="{{ $form->limit_by_level_slug }}_rintisan"]').parent().removeClass('d-none').addClass('d-block');
                     } else if ($(this).val() == 'Both') {
-                        $('select[name="{{ $form->limit_by_level_slug }}.binaan"], select[name="{{ $form->limit_by_level_slug }}.rintisan"]').val(null).change();
-                    	$('select[name="{{ $form->limit_by_level_slug }}.binaan"], select[name="{{ $form->limit_by_level_slug }}.rintisan"]').prop('required', true);
-                    	$('select[name="{{ $form->limit_by_level_slug }}.binaan"], select[name="{{ $form->limit_by_level_slug }}.rintisan"]').parent().removeClass('d-none').addClass('d-block');
+                        $('select[name="{{ $form->limit_by_level_slug }}_binaan"], select[name="{{ $form->limit_by_level_slug }}_rintisan"]').val(null).change();
+                    	$('select[name="{{ $form->limit_by_level_slug }}_binaan"], select[name="{{ $form->limit_by_level_slug }}_rintisan"]').prop('required', true);
+                    	$('select[name="{{ $form->limit_by_level_slug }}_binaan"], select[name="{{ $form->limit_by_level_slug }}_rintisan"]').parent().removeClass('d-none').addClass('d-block');
                     }
                 });
 
