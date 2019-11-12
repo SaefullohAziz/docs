@@ -91,11 +91,11 @@
                                                 <fieldset class="{{ $form->limiter_slug }}-set {{ (setting($form->status_slug)==1?'d-block':'d-none') }}">
                                                     <legend>{{ __('Prices') }}</legend>
                                                     <div class="row">
-                                                        {{ Form::bsText('col-12', __('default training price (2 person)'), $form->default_participant_price_slug, setting($form->default_participant_price_slug), __('Exc : 8000000'), [(setting($form->status_slug)==1?'required':'') => '']) }}
+                                                        {{ Form::bsText('col-12', __('default training price (2 participant)'), $form->default_participant_price_slug, setting($form->default_participant_price_slug), __('Exc : 8000000'), [(setting($form->status_slug)==1?'required':'') => '']) }}
 
-                                                        {{ Form::bsText('col-12', __('more participant price'), $form->more_participant_slug, setting($form->more_participant_slug), __('Exc : 2000000'), [(setting($form->status_slug)==1?'required':'') => '']) }}
+                                                        {{ Form::bsText('col-12', __('Additional participant price'), $form->more_participant_slug, setting($form->more_participant_slug), __('Exc : 2000000'), [(setting($form->status_slug)==1?'required':'') => '']) }}
 
-                                                        {{ Form::bsText('col-12', __('Unimplementation school'), $form->unimplementation_scholl_price_slug, setting($form->unimplementation_scholl_price_slug), __('Exc : 8000000'), [(setting($form->status_slug)==1?'required':'') => '']) }}
+                                                        {{ Form::bsText('col-12', __('Out of implemented school price'), $form->unimplementation_scholl_price_slug, setting($form->unimplementation_scholl_price_slug), __('Exc : 8000000'), [(setting($form->status_slug)==1?'required':'') => '']) }}
 								                       
                                                     </div>
                                                 </fieldset>
