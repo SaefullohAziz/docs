@@ -170,6 +170,11 @@ class ExamReadinessController extends Controller
     }
 
 
+    /**
+     * Show list of exam type
+     *
+     * @return void
+     */
     public function types()
     {
         $sspStudent = Student::whereHas('subsidy.subsidyStatus.status', function ($query) {

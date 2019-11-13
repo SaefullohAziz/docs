@@ -78,7 +78,7 @@ class TrainingObserver
         $training = Training::withCount(['participants'])->doesntHave('trainingPayment')->where('id', $training->id)->first();
         $total = 3000000;
         if ($training) {
-            if ($training->batch != 'Waiting') {
+            if ($training->trainingStatus->status->name != 'Waiting') {
                 if ($training->participants_count > 2) {
                     $total = $total+(1500000*($training->participants_count-2));
                 }
@@ -101,9 +101,9 @@ class TrainingObserver
     public function sendNotification($training)
     {
         $school = School::findOrFail($training->school->id);
-        if ($training->batch == 'Waiting') {
+        if ($training->trainingStatus->status->name == 'Waiting') {
             $school->notify(new TrainingWaited($training));
-        } elseif ($training->batch != 'Waiting') {
+        } elseif ($training->trainingStatus->status->name != 'Waiting') {
             $school->notify(new TrainingApproved($training));
         }
     }

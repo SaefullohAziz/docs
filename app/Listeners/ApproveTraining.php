@@ -74,7 +74,7 @@ class ApproveTraining
         foreach ($request->selectedData as $id) {
             $training = Training::find($id);
             $school = School::findOrFail($training->school->id);
-            if ($training->batch == 'Waiting') {
+            if ($training->trainingStatus->status->name == 'Waiting') {
                 $school->notify(new ApprovedTraining($training));
             }
         }

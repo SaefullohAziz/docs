@@ -43,7 +43,7 @@ class TrainingWaited extends Notification
      */
     public function toMail($notifiable)
     {
-        // return (new Mailable($this->training));
+        return (new Mailable($this->training));
     }
 
     /**

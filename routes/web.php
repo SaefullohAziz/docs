@@ -69,6 +69,7 @@ Route::middleware(['auth'])->group(function () {
 			// Training
 			Route::prefix('training')->name('training.')->group(function () {
 				Route::post('list', 'TrainingController@list')->name('list');
+				Route::post('preCreate', 'TrainingController@preCreate')->name('preCreate');
 				// Route::post('export', 'TrainingController@export')->name('export');
 				// Route::delete('destroy', 'TrainingController@destroy')->name('destroy');
 			});
@@ -444,17 +445,7 @@ Route::get('download/{dir}/{file}', function ($dir, $file) {
 
 Route::get('check', function (\Illuminate\Http\Request $request) {
 	if (env('APP_ENV') == 'local') {
-		$data = [
-			['TKJ', 'RPL'],
-			['MM'],
-			[]
-		];
-		$data = array_filter($data, function ($item) {
-			return count($item) == 0;
-		});
-		if (count($data) > 0) {
-			$data = true;
-		}
+		$data = date('Y-m-d H:m:s', strtotime(now()->toDateTimeString() . ' +3 hours'));
 		dd($data);
 	}
 });

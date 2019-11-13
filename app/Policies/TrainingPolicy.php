@@ -48,6 +48,17 @@ class TrainingPolicy
     /**
      * Determine whether the user can create trainings.
      *
+     * @param  \App\User  $user
+     * @return mixed
+     */
+    public function preCreate(User $user)
+    {
+        return false;
+    }
+
+    /**
+     * Determine whether the user can create trainings.
+     *
      * @param  \App\Admin\User  $user
      * @return mixed
      */

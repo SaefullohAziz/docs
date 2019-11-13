@@ -257,6 +257,9 @@ class PaymentController extends Controller
         if (auth()->user()->cant('confirm', $payment)) {
             return redirect()->route('payment.index')->with('alert-danger', __($this->noPermission));
         }
+        if (auth()->user()->cant('commitmentFeeCheck', $payment)) {
+            return redirect()->route('payment.index')->with('alert-danger', __($this->noPermission) . ' ' . __('Payment confirmation past due.'));
+        }
         $view = [
             'title' => __('Fill Payment Confirmation'),
             'breadcrumbs' => [
@@ -291,6 +294,9 @@ class PaymentController extends Controller
     {
         if (auth()->user()->cant('confirm', $payment)) {
             return redirect()->route('payment.index')->with('alert-danger', __($this->noPermission));
+        }
+        if (auth()->user()->cant('commitmentFeeCheck', $payment)) {
+            return redirect()->route('payment.index')->with('alert-danger', __($this->noPermission) . ' ' . __('Payment confirmation past due.'));
         }
         if ($payment->training()->count()) {
             $request->merge(['repayment' => 'Paid in cash']);

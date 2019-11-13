@@ -55,7 +55,7 @@ class School extends Model
      */
     public function statusUpdate()
     {
-        return $this->hasOne('App\SchoolStatusUpdate')->latest('created_at');
+        return $this->hasOne('App\SchoolStatusUpdate')->orderBy('created_at', 'desc');
     }
 
     /**

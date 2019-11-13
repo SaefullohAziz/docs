@@ -134,12 +134,30 @@ class TrainingController extends Controller
                 route('training.index') => __('Training'),
                 null => __('Create')
             ],
-            'types' => $this->types,
+            'types' => $this->types(),
             'implementations' => $this->implementations,
             'roomTypes' => $this->roomTypes,
             'participants' => Participant::bySchool(auth()->user()->school->id)->pluck('name', 'id')->toArray(),
         ];
-        return view('training.create', $view);
+        if (session('type')) {
+            $view = array_merge($view, ['type' => session('type')]);
+            return view('training.create', $view);
+        }
+        return view('training.preCreate', $view);
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function preCreate(Request $request)
+    {
+        if (auth()->user()->cant('preCreate', Training::class)) {
+            return redirect()->route('training.create')->with('alert-danger', __($this->unauthorizedMessage));
+        }
+        return redirect()->route('training.create')->with('type', $request->type);
     }
 
     /**
@@ -152,6 +170,9 @@ class TrainingController extends Controller
     {
         if (auth()->user()->cant('create', Training::class)) {
             return redirect()->route('training.index')->with('alert-danger', __($this->unauthorizedMessage));
+        }
+        if (auth()->user()->cant('preCreate', Training::class)) {
+            return redirect()->route('training.create')->with('alert-danger', __($this->unauthorizedMessage));
         }
         $request->request->add([
             'school_id' => auth()->user()->school->id,
@@ -209,7 +230,7 @@ class TrainingController extends Controller
                 route('training.index') => __('Training'),
                 null => __('Edit')
             ],
-            'types' => $this->types,
+            'types' => $this->types(),
             'implementations' => $this->implementations,
             'roomTypes' => $this->roomTypes,
             'participants' => Participant::bySchool($training->school_id)->pluck('name', 'id')->toArray(),
@@ -241,6 +262,32 @@ class TrainingController extends Controller
         $this->saveParticipant($training, $request);
         $this->savePic($training, $request);
         return redirect(url()->previous())->with('alert-success', __($this->createdMessage));
+    }
+
+    /**
+     * Show filtered training type
+     *
+     * @return void
+     */
+    public function types()
+    {
+        $settings = json_decode(setting('training_settings'), true);
+        // Filter opened training
+        $settings = array_filter($settings, function ($item) {
+			return setting($item['status_slug']) == 1;
+        });
+        // Filter by quota
+        $settings = array_filter($settings, function ($item) {
+			if ( ! empty(setting($item['quota_limit_slug']))) {
+                $training = Training::has('payment')->where('type', $item['name'])->where('created_at', '>', setting($item['setting_created_at_slug']))->get();
+                return $training->count() < setting($item['quota_limit_slug']);
+            }
+            return true;
+        });
+        $trainingTypes = collect($settings)->mapWithKeys(function ($item) {
+            return [$item['name'] => $item['name']];
+        })->toArray();
+        return $trainingTypes;
     }
 
     /**
