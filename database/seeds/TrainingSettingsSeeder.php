@@ -19,7 +19,7 @@ class TrainingSettingsSeeder extends Seeder
 		}
 		$trainingSettings = collect([
 			[
-				'name' => 'basic_tot',
+				'name' => 'Basic (ToT)',
 				'status_slug' => 'basic_tot_status',
 				'limiter_slug' => 'basic_tot_limiter',
 				'time_limit_slug' => 'basic_tot_time_limit',
@@ -35,7 +35,7 @@ class TrainingSettingsSeeder extends Seeder
 				'setting_created_at_slug' => 'basic_tot_setting_at'
 			],
 			[
-				'name' => 'mikrotik',
+				'name' => 'MikroTik',
 				'status_slug' => 'mikrotik_status',
 				'limiter_slug' => 'mikrotik_limiter',
 				'time_limit_slug' => 'mikrotik_time_limit',
@@ -51,7 +51,7 @@ class TrainingSettingsSeeder extends Seeder
 				'setting_created_at_slug' => 'mikrotik_setting_at'
 			],
 			[
-				'name' => 'seagate',
+				'name' => 'Seagate',
 				'status_slug' => 'seagate_status',
 				'limiter_slug' => 'seagate_limiter',
 				'time_limit_slug' => 'seagate_time_limit',
@@ -67,7 +67,7 @@ class TrainingSettingsSeeder extends Seeder
 				'setting_created_at_slug' => 'seagate_setting_at'
 			],
 			[
-				'name' => 'iot',
+				'name' => 'IoT',
 				'status_slug' => 'iot_status',
 				'limiter_slug' => 'iot_limiter',
 				'time_limit_slug' => 'iot_time_limit',
@@ -83,7 +83,7 @@ class TrainingSettingsSeeder extends Seeder
 				'setting_created_at_slug' => 'iot_setting_at'
 			],
 			[
-				'name' => 'dicoding',
+				'name' => 'Dicoding',
 				'status_slug' => 'dicoding_status',
 				'limiter_slug' => 'dicoding_limiter',
 				'time_limit_slug' => 'dicoding_time_limit',
@@ -99,7 +99,7 @@ class TrainingSettingsSeeder extends Seeder
 				'setting_created_at_slug' => 'dicoding_setting_at'
 			],
 			[
-				'name' => 'ls_cable',
+				'name' => 'LS-Cable',
 				'status_slug' => 'ls_cable_status',
 				'limiter_slug' => 'ls_cable_limiter',
 				'time_limit_slug' => 'ls_cable_time_limit',
@@ -115,7 +115,7 @@ class TrainingSettingsSeeder extends Seeder
 				'setting_created_at_slug' => 'ls_cable_setting_at'
 			],
 			[
-				'name' => 'surveillance',
+				'name' => 'Surveillance',
 				'status_slug' => 'surveillance_status',
 				'limiter_slug' => 'surveillance_limiter',
 				'time_limit_slug' => 'surveillance_time_limit',
@@ -131,7 +131,7 @@ class TrainingSettingsSeeder extends Seeder
 				'setting_created_at_slug' => 'surveillance_setting_at'
 			],
 			[
-				'name' => 'elektronika_dasar',
+				'name' => 'Elektronika Dasar',
 				'status_slug' => 'elektronika_dasar_status',
 				'limiter_slug' => 'elektronika_dasar_limiter',
 				'time_limit_slug' => 'elektronika_dasar_time_limit',
@@ -147,7 +147,7 @@ class TrainingSettingsSeeder extends Seeder
 				'setting_created_at_slug' => 'elektronika_dasar_setting_at'
 			],
 			[
-				'name' => 'adobe_photoshop',
+				'name' => 'Adobe Photoshop',
 				'status_slug' => 'adobe_photoshop_status',
 				'limiter_slug' => 'adobe_photoshop_limiter',
 				'time_limit_slug' => 'adobe_photoshop_time_limit',
@@ -163,7 +163,7 @@ class TrainingSettingsSeeder extends Seeder
 				'setting_created_at_slug' => 'adobe_photoshop_setting_at'
 			],
 			[
-				'name' => 'microsoft_software_fundamental',
+				'name' => 'Microsoft Software Fundamental',
 				'status_slug' => 'microsoft_software_fundamental_status',
 				'limiter_slug' => 'microsoft_software_fundamental_limiter',
 				'time_limit_slug' => 'microsoft_software_fundamental_time_limit',
@@ -179,7 +179,7 @@ class TrainingSettingsSeeder extends Seeder
 				'setting_created_at_slug' => 'microsoft_software_fundamental_setting_at'
 			],
 			[
-				'name' => 'starter_kit_klinik_komputer',
+				'name' => 'Starter Kit Klinik Komputer',
 				'status_slug' => 'starter_kit_klinik_komputer_status',
 				'limiter_slug' => 'starter_kit_klinik_komputer_limiter',
 				'time_limit_slug' => 'starter_kit_klinik_komputer_time_limit',
