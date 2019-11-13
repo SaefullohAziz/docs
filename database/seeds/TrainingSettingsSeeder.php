@@ -197,19 +197,21 @@ class TrainingSettingsSeeder extends Seeder
 		]);
 		setting(['training_settings' => $trainingSettings->toJson()])->save();
 		foreach ($trainingSettings as $trainingSetting) {
-			setting([$trainingSetting['status_slug'] => '1'])->save();
-			setting([$trainingSetting['limiter_slug'] => 'None'])->save();
-			setting([$trainingSetting['time_limit_slug'] => ''])->save();
-			setting([$trainingSetting['quota_limit_slug'] => ''])->save();
-			setting([$trainingSetting['school_level_slug'] => 'Binaan'])->save();
-			setting([$trainingSetting['limit_by_level_slug'] => 'Binaan: 10'])->save();
-			setting([$trainingSetting['limit_by_level_binaan_slug'] => '10'])->save();
-			setting([$trainingSetting['school_implementation_slug'] => $department_names])->save();
-			setting([$trainingSetting['limit_by_implementation_slug'] => $departments])->save();
-			setting([$trainingSetting['default_participant_price_slug'] => '3000000'])->save();
-			setting([$trainingSetting['more_participant_slug'] => '1500000'])->save();
-			setting([$trainingSetting['unimplementation_scholl_price_slug'] => '5000000'])->save();
-			setting([$trainingSetting['setting_created_at_slug'] => now()->toDateTimeString()])->save();
+			setting([
+				$trainingSetting['status_slug'] => '1',
+				$trainingSetting['limiter_slug'] => 'None',
+				$trainingSetting['time_limit_slug'] => '',
+				$trainingSetting['quota_limit_slug'] => '',
+				$trainingSetting['school_level_slug'] => 'Binaan',
+				$trainingSetting['limit_by_level_slug'] => 'Binaan: 10',
+				$trainingSetting['limit_by_level_binaan_slug'] => '10',
+				$trainingSetting['school_implementation_slug'] => $department_names,
+				$trainingSetting['limit_by_implementation_slug'] => $departments,
+				$trainingSetting['default_participant_price_slug'] => '3000000',
+				$trainingSetting['more_participant_slug'] => '1500000',
+				$trainingSetting['unimplementation_scholl_price_slug'] => '5000000',
+				$trainingSetting['setting_created_at_slug'] => now()->toDateTimeString()
+			])->save();
 		}
     }
 }
