@@ -14,8 +14,7 @@ class CreateExamReadinessPicsTable extends Migration
     public function up()
     {
         Schema::create('exam_readiness_pics', function (Blueprint $table) {
-            $table->uuid('id');
-            $table->primary('id');
+            $table->uuid('id')->primary();
             $table->uuid('exam_readiness_id')->index();
             $table->foreign('exam_readiness_id')->references('id')->on('exam_readinesses')->onDelete('cascade')->onUpdate('cascade');
             $table->uuid('pic_id')->index();

@@ -14,8 +14,7 @@ class CreateSubsidyStatusesTable extends Migration
     public function up()
     {
         Schema::create('subsidy_statuses', function (Blueprint $table) {
-            $table->uuid('id');
-            $table->primary('id');
+            $table->uuid('id')->primary();
             $table->uuid('subsidy_id')->index();
             $table->foreign('subsidy_id')->references('id')->on('subsidies')->onDelete('cascade')->onUpdate('cascade');
             $table->uuid('status_id')->index();

@@ -14,8 +14,7 @@ class CreateDocumentPicsTable extends Migration
     public function up()
     {
         Schema::create('document_pics', function (Blueprint $table) {
-            $table->uuid('id');
-            $table->primary('id');
+            $table->uuid('id')->primary();
             $table->uuid('document_id')->index();
             $table->foreign('document_id')->references('id')->on('documents')->onDelete('cascade')->onUpdate('cascade');
             $table->uuid('pic_id')->index();

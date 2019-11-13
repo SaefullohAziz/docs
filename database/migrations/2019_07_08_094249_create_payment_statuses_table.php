@@ -14,8 +14,7 @@ class CreatePaymentStatusesTable extends Migration
     public function up()
     {
         Schema::create('payment_statuses', function (Blueprint $table) {
-            $table->uuid('id');
-            $table->primary('id');
+            $table->uuid('id')->primary();
             $table->uuid('payment_id')->index();
             $table->foreign('payment_id')->references('id')->on('payments')->onDelete('cascade')->onUpdate('cascade');
             $table->uuid('status_id')->index();

@@ -14,8 +14,7 @@ class CreateExamReadinessSchoolsTable extends Migration
     public function up()
     {
         Schema::create('exam_readiness_schools', function (Blueprint $table) {
-            $table->uuid('id');
-            $table->primary('id');
+            $table->uuid('id')->primary();
             $table->uuid('exam_type_id')->index();
             $table->foreign('exam_type_id')->references('id')->on('exam_types')->onDelete('cascade')->onUpdate('cascade');
             $table->uuid('school_id')->index();

@@ -14,8 +14,7 @@ class CreatePoliceNumbersTable extends Migration
     public function up()
     {
         Schema::create('police_numbers', function (Blueprint $table) {
-            $table->uuid('id');
-            $table->primary('id');
+            $table->uuid('id')->primary();
             $table->string('name');
             $table->text('description')->nullable();
             $table->timestamps();

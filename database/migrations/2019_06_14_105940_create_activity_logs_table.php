@@ -14,8 +14,7 @@ class CreateActivityLogsTable extends Migration
     public function up()
     {
         Schema::create('activity_logs', function (Blueprint $table) {
-            $table->uuid('id');
-            $table->primary('id');
+            $table->uuid('id')->primary();
             $table->text('description');
             $table->string('created_by');
             $table->uuid('staff_id')->index()->nullable();

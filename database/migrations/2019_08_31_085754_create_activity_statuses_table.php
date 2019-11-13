@@ -14,8 +14,7 @@ class CreateActivityStatusesTable extends Migration
     public function up()
     {
         Schema::create('activity_statuses', function (Blueprint $table) {
-            $table->uuid('id');
-            $table->primary('id');
+            $table->uuid('id')->primary();
             $table->uuid('activity_id')->index();
             $table->foreign('activity_id')->references('id')->on('activities')->onDelete('cascade')->onUpdate('cascade');
             $table->uuid('status_id')->index();

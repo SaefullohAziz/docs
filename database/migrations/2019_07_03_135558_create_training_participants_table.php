@@ -14,8 +14,7 @@ class CreateTrainingParticipantsTable extends Migration
     public function up()
     {
         Schema::create('training_participants', function (Blueprint $table) {
-            $table->uuid('id');
-            $table->primary('id');
+            $table->uuid('id')->primary();
             $table->uuid('training_id')->index();
             $table->foreign('training_id')->references('id')->on('trainings')->onDelete('cascade')->onUpdate('cascade');
             $table->uuid('teacher_id')->index();

@@ -14,8 +14,7 @@ class CreateSchoolCommentsTable extends Migration
     public function up()
     {
         Schema::create('school_comments', function (Blueprint $table) {
-            $table->uuid('id');
-            $table->primary('id');
+            $table->uuid('id')->primary();
             $table->uuid('school_id')->index();
             $table->foreign('school_id')->references('id')->on('schools')->onDelete('cascade')->onUpdate('cascade');
             $table->uuid('staff_id')->index();

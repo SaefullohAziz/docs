@@ -14,8 +14,7 @@ class CreateIslandsTable extends Migration
     public function up()
     {
         Schema::create('islands', function (Blueprint $table) {
-            $table->uuid('id');
-            $table->primary('id');
+            $table->uuid('id')->primary();
             $table->string('name');
             $table->timestamps();
         });
