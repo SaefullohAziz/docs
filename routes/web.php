@@ -445,7 +445,7 @@ Route::get('download/{dir}/{file}', function ($dir, $file) {
 
 Route::get('check', function (\Illuminate\Http\Request $request) {
 	if (env('APP_ENV') == 'local') {
-		$data = date('Y-m-d H:m:s', strtotime(now()->toDateTimeString() . ' +3 hours'));
+		$data = date('m', strtotime('-3 month'));
 		dd($data);
 	}
 });

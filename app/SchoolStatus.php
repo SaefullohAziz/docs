@@ -28,6 +28,14 @@ class SchoolStatus extends Model
     }
 
     /**
+     * Get the update for the status.
+     */
+    public function statusUpdate()
+    {
+        return $this->hasMany('App\SchoolStatusUpdate')->whereRaw('NOT EXISTS (SELECT 1 FROM school_status_updates t2 WHERE t2.school_id = school_status_updates.school_id AND t2.created_at > school_status_updates.created_at)');
+    }
+
+    /**
      * Get the level that owns the status.
      */
     public function level()
@@ -40,7 +48,7 @@ class SchoolStatus extends Model
      */
     public function schools()
     {
-        return $this->belongsToMany('App\School', 'school_status_updates')->using('App\SchoolStatusUpdate')->as('status_update')->withTimestamps();
+        return $this->belongsToMany('App\School', 'school_status_updates')->using('App\SchoolStatusUpdate')->as('status_update')->withTimestamps()->whereRaw('NOT EXISTS (SELECT 1 FROM school_status_updates t2 WHERE t2.school_id = school_status_updates.school_id AND t2.created_at > school_status_updates.created_at)');
     }
 
     /**

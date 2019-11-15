@@ -32,10 +32,7 @@ class SchoolLevel extends Model
      */
     public function statusUpdate()
     {
-        $statuses = \App\School::with(['statusUpdate'])->get()->map(function ($school) {
-            return $school->statusUpdate->id;
-        })->toArray();
-        return $this->hasManyThrough('App\SchoolStatusUpdate', 'App\SchoolStatus')->whereIn('school_status_updates.id', $statuses);
+        return $this->hasManyThrough('App\SchoolStatusUpdate', 'App\SchoolStatus')->whereRaw('NOT EXISTS (SELECT 1 FROM school_status_updates t2 WHERE t2.school_id = school_status_updates.school_id AND t2.created_at > school_status_updates.created_at)');
     }
 
     /**
@@ -51,10 +48,7 @@ class SchoolLevel extends Model
      */
     public function schools()
     {
-        $statuses = \App\School::with(['statusUpdate'])->get()->map(function ($school) {
-            return $school->statusUpdate->id;
-        })->toArray();
-        return $this->hasManyDeepFromRelations($this->statusUpdate(), (new SchoolStatusUpdate)->school())->whereIn('school_status_updates.id', $statuses);
+        return $this->hasManyDeepFromRelations($this->statusUpdate(), (new SchoolStatusUpdate)->school())->whereRaw('NOT EXISTS (SELECT 1 FROM school_status_updates t2 WHERE t2.school_id = school_status_updates.school_id AND t2.created_at > school_status_updates.created_at)');
     }
 
     /**
@@ -62,10 +56,7 @@ class SchoolLevel extends Model
      */
     public function schoolComments()
     {
-        $statuses = \App\School::with(['statusUpdate'])->get()->map(function ($school) {
-            return $school->statusUpdate->id;
-        })->toArray();
-        return $this->hasManyDeepFromRelations($this->schools(), (new School)->comments())->whereIn('school_status_updates.id', $statuses);
+        return $this->hasManyDeepFromRelations($this->schools(), (new School)->comments())->whereRaw('NOT EXISTS (SELECT 1 FROM school_status_updates t2 WHERE t2.school_id = school_status_updates.school_id AND t2.created_at > school_status_updates.created_at)');
     }
 
     /**
@@ -73,9 +64,6 @@ class SchoolLevel extends Model
      */
     public function students()
     {
-        $statuses = \App\School::with(['statusUpdate'])->get()->map(function ($school) {
-            return $school->statusUpdate->id;
-        })->toArray();
-        return $this->hasManyDeepFromRelations($this->schools(), (new School)->students())->whereIn('school_status_updates.id', $statuses);
+        return $this->hasManyDeepFromRelations($this->schools(), (new School)->students())->whereRaw('NOT EXISTS (SELECT 1 FROM school_status_updates t2 WHERE t2.school_id = school_status_updates.school_id AND t2.created_at > school_status_updates.created_at)');
     }
 }

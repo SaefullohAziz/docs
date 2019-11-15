@@ -119,6 +119,88 @@
 				</div>
 			</div>
 
+			<div class="col-sm-8">
+				<div class="card">
+					<div class="card-header">
+						<h4 class="card-title">{{ __('School Status') }}</h4>
+					</div>
+					<div class="card-body">
+						<ul class="nav nav-tabs" id="schoolStatusesTab" role="tablist">
+							@foreach ($schoolStatuses as $schoolStatus)
+								<li class="nav-item">
+									<a class="nav-link {{ $loop->first?'active show':'' }}" id="school-status-{{ $loop->iteration }}-tab" data-toggle="tab" href="#school-status-{{ $loop->iteration }}" role="tab" aria-controls="school-status-{{ strtolower(str_replace(' ', '-', $schoolStatus['name'])) }}" aria-selected="{{ $loop->first?'true':'false' }}">{{ $schoolStatus['name'] }}</a>
+								</li>
+							@endforeach
+						</ul>
+						<div class="tab-content" id="schoolStatusesTabContent">
+							@foreach ($schoolStatuses as $schoolStatus)
+								<div class="tab-pane fade {{ $loop->first?'active show':'' }}" id="school-status-{{ $loop->iteration }}" role="tabpanel" aria-labelledby="school-status-{{ $loop->iteration }}-tab">
+									<div class="table-responsive">
+										<table class="table table-sm table-striped text-nowrap">
+											<thead>
+												<tr>
+													@foreach ($schoolStatus['statuses'] as $status)
+														<th scope="col">{{ $status['name'] }}</th>
+													@endforeach
+												</tr>
+											</thead>
+											<tbody>
+												@php
+													$count = collect($schoolStatus['statuses'])->map(function ($item, $key) {
+														return count($item['schools']);
+													})->max();
+												@endphp
+												@for ($i=0; $i <= $count; $i++)
+													<tr>
+														@for ($j=0; $j <= count($schoolStatus['statuses']); $j++)
+															<td>{{ (empty($schoolStatus['statuses'][$j]['schools'][$i])?'':$schoolStatus['statuses'][$j]['schools'][$i]['name']) }}</td>
+														@endfor
+													</tr>
+												@endfor
+											</tbody>
+										</table>
+									</div>
+								</div>
+							@endforeach
+						</div>
+                  	</div>
+				</div>
+			</div>
+
+			<div class="col-sm-4">
+				<div class="card">
+					<div class="card-header">
+						<h4 class="card-title">{{ __('School FTP') }}</h4>
+					</div>
+					<div class="card-body">
+						<ul class="nav nav-tabs" id="schoolFtpTab" role="tablist">
+							@foreach ($schoolFtps as $schoolFtp)
+								<li class="nav-item">
+									<a class="nav-link {{ $loop->first?'active show':'' }}" id="school-ftp-{{ $loop->iteration }}-tab" data-toggle="tab" href="#school-ftp-{{ $loop->iteration }}" role="tab" aria-controls="school-ftp-{{ strtolower(str_replace(' ', '-', $schoolFtp['name'])) }}" aria-selected="{{ $loop->first?'true':'false' }}">{{ __($schoolFtp['name']) }}</a>
+								</li>
+							@endforeach
+						</ul>
+						<div class="tab-content" id="schoolFtpTabContent">
+							@foreach ($schoolFtps as $schoolFtp)
+								<div class="tab-pane fade {{ $loop->first?'active show':'' }}" id="school-ftp-{{ $loop->iteration }}" role="tabpanel" aria-labelledby="school-ftp-{{ $loop->iteration }}-tab">
+									<div class="table-responsive">
+										<table class="table table-sm table-striped text-nowrap">
+											<tbody>
+												@foreach ($schoolFtp['schools'] as $school)
+													<tr>
+														<td>{{ $school['name'] }}</td>
+													</tr>
+												@endforeach
+											</tbody>
+										</table>
+									</div>
+								</div>
+							@endforeach
+						</div>
+                  	</div>
+				</div>
+			</div>
+
 			<div class="col-12">
 				<div class="card">
 					<div class="card-header">
