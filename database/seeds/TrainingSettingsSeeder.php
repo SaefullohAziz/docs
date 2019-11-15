@@ -12,7 +12,7 @@ class TrainingSettingsSeeder extends Seeder
      */
     public function run()
     {
-		$department_names = Department::Pluck('abbreviation')->toArray();
+		$department_names = ["RPL", "TKJ"];
 		$departments = [];
 		foreach ($department_names as $department) {
 			$departments += [$department => 5];
