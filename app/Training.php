@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Traits\Uuids;
+use App\Training;
 
 class Training extends Model
 {
@@ -139,5 +140,23 @@ class Training extends Model
     public static function list(Request $request)
     {
         return self::get($request)->select('trainings.*', 'schools.name as school', 'schools.school_email', 'provinces.abbreviation', 'pics.id as pic_id', 'pics.name as pic_name', 'pics.position as pic_position', 'pics.email as pic_email', 'pics.phone_number as pic_phone_number', 'statuses.name as status', 'training_statuses.created_at as statused_at', DB::raw('(CASE WHEN staffs.name IS NULL THEN users.name WHEN users.name IS NULL THEN staffs.name ELSE staffs.name END) AS status_by'));
+    }
+
+    /**
+     * Count registerred training by implementation and date
+     * 
+     * @param  $type
+     * @param  $implementation
+     * @param  $date
+     */
+    public static function registerredCount($type, $implementation, $date)
+    {
+        return self::When($implementation, function($query) use ($implementation){
+            $query->where('implementation', $implementation);
+        })->When($type, function($query) use ($type){
+            $query->where('type', $type);
+        })
+        ->where('created_at', '>', $date)
+        ->count();
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Admin\User as Staff;
 use App\Department;
+use App\Training;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Spatie\Permission\Models\Role;
@@ -245,6 +246,24 @@ class SettingController extends Controller
         if ( ! auth()->guard('admin')->user()->can('access training ' . $this->table)) {
             return redirect()->route('admin.setting.index')->with('alert-danger', __($this->noPermission));
         }
+
+        $trainings = json_decode(setting('training_settings'));
+        $implementations = Department::pluck('abbreviation', 'abbreviation')->toArray();
+        $registerredCount = [];
+        $registerredSum = [];
+
+        foreach ($trainings as $training){
+            foreach ($implementations as $implementation){
+                $count = Training::registerredCount($training->name, $implementation, setting($training->setting_created_at_slug));
+                $registerredCount += [$implementation => $count];
+                if  ( ! next($implementations)){
+                    $registerredCount += ["total" => array_sum($registerredCount)];
+                }
+            }
+            // dd($registerredCount);
+            $registerredSum += [$training->name => $registerredCount];
+
+        }
         $view = [
             'back' => route('admin.setting.index'),
             'title' => __('Training Settings'),
@@ -256,7 +275,7 @@ class SettingController extends Controller
             'subtitle' => __('All About Training Settings'),
             'description' => __('You can adjust all training settings here'),
             'settings' => $this->settings,
-            'forms' => json_decode(setting('training_settings')),
+            'forms' => $trainings,
             'formLimiters' => [
                 'None' => __('None'),
                 'Quota' => __('Quota'),
@@ -269,7 +288,8 @@ class SettingController extends Controller
                 'Rintisan' => __('Rintisan'),
                 'Both' => __('Both'),
             ],
-            'schoolImplementations' => Department::pluck('abbreviation', 'abbreviation')->toArray(),
+            'schoolImplementations' => $implementations,
+            'registerredSum' => $registerredSum,
         ];
         return view('admin.setting.training.index', $view);
     }

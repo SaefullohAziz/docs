@@ -68,7 +68,7 @@
                                                 <fieldset class="{{ $form->limiter_slug }}-set {{ (setting($form->status_slug)==1?'d-block':'d-none') }}">
                                                     <legend>{{ __('Limitation') }}</legend>
                                                     <div class="row">
-                                                        {{ Form::bsSelect('col-12', __('Limiter'), $form->limiter_slug, $formLimiters, setting($form->limiter_slug), __('Select'), ['placeholder' => __('Select'), (setting($form->status_slug)==1?'required':'') => '']) }}
+                                                        {{ Form::bsSelect('col-12', __('Limiter'), $form->limiter_slug, $formLimiters, setting($form->limiter_slug), __('Select'), ['placeholder' => __('Select'), (setting($form->status_slug)==1?'required':'') => ''], [$registerredSum[$form->name]['total']. " Was registerred since last setting"]) }}
 
 								                        {{ Form::bsSelectRange('col-sm-6 ' . (setting($form->limiter_slug)=='Quota'||setting($form->limiter_slug)=='Both'?'d-block':'d-none'), __('Quota'), $form->quota_limit_slug, 1, 100, setting($form->quota_limit_slug), __('Select'), ['placeholder' => __('Select'), (setting($form->limiter_slug)=='Quota'||setting($form->limiter_slug)=='Both'?'required':'') => '']) }}
 
@@ -83,7 +83,7 @@
 								                        {{ Form::bsSelect('col-12', __('Limit by school implementation'), $form->school_implementation_slug, $schoolImplementations, setting($form->school_implementation_slug), __('Select'), ['placeholder' => __('Select'), (setting($form->status_slug)==1?'required':'') => '', 'multiple' => '']) }}
 
 								                        @foreach ($schoolImplementations as $implementation)
-								                        	{{ Form::bsSelectRange('col-sm-4 ' . (setting($form->limit_by_implementation_slug)[$implementation]?'d-block':'d-none'), __($implementation), $form->limit_by_implementation_slug.'['.$implementation.']', 1, 100, setting($form->limit_by_implementation_slug)[$implementation], __('Select'), ['placeholder' => __('Select'), (array_keys(explode(':', setting($form->limit_by_implementation_slug)[$implementation]), $implementation)?'required':'') => '']) }}
+								                        	{{ Form::bsSelectRange('col-sm-4 ' . (in_array($implementation, explode(',', setting($form->school_implementation_slug)) )?'d-block':'d-none'), __($implementation), $form->limit_by_implementation_slug.'['.$implementation.']', 1, 100, key_exists($implementation, setting($form->limit_by_implementation_slug)) ? setting($form->limit_by_implementation_slug)[$implementation]:null, __('Select'), ['placeholder' => __('Select'), (array_keys(explode(':', in_array($implementation, explode(',', setting($form->school_implementation_slug)) )), $implementation)?'required':'') => ''],[$registerredSum[$form->name][$implementation], 'registerred']) }}
 								                        @endforeach
 								                       
                                                     </div>
