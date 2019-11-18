@@ -33,15 +33,17 @@ class HomeController extends Controller
     {
         $view = [
             'title' => __('Home'),
-            'schoolComments' => SchoolLevel::with(['schoolComments' => function ($query) {
-                $query->latest('created_at')->limit(20);
-            }])->orderBy('created_at', 'asc')->get(),
-            'statusMovements' => SchoolLevel::with(['statusUpdates' => function ($query) {
-                $query->latest('created_at')->limit(10);
-            }, 'statusUpdates.school', 'statusUpdates.status', 'statusUpdates.staff'])->orderBy('created_at', 'asc')->get(),
-            'schoolStatuses' => SchoolLevel::with(['statuses.schools' => function ($query) {
-                $query->limit(5);
-            }])->orderBy('created_at', 'asc')->get()->toArray(),
+            'schoolComments' => SchoolLevel::orderBy('created_at', 'asc')->get()->each(function ($schoolComment) {
+                $schoolComment->load(['schoolComments' => function ($query) {
+                    $query->latest('created_at')->limit(20);
+                }]);
+            }),
+            'statusMovements' => SchoolLevel::orderBy('created_at', 'asc')->get()->each(function ($statusMovement) {
+                $statusMovement->load(['statusUpdates' => function ($query) {
+                    $query->limit(20);
+                }, 'statusUpdates.school', 'statusUpdates.status', 'statusUpdates.staff']);
+            }),
+            'schoolStatuses' => SchoolLevel::with(['statuses.schools'])->orderBy('created_at', 'asc')->get()->toArray(),
             'schoolFtps' => [
                 [
                     'name' => 'Candidate',

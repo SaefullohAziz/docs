@@ -123,6 +123,9 @@
 				<div class="card">
 					<div class="card-header">
 						<h4 class="card-title">{{ __('School Status') }}</h4>
+						<div class="card-header-action">
+							<button class="btn btn-primary" name="viewAllSchools">{{ __('View All') }}</button>
+						</div>
 					</div>
 					<div class="card-body">
 						<ul class="nav nav-tabs" id="schoolStatusesTab" role="tablist">
@@ -136,7 +139,7 @@
 							@foreach ($schoolStatuses as $schoolStatus)
 								<div class="tab-pane fade {{ $loop->first?'active show':'' }}" id="school-status-{{ $loop->iteration }}" role="tabpanel" aria-labelledby="school-status-{{ $loop->iteration }}-tab">
 									<div class="table-responsive">
-										<table class="table table-sm table-striped text-nowrap">
+										<table class="table table-sm table-striped text-nowrap schoolStatusesTable">
 											<thead>
 												<tr>
 													@foreach ($schoolStatus['statuses'] as $status)
@@ -151,7 +154,7 @@
 													})->max();
 												@endphp
 												@for ($i=0; $i <= $count; $i++)
-													<tr>
+													<tr style="{{ ($i>4?'display: none;':'') }}">
 														@for ($j=0; $j <= count($schoolStatus['statuses']); $j++)
 															<td>{{ (empty($schoolStatus['statuses'][$j]['schools'][$i])?'':$schoolStatus['statuses'][$j]['schools'][$i]['name']) }}</td>
 														@endfor
@@ -252,6 +255,10 @@
 @section('script')
 	<script>
 		$(document).ready(function () {
+			$('[name="viewAllSchools"]').click(function () {
+				$('.schoolStatusesTable tbody tr:nth-child(n+6)').toggle();
+			});
+
 			var schoolChart = new Chart($('#schoolChart'), {
 				type: 'bar',
 				data: {
