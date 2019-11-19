@@ -59,6 +59,9 @@
 				</div>
 			</div>
 			<div class="card-footer bg-whitesmoke">
+				@if (auth()->guard('admin')->user()->can('update activities'))
+					<button class="btn btn-light btn-sm" name="changeDate" title="{{ __('Change date') }}">{{ __('Change date') }}</button>
+				@endif
 				@if (auth()->guard('admin')->user()->can('approval activities'))
 					<!-- <button class="btn btn-light btn-sm" name="cancelData" title="{{ __('Cancel') }}">{{ __('Cancel') }}</button> -->
 					<!-- <button class="btn btn-light btn-sm" name="rejectData" title="{{ __('Reject') }}">{{ __('Reject') }}</button> -->
@@ -123,166 +126,130 @@
       			});
       		},
   		});
-	});
 
-	// Approve data action
-	$('[name="approveData"]').click(function(event) {
-    	if ($('[name="selectedData[]"]:checked').length > 0) {
-    		event.preventDefault();
-    		var selectedData = $('[name="selectedData[]"]:checked').map(function(){
-    			return $(this).val();
-    		}).get();
-			swal({
-		      	title: '{{ __("Are you sure you want to approve selected data?") }}',
-		      	text: '',
-		      	icon: 'warning',
-			    buttons: ['{{ __("Cancel") }}', true],
-			  	dangerMode: true,
-		    })
-		    .then((willAprove) => {
-		      	if (willAprove) {
-			      	$.ajax({
-						url : "{{ route('admin.activity.approve') }}",
-						type: "POST",
-						dataType: "JSON",
-						data: {"_token" : "{{ csrf_token() }}", "selectedData" : selectedData},
-						success: function(data)
-						{
-							reloadTable();
-						},
-						error: function (jqXHR, textStatus, errorThrown)
-						{
-							if (JSON.parse(jqXHR.responseText).status) {
-								swal("{{ __('Failed!') }}", '{{ __("Data cannot be updated.") }}', "warning");
-							} else {
-								swal(JSON.parse(jqXHR.responseText).message, "", "error");
-							}
-						}
-					});
-		      	}
-			});
-    	} else {
-    		swal("{{ __('Please select a data..') }}", "", "warning");
-    	}
-    });
+		$('#change-date-form [name="date"]').keypress(function(e) {
+            e.preventDefault();
+        }).daterangepicker({
+        	locale: {format: 'DD-MM-YYYY'},
+        	singleDatePicker: true,
+      	});
 
-	// $('[name="cancelData"]').click(function(event) {
- //      	if ($('[name="selectedData[]"]:checked').length > 0) {
-	//         $('#cancel-form [name="description"]').val('');
-	//         $("#cancel-form input").keypress(function (e) {
-	//           	if(e.which == 13)  // the enter key code
-	//           	{
-	//             	$('[name="saveCancel"]').click();
-	//             	return false;  
-	//           	}
-	//         });
-	// 		$('#cancelModal').modal('show');
- //      	} else {
- //        	swal("{{ __('Please select a data..') }}", "", "warning");
- //      	}
- //    });
+		$('[name="changeDate"]').click(function(event) {
+			if ($('[name="selectedData[]"]:checked').length > 0) {
+				$('#change-date-form [name="date"]').val('').removeClass('is-invalid');
+				$('#changeDateModal').modal('show');
+			} else {
+				swal("{{ __('Please select a data..') }}", "", "warning");
+			}
+		});
 
- //    $('[name="saveCancel"]').click(function(event) {
- //        event.preventDefault();
- //        var selectedData = $('[name="selectedData[]"]:checked').map(function(){
- //          	return $(this).val();
- //        }).get();
- //        $.ajax({
- //        	url : "{{ route('admin.subsidy.cancel') }}",
- //        	type: "POST",
- //        	dataType: "JSON",
- //        	data: {"_token" : "{{ csrf_token() }}", "selectedData" : selectedData, "description" : $('#cancel-form [name="description"]').val()},
- //        	success: function(data)
- //        	{
- //        		$('#cancelModal').modal('hide');
- //        		reloadTable();
- //        	},
- //        	error: function (jqXHR, textStatus, errorThrown)
- //        	{
- //        		reloadTable();
- //        	}
- //        });
- //    });
-
-	// $('[name="rejectData"]').click(function(event) {
- //    	if ($('[name="selectedData[]"]:checked').length > 0) {
- //    		event.preventDefault();
- //    		var selectedData = $('[name="selectedData[]"]:checked').map(function(){
- //    			return $(this).val();
- //    		}).get();
-	// 		swal({
-	// 	      	title: '{{ __("Are you sure you want to reject selected data?") }}',
-	// 	      	text: '',
-	// 	      	icon: 'warning',
-	// 	      	buttons: ['{{ __("Cancel") }}', true],
-	// 	      	dangerMode: true,
-	// 	    })
-	// 	    .then((willReject) => {
-	// 	      	if (willReject) {
-	// 	      		$.ajax({
-	// 					url : "{{ route('admin.subsidy.reject') }}",
-	// 					type: "POST",
-	// 					dataType: "JSON",
-	// 					data: {"_token" : "{{ csrf_token() }}", "selectedData" : selectedData},
-	// 					success: function(data)
-	// 					{
-	// 						reloadTable();
-	// 					},
-	// 					error: function (jqXHR, textStatus, errorThrown)
-	// 					{
-	// 						if (JSON.parse(jqXHR.responseText).status) {
-	// 							swal("{{ __('Failed!') }}", '{{ __("Data cannot be updated.") }}', "warning");
-	// 						} else {
-	// 							swal(JSON.parse(jqXHR.responseText).message, "", "error");
-	// 						}
-	// 					}
-	// 				});
-	// 	      	}
-	// 		});
- //    	} else {
- //    		swal("{{ __('Please select a data..') }}", "", "warning");
- //    	}
- //    });
-	$('[name="deleteData"]').click(function(event) {
-		if ($('[name="selectedData[]"]:checked').length > 0) {
+		$('[name="saveDate"]').click(function(event) {
+			$('#change-date-form .invalid-feedback').remove();
 			event.preventDefault();
 			var selectedData = $('[name="selectedData[]"]:checked').map(function(){
 				return $(this).val();
 			}).get();
-			swal({
-		      	title: '{{ __("Are you sure want to delete this data?") }}',
-		      	text: '',
-		      	icon: 'warning',
-		      	buttons: ['{{ __("Cancel") }}', true],
-		      	dangerMode: true,
-		    })
-		    .then((willDelete) => {
-		      	if (willDelete) {
-		      		$.ajax({
-						url : "{{ route('admin.activity.destroy') }}",
-						type: "DELETE",
-						dataType: "JSON",
-						data: {"_token" : "{{ csrf_token() }}", "selectedData" : selectedData},
-						success: function(data)
-						{
-							reloadTable();
-						},
-						error: function (jqXHR, textStatus, errorThrown)
-						{
-							if (JSON.parse(jqXHR.responseText).status) {
-								swal("{{ __('Failed!') }}", '{{ __("Data cannot be deleted.") }}', "warning");
-							} else {
-								swal(JSON.parse(jqXHR.responseText).message, "", "error");
-							}
-						}
+			$.ajax({
+				url : "{{ route('admin.activity.date') }}",
+				type: "POST",
+				dataType: "JSON",
+				data: {"_token": "{{ csrf_token() }}", "selectedData": selectedData, "date": $('#change-date-form [name="date"]').val()},
+				success: function(data)
+				{
+					$('#changeDateModal').modal('hide');
+					reloadTable();
+				},
+				error: function (jqXHR, textStatus, errorThrown)
+				{
+					$.each(JSON.parse(jqXHR.responseText).errors, function(name, value) {
+						$('#change-date-form [name="'+name+'"]').addClass('is-invalid');
+						$('#change-date-form [name="'+name+'"]').parent().append('<div class="invalid-feedback" role="alert"><strong>'+value[0]+'</strong></div>');
 					});
-		      	}
+				}
 			});
-		} else {
-			swal("{{ __('Please select a data..') }}", "", "warning");
-		}
-	});
+		});
 
+		// Approve data action
+		$('[name="approveData"]').click(function(event) {
+			if ($('[name="selectedData[]"]:checked').length > 0) {
+				event.preventDefault();
+				var selectedData = $('[name="selectedData[]"]:checked').map(function(){
+					return $(this).val();
+				}).get();
+				swal({
+					title: '{{ __("Are you sure you want to approve selected data?") }}',
+					text: '',
+					icon: 'warning',
+					buttons: ['{{ __("Cancel") }}', true],
+					dangerMode: true,
+				})
+				.then((willAprove) => {
+					if (willAprove) {
+						$.ajax({
+							url : "{{ route('admin.activity.approve') }}",
+							type: "POST",
+							dataType: "JSON",
+							data: {"_token" : "{{ csrf_token() }}", "selectedData" : selectedData},
+							success: function(data)
+							{
+								reloadTable();
+							},
+							error: function (jqXHR, textStatus, errorThrown)
+							{
+								if (JSON.parse(jqXHR.responseText).status) {
+									swal("{{ __('Failed!') }}", '{{ __("Data cannot be updated.") }}', "warning");
+								} else {
+									swal(JSON.parse(jqXHR.responseText).message, "", "error");
+								}
+							}
+						});
+					}
+				});
+			} else {
+				swal("{{ __('Please select a data..') }}", "", "warning");
+			}
+		});
+
+		$('[name="deleteData"]').click(function(event) {
+			if ($('[name="selectedData[]"]:checked').length > 0) {
+				event.preventDefault();
+				var selectedData = $('[name="selectedData[]"]:checked').map(function(){
+					return $(this).val();
+				}).get();
+				swal({
+					title: '{{ __("Are you sure want to delete this data?") }}',
+					text: '',
+					icon: 'warning',
+					buttons: ['{{ __("Cancel") }}', true],
+					dangerMode: true,
+				})
+				.then((willDelete) => {
+					if (willDelete) {
+						$.ajax({
+							url : "{{ route('admin.activity.destroy') }}",
+							type: "DELETE",
+							dataType: "JSON",
+							data: {"_token" : "{{ csrf_token() }}", "selectedData" : selectedData},
+							success: function(data)
+							{
+								reloadTable();
+							},
+							error: function (jqXHR, textStatus, errorThrown)
+							{
+								if (JSON.parse(jqXHR.responseText).status) {
+									swal("{{ __('Failed!') }}", '{{ __("Data cannot be deleted.") }}', "warning");
+								} else {
+									swal(JSON.parse(jqXHR.responseText).message, "", "error");
+								}
+							}
+						});
+					}
+				});
+			} else {
+				swal("{{ __('Please select a data..') }}", "", "warning");
+			}
+		});
+	});
 
 	function reloadTable() {
 	    table.ajax.reload(null,false); //reload datatable ajax
@@ -317,6 +284,31 @@
 				</div>
 				<div class="modal-footer bg-whitesmoke d-flex justify-content-center">
 					{{ Form::button(__('Filter'), ['class' => 'btn btn-primary', 'onclick' => 'filter()']) }}
+					{{ Form::button(__('Cancel'), ['class' => 'btn btn-secondary', ' data-dismiss' => 'modal']) }}
+				</div>
+			{{ Form::close() }}
+		</div>
+	</div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="changeDateModal" tabindex="-1" role="dialog" aria-labelledby="changeDateModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-sm" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="changeDateModallLabel">{{ __('Change date') }}</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			{{ Form::open(['url' => '#', 'files' => true, 'id' => 'change-date-form']) }}
+				<div class="modal-body">
+					<div class="container-fluid">
+						{{ Form::bsText(null, __('Date'), 'date', null, __('Date'), [], [__('Only industry visit dates can be changed.')]) }}
+					</div>
+				</div>
+				<div class="modal-footer bg-whitesmoke d-flex justify-content-center">
+					{{ Form::button(__('Save'), ['class' => 'btn btn-primary', 'name' => 'saveDate']) }}
 					{{ Form::button(__('Cancel'), ['class' => 'btn btn-secondary', ' data-dismiss' => 'modal']) }}
 				</div>
 			{{ Form::close() }}

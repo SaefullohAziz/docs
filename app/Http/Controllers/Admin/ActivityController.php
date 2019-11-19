@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\DB;
 use App\Events\ActivityCanceled;
 use App\Events\ActivityRejected;
 use App\Events\ActivityApproved;
+use App\Events\ActivityDateEdited;
 use App\Http\Controllers\Controller;
 
 class ActivityController extends Controller
@@ -289,6 +290,25 @@ class ActivityController extends Controller
             'created_at' => now(),
             'updated_at' => now(),
         ]);
+    }
+
+    /**
+     * Change activity date
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     */
+    public function date(Request $request)
+    {
+        if ($request->ajax()) {
+            if ( ! auth()->guard('admin')->user()->can('update ' . $this->table)) {
+                return response()->json(['status' => false, 'message' => __($this->noPermission)], 422);
+            }
+            $request->validate([
+                'date' => 'required',
+            ]);
+            event(new ActivityDateEdited($request));
+            return response()->json(['status' => true, 'message' => __($this->updatedMessage)]);
+        }
     }
 
     /**

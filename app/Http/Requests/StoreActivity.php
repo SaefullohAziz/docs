@@ -25,6 +25,9 @@ class StoreActivity extends FormRequest
     public function rules()
     {
         $rules = [
+            'school_id' => [
+                Rule::requiredIf(auth()->guard('admin')->check()),
+            ],
             'type' => ['required'],
             'date' => ['required'],
             'until_date' => [
@@ -134,9 +137,12 @@ class StoreActivity extends FormRequest
             ];
             $rules = array_merge($rules, $addonRules);
         }
-        if (auth()->guard('admin')->check()) {
+        if (auth()->guard('web')->check()) {
             $addonRules = [
-                'school_id' => ['required']
+                'date' => [
+                    'required',
+                    'before:+3 months',
+                ],
             ];
             $rules = array_merge($rules, $addonRules);
         }

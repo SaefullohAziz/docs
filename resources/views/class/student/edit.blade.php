@@ -152,6 +152,7 @@
         }).daterangepicker({
         	locale: {format: 'DD-MM-YYYY'},
         	singleDatePicker: true,
+			showDropdowns: true,
       	});
 	});
 </script>

@@ -360,6 +360,7 @@
     "Submission": "Daftar",
     "School FTP": "FTP Sekolah",
     "View All": "Lihat Semua",
+    "Change date": "Ubah tanggal",
 
     "Enter phone number without country code.": "Masukkan nomor handphone tanpa kode negara.",
     "Complete with an academic degree and or degree of expertise.": "Lengkapi dengan gelar akademi atau keahlian.",
@@ -372,6 +373,7 @@
     "As per the name on the account": "Sesuai nama di rekening",
     "No punctuation or comma or strip. 10 digits minimum.": "Tanpa tanda baca titik/koma/strip. Minimal 10 digit.",
     "Only 1 department is permitted. Don't use commas.": "Hanya 1 jurusan yang diizinkan. Jangan gunakan tanda koma.",
+    "Only industry visit dates can be changed.": "Hanya tanggal kunjungan industri yang dapat diubah.",
 
     "File must have extension *.ZIP/*.RAR with size 5 MB or less.": "File harus berektensi *.ZIP/*.RAR dengan ukuran 5 MB atau kurang.",
     "Don't compress photos on RAR/ZIP. Because, some photos can be uploaded at once. Maximum size is 5 MB per file.": "Jangan satukan foto menjadi RAR/ZIP. Karena, beberapa foto dapat diunggah sekaligus. Ukuran maksimal 5 MB per berkas.",

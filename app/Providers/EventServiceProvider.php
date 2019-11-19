@@ -22,6 +22,9 @@ class EventServiceProvider extends ServiceProvider
         'App\Events\ActivityApproved' => [
             'App\Listeners\ApproveActivity',
         ],
+        'App\Events\ActivityDateEdited' => [
+            'App\Listeners\EditActivityDate',
+        ],
         // Subsidy
         'App\Events\SubsidyCanceled' => [
             'App\Listeners\CancelSubsidy',

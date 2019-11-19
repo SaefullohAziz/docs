@@ -272,6 +272,7 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->middleware(['auth:ad
 	// Activity
 	Route::prefix('activity')->name('activity.')->group(function () {
     	Route::post('list', 'ActivityController@list')->name('list');
+    	Route::post('date', 'ActivityController@date')->name('date');
     	Route::post('cancel', 'ActivityController@cancel')->name('cancel');
     	Route::post('reject', 'ActivityController@reject')->name('reject');
     	Route::post('approve', 'ActivityController@approve')->name('approve');
