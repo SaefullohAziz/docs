@@ -9,6 +9,7 @@ use App\SchoolLevel;
 use App\SchoolStatus;
 use App\School;
 use App\Teacher;
+use App\Training;
 use App\Pic;
 use App\StudentClass;
 use App\Student;
@@ -352,6 +353,31 @@ class GetController extends Controller
             if (count($data) == 0) {
                 return response()->json(['status' => false]);
             }
+            return response()->json(['status' => true, 'result' => $data]);
+        }
+    }
+    
+    public function trainingSettingResult(Request $request) {
+        if ($request->ajax()) {
+            $setting = collect(json_decode(setting('training_settings')))->where('name' , $request->type);
+            $created = setting($setting->pluck('setting_created_at_slug')[0]);
+            $date = setting($setting->pluck('time_limit_slug')[0]);
+            
+            $registerredCount = Training::registerredCount($request->type, null, $created);
+            $quota = setting($setting->pluck('quota_limit_slug'));
+            if  ($quota) {
+                $quota = $quota - $registerredCount;
+            } else {
+                $quota = collect(setting($setting->pluck('limit_by_implementation_slug')[0]))->sum() - $registerredCount;
+            }
+            $data = [
+                'registerredCount' => $registerredCount,
+                'quota' => $quota,
+                'default_participant_price' => setting($setting->pluck('default_participant_price_slug')[0]),
+                'unimplementation_scholl_price' => setting($setting->pluck('unimplementation_scholl_price_slug')[0]),
+                'more_participant_price' => setting($setting->pluck('more_participant_slug')[0]),
+            ];
+            if (setting($setting->pluck('time_limit_slug')[0])){$data += ['until_date' => $date];}
             return response()->json(['status' => true, 'result' => $data]);
         }
     }

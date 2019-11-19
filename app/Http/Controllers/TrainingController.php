@@ -14,6 +14,7 @@ use Illuminate\Support\Str;
 use DataTables;
 use Validator;
 use App\Exports\TrainingsExport;
+use Auth;
 
 class TrainingController extends Controller
 {
@@ -117,6 +118,23 @@ class TrainingController extends Controller
                 ->make(true);
         }
     }
+    
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function preCreate(Request $request)
+    {
+        if (auth()->user()->cant('preCreate', Training::class)) {
+            return redirect()->route('training.create')->with('alert-danger', __('Sorry, no more quota left. please try again later'));
+        }
+        if (! setting(strtolower( str_replace(' ','_', str_replace(str_split('()'),'', $request->type))).'_status')){
+            return redirect()->route('training.create')->with('alert-danger', __('Sorry, no more quota left on this training type. Try to choose another one'));
+        }
+        return redirect()->route('training.create')->with('type', $request->type);
+    }
 
     /**
      * Show the form for creating a new resource.
@@ -138,7 +156,9 @@ class TrainingController extends Controller
             'implementations' => $this->implementations,
             'roomTypes' => $this->roomTypes,
             'participants' => Participant::bySchool(auth()->user()->school->id)->pluck('name', 'id')->toArray(),
+            'setting' => json_decode(setting('training_settings')),
         ];
+
         if (session('type')) {
             $view = array_merge($view, ['type' => session('type')]);
             return view('training.create', $view);
@@ -147,32 +167,21 @@ class TrainingController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @param Request $request
-     * @return \Illuminate\Http\Response
-     */
-    public function preCreate(Request $request)
-    {
-        if (auth()->user()->cant('preCreate', Training::class)) {
-            return redirect()->route('training.create')->with('alert-danger', __($this->unauthorizedMessage));
-        }
-        return redirect()->route('training.create')->with('type', $request->type);
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreTraining $request)
+    public function store(Request $request)
     {
         if (auth()->user()->cant('create', Training::class)) {
             return redirect()->route('training.index')->with('alert-danger', __($this->unauthorizedMessage));
         }
         if (auth()->user()->cant('preCreate', Training::class)) {
             return redirect()->route('training.create')->with('alert-danger', __($this->unauthorizedMessage));
+        }
+        if ($request->type == 'Basic (ToT)' || $request->type == 'Adobe Photoshop' ) {
+            $request->request->add(['implementation' => auth()->user()->school->Auth::user()->school->implementedDepartments->pluck('name')->toArray()[0]]);
         }
         $request->request->add([
             'school_id' => auth()->user()->school->id,

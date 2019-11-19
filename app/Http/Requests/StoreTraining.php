@@ -14,7 +14,7 @@ class StoreTraining extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        return false;
     }
 
     /**
@@ -131,6 +131,14 @@ class StoreTraining extends FormRequest
                     'email',
                 ],
             ];
+            $rules = array_merge($rules, $addonRules);
+        }
+        if (! $request->prices_accept){
+            $addonRules = [
+                'participant_id' => [
+                    'max:2'
+                ],
+            ]; 
             $rules = array_merge($rules, $addonRules);
         }
         if (auth()->guard('admin')->check()) {

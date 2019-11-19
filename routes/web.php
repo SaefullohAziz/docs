@@ -429,6 +429,7 @@ Route::prefix('get')->name('get.')->middleware(['auth:web,admin'])->group(functi
 	Route::post('pic', 'GetController@pic')->name('pic');
 	Route::post('student', 'GetController@student')->name('student');
 	Route::post('subExam', 'GetController@subExam')->name('subExam');
+	Route::post('trainingSettingResult', 'GetController@trainingSettingResult')->name('trainingSettingResult');
 });
 
 Route::get('locale/{locale}', function ($locale){

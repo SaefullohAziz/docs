@@ -199,6 +199,39 @@
 <script>
 	$(document).ready(function () {
         $('select[name="type"]').change(function () {
+			$.ajax({
+				url : "{{ route('get.trainingSettingResult') }}",
+				type: "POST",
+				dataType: "JSON",
+				data: {'_token' : '{{ csrf_token() }}', 'type' : $(this).val()},
+				success: function(data)
+				{
+					$('select[name="type"]').next().next().remove();
+					$('select[name="participant"]').next().next().remove();
+					$('select[name="participant"]').next().next().remove();
+					$('select[name="participant"]').next().next().remove();
+					if (data.result.quota == 0 ) {
+						swal('{{ __("No more slot on this training.") }}', 'Please try again later!', 'error');
+						$('select[name="type"]').val(null).change();
+					}
+					if (data.result.until_date) {
+						$('select[name="type"]').next().after('<span>{{ __('This training open until ')}}<font class="text-danger">' + data.result.until_date + '</font></span>');
+					}
+					if	(data.result.unimplementation_scholl_price) {
+						$('select[name="participant"]').next().after('<span> | {{ __('Out of this training type implementation ') }}<font class="text-danger">' + data.result.unimplementation_scholl_price + '</font></span>');
+					}
+					if	(data.result.more_participant_price) {
+						$('select[name="participant"]').next().after('<span> | {{ __('Additional participant price ') }}<font class="text-danger">' + data.result.more_participant_price + '</font></span>');
+					}
+					if	(data.result.default_participant_price != 0 ) {
+						$('select[name="participant"]').next().after('<span> {{ __('2 (default) participant price') }} <font class="text-danger">' + data.result.default_participant_price + '</font></span>');
+					}
+				},
+				error: function (jqXHR, textStatus, errorThrown)
+				{
+					swal(textStatus, '', 'error');
+				}
+			});
 			if ($(this).val() == 'Basic (ToT)') {
 				$('select[name="implementation"], input[name="approval_code"], input[name="room_size"]').prop('required', true);
 				$('input[name="approval_code"]').closest('fieldset').removeClass('d-none').addClass('d-block');
@@ -269,7 +302,6 @@
 						data: {'_token' : '{{ csrf_token() }}', 'teacher' : $(this).val()},
 						success: function(data)
 						{
-							console.log(data.result.teaching_status);
 							if (data.result.teaching_status != 'yes') {
 								swal('{{ __("Participant must active teaching status, try to update on teacher menu.") }}', '', 'warning');
 								$('select[name="participant"]').val(null).change();
