@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Traits\Uuids;
 use App\Training;
+use App\School;
+use Auth;
 
 class Training extends Model
 {
@@ -149,14 +151,16 @@ class Training extends Model
      * @param  $implementation
      * @param  $date
      */
-    public static function registerredCount($type, $implementation, $date)
+    public static function registerredCount($type = null, $implementation = null, $date)
     {
-        return self::When($implementation, function($query) use ($implementation){
+        return self::where('created_at', '>', $date)
+        ->When($implementation, function($query) use ($implementation){
             $query->where('implementation', $implementation);
         })->When($type, function($query) use ($type){
             $query->where('type', $type);
+        })->when(Auth::guard('web')->check(), function($query){
+            $query->whereIn('implementation', Auth::user()->school->implementedDepartments->pluck('name')->toArray());
         })
-        ->where('created_at', '>', $date)
         ->count();
     }
 }

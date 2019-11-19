@@ -200,7 +200,7 @@ class TrainingSettingsSeeder extends Seeder
 			setting([
 				$trainingSetting['status_slug'] => '1',
 				$trainingSetting['limiter_slug'] => 'None',
-				$trainingSetting['time_limit_slug'] => '',
+				$trainingSetting['time_limit_slug'] => null,
 				$trainingSetting['quota_limit_slug'] => '',
 				$trainingSetting['school_level_slug'] => 'Binaan',
 				$trainingSetting['limit_by_level_slug'] => 'Binaan: 10',

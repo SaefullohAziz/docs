@@ -53,7 +53,14 @@ class TrainingPolicy
      */
     public function preCreate(User $user)
     {
-        return false;
+        $data = [];
+        foreach (json_decode(setting('training_settings')) as $setting) {
+            $data += [$setting->status_slug => json_decode(setting($setting->status_slug))];
+        }
+        if (! in_array(1, $data)) {
+            return false;
+        }
+        return true;
     }
 
     /**
