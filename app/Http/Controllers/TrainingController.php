@@ -14,7 +14,6 @@ use Illuminate\Support\Str;
 use DataTables;
 use Validator;
 use App\Exports\TrainingsExport;
-use Auth;
 
 class TrainingController extends Controller
 {
@@ -130,9 +129,6 @@ class TrainingController extends Controller
         if (auth()->user()->cant('preCreate', Training::class)) {
             return redirect()->route('training.create')->with('alert-danger', __('Sorry, no more quota left. please try again later'));
         }
-        if (! setting(strtolower( str_replace(' ','_', str_replace(str_split('()'),'', $request->type))).'_status')){
-            return redirect()->route('training.create')->with('alert-danger', __('Sorry, no more quota left on this training type. Try to choose another one'));
-        }
         return redirect()->route('training.create')->with('type', $request->type);
     }
 
@@ -172,16 +168,13 @@ class TrainingController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreTraining $request)
     {
         if (auth()->user()->cant('create', Training::class)) {
             return redirect()->route('training.index')->with('alert-danger', __($this->unauthorizedMessage));
         }
         if (auth()->user()->cant('preCreate', Training::class)) {
             return redirect()->route('training.create')->with('alert-danger', __($this->unauthorizedMessage));
-        }
-        if ($request->type == 'Basic (ToT)' || $request->type == 'Adobe Photoshop' ) {
-            $request->request->add(['implementation' => auth()->user()->school->Auth::user()->school->implementedDepartments->pluck('name')->toArray()[0]]);
         }
         $request->request->add([
             'school_id' => auth()->user()->school->id,

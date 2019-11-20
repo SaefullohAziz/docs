@@ -85,5 +85,9 @@ class AuthServiceProvider extends ServiceProvider
                 });
             }
         }
+
+        if (setting('training_settings')) {
+            # code...
+        }
     }
 }

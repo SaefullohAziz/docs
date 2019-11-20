@@ -14,7 +14,7 @@ class StoreTraining extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -25,6 +25,9 @@ class StoreTraining extends FormRequest
     public function rules()
     {
         $rules = [
+            'school_id' => [
+                Rule::requiredIf(auth()->guard('admin')->check()),
+            ],
             'type' => ['required'],
             'implementation' => [
                 Rule::requiredIf(function () {
@@ -133,20 +136,6 @@ class StoreTraining extends FormRequest
             ];
             $rules = array_merge($rules, $addonRules);
         }
-        if (! $request->prices_accept){
-            $addonRules = [
-                'participant_id' => [
-                    'max:2'
-                ],
-            ]; 
-            $rules = array_merge($rules, $addonRules);
-        }
-        if (auth()->guard('admin')->check()) {
-            $addonRules = [
-                'school_id' => ['required']
-            ];
-            $rules = array_merge($rules, $addonRules);
-        }
         return $rules;
     }
 
@@ -162,5 +151,18 @@ class StoreTraining extends FormRequest
             'participant_id.required' => 'Participant is required for every training registration.',
             'participant_id.min' => 'Choose at least two participant.',
         ];
+    }
+
+    /**
+     * Configure the validator instance.
+     *
+     * @param  \Illuminate\Validation\Validator  $validator
+     * @return void
+     */
+    public function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+            $this->session()->flash('type', $this->get('type'));
+        });
     }
 }

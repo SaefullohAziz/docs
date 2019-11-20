@@ -447,7 +447,7 @@ Route::get('download/{dir}/{file}', function ($dir, $file) {
 
 Route::get('check', function (\Illuminate\Http\Request $request) {
 	if (env('APP_ENV') == 'local') {
-		$data = date('m', strtotime('-3 month'));
+		$data = \Gate::abilities();
 		dd($data);
 	}
 });

@@ -231,7 +231,7 @@ class SettingController extends Controller
                 $request->request->add([$formSetting->setting_created_at_slug => now()->toDateTimeString()]);
             }
             if ($request->filled($formSetting->time_limit_slug)) {
-                $request->merge([$formSetting->time_limit_slug => date('Y-m-d h:m:s', strtotime($request->{$formSetting->time_limit_slug}))]);
+                $request->merge([$formSetting->time_limit_slug => date('Y-m-d H:m:s', strtotime($request->{$formSetting->time_limit_slug}))]);
             }
         }
         setting($request->except(['_token']))->save();
@@ -307,7 +307,7 @@ class SettingController extends Controller
                 $request->request->add([$trainingSetting->setting_created_at_slug => now()->toDateTimeString()]);
             }
             if ($request->filled($trainingSetting->time_limit_slug)) {
-                $request->merge([$trainingSetting->time_limit_slug => date('Y-m-d h:m:s', strtotime($request->{$trainingSetting->time_limit_slug}))]);
+                $request->merge([$trainingSetting->time_limit_slug => date('Y-m-d H:m:s', strtotime($request->{$trainingSetting->time_limit_slug}))]);
             }
         }
         setting($request->except(['_token']))->save();
