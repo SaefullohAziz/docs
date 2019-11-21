@@ -60,6 +60,9 @@ class DepartmentsTableSeeder extends Seeder
 
             ['name' => 'Akuntansi',
             'abbreviation' => 'Akuntansi'],
+
+            ['name' => 'Teknik Jaringan Akses',
+            'abbreviation' => 'TJAK'],
         ];
         foreach ($data as $record) {
             Department::firstOrCreate($record);

@@ -57,7 +57,7 @@ class TrainingSettingsSeeder extends Seeder
 				'school_implementation_slug' => 'mikrotik_training_school_implementation',
 				'school_implementation_slug_value' => ['TKJ', 'Telin', 'TJAK'],
 				'limit_by_implementation_slug' => 'mikrotik_training_limit_by_implementation',
-				'limit_by_implementation_slug_value' => ['TKJ' => '-', 'Telin' => '-', 'TJAK' => '-'],
+				'limit_by_implementation_slug_value' => ['TKJ' => '', 'Telin' => '', 'TJAK' => ''],
 				'default_participant_price_slug' => 'mikrotik_training_2_participant_price',
 				'default_participant_price_slug_value' => 3000000,
 				'more_participant_slug' => 'mikrotik_training_more_participant',
