@@ -141,7 +141,7 @@ class SettingController extends Controller
                 ->fit(Manipulations::FIT_CROP, 500, 115)
                 ->optimize()
                 ->save();
-            $filename = 'logo_'.date('d_m_y_h_m_s_').md5(uniqid(rand(), true)).'.'.$request->site_logo->extension();
+            $filename = 'logo_'.date('d_m_Y_H_i_s_').md5(uniqid(rand(), true)).'.'.$request->site_logo->extension();
             $path = $request->site_logo->storeAs('public/file/', $filename);
             return 'file/' . $filename;
         }
@@ -231,7 +231,7 @@ class SettingController extends Controller
                 $request->request->add([$formSetting->setting_created_at_slug => now()->toDateTimeString()]);
             }
             if ($request->filled($formSetting->time_limit_slug)) {
-                $request->merge([$formSetting->time_limit_slug => date('Y-m-d H:m:s', strtotime($request->{$formSetting->time_limit_slug}))]);
+                $request->merge([$formSetting->time_limit_slug => date('Y-m-d H:i:s', strtotime($request->{$formSetting->time_limit_slug}))]);
             }
         }
         setting($request->except(['_token']))->save();
@@ -307,7 +307,7 @@ class SettingController extends Controller
                 $request->request->add([$trainingSetting->setting_created_at_slug => now()->toDateTimeString()]);
             }
             if ($request->filled($trainingSetting->time_limit_slug)) {
-                $request->merge([$trainingSetting->time_limit_slug => date('Y-m-d H:m:s', strtotime($request->{$trainingSetting->time_limit_slug}))]);
+                $request->merge([$trainingSetting->time_limit_slug => date('Y-m-d H:i:s', strtotime($request->{$trainingSetting->time_limit_slug}))]);
             }
         }
         setting($request->except(['_token']))->save();

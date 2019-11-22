@@ -84,7 +84,7 @@ class SubsidyController extends Controller
                     return '<div class="checkbox icheck"><label><input type="checkbox" name="selectedData[]" value="'.$data->id.'"></label></div>';
                 })
                 ->editColumn('created_at', function($data) {
-                    return (date('d-m-Y h:m:s', strtotime($data->created_at)));
+                    return (date('d-m-Y H:i:s', strtotime($data->created_at)));
                 })
                 ->editColumn('submission_letter', function($data) {
                     $file = $data->submission_letter;
@@ -241,7 +241,7 @@ class SubsidyController extends Controller
     public function uploadSubmissionLetter($subsidy, Request $request, $oldFile = null)
     {
         if ($request->hasFile('submission_letter')) {
-            $filename = 'submission_letter_'.date('d_m_y_h_m_s_').md5(uniqid(rand(), true)).'.'.$request->submission_letter->extension();
+            $filename = 'submission_letter_'.date('d_m_Y_H_i_s_').md5(uniqid(rand(), true)).'.'.$request->submission_letter->extension();
             $path = $request->submission_letter->storeAs('public/subsidy/submission-letter/'.$subsidy->id, $filename);
             return $subsidy->id.'/'.$filename;
         }
@@ -259,7 +259,7 @@ class SubsidyController extends Controller
     public function uploadReport($subsidy, Request $request, $oldFile = null)
     {
         if ($request->hasFile('report')) {
-            $filename = 'report_'.date('d_m_y_h_m_s_').md5(uniqid(rand(), true)).'.'.$request->report->extension();
+            $filename = 'report_'.date('d_m_Y_H_i_s_').md5(uniqid(rand(), true)).'.'.$request->report->extension();
             $path = $request->report->storeAs('public/subsidy/report/'.$subsidy->id, $filename);
             return $subsidy->id.'/'.$filename;
         }

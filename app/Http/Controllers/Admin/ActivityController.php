@@ -76,7 +76,7 @@ class ActivityController extends Controller
                     return '<div class="checkbox icheck"><label><input type="checkbox" name="selectedData[]" value="'.$data->id.'"></label></div>';
                 })
                 ->editColumn('created_at', function($data) {
-                    return (date('d-m-Y h:m:s', strtotime($data->created_at)));
+                    return (date('d-m-Y H:i:s', strtotime($data->created_at)));
                 })
                 ->editColumn('submission_letter', function($data) {
                     return '<a href="'.route('download', ['dir' => encrypt('activity/submission-letter'), 'file' => encrypt($data->submission_letter)]).'" class="btn btn-sm btn-success '.( ! isset($data->submission_letter)?'disabled':'').'" title="'.__('Download').'" target="_blank"><i class="fa fa-file"></i>  '.__('Download').'</a>';
@@ -235,7 +235,7 @@ class ActivityController extends Controller
     public function uploadParticipant($activity, Request $request, $oldFile = null)
     {
         if ($request->hasFile('participant')) {
-            $filename = 'participant_'.date('d_m_y_h_m_s_').md5(uniqid(rand(), true)).'.'.$request->participant->extension();
+            $filename = 'participant_'.date('d_m_Y_H_i_s_').md5(uniqid(rand(), true)).'.'.$request->participant->extension();
             $path = $request->participant->storeAs('public/activity/participant/'.$activity->id, $filename);
             return $activity->id.'/'.$filename;
         }
@@ -254,7 +254,7 @@ class ActivityController extends Controller
     public function uploadSubmissionLetter($activity, Request $request, $oldFile = null)
     {
         if ($request->hasFile('submission_letter')) {
-            $filename = 'submission_letter_'.date('d_m_y_h_m_s_').md5(uniqid(rand(), true)).'.'.$request->submission_letter->extension();
+            $filename = 'submission_letter_'.date('d_m_Y_H_i_s_').md5(uniqid(rand(), true)).'.'.$request->submission_letter->extension();
             $path = $request->submission_letter->storeAs('public/activity/submission-letter/'.$activity->id, $filename);
             return $activity->id.'/'.$filename;
         }

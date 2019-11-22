@@ -120,7 +120,7 @@ class TrainingController extends Controller
                     return '<div class="checkbox icheck"><label><input type="checkbox" name="selectedData[]" value="'.$data->id.'"></label></div>';
                 })
                 ->editColumn('created_at', function($data) {
-                    return (date('d-m-Y h:m:s', strtotime($data->created_at)));
+                    return (date('d-m-Y H:i:s', strtotime($data->created_at)));
                 })
                 ->editColumn('selection_result', function($data) {
                     $file = $data->selection_result;
@@ -285,7 +285,7 @@ class TrainingController extends Controller
     public function uploadCommitmentLetter($training, Request $request, $oldFile = null)
     {
         if ($request->hasFile('approval_letter_of_commitment_fee')) {
-            $filename = 'approval_letter_of_commitment_fee_'.date('d_m_y_h_m_s_').md5(uniqid(rand(), true)).'.'.$request->approval_letter_of_commitment_fee->extension();
+            $filename = 'approval_letter_of_commitment_fee_'.date('d_m_Y_H_i_s_').md5(uniqid(rand(), true)).'.'.$request->approval_letter_of_commitment_fee->extension();
             $path = $request->approval_letter_of_commitment_fee->storeAs('public/training/commitment-letter/'.$training->id, $filename);
             return $training->id.'/'.$filename;
         }
@@ -303,7 +303,7 @@ class TrainingController extends Controller
     public function uploadSelectionResult($training, Request $request, $oldFile = null)
     {
         if ($request->hasFile('selection_result')) {
-            $filename = 'selection_result_'.date('d_m_y_h_m_s_').md5(uniqid(rand(), true)).'.'.$request->selection_result->extension();
+            $filename = 'selection_result_'.date('d_m_Y_H_i_s_').md5(uniqid(rand(), true)).'.'.$request->selection_result->extension();
             $path = $request->selection_result->storeAs('public/training/selection-result/'.$training->id, $filename);
             return $training->id.'/'.$filename;
         }

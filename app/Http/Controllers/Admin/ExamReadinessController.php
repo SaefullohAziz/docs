@@ -69,7 +69,7 @@ class ExamReadinessController extends Controller
                     return '<div class="checkbox icheck"><label><input type="checkbox" name="selectedData[]" value="'.$data->id.'"></label></div>';
                 })
                 ->editColumn('created_at', function($data) {
-                    return (date('d-m-Y h:m:s', strtotime($data->created_at)));
+                    return (date('d-m-Y H:i:s', strtotime($data->created_at)));
                 })
                 ->addColumn('student', function ($data) {
                     return '';

@@ -99,7 +99,7 @@ class School extends Model
     }
 
     /**
-     * The status that belong to the school.
+     * The implemented departments that belong to the school.
      */
     public function implementedDepartments()
     {

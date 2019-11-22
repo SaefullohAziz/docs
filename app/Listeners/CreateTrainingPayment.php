@@ -31,16 +31,17 @@ class CreateTrainingPayment
     {
         foreach ($event->request->selectedData as $id) {
             $training = Training::withCount(['participants'])->doesntHave('trainingPayment')->where('id', $id)->first();
-            $total = 3000000;
+            $setting = collect(json_decode(setting('training_settings')))->where('name', $training->type)->first();
+            $price = setting($setting->default_participant_price_slug);
             if ($training) {
                 if ($training->batch == 'Waiting') {
                     if ($training->participants_count > 2) {
-                        $total = $total+(1500000*($training->participants_count-2));
+                        $price = $price+(setting($setting->more_participant_slug)*($training->participants_count-2));
                     }
                     $payment = Payment::create([
                         'school_id' => $training->school->id,
                         'type' => 'Commitment Fee',
-                        'total' => $total
+                        'total' => $price
                     ]);
                     saveStatus($payment, 'Published', 'Menerbitkan konfirmasi pembayaran.');
                     $training->payment()->attach($payment->id);

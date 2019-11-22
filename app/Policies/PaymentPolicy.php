@@ -107,7 +107,7 @@ class PaymentPolicy
     public function commitmentFeeCheck(User $user, Payment $payment)
     {
         if ($payment->type == 'Commitment Fee') {
-            if (date('Y-m-d H:m:s', strtotime($payment->created_at . ' +3 hours')) < date('Y-m-d H:m:s')) {
+            if (date('Y-m-d H:i:s', strtotime($payment->created_at . ' +3 hours')) < date('Y-m-d H:i:s')) {
                 saveStatus($payment, 'Expired', 'Konfirmasi pembayaran melewati batas waktu.');
                 if ($payment->training()->count()) {
                     $training = \App\Training::find($payment->training[0]->id);

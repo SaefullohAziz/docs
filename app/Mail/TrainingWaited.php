@@ -31,6 +31,7 @@ class TrainingWaited extends Mailable
     public function build()
     {
         return $this->markdown('mail.training.waited')
+            ->to(array_merge([$this->training->school->school_email, $this->training->pic[0]->email], $this->training->participants->pluck('email')->toArray()))
                 ->with([
                     'school' => $this->training->school->name,
                 ]);

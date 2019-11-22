@@ -19,7 +19,6 @@ class TrainingController extends Controller
 {
     private $table;
     private $types;
-    private $implementations;
     private $roomTypes;
 
     /**
@@ -44,13 +43,6 @@ class TrainingController extends Controller
             'Adobe Photoshop' => 'Adobe Photoshop', 
             'Microsoft Software Fundamental' => 'Microsoft Software Fundamental', 
             'Starter Kit Klinik Komputer' => 'Starter Kit Klinik Komputer'
-        ];
-        $this->implementations = [
-            'TKJ' => 'Teknik Komputer Jaringan', 
-			'MM' => 'Multimedia', 
-			'TEIn' => 'Teknik Elektronika Industri',
-			'TAV' => 'Teknik Audio Video',
-			'Lain-Lain' => 'Lain-Lain'
         ];
         $this->roomTypes = [
             1, 2, 3, 4
@@ -91,7 +83,7 @@ class TrainingController extends Controller
                     return '<div class="checkbox icheck"><label><input type="checkbox" name="selectedData[]" value="'.$data->id.'"></label></div>';
                 })
                 ->editColumn('created_at', function($data) {
-                    return (date('d-m-Y h:m:s', strtotime($data->created_at)));
+                    return (date('d-m-Y H:i:s', strtotime($data->created_at)));
                 })
                 ->editColumn('selection_result', function($data) {
                     $file = $data->selection_result;
@@ -126,10 +118,14 @@ class TrainingController extends Controller
      */
     public function preCreate(Request $request)
     {
+        $request->validate([
+            'type' => 'required',
+            'implementation' => 'required',
+        ]);
         if (auth()->user()->cant('preCreate', Training::class)) {
-            return redirect()->route('training.create')->with('alert-danger', __('Sorry, no more quota left. please try again later'));
+            return redirect()->route('training.create')->with('alert-danger', __($this->unauthorizedMessage) . ' ' . session('additionalMessage'));
         }
-        return redirect()->route('training.create')->with('type', $request->type);
+        return redirect()->route('training.create')->with('type', $request->type)->with('implementation', $request->implementation);
     }
 
     /**
@@ -149,14 +145,14 @@ class TrainingController extends Controller
                 null => __('Create')
             ],
             'types' => $this->types(),
-            'implementations' => $this->implementations,
+            'implementations' => auth()->user()->school->implementedDepartments->pluck('name', 'abbreviation')->toArray(),
             'roomTypes' => $this->roomTypes,
             'participants' => Participant::bySchool(auth()->user()->school->id)->pluck('name', 'id')->toArray(),
             'setting' => json_decode(setting('training_settings')),
         ];
 
-        if (session('type')) {
-            $view = array_merge($view, ['type' => session('type')]);
+        if (session('type') && session('implementation')) {
+            $view = array_merge($view, ['type' => session('type'), 'implementation' => session('implementation')]);
             return view('training.create', $view);
         }
         return view('training.preCreate', $view);
@@ -174,7 +170,7 @@ class TrainingController extends Controller
             return redirect()->route('training.index')->with('alert-danger', __($this->unauthorizedMessage));
         }
         if (auth()->user()->cant('preCreate', Training::class)) {
-            return redirect()->route('training.create')->with('alert-danger', __($this->unauthorizedMessage));
+            return redirect()->route('training.create')->with('alert-danger', __($this->unauthorizedMessage) . ' ' . session('additionalMessage'));
         }
         $request->request->add([
             'school_id' => auth()->user()->school->id,
@@ -207,7 +203,7 @@ class TrainingController extends Controller
                 null => __('Detail')
             ],
             'types' => $this->types,
-            'implementations' => $this->implementations,
+            'implementations' => auth()->user()->school->implementedDepartments->pluck('name', 'abbreviation')->toArray(),
             'roomTypes' => $this->roomTypes,
             'participants' => Participant::bySchool($training->school_id)->pluck('name', 'id')->toArray(),
             'training' => $training,
@@ -233,7 +229,7 @@ class TrainingController extends Controller
                 null => __('Edit')
             ],
             'types' => $this->types(),
-            'implementations' => $this->implementations,
+            'implementations' => auth()->user()->school->implementedDepartments->pluck('name', 'abbreviation')->toArray(),
             'roomTypes' => $this->roomTypes,
             'participants' => Participant::bySchool($training->school_id)->pluck('name', 'id')->toArray(),
             'training' => $training,
@@ -273,21 +269,11 @@ class TrainingController extends Controller
      */
     public function types()
     {
-        $settings = json_decode(setting('training_settings'), true);
-        // Filter opened training
-        $settings = array_filter($settings, function ($item) {
-			return setting($item['status_slug']) == 1;
+        $settings = collect(json_decode(setting('training_settings')))->filter(function ($value, $key) {
+            return setting($value->status_slug) == 1;
         });
-        // Filter by quota
-        $settings = array_filter($settings, function ($item) {
-			if ( ! empty(setting($item['quota_limit_slug']))) {
-                $training = Training::has('payment')->where('type', $item['name'])->where('created_at', '>', setting($item['setting_created_at_slug']))->get();
-                return $training->count() < setting($item['quota_limit_slug']);
-            }
-            return true;
-        });
-        $trainingTypes = collect($settings)->mapWithKeys(function ($item) {
-            return [$item['name'] => $item['name']];
+        $trainingTypes = $settings->mapWithKeys(function ($item) {
+            return [$item->name => $item->name];
         })->toArray();
         return $trainingTypes;
     }
@@ -303,7 +289,7 @@ class TrainingController extends Controller
     public function uploadCommitmentLetter($training, Request $request, $oldFile = null)
     {
         if ($request->hasFile('approval_letter_of_commitment_fee')) {
-            $filename = 'approval_letter_of_commitment_fee_'.date('d_m_y_h_m_s_').md5(uniqid(rand(), true)).'.'.$request->approval_letter_of_commitment_fee->extension();
+            $filename = 'approval_letter_of_commitment_fee_'.date('d_m_Y_H_i_s_').md5(uniqid(rand(), true)).'.'.$request->approval_letter_of_commitment_fee->extension();
             $path = $request->approval_letter_of_commitment_fee->storeAs('public/training/commitment-letter/'.$training->id, $filename);
             return $training->id.'/'.$filename;
         }
@@ -321,7 +307,7 @@ class TrainingController extends Controller
     public function uploadSelectionResult($training, Request $request, $oldFile = null)
     {
         if ($request->hasFile('selection_result')) {
-            $filename = 'selection_result_'.date('d_m_y_h_m_s_').md5(uniqid(rand(), true)).'.'.$request->selection_result->extension();
+            $filename = 'selection_result_'.date('d_m_Y_H_i_s_').md5(uniqid(rand(), true)).'.'.$request->selection_result->extension();
             $path = $request->selection_result->storeAs('public/training/selection-result/'.$training->id, $filename);
             return $training->id.'/'.$filename;
         }
@@ -336,16 +322,8 @@ class TrainingController extends Controller
      */
     public function saveParticipant($training, Request $request)
     {
-        if ($request->isMethod('put')) {
-            $training->participants()->detach();
-        }
         if ($request->filled('participant_id')) {
-            for ($i=0; $i < count($request->participant_id); $i++) { 
-                $training->participants()->attach($request->participant_id[$i], [
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ]);
-            }
+            $training->participants()->sync($request->participant_id);
         }
     }
 
@@ -357,13 +335,12 @@ class TrainingController extends Controller
      */
     public function savePic($training, Request $request)
     {
-        $pic = Pic::bySchool($request->school_id)->first();
+        $pic = Pic::bySchool($training->school_id)->first();
         if ($request->isMethod('put')) {
             $schoolPic = Pic::bySchool($training->school_id)->where('id', $training->trainingPic->pic->id)->first();
             if ( ! $schoolPic) {
                 Pic::destroy($training->trainingPic->pic->id);
             }
-            $training->pic()->detach();
             $request->request->add(['pic' => 1]);
         }
         if ($request->pic == 1) {
@@ -374,10 +351,7 @@ class TrainingController extends Controller
                 'email' => $request->pic_email
             ]);
         }
-        $training->pic()->attach($pic->id, [
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
+        $training->pic()->sync([$pic->id]);
     }
 
     /**

@@ -265,7 +265,7 @@ class SchoolController extends Controller
     public function uploadDocument($school, Request $request, $oldFile = null)
     {
         if ($request->hasFile('document')) {
-            $filename = 'document_'.date('d_m_y_h_m_s_').md5(uniqid(rand(), true)).'.'.$request->document->extension();
+            $filename = 'document_'.date('d_m_Y_H_i_s_').md5(uniqid(rand(), true)).'.'.$request->document->extension();
             $path = $request->document->storeAs('public/school/document/'.$school->id, $filename);
             return $school->id.'/'.$filename;
         }
@@ -288,7 +288,7 @@ class SchoolController extends Controller
                     ->fit(Manipulations::FIT_CROP, 1280, 720)
                     ->optimize()
                     ->save();
-                $filename = 'photo_'.date('d_m_y_h_m_s_').md5(uniqid(rand(), true)).'.'.$photo->extension();
+                $filename = 'photo_'.date('d_m_Y_H_i_s_').md5(uniqid(rand(), true)).'.'.$photo->extension();
                 $path = $photo->storeAs('public/school/photo/'.$school->id, $filename);
                 $school->photo()->create([
                     'name' => $school->id.'/'.$filename,

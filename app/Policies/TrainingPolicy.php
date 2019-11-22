@@ -53,7 +53,8 @@ class TrainingPolicy
      */
     public function preCreate(User $user)
     {
-        return request()->type == 'IoT';
+        $setting = collect(json_decode(setting('training_settings')))->where('name', request()->type)->first();
+        return $user->school->implementedDepartments->count() && \Gate::allows('create-' . $setting->slug . '-training');
     }
 
     /**

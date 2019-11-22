@@ -91,7 +91,7 @@
 
 							Training ini bersifat gratis, Commitment Fee akan dikembalikan 100% ke sekolah apabila kedua peserta perwakilan sekolah hadir mengikuti keseluruhan sessi training dari hari pertama hingga hari terakhir. Sebaliknya, apabila kedua atau salah satu peserta terdaftar tidak hadir saat pelaksanaan training dan atau tidak mengikuti salah satu sessi training, maka Commitment Fee dinyatakan hangus sesuai dengan ketentuan di Surat Komitmen Trainning.
 						</fieldset>
-					@elseif ($tye == 'Elektronika Dasar')
+					@elseif ($type == 'Elektronika Dasar')
 						<fieldset>
 							<legend>{{ __('Registration Requirements') }}</legend>
 							<ol>
@@ -104,7 +104,7 @@
 
 							Training ini bersifat gratis, Commitment Fee akan dikembalikan 100% ke sekolah apabila kedua peserta perwakilan sekolah hadir mengikuti keseluruhan sessi training dari hari pertama hingga hari terakhir. Sebaliknya, apabila kedua atau salah satu peserta terdaftar tidak hadir saat pelaksanaan training dan atau tidak mengikuti salah satu sessi training, maka Commitment Fee dinyatakan hangus sesuai dengan ketentuan di Surat Komitmen Trainning.
 						</fieldset>
-					@elseif ($tye == 'Adobe Photoshop')
+					@elseif ($type == 'Adobe Photoshop')
 						<fieldset>
 							<legend>{{ __('Registration Requirements') }}</legend>
 							<ol>
@@ -138,7 +138,7 @@
                                 <legend>{{ __('Data') }}</legend>
 								{{ Form::bsHidden('d-none', null, 'type', $type, null) }}
 
-                                {{ Form::bsSelect(($type=='Basic (ToT)'||$type=='Adobe Photoshop'?'d-block':'d-none'), __('Implementation'), 'implementation', $implementations, old('implementation'), __('Select'), ['placeholder' => __('Select')], [__('This department is a department synchronized with ACP.')]) }}
+								{{ Form::bsHidden('d-none', null, 'implementation', $implementation, null) }}
                             </fieldset>
 							<fieldset class="{{ ($type=='Basic (ToT)'?'d-block':'d-none') }}">
 								<legend>{{ __('Basic (ToT)') }}</legend>

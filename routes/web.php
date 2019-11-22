@@ -429,7 +429,6 @@ Route::prefix('get')->name('get.')->middleware(['auth:web,admin'])->group(functi
 	Route::post('pic', 'GetController@pic')->name('pic');
 	Route::post('student', 'GetController@student')->name('student');
 	Route::post('subExam', 'GetController@subExam')->name('subExam');
-	Route::post('trainingSettingResult', 'GetController@trainingSettingResult')->name('trainingSettingResult');
 });
 
 Route::get('locale/{locale}', function ($locale){
@@ -447,14 +446,15 @@ Route::get('download/{dir}/{file}', function ($dir, $file) {
 
 Route::get('check', function (\Illuminate\Http\Request $request) {
 	if (env('APP_ENV') == 'local') {
-		$data = \Gate::abilities();
+		$setting = collect(json_decode(setting('training_settings')))->where('name', 'MikroTik')->first();
+		$data = setting($setting->default_participant_price_slug);
 		dd($data);
 	}
 });
 
 Route::get('mailable', function () {
 	if (env('APP_ENV') == 'local') {
-		$school = \App\School::first();
-		return new App\Mail\SchoolCreated($school);
+		$training = \App\Training::has('payment')->inRandomOrder()->first();
+		return (new \App\Mail\TrainingApproved($training))->render();
 	}
 });

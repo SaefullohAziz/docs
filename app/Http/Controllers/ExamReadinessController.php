@@ -61,7 +61,7 @@ class ExamReadinessController extends Controller
                     return '<div class="checkbox icheck"><label><input type="checkbox" name="selectedData[]" value="'.$data->id.'"></label></div>';
                 })
                 ->editColumn('created_at', function($data) {
-                    return (date('d-m-Y h:m:s', strtotime($data->created_at)));
+                    return (date('d-m-Y H:i:s', strtotime($data->created_at)));
                 })
                 ->addColumn('student', function ($data) {
                     return '';
@@ -182,30 +182,24 @@ class ExamReadinessController extends Controller
         })->whereHas('class', function ($query) {
             $query->where('school_id', auth()->user()->school->id);
         })->get();
-        $departments = auth()->user()->school->implementedDepartments->pluck('abbreviation')->toArray();
-        $data = json_decode(setting('exam_readiness_settings'), true);
-        // Filter opened type
-        $filter = array_filter($data, function ($item) {
-			return setting($item['is_opened_slug']) == 1;
-        });
-        // Filter by implemented department
-        $filter = array_filter($filter, function ($item) {
-            $selectedDepartments = json_decode(setting($item['department_limiter_slug']), true);
+        $slugs = collect(json_decode(setting('exam_readiness_settings')))->filter(function ($value, $key) {
+            return setting($value->is_opened_slug) == 1;
+        })->filter(function ($value, $key) {
+            $selectedDepartments = collect(json_decode(setting($value->department_limiter_slug)));
             if (auth()->user()->school->implementedDepartments->count()) {
                 $departments = auth()->user()->school->implementedDepartments->pluck('abbreviation')->toArray();
-                return count($selectedDepartments) == 0 || count(array_intersect($selectedDepartments, $departments)) > 0;
+                return ! $selectedDepartments->count() || $selectedDepartments->intersect($departments)->count();
             }
-            return count($selectedDepartments) == 0;
-        });
-        // Filter by SSP student
-        $filter = array_filter($filter, function ($item) use ($sspStudent) {
-            if ($sspStudent->count() > 0) {
-                return setting($item['ssp_limiter_slug']) == 0 || setting($item['ssp_limiter_slug']) == 1;
+            return ! $selectedDepartments->count();
+        })->filter(function ($value, $key) use ($sspStudent) {
+            if ($sspStudent->count()) {
+                return true;
             }
-            return setting($item['ssp_limiter_slug']) == 0;
+            return setting($value->ssp_limiter_slug) == 0;
+        })->map(function ($item, $key) {
+            return $item->slug;
         });
-        $where = array_column($filter, 'slug');
-        return ExamType::whereIn('slug', $where)->orderBy('name', 'asc')->pluck('name', 'name')->toArray();
+        return ExamType::whereIn('slug', $slugs)->orderBy('name', 'asc')->pluck('name', 'name')->toArray();
     }
 
     /**

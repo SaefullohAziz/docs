@@ -60,7 +60,7 @@ class StudentClassController extends Controller
                     return '<div class="checkbox icheck"><label><input type="checkbox" name="selectedData[]" value="'.$data->id.'"></label></div>';
                 })
                 ->editColumn('created_at', function($data) {
-                    return (date('d-m-Y h:m:s', strtotime($data->created_at)));
+                    return (date('d-m-Y H:i:s', strtotime($data->created_at)));
                 })
                 ->addColumn('action', function($data) {
                     return '<a class="btn btn-sm btn-secondary" href="'.route('class.student.index', $data->id).'" title="'.__("See students").'"><i class="fa fa-users"></i> '.__("Student").'</a> <a class="btn btn-sm btn-success" href="'.route('class.show', $data->id).'" title="'.__("See detail").'"><i class="fa fa-eye"></i> '.__("See").'</a> <a class="btn btn-sm btn-warning" href="'.route('class.edit', $data->id).'" title="'.__("Edit").'"><i class="fa fa-edit"></i> '.__("Edit").'</a>';

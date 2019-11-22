@@ -26,6 +26,18 @@
 			</div>
 		@endif
 
+		<div class="card card-hero">
+            <div class="card-header p-4">
+                <div class="card-icon">
+                	<i class="fas fa-university"></i>
+                </div>
+                <h4>{{ $data->statusUpdate->status->level->name }}</h4>
+                <div class="card-description">{{ $data->statusUpdate->status->name }}</div>
+            </div>
+            <div class="card-body p-0">
+            </div>
+        </div>
+
 		<div class="card card-primary">
 			<div class="card-header">
 				<h4>{{ __('School Data') }}</h4>

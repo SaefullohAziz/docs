@@ -130,7 +130,7 @@ class PaymentController extends Controller
                     return '<div class="checkbox icheck"><label><input type="checkbox" name="selectedData[]" value="'.$data->id.'"></label></div>';
                 })
                 ->editColumn('created_at', function($data) {
-                    return (date('d-m-Y h:m:s', strtotime($data->created_at)));
+                    return (date('d-m-Y H:i:s', strtotime($data->created_at)));
                 })
                 ->editColumn('payment_receipt', function($data) {
                     return '<a href="'.route('download', ['dir' => encrypt('payment/payment-receipt'), 'file' => encrypt($data->payment_receipt)]).'" class="btn btn-sm btn-success '.( ! isset($data->payment_receipt)?'disabled':'').'" title="'.__('Download').'" target="_blank"><i class="fa fa-file"></i>  '.__('Download').'</a>';
@@ -288,7 +288,7 @@ class PaymentController extends Controller
     public function uploadPaymentReceipt($payment, Request $request, $oldFile = null)
     {
         if ($request->hasFile('payment_receipt')) {
-            $filename = 'payment_receipt_'.date('d_m_y_h_m_s_').md5(uniqid(rand(), true)).'.'.$request->payment_receipt->extension();
+            $filename = 'payment_receipt_'.date('d_m_Y_H_i_s_').md5(uniqid(rand(), true)).'.'.$request->payment_receipt->extension();
             $path = $request->payment_receipt->storeAs('public/payment/payment-receipt/'.$payment->id, $filename);
             return $payment->id.'/'.$filename;
         }

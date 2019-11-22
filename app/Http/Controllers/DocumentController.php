@@ -126,7 +126,7 @@ class DocumentController extends Controller
     public function uploadDocument($document, $request, $oldFile = null)
     {
         if ($request->hasFile('filename')) {
-            $filename = 'document_'.date('d_m_y_h_m_s_').md5(uniqid(rand(), true)).'.'.$request->filename->extension();
+            $filename = 'document_'.date('d_m_Y_H_i_s_').md5(uniqid(rand(), true)).'.'.$request->filename->extension();
             $path = $request->filename->storeAs('public/document/'.$document->id, $filename);
             return $document->id.'/'.$filename;
         }

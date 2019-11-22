@@ -32,13 +32,13 @@ class TrainingApproved extends Mailable
     public function build()
     {
         return $this->markdown('mail.training.approved')
-                ->to('ahmad.husen@mitraabadi.com')
+                ->to(array_merge([$this->training->school->school_email, $this->training->pic[0]->email], $this->training->participants->pluck('email')->toArray()))
                 ->with([
                     'school' => $this->training->school->name,
                     'type' => $this->training->type,
                     'bookingCode' => $this->training->booking_code,
                     'pic' => $this->training->pic[0]->name,
-                    'nominal' => number_format(3000000, 2, ',', '.'),
+                    'nominal' => number_format($this->training->payment[0]->total, 2, ',', '.'),
                     'bookingTime' => Carbon::parse($this->training->created_at)->format('d-m-Y H:i:s'),
                     'expiredTime' => Carbon::parse($this->training->created_at)->addHour(3)->format('d-m-Y H:i:s'),
                     // Bank Account

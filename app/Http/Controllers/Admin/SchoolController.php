@@ -100,7 +100,7 @@ class SchoolController extends Controller
                     return '<div class="checkbox icheck"><label><input type="checkbox" name="selectedData[]" value="'.$data->id.'"></label></div>';
                 })
                 ->editColumn('created_at', function($data) {
-                    return (date('d-m-Y h:m:s', strtotime($data->created_at)));
+                    return (date('d-m-Y H:i:s', strtotime($data->created_at)));
                 })
                 ->addColumn('action', function($data) {
                     return '<a class="btn btn-sm btn-success" href="'.route('admin.school.show', $data->id).'" title="'.__("See detail").'"><i class="fa fa-eye"></i> '.__("See").'</a> <a class="btn btn-sm btn-warning" href="'.route('admin.school.edit', $data->id).'" title="'.__("Edit").'"><i class="fa fa-edit"></i> '.__("Edit").'</a>';
@@ -297,7 +297,7 @@ class SchoolController extends Controller
     public function uploadDocument($school, Request $request, $oldFile = 'null')
     {
         if ($request->hasFile('document')) {
-            $filename = 'document_'.date('d_m_y_h_m_s_').md5(uniqid(rand(), true)).'.'.$request->document->extension();
+            $filename = 'document_'.date('d_m_Y_H_i_s_').md5(uniqid(rand(), true)).'.'.$request->document->extension();
             $path = $request->document->storeAs('public/school/document/'.$school->id, $filename);
             return $school->id.'/'.$filename;
         }
@@ -320,7 +320,7 @@ class SchoolController extends Controller
                     ->fit(Manipulations::FIT_CROP, 1280, 720)
                     ->optimize()
                     ->save();
-                $filename = 'photo_'.date('d_m_y_h_m_s_').md5(uniqid(rand(), true)).'.'.$photo->extension();
+                $filename = 'photo_'.date('d_m_Y_H_i_s_').md5(uniqid(rand(), true)).'.'.$photo->extension();
                 $path = $photo->storeAs('public/school/photo/'.$school->id, $filename);
                 $school->photo()->create([
                     'name' => $school->id.'/'.$filename,

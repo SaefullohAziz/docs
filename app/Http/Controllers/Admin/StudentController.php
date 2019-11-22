@@ -124,7 +124,7 @@ class StudentController extends Controller
                     return '<div class="checkbox icheck"><label><input type="checkbox" name="selectedData[]" value="'.$data->id.'"></label></div>';
                 })
                 ->editColumn('created_at', function($data) {
-                    return (date('d-m-Y h:m:s', strtotime($data->created_at)));
+                    return (date('d-m-Y H:i:s', strtotime($data->created_at)));
                 })
                 ->addColumn('action', function($data) use ($studentClass) {
                     return '<a class="btn btn-sm btn-success" href="'.route('admin.class.student.show', ['studentClass' => $studentClass->id, 'student' => $data->id]).'" title="'.__("See detail").'"><i class="fa fa-eye"></i> '.__("See").'</a> <a class="btn btn-sm btn-warning" href="'.route('admin.class.student.edit', ['studentClass' => $studentClass->id, 'student' => $data->id]).'" title="'.__("Edit").'"><i class="fa fa-edit"></i> '.__("Edit").'</a>';
@@ -323,7 +323,7 @@ class StudentController extends Controller
                 ->fit(Manipulations::FIT_CROP, 150, 150)
                 ->optimize()
                 ->save();
-            $filename = 'photo_'.date('d_m_y_h_m_s_').md5(uniqid(rand(), true)).'.'.$request->photo->extension();
+            $filename = 'photo_'.date('d_m_Y_H_i_s_').md5(uniqid(rand(), true)).'.'.$request->photo->extension();
             $path = $request->photo->storeAs('public/student/photo/'.$student->id, $filename);
             return $student->id.'/'.$filename;
         }

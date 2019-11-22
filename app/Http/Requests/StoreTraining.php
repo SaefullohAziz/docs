@@ -29,13 +29,6 @@ class StoreTraining extends FormRequest
                 Rule::requiredIf(auth()->guard('admin')->check()),
             ],
             'type' => ['required'],
-            'implementation' => [
-                Rule::requiredIf(function () {
-                    if ( ! empty($this->get('type'))) {
-                        return $this->get('type') == 'Basic (ToT)' || $this->get('type') == 'Adobe Photoshop';
-                    }
-                }),
-            ],
             'approval_code' => [
                 Rule::requiredIf(function () {
                     if ( ! empty($this->get('type'))) {
@@ -163,6 +156,7 @@ class StoreTraining extends FormRequest
     {
         $validator->after(function ($validator) {
             $this->session()->flash('type', $this->get('type'));
+            $this->session()->flash('implementation', $this->get('implementation'));
         });
     }
 }

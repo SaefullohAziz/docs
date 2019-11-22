@@ -26,9 +26,6 @@
         <a href="{{ route('account.index') }}" class="dropdown-item has-icon">
           <i class="far fa-user"></i> {{ __('Profile') }}
         </a>
-        <a href="features-settings.html" class="dropdown-item has-icon">
-          <i class="fas fa-cog"></i> {{ __('Setting') }}
-        </a>
         <div class="dropdown-divider"></div>
         <a class="dropdown-item has-icon text-danger" href="{{ route('logout') }}"
           onclick="event.preventDefault();

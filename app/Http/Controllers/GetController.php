@@ -255,34 +255,25 @@ class GetController extends Controller
                         $examType->whereIn('sub_name', $request->sub_exam_type);
                     }
                     $slugs = $examType->pluck('slug')->toArray();
-                    $settings = json_decode(setting('exam_readiness_settings'), true);
-                    $settings = array_filter($settings, function ($item) use ($slugs) {
-                        return in_array($item['slug'], $slugs);
-                    });
+                    $setting = collect(json_decode(setting('exam_readiness_settings')))->whereIn('slug', $slugs);
                     // Department
-                    $departments = array_column($settings, 'department_limiter_slug');
-                    $departments = array_map(function ($item) {
-                        return json_decode(setting($item), true);
-                    }, $departments);
-                    $allDepartmentAllowed = array_filter($departments, function ($item) {
-                        return count($item) == 0;
-                    });
-                    if (count($allDepartmentAllowed) == 0) {
-                        $departments = collect($departments)->flatten()->unique()->toArray();
+                    $departments = $setting->map(function ($item, $key) {
+                        return $item->department_limiter_slug;
+                    })->map(function ($item, $key) {
+                        return json_decode(setting($item));
+                    })->flatten()->unique();
+                    if ($departments->count()) {
                         $subQuery->whereHas('department', function ($subSubQuery) use ($departments) {
-                            $subSubQuery->whereIn('abbreviation', $departments);
+                            $subSubQuery->whereIn('abbreviation', $departments->toArray());
                         });
                     }
                     // SSP
-                    $sspStudent = array_column($settings, 'ssp_limiter_slug');
-                    $sspStudent = array_map(function ($item) {
-                        return json_decode(setting($item), true);
-                    }, $sspStudent);
-                    $nonSspStudentAllowed = array_filter($sspStudent, function ($item) {
-                        return count($item) == 0;
-                    });
-                    if (count($nonSspStudentAllowed) == 0) {
-                        $sspStudent = collect($sspStudent)->flatten()->unique()->toArray();
+                    $sspStudent = $setting->map(function ($item, $key) {
+                        return $item->ssp_limiter_slug;
+                    })->map(function ($item, $key) {
+                        return json_decode(setting($item));
+                    })->sum();
+                    if ($sspStudent) {
                         $subQuery->whereHas('subsidy.subsidyStatus.status', function ($subSubQuery) {
                             $subSubQuery->where('name', 'Paid');
                         });
@@ -353,31 +344,6 @@ class GetController extends Controller
             if (count($data) == 0) {
                 return response()->json(['status' => false]);
             }
-            return response()->json(['status' => true, 'result' => $data]);
-        }
-    }
-    
-    public function trainingSettingResult(Request $request) {
-        if ($request->ajax()) {
-            $setting = collect(json_decode(setting('training_settings')))->where('name' , $request->type);
-            $created = setting($setting->pluck('setting_created_at_slug')[0]);
-            $date = setting($setting->pluck('time_limit_slug')[0]);
-            
-            $registerredCount = Training::registerredCount($request->type, null, $created);
-            $quota = setting($setting->pluck('quota_limit_slug'));
-            if  ($quota) {
-                $quota = $quota - $registerredCount;
-            } else {
-                $quota = collect(setting($setting->pluck('limit_by_implementation_slug')[0]))->sum() - $registerredCount;
-            }
-            $data = [
-                'registerredCount' => $registerredCount,
-                'quota' => $quota,
-                'default_participant_price' => setting($setting->pluck('default_participant_price_slug')[0]),
-                'unimplementation_scholl_price' => setting($setting->pluck('unimplementation_scholl_price_slug')[0]),
-                'more_participant_price' => setting($setting->pluck('more_participant_slug')[0]),
-            ];
-            if (setting($setting->pluck('time_limit_slug')[0])){$data += ['until_date' => $date];}
             return response()->json(['status' => true, 'result' => $data]);
         }
     }

@@ -126,7 +126,7 @@ class SchoolPhotoController extends Controller
                     ->fit(Manipulations::FIT_CROP, 1280, 720)
                     ->optimize()
                     ->save();
-        $filename = 'photo_'.date('d_m_y_h_m_s_').md5(uniqid(rand(), true)).'.'.$photo->extension();
+        $filename = 'photo_'.date('d_m_Y_H_i_s_').md5(uniqid(rand(), true)).'.'.$photo->extension();
         $path = $photo->storeAs('public/school/photo/'.$school->id, $filename);
         return $school->id.'/'.$filename;
     }
