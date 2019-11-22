@@ -21,7 +21,7 @@ class TrainingObserver
     {
         saveStatus($training, 'Created', 'Mendaftar program training.');
         $this->createPayment($training);
-        $this->sendNotification($training);
+        // $this->sendNotification($training);
     }
 
     /**
@@ -75,21 +75,20 @@ class TrainingObserver
      */
     public function createPayment($training)
     {
-        $training = Training::withCount(['participants'])->doesntHave('trainingPayment')->where('id', $training->id)->first();
-        $total = 3000000;
+        $training = Training::withCount('participants')->doesntHave('trainingPayment')->where('id', $training->id)->first();
+        $setting = collect(json_decode(setting('training_settings')))->where('name', $training->type)->first();
+        $price = setting($setting->default_participant_price_slug);
         if ($training) {
-            if ($training->trainingStatus->status->name != 'Waiting') {
-                if ($training->participants_count > 2) {
-                    $total = $total+(1500000*($training->participants_count-2));
-                }
-                $payment = Payment::create([
-                    'school_id' => $training->school->id,
-                    'type' => 'Commitment Fee',
-                    'total' => $total,
-                ]);
-                saveStatus($payment, 'Published', 'Menerbitkan konfirmasi pembayaran.');
-                $training->payment()->attach($payment->id);
+            if ($training->participants_count > 2) {
+                $price = $price+(setting($setting->more_participant_slug)*($training->participants_count-2));
             }
+            $payment = Payment::create([
+                'school_id' => $training->school->id,
+                'type' => 'Commitment Fee',
+                'total' => $price,
+            ]);
+            saveStatus($payment, 'Published', 'Menerbitkan konfirmasi pembayaran.');
+            $training->payment()->sync([$payment->id]);
         }
     }
 
@@ -101,10 +100,6 @@ class TrainingObserver
     public function sendNotification($training)
     {
         $school = School::findOrFail($training->school->id);
-        if ($training->trainingStatus->status->name == 'Waiting') {
-            $school->notify(new TrainingWaited($training));
-        } elseif ($training->trainingStatus->status->name != 'Waiting') {
-            $school->notify(new TrainingApproved($training));
-        }
+        $school->notify(new TrainingApproved($training));
     }
 }

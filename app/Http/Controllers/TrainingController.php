@@ -14,6 +14,7 @@ use Illuminate\Support\Str;
 use DataTables;
 use Validator;
 use App\Exports\TrainingsExport;
+use App\Notifications\TrainingApproved;
 
 class TrainingController extends Controller
 {
@@ -182,6 +183,7 @@ class TrainingController extends Controller
         $training->save();
         $this->saveParticipant($training, $request);
         $this->savePic($training, $request);
+        $this->sendNotification($training);
         return redirect()->route('payment.index')->with('alert-success', __($this->createdMessage) . ' ' . __('To complete this registration, please complete payment.'));
     }
 
@@ -228,7 +230,7 @@ class TrainingController extends Controller
                 route('training.index') => __('Training'),
                 null => __('Edit')
             ],
-            'types' => $this->types(),
+            'types' => $this->types,
             'implementations' => auth()->user()->school->implementedDepartments->pluck('name', 'abbreviation')->toArray(),
             'roomTypes' => $this->roomTypes,
             'participants' => Participant::bySchool($training->school_id)->pluck('name', 'id')->toArray(),
@@ -286,7 +288,7 @@ class TrainingController extends Controller
      * @param  string  $oldFile
      * @return string
      */
-    public function uploadCommitmentLetter($training, Request $request, $oldFile = null)
+    public function uploadCommitmentLetter($training, $request, $oldFile = null)
     {
         if ($request->hasFile('approval_letter_of_commitment_fee')) {
             $filename = 'approval_letter_of_commitment_fee_'.date('d_m_Y_H_i_s_').md5(uniqid(rand(), true)).'.'.$request->approval_letter_of_commitment_fee->extension();
@@ -304,7 +306,7 @@ class TrainingController extends Controller
      * @param  string  $oldFile
      * @return string
      */
-    public function uploadSelectionResult($training, Request $request, $oldFile = null)
+    public function uploadSelectionResult($training, $request, $oldFile = null)
     {
         if ($request->hasFile('selection_result')) {
             $filename = 'selection_result_'.date('d_m_Y_H_i_s_').md5(uniqid(rand(), true)).'.'.$request->selection_result->extension();
@@ -320,7 +322,7 @@ class TrainingController extends Controller
      * @param  \App\Training  $training
      * @param  \Illuminate\Http\Request  $request
      */
-    public function saveParticipant($training, Request $request)
+    public function saveParticipant($training, $request)
     {
         if ($request->filled('participant_id')) {
             $training->participants()->sync($request->participant_id);
@@ -333,7 +335,7 @@ class TrainingController extends Controller
      * @param  \App\Training  $training
      * @param  \Illuminate\Http\Request  $request
      */
-    public function savePic($training, Request $request)
+    public function savePic($training, $request)
     {
         $pic = Pic::bySchool($training->school_id)->first();
         if ($request->isMethod('put')) {
@@ -352,6 +354,17 @@ class TrainingController extends Controller
             ]);
         }
         $training->pic()->sync([$pic->id]);
+    }
+
+    /**
+     * Send notification
+     * 
+     * @param  \App\Training  $training
+     */
+    public function sendNotification($training)
+    {
+        $school = School::findOrFail($training->school->id);
+        $school->notify(new TrainingApproved($training));
     }
 
     /**

@@ -145,6 +145,95 @@ class Training extends Model
     }
 
     /**
+     * Show quota settings
+     *
+     * @param array $setting
+     * @param array $user
+     * @return void
+     */
+    public static function quotaSetting($setting, $user)
+    {
+        if (collect(json_decode(setting($setting->school_level_slug)))->count()) {
+            $levels = collect([
+                'Dalam proses' => ['Dalam proses'],
+                'Rintisan' => ['C'],
+                'Binaan' => ['B', 'A']
+            ])->filter(function ($value, $key) use ($setting) {
+                return in_array($key, json_decode(setting($setting->school_level_slug), true));
+            })->flatten();
+            $levelLimitCount = collect(json_decode(setting($setting->limit_by_level_slug)))->filter(function ($value, $key) use ($user) {
+                $level = collect([
+                    'Dalam proses' => ['Dalam proses'],
+                    'Rintisan' => ['C'],
+                    'Binaan' => ['B', 'A']
+                ])->filter(function ($value, $key) use ($user) {
+                    return $user->hasLevel($value);
+                })->keys()->toArray();
+                return in_array($key, $level);
+            })->first();
+        }
+        if (collect(json_decode(setting($setting->school_implementation_slug)))->count()) {
+            $departments = collect(json_decode(setting($setting->school_implementation_slug)));
+            $implementedDepartment = $departments->filter(function ($value, $key) {
+                return $value == request()->implementation;
+            })->first();
+            $departmentLimitCount = collect(json_decode(setting($setting->limit_by_implementation_slug)))->filter(function ($value, $key) use ($implementedDepartment) {
+                return $key == $implementedDepartment;
+            })->first();
+        }
+        if (setting($setting->limiter_slug) == 'Quota' || setting($setting->limiter_slug) == 'Both') {
+            $isLimitedTime = date('Y-m-d H:i:s', strtotime(setting($setting->setting_created_at_slug))) >= date('Y-m-d H:i:s', strtotime(now()->toDateTimeString()));
+        }
+        // Set Expired
+        self::with('payment')->whereHas('payment.paymentStatus.status', function ($status) {
+            $status->where('name', 'Published');
+        })->where('created_at', '>=', setting($setting->setting_created_at_slug))->where('created_at', '<', date('Y-m-d H:i:s', strtotime('-3 hours')))->get()->each(function ($training) {
+            saveStatus($training, 'Expired', 'Konfirmasi pembayaran melewati batas waktu.');
+            if ($training->payment->count()) {
+                $payment = \App\Payment::find($training->payment[0]->id);
+                saveStatus($payment, 'Expired', 'Konfirmasi pembayaran melewati batas waktu.');
+            }
+        });
+        // Quota
+        $quota = \App\TrainingParticipant::when( ! empty($levels), function ($training) use ($user, $levels) {
+            $training->whereHas('training.school.statusUpdate.status.level', function ($level) use ($user, $levels) {
+                $level->whereIn('name', $levels->toArray())
+                ->when($user->hasLevel($levels->toArray()), function ($subLevel) use ($user) {
+                    $subLevel->where('name', $user->school->statusUpdate->status->level->name);
+                });
+            });
+        })->when( ! empty($departments), function ($training) use ($departments, $implementedDepartment) {
+            $training->whereHas('training.school.implementedDepartments', function ($department) use ($departments, $implementedDepartment) {
+                $department->whereIn('abbreviation', $departments->toArray())
+                ->when($implementedDepartment, function ($subDepartment) use ($implementedDepartment) {
+                    $subDepartment->where('abbreviation', $implementedDepartment);
+                });
+            });
+        })->whereDoesntHave('training.trainingStatus.status', function ($status) {
+            $status->where('name', 'Expired');
+        })->where('created_at', '>=', setting($setting->setting_created_at_slug));
+        $waitedQuota = $quota->has('training')->orderBy('created_at', 'asc')->get()->count();
+        $closestWaitedParticipant = $quota->where(function ($query) {
+            $query->has('training')->orWhereHas('training.payment.paymentStatus.status', function ($status) {
+                $status->where('name', '!=', 'Approved');
+            });
+        })->orderBy('created_at', 'asc')->limit(1)->first();
+        $quota = $quota->whereHas('training.payment.paymentStatus.status', function ($status) {
+            $status->where('name', 'Approved');
+        })->get()->count();
+        return (object) collect([
+            'levels' => $levels->count() ? $levels : collect([]),
+            'levelLimitCount' => $levelLimitCount ? $levelLimitCount : null,
+            'departments' => $departments->count() ? $departments : collect([]),
+            'implementedDepartment' => $implementedDepartment ? $implementedDepartment : null,
+            'departmentLimitCount' => $departmentLimitCount ? $departmentLimitCount : null,
+            'quota' => $quota,
+            'waitedQuota' => $waitedQuota,
+            'closestWaitedParticipant' => $closestWaitedParticipant,
+        ]);
+    }
+
+    /**
      * Count registerred training by implementation and date
      * 
      * @param  $type

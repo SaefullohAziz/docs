@@ -92,125 +92,62 @@ class AuthServiceProvider extends ServiceProvider
             collect(json_decode(setting('training_settings')))->each(function ($setting) {
                 Gate::define('create-' . $setting->slug . '-training', function ($user) use ($setting) {
                     if (setting($setting->status_slug) == 1) {
-                        if (collect(json_decode(setting($setting->school_level_slug)))->count()) {
-                            $levels = collect([
-                                'Dalam proses' => ['Dalam proses'],
-                                'Rintisan' => ['C'],
-                                'Binaan' => ['B', 'A']
-                            ])->filter(function ($value, $key) use ($setting) {
-                                return in_array($key, json_decode(setting($setting->school_level_slug), true));
-                            })->flatten();
-                            $levelLimitCount = collect(json_decode(setting($setting->limit_by_level_slug)))->filter(function ($value, $key) use ($user) {
-                                $level = collect([
-                                    'Dalam proses' => ['Dalam proses'],
-                                    'Rintisan' => ['C'],
-                                    'Binaan' => ['B', 'A']
-                                ])->filter(function ($value, $key) use ($user) {
-                                    return $user->hasLevel($value);
-                                })->keys()->toArray();
-                                return in_array($key, $level);
-                            })->first();
-                        }
-                        if (collect(json_decode(setting($setting->school_implementation_slug)))->count()) {
-                            $departments = collect(json_decode(setting($setting->school_implementation_slug)));
-                            $implementatedDepartment = $departments->filter(function ($value, $key) {
-                                return $value == request()->implementation;
-                            })->first();
-                            $departmentLimitCount = collect(json_decode(setting($setting->limit_by_implementation_slug)))->filter(function ($value, $key) use ($implementatedDepartment) {
-                                return $key == $implementatedDepartment;
-                            })->first();
-                        }
-                        if (setting($setting->limiter_slug) == 'Quota' || setting($setting->limiter_slug) == 'Both') {
-                            $isLimitedTime = date('Y-m-d H:i:s', strtotime(setting($setting->setting_created_at_slug))) >= date('Y-m-d H:i:s', strtotime(now()->toDateTimeString()));
-                        }
-                        // Set Expired
-                        \App\Training::with('payment')->whereHas('payment.paymentStatus.status', function ($status) {
-                            $status->where('name', 'Published');
-                        })->where('created_at', '>=', setting($setting->setting_created_at_slug))->where('created_at', '<', date('Y-m-d H:i:s', strtotime('-3 hours')))->get()->each(function ($training) {
-                            saveStatus($training, 'Expired', 'Konfirmasi pembayaran melewati batas waktu.');
-                            if ($training->payment->count()) {
-                                $payment = \App\Payment::find($training->payment[0]->id);
-                                saveStatus($payment, 'Expired', 'Konfirmasi pembayaran melewati batas waktu.');
-                            }
-                        });
-                        // Quota
-                        $quota = \App\TrainingParticipant::when( ! empty($levels), function ($training) use ($user, $levels) {
-                            $training->whereHas('training.school.statusUpdate.status.level', function ($level) use ($user, $levels) {
-                                $level->whereIn('name', $levels->toArray())
-                                ->when($user->hasLevel($levels->toArray()), function ($subLevel) use ($user) {
-                                    $subLevel->where('name', $user->school->statusUpdate->status->level->name);
-                                });
-                            });
-                        })->when( ! empty($departments), function ($training) use ($departments, $implementatedDepartment) {
-                            $training->whereHas('training.school.implementedDepartments', function ($department) use ($departments, $implementatedDepartment) {
-                                $department->whereIn('abbreviation', $departments->toArray())
-                                ->when($implementatedDepartment, function ($subDepartment) use ($implementatedDepartment) {
-                                    $subDepartment->where('abbreviation', $implementatedDepartment);
-                                });
-                            });
-                        })->whereDoesntHave('training.trainingStatus.status', function ($status) {
-                            $status->where('name', 'Expired');
-                        })->where('created_at', '>=', setting($setting->setting_created_at_slug));
-                        $waitedQuota = $quota->has('training')->orderBy('created_at', 'asc')->get()->count();
-                        $closestWatedQuota = $quota->where(function ($query) {
-                            $query->has('training')->orWhereHas('training.payment.paymentStatus.status', function ($status) {
-                                $status->where('name', '!=', 'Approved');
-                            });
-                        })->orderBy('created_at', 'asc')->limit(1)->first();
-                        $quota = $quota->whereHas('training.payment.paymentStatus.status', function ($status) {
-                            $status->where('name', 'Approved');
-                        })->get()->count();
-                        //
+                        $quotaSetting = \App\Training::quotaSetting($setting, $user);
                         if (setting($setting->limiter_slug) == 'Quota') {
-                            if ( ! empty($levels) || ! empty($departments)) {
-                                if ( ! empty($levels) xor ! empty($departments)) {
-                                    if ( ! empty($levels)) {
-                                        if ( ! empty($levelLimitCount)) {
-                                            request()->session()->flash('additionalMessage', __('Your school does not meet the requirements and / or quota already full.'));
-                                            return $user->hasLevel($levels->toArray()) && $levelLimitCount > $quota;
+                            if ( ! empty($quotaSetting['levels']) || ! empty($quotaSetting['departments'])) {
+                                if ( ! empty($quotaSetting['levels']) xor ! empty($quotaSetting['departments'])) {
+                                    if ( ! empty($quotaSetting['levels'])) {
+                                        if ( ! empty($quotaSetting['levelLimitCount'])) {
+                                            request()->session()->flash('additionalMessage', __('Your school does not meet the requirements and / or quota already full.') . ($quotaSetting['closestWaitedParticipant']?' ' . __('Please try again at ') . date('H:i:s', strtotime($quotaSetting['closestWaitedParticipant']->created_at . ' +3 hours')):''));
+                                            return ($user->hasLevel($quotaSetting['levels']->toArray()) && $quotaSetting['levelLimitCount'] > $quotaSetting['quota']) ? $quotaSetting['levelLimitCount'] > $quotaSetting['waitedQuota'] : false;
                                         }
-                                        request()->session()->flash('additionalMessage', __('Your school does not meet the requirements and / or quota already full.'));
-                                        return $user->hasLevel($levels->toArray()) && setting($setting->quota_limit_slug) > $quota;
-                                    } elseif ( ! empty($departments)) {
-                                        if ( ! empty($departmentLimitCount)) {
-                                            request()->session()->flash('additionalMessage', __('Your school does not meet the requirements and / or quota already full.'));
-                                            return $implementatedDepartment && $departmentLimitCount > $quota;
+                                        request()->session()->flash('additionalMessage', __('Your school does not meet the requirements and / or quota already full.') . ($quotaSetting['closestWaitedParticipant']?' ' . __('Please try again at ') . date('H:i:s', strtotime($quotaSetting['closestWaitedParticipant']->created_at . ' +3 hours')):''));
+                                        return ($user->hasLevel($quotaSetting['levels']->toArray()) && setting($setting->quota_limit_slug) > $quotaSetting['quota']) ? setting($setting->quota_limit_slug) > $quotaSetting['waitedQuota'] : false;
+                                    } elseif ( ! empty($quotaSetting['departments'])) {
+                                        if ( ! empty($quotaSetting['departmentLimitCount'])) {
+                                            request()->session()->flash('additionalMessage', __('Your school does not meet the requirements and / or quota already full.') . ($quotaSetting['closestWaitedParticipant']?' ' . __('Please try again at ') . date('H:i:s', strtotime($quotaSetting['closestWaitedParticipant']->created_at . ' +3 hours')):''));
+                                            return ($quotaSetting['implementedDepartment'] && $quotaSetting['departmentLimitCount'] > $quotaSetting['quota']) ? $quotaSetting['departmentLimitCount'] > $quotaSetting['waitedQuota'] : false;
                                         }
-                                        request()->session()->flash('additionalMessage', __('Your school does not meet the requirements and / or quota already full.'));
-                                        return $implementatedDepartment && setting($setting->quota_limit_slug) > $quota;
+                                        request()->session()->flash('additionalMessage', __('Your school does not meet the requirements and / or quota already full.') . ($quotaSetting['closestWaitedParticipant']?' ' . __('Please try again at ') . date('H:i:s', strtotime($quotaSetting['closestWaitedParticipant']->created_at . ' +3 hours')):''));
+                                        return ($quotaSetting['implementedDepartment'] && setting($setting->quota_limit_slug) > $quotaSetting['quota']) ? setting($setting->quota_limit_slug) > $quotaSetting['waitedQuota'] : false;
                                     }
                                 }
-                                request()->session()->flash('additionalMessage', __('Your school does not meet the requirements and / or quota already full.'));
-                                // return ($user->hasLevel($levels->toArray()) && $implementatedDepartment && setting($setting->quota_limit_slug) > $quota) ? setting($setting->quota_limit_slug) > $waitedQuota : false;
-                                return $user->hasLevel($levels->toArray()) && $implementatedDepartment && setting($setting->quota_limit_slug) > $quota;
+                                request()->session()->flash('additionalMessage', __('Your school does not meet the requirements and / or quota already full.') . ($quotaSetting['closestWaitedParticipant']?' ' . __('Please try again at ') . date('H:i:s', strtotime($quotaSetting['closestWaitedParticipant']->created_at . ' +3 hours')):''));
+                                return ($user->hasLevel($quotaSetting['levels']->toArray()) && $quotaSetting['implementedDepartment'] && setting($setting->quota_limit_slug) > $quotaSetting['quota'] && ($quotaSetting['levelLimitCount'] > $quotaSetting['quota'] || $quotaSetting['departmentLimitCount'] > $quotaSetting['quota'])) ? (setting($setting->quota_limit_slug) > $quotaSetting['waitedQuota'] && ($quotaSetting['levelLimitCount'] > $quotaSetting['waitedQuota'] || $quotaSetting['departmentLimitCount'] > $quotaSetting['waitedQuota']) ) : false;
                             }
-                            request()->session()->flash('additionalMessage', __('Quota is full.'));
-                            return setting($setting->quota_limit_slug) > $quota;
+                            request()->session()->flash('additionalMessage', __('Quota is full.') . ($quotaSetting['closestWaitedParticipant']?' ' . __('Please try again at ') . date('H:i:s', strtotime($quotaSetting['closestWaitedParticipant']->created_at . ' +3 hours')):''));
+                            return setting($setting->quota_limit_slug) > $quotaSetting['quota'] ? setting($setting->quota_limit_slug) > $quotaSetting['waitedQuota'] : false;
                         } elseif (setting($setting->limiter_slug) == 'Datetime') {
-                            if ( ! empty($levels) || ! empty($departments)) {
+                            if ( ! empty($quotaSetting['levels']) || ! empty($quotaSetting['departments'])) {
                                 request()->session()->flash('additionalMessage', __('Your school does not meet the requirements and / or registration time is up.'));
-                                return ($user->hasLevel($levels->toArray()) || $implementatedDepartment) && $isLimitedTime;
+                                return ($user->hasLevel($quotaSetting['levels']->toArray()) || $quotaSetting['implementedDepartment']) && $isLimitedTime;
                             }
                             request()->session()->flash('additionalMessage', __('Registration time is up.'));
                             return $isLimitedTime;
                         } elseif (setting($setting->limiter_slug) == 'Both') {
-                            if ( ! empty($levels) || ! empty($departments)) {
-                                if ( ! empty($levels) xor ! empty($departments)) {
-                                    if ( ! empty($levels)) {
-                                        if ( ! empty($levelLimitCount)) {
-                                            return ($user->hasLevel($levels->toArray()) && $levelLimitCount > $quota) ? true : $isLimitedTime;
+                            if ( ! empty($quotaSetting['levels']) || ! empty($quotaSetting['departments'])) {
+                                if ( ! empty($quotaSetting['levels']) xor ! empty($quotaSetting['departments'])) {
+                                    if ( ! empty($quotaSetting['levels'])) {
+                                        if ( ! empty($quotaSetting['levelLimitCount'])) {
+                                            request()->session()->flash('additionalMessage', __('Your school does not meet the requirements and / or quota already full.') . ($quotaSetting['closestWaitedParticipant']?' ' . __('Please try again at ') . date('H:i:s', strtotime($quotaSetting['closestWaitedParticipant']->created_at . ' +3 hours')):''));
+                                            return ($user->hasLevel($quotaSetting['levels']->toArray()) && $quotaSetting['levelLimitCount'] > $quotaSetting['quota']) ? ($quotaSetting['levelLimitCount'] > $quotaSetting['waitedQuota'] ? $isLimitedTime : false) : false;
                                         }
-                                        return ($user->hasLevel($levels->toArray()) && setting($setting->quota_limit_slug) > $quota) ? true : $isLimitedTime;
-                                    } elseif ( ! empty($departments)) {
-                                        if ( ! empty($departmentLimitCount)) {
-                                            return ($implementatedDepartment && $departmentLimitCount > $quota) ? true : $isLimitedTime;
+                                        request()->session()->flash('additionalMessage', __('Your school does not meet the requirements and / or quota already full.') . ($quotaSetting['closestWaitedParticipant']?' ' . __('Please try again at ') . date('H:i:s', strtotime($quotaSetting['closestWaitedParticipant']->created_at . ' +3 hours')):''));
+                                        return ($user->hasLevel($quotaSetting['levels']->toArray()) && setting($setting->quota_limit_slug) > $quotaSetting['quota']) ? (setting($setting->quota_limit_slug) > $quotaSetting['waitedQuota'] ? $isLimitedTime : false) : false;
+                                    } elseif ( ! empty($quotaSetting['departments'])) {
+                                        if ( ! empty($quotaSetting['departmentLimitCount'])) {
+                                            request()->session()->flash('additionalMessage', __('Your school does not meet the requirements and / or quota already full.') . ($quotaSetting['closestWaitedParticipant']?' ' . __('Please try again at ') . date('H:i:s', strtotime($quotaSetting['closestWaitedParticipant']->created_at . ' +3 hours')):''));
+                                            return ($quotaSetting['implementedDepartment'] && $quotaSetting['departmentLimitCount'] > $quotaSetting['quota']) ? ($quotaSetting['departmentLimitCount'] > $quotaSetting['waitedQuota'] ? $isLimitedTime : false) : false;
                                         }
-                                        return ($implementatedDepartment && setting($setting->quota_limit_slug) > $quota) ? true : $isLimitedTime;
+                                        request()->session()->flash('additionalMessage', __('Your school does not meet the requirements and / or quota already full.') . ($quotaSetting['closestWaitedParticipant']?' ' . __('Please try again at ') . date('H:i:s', strtotime($quotaSetting['closestWaitedParticipant']->created_at . ' +3 hours')):''));
+                                        return ($quotaSetting['implementedDepartment'] && setting($setting->quota_limit_slug) > $quotaSetting['quota']) ? (setting($setting->quota_limit_slug) > $quotaSetting['waitedQuota'] ? $isLimitedTime : false) : false;
                                     }
                                 }
-                                return ($user->hasLevel($levels->toArray()) && $implementatedDepartment && setting($setting->quota_limit_slug) > $quota) ? true : $isLimitedTime;
+                                request()->session()->flash('additionalMessage', __('Your school does not meet the requirements and / or quota already full.') . ($quotaSetting['closestWaitedParticipant']?' ' . __('Please try again at ') . date('H:i:s', strtotime($quotaSetting['closestWaitedParticipant']->created_at . ' +3 hours')):''));
+                                return ($user->hasLevel($quotaSetting['levels']->toArray()) && $quotaSetting['implementedDepartment'] && setting($setting->quota_limit_slug) > $quotaSetting['quota'] && ($quotaSetting['levelLimitCount'] > $quotaSetting['quota'] || $quotaSetting['departmentLimitCount'] > $quotaSetting['quota'])) ? ((setting($setting->quota_limit_slug) > $quotaSetting['waitedQuota'] && ($quotaSetting['levelLimitCount'] > $quotaSetting['waitedQuota'] || $quotaSetting['departmentLimitCount'] > $quotaSetting['waitedQuota'])) ? $isLimitedTime : false) : false;
                             }
-                            return setting($setting->quota_limit_slug) > $quota ? true : $isLimitedTime;
+                            request()->session()->flash('additionalMessage', __('Your school does not meet the requirements and / or quota already full.') . ($quotaSetting['closestWaitedParticipant']?' ' . __('Please try again at ') . date('H:i:s', strtotime($quotaSetting['closestWaitedParticipant']->created_at . ' +3 hours')):''));
+                            return setting($setting->quota_limit_slug) > $quotaSetting['quota'] ? (setting($setting->quota_limit_slug) > $quotaSetting['waitedQuota'] ? $isLimitedTime : false) : false;
                         }
                         return true;
                     }
