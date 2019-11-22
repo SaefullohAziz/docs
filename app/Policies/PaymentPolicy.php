@@ -91,7 +91,7 @@ class PaymentPolicy
     public function confirm(User $user, Payment $payment)
     {
         if ($user->school_id == $payment->school_id) {
-            if ($payment->type == 'Subsidi' || $payment->type == 'Commitment Fee') {
+            if ($payment->subsidy->count() || $payment->training->count()) {
                 return $payment->paymentStatus->status->name == 'Published';
             }
         }

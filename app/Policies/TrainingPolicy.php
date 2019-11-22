@@ -76,10 +76,7 @@ class TrainingPolicy
      */
     public function create(User $user)
     {
-        if (\Gate::allows('create-training')) {
-            return $user->school()->has('teachers')->first();
-        }
-        return false;
+        return \Gate::allows('create-training') ? $user->school()->has('teachers')->first() : false;
     }
 
     /**

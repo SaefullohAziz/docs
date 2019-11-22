@@ -64,14 +64,9 @@ class AuthServiceProvider extends ServiceProvider
         });
         */
 
-        Gate::define('tes-euy', function ($user) {
-            request()->session()->flash('status', 'Task was successful!');
-            return true;
-        });
-
         // Form Settings
         if (setting('form_settings')) {
-            foreach (json_decode(setting('form_settings')) as $setting) {
+            collect(json_decode(setting('form_settings')))->each(function ($setting) {
                 Gate::define('create-' . str_replace(' ', '-', strtolower($setting->name)), function ($user) use ($setting) {
                     if (setting($setting->status_slug) == 1) {
                         $quota = \DB::table($setting->table)->where('created_at', '>=', setting($setting->setting_created_at_slug))->get()->count();
@@ -89,12 +84,12 @@ class AuthServiceProvider extends ServiceProvider
                         return true;
                     }
                 });
-            }
+            });
         }
 
         // Training Settings
         if (setting('training_settings')) {
-            foreach (json_decode(setting('training_settings')) as $setting) {
+            collect(json_decode(setting('training_settings')))->each(function ($setting) {
                 Gate::define('create-' . $setting->slug . '-training', function ($user) use ($setting) {
                     if (setting($setting->status_slug) == 1) {
                         if (collect(json_decode(setting($setting->school_level_slug)))->count()) {
@@ -128,6 +123,17 @@ class AuthServiceProvider extends ServiceProvider
                         if (setting($setting->limiter_slug) == 'Quota' || setting($setting->limiter_slug) == 'Both') {
                             $isLimitedTime = date('Y-m-d H:i:s', strtotime(setting($setting->setting_created_at_slug))) >= date('Y-m-d H:i:s', strtotime(now()->toDateTimeString()));
                         }
+                        // Set Expired
+                        \App\Training::with('payment')->whereHas('payment.paymentStatus.status', function ($status) {
+                            $status->where('name', 'Published');
+                        })->where('created_at', '>=', setting($setting->setting_created_at_slug))->where('created_at', '<', date('Y-m-d H:i:s', strtotime('-3 hours')))->get()->each(function ($training) {
+                            saveStatus($training, 'Expired', 'Konfirmasi pembayaran melewati batas waktu.');
+                            if ($training->payment->count()) {
+                                $payment = \App\Payment::find($training->payment[0]->id);
+                                saveStatus($payment, 'Expired', 'Konfirmasi pembayaran melewati batas waktu.');
+                            }
+                        });
+                        // Quota
                         $quota = \App\TrainingParticipant::when( ! empty($levels), function ($training) use ($user, $levels) {
                             $training->whereHas('training.school.statusUpdate.status.level', function ($level) use ($user, $levels) {
                                 $level->whereIn('name', $levels->toArray())
@@ -209,7 +215,7 @@ class AuthServiceProvider extends ServiceProvider
                         return true;
                     }
                 });
-            }
+            });
         }
     }
 }
