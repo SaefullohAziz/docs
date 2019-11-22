@@ -61,8 +61,6 @@ if ( ! function_exists('saveStatus')) {
         $status = App\Status::byName($status)->first();
         $data = [
             'log_id' => $log,
-            'created_at' => now(),
-            'updated_at' => now(),
         ];
         $data = array_merge($data, $addonData);
         $model->statuses()->attach($status->id, $data);

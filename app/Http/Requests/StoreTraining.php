@@ -30,42 +30,22 @@ class StoreTraining extends FormRequest
             ],
             'type' => ['required'],
             'approval_code' => [
-                Rule::requiredIf(function () {
-                    if ( ! empty($this->get('type'))) {
-                        return $this->get('type') == 'Basic (ToT)';
-                    }
-                }),
+                Rule::requiredIf($this->get('type') == 'Basic (ToT)'),
             ],
             'room_type' => [
-                Rule::requiredIf(function () {
-                    if ( ! empty($this->get('type'))) {
-                        return $this->get('type') == 'Basic (ToT)';
-                    }
-                }),
+                Rule::requiredIf($this->get('type') == 'Basic (ToT)'),
                 'array',
                 'min:1'
             ],
             'room_type.*' => [
-                Rule::requiredIf(function () {
-                    if ( ! empty($this->get('type'))) {
-                        return $this->get('type') == 'Basic (ToT)';
-                    }
-                }),
+                Rule::requiredIf($this->get('type') == 'Basic (ToT)'),
                 'min:1'
             ],
             'room_size' => [
-                Rule::requiredIf(function () {
-                    if ( ! empty($this->get('type'))) {
-                        return $this->get('type') == 'Basic (ToT)';
-                    }
-                }),
+                Rule::requiredIf($this->get('type') == 'Basic (ToT)'),
             ],
             'has_asset' => [
-                Rule::requiredIf(function () {
-                    if ( ! empty($this->get('type'))) {
-                        return $this->get('type') == 'Elektronika Dasar';
-                    }
-                }),
+                Rule::requiredIf($this->get('type') == 'Elektronika Dasar'),
             ],
             'participant_id' => [
                 'required',
@@ -96,38 +76,51 @@ class StoreTraining extends FormRequest
             $addonRules = [
                 'pic' => ['required'],
                 'pic_name' => [
-                    Rule::requiredIf(function () {
-                        if ( ! empty($this->get('pic'))) {
-                            return $this->get('pic') == 1;
-                        }
-                    }),
+                    Rule::requiredIf($this->get('pic') == 1),
                 ],
                 'pic_position' => [
-                    Rule::requiredIf(function () {
-                        if ( ! empty($this->get('pic'))) {
-                            return $this->get('pic') == 1;
-                        }
-                    }),
+                    Rule::requiredIf($this->get('pic') == 1),
                 ],
                 'pic_phone_number' => [
-                    Rule::requiredIf(function () {
-                        if ( ! empty($this->get('pic'))) {
-                            return $this->get('pic') == 1;
-                        }
-                    }),
+                    Rule::requiredIf($this->get('pic') == 1),
                     'numeric', 
                     'digits_between:8,11'
                 ],
                 'pic_email' => [
-                    Rule::requiredIf(function () {
-                        if ( ! empty($this->get('pic'))) {
-                            return $this->get('pic') == 1;
-                        }
-                    }),
+                    Rule::requiredIf($this->get('pic') == 1),
                     'email',
                 ],
             ];
             $rules = array_merge($rules, $addonRules);
+        }
+        if (auth()->guard('web')->check()) {
+            $setting = collect(json_decode(setting('training_settings')))->where('name', $this->get('type'))->first();
+            $quotaSetting = \App\Training::quotaSetting($setting, auth()->user());
+            if (setting($setting->limiter_slug) == 'Quota' xor setting($setting->limiter_slug) == 'Both') {
+                $max = setting($setting->quota_limit_slug)-$quotaSetting['waitedQuota'];
+                if ( ! empty($quotaSetting['levels']) || ! empty($quotaSetting['departments'])) {
+                    if ( ! empty($quotaSetting['levelLimitCount']) xor ! empty($quotaSetting['departmentLimitCount'])) {  
+                        if ( ! empty($quotaSetting['levelLimitCount'])) {
+                            $max = $quotaSetting['levelLimitCount']-$quotaSetting['waitedQuota'];
+                        } elseif ( ! empty($quotaSetting['departmentLimitCount'])) {
+                            $max = $quotaSetting['departmentLimitCount']-$quotaSetting['waitedQuota'];
+                        }
+                    } elseif ( ! empty($quotaSetting['levelLimitCount']) && ! empty($quotaSetting['departmentLimitCount'])) {
+                        $max = $quotaSetting['departmentLimitCount']-$quotaSetting['waitedQuota'];
+                    }
+                }
+            }
+            if ( ! empty($max)) {
+                $addonRules = [
+                    'participant_id' => [
+                        'required',
+                        'array',
+                        'min:' . ($max < 2 ? 1 : 2),
+                        'max:' . $max
+                    ],
+                ];
+                $rules = array_merge($rules, $addonRules);
+            }
         }
         return $rules;
     }
@@ -143,6 +136,7 @@ class StoreTraining extends FormRequest
             'school_id.required' => 'The school field is required.',
             'participant_id.required' => 'Participant is required for every training registration.',
             'participant_id.min' => 'Choose at least two participant.',
+            'participant_id.max' => 'The participant may not have more than :max persons.',
         ];
     }
 

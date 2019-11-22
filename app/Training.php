@@ -211,7 +211,9 @@ class Training extends Model
             });
         })->whereDoesntHave('training.trainingStatus.status', function ($status) {
             $status->where('name', 'Expired');
-        })->where('created_at', '>=', setting($setting->setting_created_at_slug));
+        })->whereHas('training', function ($training) use ($setting) {
+            $training->where('created_at', '>=', setting($setting->setting_created_at_slug));
+        });
         $waitedQuota = $quota->has('training')->orderBy('created_at', 'asc')->get()->count();
         $closestWaitedParticipant = $quota->where(function ($query) {
             $query->has('training')->orWhereHas('training.payment.paymentStatus.status', function ($status) {
