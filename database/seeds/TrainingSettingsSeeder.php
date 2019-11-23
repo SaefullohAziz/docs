@@ -63,7 +63,7 @@ class TrainingSettingsSeeder extends Seeder
 				'more_participant_slug' => 'mikrotik_training_more_participant',
 				'more_participant_slug_value' => 1850000,
 				'unimplementation_scholl_price_slug' => 'mikrotik_training_unimplementation_school_price',
-				'unimplementation_scholl_price_slug_value' => '-',
+				'unimplementation_scholl_price_slug_value' => '',
 				'setting_created_at_slug' => 'mikrotik_training_setting_at'
 			],
 			[
