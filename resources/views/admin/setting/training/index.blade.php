@@ -75,8 +75,8 @@
 								                        {{ Form::bsDatetime('col-sm-6 ' . (setting($form->limiter_slug)=='Datetime'||setting($form->limiter_slug)=='Both'?'d-block':'d-none'), __('Datetime'), $form->time_limit_slug, setting($form->time_limit_slug), __('Datetime'), [(setting($form->limiter_slug)=='Datetime'||setting($form->limiter_slug)=='Both'?'required':'') => '']) }}
                                                     </div>
 
-                                                    {{ Form::bsInlineRadio(null, __('Limit By School Based Condition ?'), $form->slug.'_school_based_limit', ['1' => __('Yes'), '0' => __('No')], (setting($form->school_level_slug) ? 1 : 0), ['required' => '']) }}
-                                                    <fieldset class="{{$form->slug.'_school_based_limit'}}-set {{ (setting($form->school_level_slug) ?'d-block':'d-none') }}">
+                                                    {{ Form::bsInlineRadio(null, __('Limit By School Based Condition ?'), $form->slug.'_school_based_limit', ['1' => __('Yes'), '0' => __('No')], (! empty(json_decode(setting($form->school_level_slug))) ? 1 : 0), ['required' => '']) }}
+                                                    <fieldset class="{{$form->slug.'_school_based_limit'}}-set {{ (!empty(json_decode(setting($form->school_level_slug))) ?'d-block':'d-none') }}">
                                                         <legend>{{ __('School Based Limitation') }}</legend>
                                                         <div class="row">
                                                             {{ Form::bsSelect('col-12', __('Limit by school level'), $form->school_level_slug, $schoolLevels, collect(json_decode(setting($form->school_level_slug)))->toArray(), __('Select'), ['placeholder' => __('Select'), (setting($form->status_slug)==1?'required':'') => '']) }}
@@ -86,9 +86,9 @@
                                                             {{ Form::bsSelectRange('col-sm-6 ' . (key_exists('Rintisan', collect(json_decode(setting($form->limit_by_level_slug)))->toArray() )?'d-block':'d-none'), __('Rintisan'), $form->limit_by_level_slug.'[Rintisan]', 1, 100, (key_exists('Rintisan', collect(json_decode(setting($form->limit_by_level_slug)))->toArray() )) ? collect(json_decode(setting($form->limit_by_level_slug)))->toArray()['Rintisan'] : null, __('Select'), ['placeholder' => __('Select'), ( key_exists('Rintisan', collect(json_decode(setting($form->limit_by_level_slug)))->toArray() )?'required':'') => '']) }}
                                                         </div>
 
-                                                            {{ Form::bsInlineRadio(null, __('Limit By School Implementation?'), $form->slug.'_school_implementation_limit', ['1' => __('Yes'), '0' => __('No')], (setting($form->school_implementation_slug) ? 1 : 0), ['required' => '']) }}
+                                                            {{ Form::bsInlineRadio(null, __('Limit By School Implementation?'), $form->slug.'_school_implementation_limit', ['1' => __('Yes'), '0' => __('No')], (! empty(json_decode(setting($form->school_implementation_slug))) ? 1 : 0), ['required' => '']) }}
 
-                                                                <fieldset class="{{$form->slug.'_school_implementation_limit'}}-set {{ (setting($form->school_implementation_slug) ?'d-block':'d-none') }}">
+                                                                <fieldset class="{{$form->slug.'_school_implementation_limit'}}-set {{ (! empty(json_decode(setting($form->school_implementation_slug))) ?'d-block':'d-none') }}">
                                                                     <legend>{{ __('School implementation Limitation') }}</legend>
                                                                     <div class="row">
 
@@ -108,7 +108,7 @@
                                                     <div class="row">
                                                         {{ Form::bsText('col-12', __('default training price (2 participant)'), $form->default_participant_price_slug, setting($form->default_participant_price_slug), __('Exc : 8000000'), [(setting($form->status_slug)==1?'required':'') => '']) }}
 
-                                                        {{ Form::bsText('col-12', __('Additional participant price'), $form->more_participant_slug, setting($form->more_participant_slug), __('Exc : 2000000'), [(setting($form->status_slug)==1?'required':'') => '']) }}
+                                                        {{ Form::bsText('col-12', __('Additional participant price'), $form->more_participant_slug, setting($form->more_participant_slug), __('Exc : 2000000'), [(setting($form->status_slug)==1?'required':'') => ''], [__("Leave blank to deactivate additional participants or fill in zero to make it free.")]) }}
 
                                                         {{ Form::bsText('col-12', __('Out of implemented school price'), $form->unimplementation_scholl_price_slug, setting($form->unimplementation_scholl_price_slug), __('Exc : 8000000'), [(setting($form->status_slug)==1?'required':'') => '']) }}
 								                       
