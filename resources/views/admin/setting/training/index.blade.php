@@ -55,7 +55,7 @@
                                     <ul class="nav nav-pills flex-column" id="formSettingTab" role="tablist">
                                         @foreach ($forms as $form)
                                             <li class="nav-item">
-                                                <a class="nav-link {{ ($loop->first?'active show':'') }}" id="form-setting-{{ $loop->iteration }}-tab" data-toggle="tab" href="#form-setting-{{ strtolower(str_replace(' ', '-', $form->name)) }}" role="tab" aria-controls="{{ strtolower(str_replace(' ', '-', $form->name)) }}" aria-selected="{{ ($loop->first?'true':'false') }}">{{ __($form->name) }}</a>
+                                                <a class="nav-link {{ ($loop->first?'active show':'') }}" id="form-setting-{{ $loop->iteration }}-tab" data-toggle="tab" href="#form-setting-{{ strtolower(str_replace(' ', '-', $form->slug)) }}" role="tab" aria-controls="{{ strtolower(str_replace(' ', '-', $form->slug)) }}" aria-selected="{{ ($loop->first?'true':'false') }}">{{ __($form->slug) }}</a>
                                             </li>
                                         @endforeach
                                     </ul>
@@ -63,7 +63,7 @@
                                 <div class="col-12 col-sm-12 col-md-8">
                                     <div class="tab-content no-padding" id="formSettingTabContent">
                                         @foreach ($forms as $form)
-                                            <div class="tab-pane fade {{ ($loop->first?'active show':'') }}" id="form-setting-{{ strtolower(str_replace(' ', '-', $form->name)) }}" role="tabpanel" aria-labelledby="form-setting-{{ $loop->iteration }}-tab">
+                                            <div class="tab-pane fade {{ ($loop->first?'active show':'') }}" id="form-setting-{{ strtolower(str_replace(' ', '-', $form->slug)) }}" role="tabpanel" aria-labelledby="form-setting-{{ $loop->iteration }}-tab">
 								                {{ Form::bsInlineRadio(null, __('Status?'), $form->status_slug, ['1' => __('Opened'), '0' => __('Closed')], setting($form->status_slug), ['required' => '']) }}
                                                 <fieldset class="{{ $form->limiter_slug }}-set {{ (setting($form->status_slug)==1?'d-block':'d-none') }}">
                                                     <legend>{{ __('Limitation') }}</legend>
@@ -73,21 +73,36 @@
 								                        {{ Form::bsSelectRange('col-sm-6 ' . (setting($form->limiter_slug)=='Quota'||setting($form->limiter_slug)=='Both'?'d-block':'d-none'), __('Quota'), $form->quota_limit_slug, 1, 100, setting($form->quota_limit_slug), __('Select'), ['placeholder' => __('Select'), (setting($form->limiter_slug)=='Quota'||setting($form->limiter_slug)=='Both'?'required':'') => '']) }}
 
 								                        {{ Form::bsDatetime('col-sm-6 ' . (setting($form->limiter_slug)=='Datetime'||setting($form->limiter_slug)=='Both'?'d-block':'d-none'), __('Datetime'), $form->time_limit_slug, setting($form->time_limit_slug), __('Datetime'), [(setting($form->limiter_slug)=='Datetime'||setting($form->limiter_slug)=='Both'?'required':'') => '']) }}
-
-								                        {{ Form::bsSelect('col-12', __('Limit by school level'), $form->school_level_slug, $schoolLevels, collect(json_decode(setting($form->school_level_slug)))->toArray(), __('Select'), ['placeholder' => __('Select'), (setting($form->status_slug)==1?'required':'') => '']) }}
-
-								                        {{ Form::bsSelectRange('col-sm-6 ' . (key_exists('Binaan', collect(json_decode(setting($form->limit_by_level_slug)))->toArray() )?'d-block':'d-none'), __('Binaan'), $form->limit_by_level_slug.'_binaan', 1, 100, (key_exists('Binaan', collect(json_decode(setting($form->limit_by_level_slug)))->toArray() )) ? collect(json_decode(setting($form->limit_by_level_slug)))->toArray()['Binaan'] : null, __('Select'), ['placeholder' => __('Select'), ( key_exists('Binaan', collect(json_decode(setting($form->limit_by_level_slug)))->toArray() )?'required':'') => '']) }}
-
-                                                        {{ Form::bsSelectRange('col-sm-6 ' . (key_exists('Rintisan', collect(json_decode(setting($form->limit_by_level_slug)))->toArray() )?'d-block':'d-none'), __('Rintisan'), $form->limit_by_level_slug.'_rintisan', 1, 100, (key_exists('Rintisan', collect(json_decode(setting($form->limit_by_level_slug)))->toArray() )) ? collect(json_decode(setting($form->limit_by_level_slug)))->toArray()['Rintisan'] : null, __('Select'), ['placeholder' => __('Select'), ( key_exists('Rintisan', collect(json_decode(setting($form->limit_by_level_slug)))->toArray() )?'required':'') => '']) }}
-
-								                        {{ Form::bsSelect('col-12', __('Limit by school implementation'), $form->school_implementation_slug."[]", $schoolImplementations, collect(json_decode(setting($form->school_implementation_slug)))->toArray(), __('Select'), ['placeholder' => __('Select'), (setting($form->status_slug)==1?'required':'') => '', 'multiple' => '']) }}
-
-								                        @foreach ($schoolImplementations as $implementation)
-								                        	{{ Form::bsSelectRange('col-sm-4 ' . (in_array($implementation, collect(json_decode(setting($form->school_implementation_slug)))->toArray() )?'d-block':'d-none'), __($implementation), $form->limit_by_implementation_slug.'['.$implementation.']', 1, 100, key_exists($implementation, collect(json_decode(setting($form->limit_by_implementation_slug)))->toArray() ) ? collect(json_decode(setting($form->limit_by_implementation_slug)))->toArray()[$implementation]:null, __('Select'), ['placeholder' => __('Select'), (array_keys(explode(':', in_array($implementation, collect(json_decode(setting($form->limit_by_implementation_slug)))->toArray()  )), $implementation)?'required':'') => ''],[$registerredSum[$form->name][$implementation], 'registerred']) }}
-								                        @endforeach
-								                       
                                                     </div>
+
+                                                    {{ Form::bsInlineRadio(null, __('Limit By School Based Condition ?'), $form->slug.'_school_based_limit', ['1' => __('Yes'), '0' => __('No')], (setting($form->school_level_slug) ? 1 : 0), ['required' => '']) }}
+                                                    <fieldset class="{{$form->slug.'_school_based_limit'}}-set {{ (setting($form->school_level_slug) ?'d-block':'d-none') }}">
+                                                        <legend>{{ __('School Based Limitation') }}</legend>
+                                                        <div class="row">
+                                                            {{ Form::bsSelect('col-12', __('Limit by school level'), $form->school_level_slug, $schoolLevels, collect(json_decode(setting($form->school_level_slug)))->toArray(), __('Select'), ['placeholder' => __('Select'), (setting($form->status_slug)==1?'required':'') => '']) }}
+
+                                                            {{ Form::bsSelectRange('col-sm-6 ' . (key_exists('Binaan', collect(json_decode(setting($form->limit_by_level_slug)))->toArray() )?'d-block':'d-none'), __('Binaan'), $form->limit_by_level_slug.'[Binaan]', 1, 100, (key_exists('Binaan', collect(json_decode(setting($form->limit_by_level_slug)))->toArray() )) ? collect(json_decode(setting($form->limit_by_level_slug)))->toArray()['Binaan'] : null, __('Select'), ['placeholder' => __('Select'), ( key_exists('Binaan', collect(json_decode(setting($form->limit_by_level_slug)))->toArray() )?'required':'') => '']) }}
+
+                                                            {{ Form::bsSelectRange('col-sm-6 ' . (key_exists('Rintisan', collect(json_decode(setting($form->limit_by_level_slug)))->toArray() )?'d-block':'d-none'), __('Rintisan'), $form->limit_by_level_slug.'[Rintisan]', 1, 100, (key_exists('Rintisan', collect(json_decode(setting($form->limit_by_level_slug)))->toArray() )) ? collect(json_decode(setting($form->limit_by_level_slug)))->toArray()['Rintisan'] : null, __('Select'), ['placeholder' => __('Select'), ( key_exists('Rintisan', collect(json_decode(setting($form->limit_by_level_slug)))->toArray() )?'required':'') => '']) }}
+                                                        </div>
+
+                                                            {{ Form::bsInlineRadio(null, __('Limit By School Implementation?'), $form->slug.'_school_implementation_limit', ['1' => __('Yes'), '0' => __('No')], (setting($form->school_implementation_slug) ? 1 : 0), ['required' => '']) }}
+
+                                                                <fieldset class="{{$form->slug.'_school_implementation_limit'}}-set {{ (setting($form->school_implementation_slug) ?'d-block':'d-none') }}">
+                                                                    <legend>{{ __('School implementation Limitation') }}</legend>
+                                                                    <div class="row">
+
+                                                                    {{ Form::bsSelect('col-12', __('Limit by school implementation'), $form->school_implementation_slug."[]", $schoolImplementations, collect(json_decode(setting($form->school_implementation_slug)))->toArray(), __('Select'), ['placeholder' => __('Select'), (setting($form->status_slug)==1?'required':'') => '', 'multiple' => '']) }}
+
+                                                                    @foreach ($schoolImplementations as $implementation)
+                                                                        {{ Form::bsSelectRange('col-sm-4 ' . (in_array($implementation, collect(json_decode(setting($form->school_implementation_slug)))->toArray() )?'d-block':'d-none'), __($implementation), $form->limit_by_implementation_slug.'['.$implementation.']', 1, 100, key_exists($implementation, collect(json_decode(setting($form->limit_by_implementation_slug)))->toArray() ) ? collect(json_decode(setting($form->limit_by_implementation_slug)))->toArray()[$implementation]:null, __('Select'), ['placeholder' => __('Select'), (array_keys(explode(':', in_array($implementation, collect(json_decode(setting($form->limit_by_implementation_slug)))->toArray()  )), $implementation)?'required':'') => ''],[$registerredSum[$form->name][$implementation], 'registerred']) }}
+                                                                    @endforeach
+                                                                    </div>
+                                                                </fieldset>
+                                                    </fieldset>
                                                 </fieldset>
+
+                                                
                                                 <fieldset class="{{ $form->limiter_slug }}-set {{ (setting($form->status_slug)==1?'d-block':'d-none') }}">
                                                     <legend>{{ __('Prices') }}</legend>
                                                     <div class="row">
@@ -133,6 +148,30 @@
                     }
                 });
 
+                $('[name="{{$form->slug}}_school_based_limit"]').click(function () {
+                    if ($(this).val() == 1)
+                    {
+                        $(".{{$form->slug.'_school_based_limit'}}-set").removeClass('d-none').addClass('d-block');
+                        $('[name="{{$form->school_level_slug}}"]').prop('required', true).prop('disabled', false);
+                    }
+                    else {
+                        $(".{{$form->slug.'_school_based_limit'}}-set").removeClass('d-block').addClass('d-none');
+                        $('[name="{{$form->school_level_slug}}"]').prop('required', false).prop('disabled', true);
+                    }
+                });
+
+                $('[name="{{$form->slug}}_school_implementation_limit"]').click(function () {
+                    if ($(this).val() == 1)
+                    {
+                        $(".{{$form->slug.'_school_implementation_limit'}}-set").removeClass('d-none').addClass('d-block');
+                        $('[name="{{$form->school_implementation_slug}}[]"]').prop('required', true).prop('disabled', false);
+                    }
+                    else {
+                        $(".{{$form->slug.'_school_implementation_limit'}}-set").removeClass('d-block').addClass('d-none');
+                        $('[name="{{$form->school_implementation_slug}}[]"]').prop('required', false).prop('disabled', true);
+                    }
+                });
+
                 $('select[name="{{ $form->limiter_slug }}"]').change(function () {
                     $('select[name="{{ $form->quota_limit_slug }}"]').val(null).change();
                     $('select[name="{{ $form->quota_limit_slug }}"]').prop('required', false);
@@ -152,19 +191,19 @@
                 });
 
                 $('select[name="{{ $form->school_level_slug }}"]').change(function () {
-                    $('select[name="{{ $form->limit_by_level_slug }}_binaan"], select[name="{{ $form->limit_by_level_slug }}_rintisan"]').val(null).change();
-                    $('select[name="{{ $form->limit_by_level_slug }}_binaan"], select[name="{{ $form->limit_by_level_slug }}_rintisan"]').prop('required', false);
-                    $('select[name="{{ $form->limit_by_level_slug }}_binaan"], select[name="{{ $form->limit_by_level_slug }}_rintisan"]').parent().removeClass('d-block').addClass('d-none');
+                    $('select[name="{{ $form->limit_by_level_slug }}[Binaan]"], select[name="{{ $form->limit_by_level_slug }}[Rintisan]"]').val(null).change();
+                    $('select[name="{{ $form->limit_by_level_slug }}[Binaan]"], select[name="{{ $form->limit_by_level_slug }}[Rintisan]"]').prop('required', false);
+                    $('select[name="{{ $form->limit_by_level_slug }}[Binaan]"], select[name="{{ $form->limit_by_level_slug }}[Rintisan]"]').parent().removeClass('d-block').addClass('d-none');
                     if ($(this).val() == 'Binaan') {
-                        $('select[name="{{ $form->limit_by_level_slug }}_binaan"]').prop('required', true);
-                        $('select[name="{{ $form->limit_by_level_slug }}_binaan"]').parent().removeClass('d-none').addClass('d-block');
+                        $('select[name="{{ $form->limit_by_level_slug }}[Binaan]"]').prop('required', true);
+                        $('select[name="{{ $form->limit_by_level_slug }}[Binaan]"]').parent().removeClass('d-none').addClass('d-block');
                     } else if ($(this).val() == 'Rintisan') {
-                        $('select[name="{{ $form->limit_by_level_slug }}_rintisan"]').val('').prop('required', true);
-                        $('select[name="{{ $form->limit_by_level_slug }}_rintisan"]').parent().removeClass('d-none').addClass('d-block');
+                        $('select[name="{{ $form->limit_by_level_slug }}[Rintisan]"]').val('').prop('required', true);
+                        $('select[name="{{ $form->limit_by_level_slug }}[Rintisan]"]').parent().removeClass('d-none').addClass('d-block');
                     } else if ($(this).val() == 'Both') {
-                        $('select[name="{{ $form->limit_by_level_slug }}_binaan"], select[name="{{ $form->limit_by_level_slug }}_rintisan"]').val(null).change();
-                    	$('select[name="{{ $form->limit_by_level_slug }}_binaan"], select[name="{{ $form->limit_by_level_slug }}_rintisan"]').prop('required', true);
-                    	$('select[name="{{ $form->limit_by_level_slug }}_binaan"], select[name="{{ $form->limit_by_level_slug }}_rintisan"]').parent().removeClass('d-none').addClass('d-block');
+                        $('select[name="{{ $form->limit_by_level_slug }}[Binaan]"], select[name="{{ $form->limit_by_level_slug }}[Rintisan]"]').val(null).change();
+                    	$('select[name="{{ $form->limit_by_level_slug }}[Binaan]"], select[name="{{ $form->limit_by_level_slug }}[Rintisan]"]').prop('required', true);
+                    	$('select[name="{{ $form->limit_by_level_slug }}[Binaan]"], select[name="{{ $form->limit_by_level_slug }}[Rintisan]"]').parent().removeClass('d-none').addClass('d-block');
                     }
                 });
 
