@@ -121,6 +121,18 @@ class StoreTraining extends FormRequest
                 ];
                 $rules = array_merge($rules, $addonRules);
             }
+            if (setting($setting->more_participant_slug) == '' || setting($setting->more_participant_slug) == null) {
+                if ($max > 2) {
+                    $addonRules = [
+                        'participant_id' => [
+                            'required',
+                            'array',
+                            'size:2'
+                        ],
+                    ];
+                    $rules = array_merge($rules, $addonRules);
+                }
+            }
         }
         return $rules;
     }
