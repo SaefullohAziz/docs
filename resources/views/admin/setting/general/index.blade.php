@@ -34,21 +34,21 @@
                     </div>
                     <div class="card-body">
                         <ul class="nav nav-pills flex-column">
-                            @foreach ($settings as $setting)
-                                <li class="nav-item"><a href="{{ $setting['url'] }}" class="nav-link {{ (request()->url()==$setting['url']?'active':'') }}">{{ __($setting['title']) }}</a></li>
+                            @foreach ($navs as $nav)
+                                <li class="nav-item"><a href="{{ $nav['url'] }}" class="nav-link {{ ($setting['slug']==$nav['slug']?'active':'') }}">{{ __($nav['title']) }}</a></li>
                             @endforeach
                         </ul>
                     </div>
                 </div>
             </div>
             <div class="col-md-9">
-                {{ Form::open(['route' => 'admin.setting.general.store', 'files' => true]) }}
+                {{ Form::open(['route' => 'admin.setting.training.store']) }}
                     <div class="card">
                         <div class="card-header">
                             <h4>{{ $title }}</h4>
                         </div>
                         <div class="card-body">
-                            <p class="text-muted">{{ __($settings[array_search(request()->url(), array_column($settings, 'url'))]['description']) }}</p>
+                            <p class="text-muted">{{ __($setting['description']) }}</p>
                             
                             <fieldset>
                                 <legend>{{ __('Site Settings') }}</legend>

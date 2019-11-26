@@ -34,8 +34,8 @@
                     </div>
                     <div class="card-body">
                         <ul class="nav nav-pills flex-column">
-                            @foreach ($settings as $setting)
-                                <li class="nav-item"><a href="{{ $setting['url'] }}" class="nav-link {{ (request()->url()==$setting['url']?'active':'') }}">{{ __($setting['title']) }}</a></li>
+                            @foreach ($navs as $nav)
+                                <li class="nav-item"><a href="{{ $nav['url'] }}" class="nav-link {{ ($setting['slug']==$nav['slug']?'active':'') }}">{{ __($nav['title']) }}</a></li>
                             @endforeach
                         </ul>
                     </div>
@@ -48,7 +48,7 @@
                             <h4>{{ $title }}</h4>
                         </div>
                         <div class="card-body">
-                            <p class="text-muted">{{ __($settings[array_search(request()->url(), array_column($settings, 'url'))]['description']) }}</p>
+                            <p class="text-muted">{{ __($setting['description']) }}</p>
                             
                             <div class="row">
                                 <div class="col-12 col-sm-12 col-md-4">
@@ -91,11 +91,11 @@
                                                 <fieldset class="{{ $form->limiter_slug }}-set {{ (setting($form->status_slug)==1?'d-block':'d-none') }}">
                                                     <legend>{{ __('Prices') }}</legend>
                                                     <div class="row">
-                                                        {{ Form::bsText('col-12', __('default training price (2 participant)'), $form->default_participant_price_slug, setting($form->default_participant_price_slug), __('Exc : 8000000'), [(setting($form->status_slug)==1?'required':'') => '']) }}
+                                                        {{ Form::bsText('col-12', __('Default (2 Participant)'), $form->default_participant_price_slug, setting($form->default_participant_price_slug), __('Exc : 8000000'), [(setting($form->status_slug)==1?'required':'') => '']) }}
 
-                                                        {{ Form::bsText('col-12', __('Additional participant price'), $form->more_participant_slug, setting($form->more_participant_slug), __('Exc : 2000000'), [(setting($form->status_slug)==1?'required':'') => '']) }}
+                                                        {{ Form::bsText('col-12', __('Additional Price (Per Participant)'), $form->more_participant_slug, setting($form->more_participant_slug), __('Exc : 2000000'), [(setting($form->status_slug)==1?'required':'') => '']) }}
 
-                                                        {{ Form::bsText('col-12', __('Out of implemented school price'), $form->unimplementation_scholl_price_slug, setting($form->unimplementation_scholl_price_slug), __('Exc : 8000000'), [(setting($form->status_slug)==1?'required':'') => '']) }}
+                                                        {{ Form::bsText('col-12', __('Prices outside the conditions'), $form->unimplementation_scholl_price_slug, setting($form->unimplementation_scholl_price_slug), __('Exc : 8000000'), [(setting($form->status_slug)==1?'required':'') => '']) }}
 								                       
                                                     </div>
                                                 </fieldset>
