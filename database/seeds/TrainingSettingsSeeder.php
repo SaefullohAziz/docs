@@ -37,7 +37,7 @@ class TrainingSettingsSeeder extends Seeder
 				'limit_by_implementation_slug_value' => [],
 				'default_participant_price_slug_value' => 3000000,
 				'more_participant_slug_value' => '',
-				'unimplementation_scholl_price_slug_value' => '',
+				'unimplementation_scholl_price_slug_value' => 0,
 			],
 			[
 				'name' => 'MikroTik',

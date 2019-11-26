@@ -260,9 +260,7 @@ class SettingController extends Controller
                     $registerredCount += ["total" => array_sum($registerredCount)];
                 }
             }
-            // dd($registerredCount);
             $registerredSum += [$training->name => $registerredCount];
-
         }
         $view = [
             'back' => route('admin.setting.index'),
@@ -283,10 +281,9 @@ class SettingController extends Controller
                 'Both' => __('Both'),
             ],
             'schoolLevels' => [
-                'None' => __('None'),
                 'Binaan' => __('Binaan'),
                 'Rintisan' => __('Rintisan'),
-                'Both' => __('Both'),
+                'Dalam Proses' => __('Dalam Proses'),
             ],
             'schoolImplementations' => $implementations,
             'registerredSum' => $registerredSum,
@@ -310,12 +307,12 @@ class SettingController extends Controller
                 $request->merge([$trainingSetting->time_limit_slug => date('Y-m-d H:i:s', strtotime($request->{$trainingSetting->time_limit_slug}))]);
             }
             if  (setting($trainingSetting->school_level_slug) != $request->{$trainingSetting->school_level_slug}){
-                $request->merge([$trainingSetting->school_level_slug => json_encode($request->{$trainingSetting->school_level_slug})]);
+                $request->merge([$trainingSetting->school_level_slug => json_encode($request->{$trainingSetting->school_level_slug}, true)]);
+                $request->merge([$trainingSetting->limit_by_level_slug => json_encode($request->{$trainingSetting->limit_by_level_slug}, true)]);
             }
             if  (setting($trainingSetting->school_implementation_slug) != $request->{$trainingSetting->school_implementation_slug}){
-                $request->merge([$trainingSetting->school_implementation_slug => json_encode($request->{$trainingSetting->school_implementation_slug})]);
+                $request->merge([$trainingSetting->school_implementation_slug => json_encode($request->{$trainingSetting->school_implementation_slug}, true)]);
             }
-            dd($request->{$trainingSetting->school_implementation_slug});
         }
         setting($request->except(['_token']))->save();
         return redirect(url()->previous())->with('alert-success', __($this->updatedMessage));
