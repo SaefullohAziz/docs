@@ -26,44 +26,50 @@ class SettingController extends Controller
         parent::__construct();
         $this->table = 'settings';
         $this->updatedMessage = 'All settings have been successfully saved.';
-        $this->settings = [
+        $this->settings = collect([
             [
                 'title' => __('General'),
+                'slug' => 'general',
                 'description' => __('General settings such as, site title, site description, address and so on.'),
                 'icon' => 'fas fa-cog',
                 'url' => route('admin.setting.general.index'),
             ],
             [
                 'title' => __('Role'),
+                'slug' => 'role',
                 'description' => __('Account role settings, such as supersu, admin, and user.'),
                 'icon' => 'fas fa-users-cog',
                 'url' => route('admin.setting.role.index'),
             ],
             [
                 'title' => __('Permission'),
+                'slug' => 'permission',
                 'description' => __('Role permission settings, such as manage data, CRUD, and approval.'),
                 'icon' => 'fas fa-th-list',
                 'url' => '#',
             ],
             [
                 'title' => __('Form'),
+                'slug' => 'form',
                 'description' => __('Form settings, such as open or close the form.'),
                 'icon' => 'fas fa-stopwatch',
                 'url' => route('admin.setting.form.index'),
             ],
             [
                 'title' => __('Training'),
+                'slug' => 'training',
                 'description' => __('Training settings, such as quota limit, and payment nominal.'),
                 'icon' => 'fas fa-business-time',
                 'url' => route('admin.setting.training.index'),
             ],
             [
                 'title' => __('Exam Readiness'),
+                'slug' => 'exam_readiness',
                 'description' => __('Exam readiness settings, such as reference school.'),
                 'icon' => 'fas fa-book-reader',
                 'url' => route('admin.setting.exam.readiness.index'),
             ],
-        ];
+        ]);
     }
 
     /**
@@ -107,7 +113,8 @@ class SettingController extends Controller
             ],
             'subtitle' => __('All About General Settings'),
             'description' => __('You can adjust all general settings here'),
-            'settings' => $this->settings,
+            'navs' => $this->settings,
+            'setting' => $this->settings->where('slug', 'general')->first(),
         ];
         return view('admin.setting.general.index', $view);
     }
@@ -166,7 +173,8 @@ class SettingController extends Controller
             ],
             'subtitle' => __('All About Role Settings'),
             'description' => __('You can adjust all role settings here'),
-            'settings' => $this->settings,
+            'navs' => $this->settings,
+            'setting' => $this->settings->where('slug', 'role')->first(),
             'roles' => Role::pluck('name', 'id')->toArray(),
         ];
         return view('admin.setting.role.index', $view);
@@ -206,7 +214,8 @@ class SettingController extends Controller
             ],
             'subtitle' => __('All About Form Settings'),
             'description' => __('You can adjust all form settings here'),
-            'settings' => $this->settings,
+            'navs' => $this->settings,
+            'setting' => $this->settings->where('slug', 'form')->first(),
             'forms' => json_decode(setting('form_settings')),
             'formLimiters' => [
                 'None' => __('None'),
@@ -272,7 +281,8 @@ class SettingController extends Controller
             ],
             'subtitle' => __('All About Training Settings'),
             'description' => __('You can adjust all training settings here'),
-            'settings' => $this->settings,
+            'navs' => $this->settings,
+            'setting' => $this->settings->where('slug', 'training')->first(),
             'forms' => $trainings,
             'formLimiters' => [
                 'None' => __('None'),
@@ -312,6 +322,7 @@ class SettingController extends Controller
             }
             if  (setting($trainingSetting->school_implementation_slug) != $request->{$trainingSetting->school_implementation_slug}){
                 $request->merge([$trainingSetting->school_implementation_slug => json_encode($request->{$trainingSetting->school_implementation_slug}, true)]);
+                $request->merge([$trainingSetting->limit_by_implementation_slug => json_encode($request->{$trainingSetting->limit_by_implementation_slug}, true)]);
             }
         }
         setting($request->except(['_token']))->save();
@@ -336,7 +347,8 @@ class SettingController extends Controller
             ],
             'subtitle' => __('All About Exam Readiness Settings'),
             'description' => __('You can adjust all exam readiness settings here'),
-            'settings' => $this->settings,
+            'navs' => $this->settings,
+            'setting' => $this->settings->where('slug', 'exam_readiness')->first(),
             'examReadinesses' => json_decode(setting('exam_readiness_settings')),
             'departments' => Department::orderBy('name', 'asc')->pluck('name', 'abbreviation')->toArray(),
         ];

@@ -124,6 +124,7 @@ class SchoolController extends Controller
             return redirect()->route('admin.school.index')->with('alert-danger', __($this->unauthorizedMessage));
         }
         $view = [
+            'back' => route('admin.school.index'),
             'title' => __('Create School'),
             'breadcrumbs' => [
                 route('admin.school.index') => __('School'),
@@ -194,6 +195,7 @@ class SchoolController extends Controller
             });
         }]);
         $view = [
+            'back' => route('admin.school.index'),
             'title' => __('School Detail'),
             'breadcrumbs' => [
                 route('admin.school.index') => __('School'),
@@ -231,6 +233,7 @@ class SchoolController extends Controller
             return redirect()->route('admin.school.index')->with('alert-danger', __($this->noPermission));
         }
         $view = [
+            'back' => route('admin.school.index'),
             'title' => __('Edit School'),
             'breadcrumbs' => [
                 route('admin.school.index') => __('School'),
