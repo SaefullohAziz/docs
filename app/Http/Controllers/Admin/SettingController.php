@@ -114,7 +114,7 @@ class SettingController extends Controller
             'subtitle' => __('All About General Settings'),
             'description' => __('You can adjust all general settings here'),
             'navs' => $this->settings,
-            'setting' => $this->settings->where('slug', 'training')->first(),
+            'setting' => $this->settings->where('slug', 'general')->first(),
         ];
         return view('admin.setting.general.index', $view);
     }
@@ -174,7 +174,7 @@ class SettingController extends Controller
             'subtitle' => __('All About Role Settings'),
             'description' => __('You can adjust all role settings here'),
             'navs' => $this->settings,
-            'setting' => $this->settings->where('slug', 'training')->first(),
+            'setting' => $this->settings->where('slug', 'role')->first(),
             'roles' => Role::pluck('name', 'id')->toArray(),
         ];
         return view('admin.setting.role.index', $view);
@@ -215,7 +215,7 @@ class SettingController extends Controller
             'subtitle' => __('All About Form Settings'),
             'description' => __('You can adjust all form settings here'),
             'navs' => $this->settings,
-            'setting' => $this->settings->where('slug', 'training')->first(),
+            'setting' => $this->settings->where('slug', 'form')->first(),
             'forms' => json_decode(setting('form_settings')),
             'formLimiters' => [
                 'None' => __('None'),
@@ -350,7 +350,7 @@ class SettingController extends Controller
             'subtitle' => __('All About Exam Readiness Settings'),
             'description' => __('You can adjust all exam readiness settings here'),
             'navs' => $this->settings,
-            'setting' => $this->settings->where('slug', 'training')->first(),
+            'setting' => $this->settings->where('slug', 'exam_readiness')->first(),
             'examReadinesses' => json_decode(setting('exam_readiness_settings')),
             'departments' => Department::orderBy('name', 'asc')->pluck('name', 'abbreviation')->toArray(),
         ];
