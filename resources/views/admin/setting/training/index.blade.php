@@ -55,7 +55,7 @@
                                     <ul class="nav nav-pills flex-column" id="formSettingTab" role="tablist">
                                         @foreach ($forms as $form)
                                             <li class="nav-item">
-                                                <a class="nav-link {{ ($loop->first?'active show':'') }}" id="form-setting-{{ $loop->iteration }}-tab" data-toggle="tab" href="#form-setting-{{ strtolower(str_replace(' ', '-', $form->slug)) }}" role="tab" aria-controls="{{ strtolower(str_replace(' ', '-', $form->slug)) }}" aria-selected="{{ ($loop->first?'true':'false') }}">{{ __($form->slug) }}</a>
+                                                <a class="nav-link {{ ($loop->first?'active show':'') }}" id="form-setting-{{ $loop->iteration }}-tab" data-toggle="tab" href="#form-setting-{{ strtolower(str_replace(' ', '-', $form->slug)) }}" role="tab" aria-controls="{{ strtolower(str_replace(' ', '-', $form->slug)) }}" aria-selected="{{ ($loop->first?'true':'false') }}">{{ __($form->name) }}</a>
                                             </li>
                                         @endforeach
                                     </ul>
