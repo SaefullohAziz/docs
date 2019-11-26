@@ -319,6 +319,13 @@ class SettingController extends Controller
             if ($request->filled($trainingSetting->time_limit_slug)) {
                 $request->merge([$trainingSetting->time_limit_slug => date('Y-m-d H:i:s', strtotime($request->{$trainingSetting->time_limit_slug}))]);
             }
+            if  (setting($trainingSetting->school_level_slug) != $request->{$trainingSetting->school_level_slug}){
+                $request->merge([$trainingSetting->school_level_slug => json_encode($request->{$trainingSetting->school_level_slug})]);
+            }
+            if  (setting($trainingSetting->school_implementation_slug) != $request->{$trainingSetting->school_implementation_slug}){
+                $request->merge([$trainingSetting->school_implementation_slug => json_encode($request->{$trainingSetting->school_implementation_slug})]);
+            }
+            dd($request->{$trainingSetting->school_implementation_slug});
         }
         setting($request->except(['_token']))->save();
         return redirect(url()->previous())->with('alert-success', __($this->updatedMessage));
