@@ -63,7 +63,7 @@ class TrainingSettingsSeeder extends Seeder
 				'more_participant_slug' => 'mikrotik_training_more_participant',
 				'more_participant_slug_value' => 1850000,
 				'unimplementation_scholl_price_slug' => 'mikrotik_training_unimplementation_school_price',
-				'unimplementation_scholl_price_slug_value' => '',
+				'unimplementation_scholl_price_slug_value' => 0,
 				'setting_created_at_slug' => 'mikrotik_training_setting_at'
 			],
 			[
@@ -91,7 +91,7 @@ class TrainingSettingsSeeder extends Seeder
 				'limit_by_implementation_slug_value' => [],
 				'default_participant_price_slug_value' => 3000000,
 				'more_participant_slug_value' => '',
-				'unimplementation_scholl_price_slug_value' => '',
+				'unimplementation_scholl_price_slug_value' => 0,
 			],
 			[
 				'name' => 'IoT',
@@ -118,7 +118,7 @@ class TrainingSettingsSeeder extends Seeder
 				'limit_by_implementation_slug_value' => [],
 				'default_participant_price_slug_value' => 3000000,
 				'more_participant_slug_value' => '',
-				'unimplementation_scholl_price_slug_value' => '',
+				'unimplementation_scholl_price_slug_value' => 0,
 			],
 			[
 				'name' => 'Dicoding',
@@ -145,7 +145,7 @@ class TrainingSettingsSeeder extends Seeder
 				'limit_by_implementation_slug_value' => [],
 				'default_participant_price_slug_value' => 3000000,
 				'more_participant_slug_value' => '',
-				'unimplementation_scholl_price_slug_value' => '',
+				'unimplementation_scholl_price_slug_value' => 0,
 			],
 			[
 				'name' => 'LS-Cable',
@@ -172,7 +172,7 @@ class TrainingSettingsSeeder extends Seeder
 				'limit_by_implementation_slug_value' => [],
 				'default_participant_price_slug_value' => 3000000,
 				'more_participant_slug_value' => '',
-				'unimplementation_scholl_price_slug_value' => '',
+				'unimplementation_scholl_price_slug_value' => 0,
 			],
 			[
 				'name' => 'Surveillance',
@@ -199,7 +199,7 @@ class TrainingSettingsSeeder extends Seeder
 				'limit_by_implementation_slug_value' => [],
 				'default_participant_price_slug_value' => 3000000,
 				'more_participant_slug_value' => '',
-				'unimplementation_scholl_price_slug_value' => '',
+				'unimplementation_scholl_price_slug_value' => 0,
 			],
 			[
 				'name' => 'Elektronika Dasar',
@@ -226,7 +226,7 @@ class TrainingSettingsSeeder extends Seeder
 				'limit_by_implementation_slug_value' => [],
 				'default_participant_price_slug_value' => 3000000,
 				'more_participant_slug_value' => '',
-				'unimplementation_scholl_price_slug_value' => '',
+				'unimplementation_scholl_price_slug_value' => 0,
 			],
 			[
 				'name' => 'Adobe Photoshop',
@@ -253,7 +253,7 @@ class TrainingSettingsSeeder extends Seeder
 				'limit_by_implementation_slug_value' => [],
 				'default_participant_price_slug_value' => 3000000,
 				'more_participant_slug_value' => '',
-				'unimplementation_scholl_price_slug_value' => '',
+				'unimplementation_scholl_price_slug_value' => 0,
 			],
 			[
 				'name' => 'Microsoft Software Fundamental',
@@ -280,7 +280,7 @@ class TrainingSettingsSeeder extends Seeder
 				'limit_by_implementation_slug_value' => [],
 				'default_participant_price_slug_value' => 3000000,
 				'more_participant_slug_value' => '',
-				'unimplementation_scholl_price_slug_value' => '',
+				'unimplementation_scholl_price_slug_value' => 0,
 			],
 			[
 				'name' => 'Starter Kit Klinik Komputer',
@@ -307,7 +307,7 @@ class TrainingSettingsSeeder extends Seeder
 				'limit_by_implementation_slug_value' => [],
 				'default_participant_price_slug_value' => 3000000,
 				'more_participant_slug_value' => '',
-				'unimplementation_scholl_price_slug_value' => '',
+				'unimplementation_scholl_price_slug_value' => 0,
 			],
 		]);
 		setting(['training_settings' => $trainingSettings->toJson()])->save();
