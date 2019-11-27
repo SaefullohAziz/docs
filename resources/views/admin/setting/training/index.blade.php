@@ -80,10 +80,10 @@
                                                         <legend>{{ __('School Based Limitation') }}</legend>
                                                         <hr>
                                                         <div class="row">
-                                                            {{ Form::bsSelect('col-12', __('Limit by school level'), $form->school_level_slug.'[]', $schoolLevels, collect(json_decode(setting($form->school_level_slug)))->toArray(), __('Select'), ['placeholder' => __('Select'), 'multiple' => '']) }}
+                                                            {{ Form::bsSelect('col-12', __('Limit by school level'), $form->school_level_slug.'[]', $schoolLevels, collect(json_decode(setting($form->school_level_slug)))->toArray(), __('Select'), ['multiple' => '']) }}
 
                                                             @foreach ($schoolLevels as $schoolLevel)
-                                                                {{ Form::bsSelectRange('col-sm-6 ' . (key_exists($schoolLevel, collect(json_decode(setting($form->limit_by_level_slug)))->toArray()) && ( ! empty(collect(setting($form->limit_by_level_slug))->toArray()[$schoolLevel]))  ?'d-block':'d-none'), __($schoolLevel).' *', $form->limit_by_level_slug.'['.$schoolLevel.']', 1, 100, (key_exists($schoolLevel, collect(json_decode(setting($form->limit_by_level_slug)))->toArray() )) ? collect(json_decode(setting($form->limit_by_level_slug)))->toArray()[$schoolLevel] : null, __('Select'), ['placeholder' => __('Select'), (key_exists($schoolLevel, collect(json_decode(setting($form->limit_by_level_slug)))->toArray()) && ( ! empty(collect(setting($form->limit_by_level_slug))->toArray()[$schoolLevel])) ?'required':'') => '']) }}
+                                                                {{ Form::bsSelectRange('col-sm-6 ' . (in_array($schoolLevel, collect(json_decode(setting($form->school_level_slug)))->toArray()) && ! empty(collect(json_decode(setting($form->limit_by_level_slug)))->toArray()[$schoolLevel])  ?'d-block':'d-none'), __($schoolLevel).' *', $form->limit_by_level_slug.'['.$schoolLevel.']', 1, 100, (key_exists($schoolLevel, collect(json_decode(setting($form->limit_by_level_slug)))->toArray() )) ? collect(json_decode(setting($form->limit_by_level_slug)))->toArray()[$schoolLevel] : null, __('Select'), ['placeholder' => __('Select'), (key_exists($schoolLevel, collect(json_decode(setting($form->limit_by_level_slug)))->toArray()) && ! empty(collect(json_decode(setting($form->limit_by_level_slug)))->toArray()[$schoolLevel]) ?'required':'') => '']) }}
                                                             @endforeach
                                                         </div>
                                                             <fieldset class="{{$form->slug.'_school_implementation_limit'}}-set {{ (! empty(json_decode(setting($form->school_implementation_slug))) ?'d-block':'d-none') }}">
@@ -94,7 +94,7 @@
                                                                 {{ Form::bsSelect('col-12', __('Limit by school implementation'), $form->school_implementation_slug."[]", $schoolImplementations, collect(json_decode(setting($form->school_implementation_slug)))->toArray(), __('Select'), ['placeholder' => __('Select'), 'multiple' => '']) }}
 
                                                                 @foreach ($schoolImplementations as $implementation)
-                                                                    {{ Form::bsSelectRange('col-sm-4 ' . (key_exists($implementation, collect(json_decode(setting($form->limit_by_implementation_slug)))->toArray()) && ( ! empty(collect(setting($form->limit_by_implementation_slug))->toArray()[$implementation]))  ?'d-block':'d-none'), __($implementation).' *', $form->limit_by_implementation_slug.'['.$implementation.']', 1, 100, key_exists($implementation, collect(json_decode(setting($form->limit_by_implementation_slug)))->toArray() ) ? collect(json_decode(setting($form->limit_by_implementation_slug)))->toArray()[$implementation]:null, __('Select'), ['placeholder' => __('Select'), (key_exists($implementation, collect(json_decode(setting($form->limit_by_implementation_slug)))->toArray()) && ( ! empty(collect(setting($form->limit_by_implementation_slug))->toArray()[$implementation]))   ?'required':'') => ''],[$registerredSum[$form->name][$implementation], 'registerred']) }}
+                                                                    {{ Form::bsSelectRange('col-sm-4 ' . (in_array($implementation, collect(json_decode(setting($form->school_implementation_slug)))->toArray()) && ! empty(collect(json_decode(setting($form->limit_by_implementation_slug)))->toArray()[$implementation]) ?'d-block':'d-none'), __($implementation).' *', $form->limit_by_implementation_slug.'['.$implementation.']', 1, 100, key_exists($implementation, collect(json_decode(setting($form->limit_by_implementation_slug)))->toArray() ) ? collect(json_decode(setting($form->limit_by_implementation_slug)))->toArray()[$implementation]:null, __('Select'), ['placeholder' => __('Select'), (in_array($implementation, collect(json_decode(setting($form->school_implementation_slug)))->toArray()) && ! empty(collect(json_decode(setting($form->limit_by_implementation_slug)))->toArray()[$implementation]) ?'required':'') => ''],[$registerredSum[$form->name][$implementation], 'registerred']) }}
                                                                 @endforeach
                                                                 </div>
                                                             </fieldset>
@@ -189,7 +189,7 @@
                     @endforeach
                     
                     values.forEach(function(value){
-                        if (! $('select[name="{{ $form->limiter_slug }}"]').val() == 'Datetime'){
+                        if ($('select[name="{{ $form->limiter_slug }}"]').val() != 'Datetime'){
                             $('[name="{{ $form->limit_by_level_slug }}['+value+']"]').prop('required', true);
                             $('[name="{{ $form->limit_by_level_slug }}['+value+']"]').parent().removeClass('d-none').addClass('d-block');
                         }
@@ -207,7 +207,7 @@
             		@endforeach
 
             		values.forEach(function(value){
-                        if (! $('select[name="{{ $form->limiter_slug }}"]').val() == 'Datetime'){
+                        if ($('select[name="{{ $form->limiter_slug }}"]').val() != 'Datetime'){
                             $('[name="{{ $form->limit_by_implementation_slug }}['+value+']"]').prop('required', true);
                             $('[name="{{ $form->limit_by_implementation_slug }}['+value+']"]').parent().removeClass('d-none').addClass('d-block');
                         }
