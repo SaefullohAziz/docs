@@ -182,7 +182,7 @@
     "All About General Settings": "Semua Pengaturan Umum",
     "You can adjust all general settings here": "Anda dapat mengubah semua pengaturan general disini.",
     "Site Settings": "Pengaturan Situs",
-    "Role": "Rol",
+    "Role": "Peran",
     "Account role settings, such as supersu, admin, and user.": "Pengaturan peran akun, seperti supersu, admin, dan pengguna.",
     "All About Role Settings": "Semua Pengaturan Rol",
     "You can adjust all role settings here": "Anda dapat mengubah semua pengaturan rol disini.",
@@ -407,8 +407,10 @@
     "Limit by school implementation" : "Batas dengan jurusan sekolah",
     "Additional participant price" : "Harga peserta tambahan ",
     "Leave blank to deactivate additional participants or fill in zero to make it free." : "Biarkan kosong untuk menonaktifkan peserta tambahan atau isi nol untuk membuatnya gratis.",
+    "School Based Limitation" : "Batasan Berbasis Sekolah",
+    "School implementation Limitation" : "Batasan implementasi sekolah",
+    
     "Required!" : "Wajib Diisi!",
-
     "English": "Inggris",
     "Indonesian": "Bahasa Indonesia",
 
