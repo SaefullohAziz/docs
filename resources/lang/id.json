@@ -407,6 +407,7 @@
     "Limit by school implementation" : "Batas dengan jurusan sekolah",
     "Additional participant price" : "Harga peserta tambahan ",
     "Leave blank to deactivate additional participants or fill in zero to make it free." : "Biarkan kosong untuk menonaktifkan peserta tambahan atau isi nol untuk membuatnya gratis.",
+    "Leave blank to deactive registration out of the conditions or fill in zero to make it free." : "Biarkan kosong untuk menonaktifkan pendaftaran diluar condisi yang ditentukan atau isi nol untuk membuatnya gratis.",
     "School Based Limitation" : "Batasan Berbasis Sekolah",
     "School implementation Limitation" : "Batasan implementasi sekolah",
     

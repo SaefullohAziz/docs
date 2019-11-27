@@ -109,7 +109,7 @@
 
                                                         {{ Form::bsText('col-12', __('Additional participant price'), $form->more_participant_slug, setting($form->more_participant_slug), __('Exc : 2000000'),[], [__("Leave blank to deactivate additional participants or fill in zero to make it free.")]) }}
 
-                                                        {{ Form::bsText('col-12', __('Prices outside the conditions').' *', $form->unimplementation_scholl_price_slug, setting($form->unimplementation_scholl_price_slug), __('Exc : 8000000'), [(setting($form->status_slug)==1?'required':'') => ''], [__('Leave zero to deactive this prices.')]) }}
+                                                        {{ Form::bsText('col-12', __('Prices outside the conditions').' *', $form->unimplementation_scholl_price_slug, setting($form->unimplementation_scholl_price_slug), __('Exc : 8000000'), [], [__("Leave blank to deactive registration out of the conditions or fill in zero to make it free.")]) }}
                                                         <span class="text-danger">* {{__('Required!')}}</span>
                                                     </div>
                                                 </fieldset>
