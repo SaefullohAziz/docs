@@ -402,6 +402,13 @@
 
     "Ready to provide transportation and accommodation for the MikroTik Trainer team.": "Siap menyediakan transportasi dan akomodasi tim Trainer MikroTik.",
 
+    "Leave zero to deactive this prices." : "Tinggalkan nol untuk menonaktifkan harga ini.",
+    "Limit by school level" : "Batas dengan level sekolah",
+    "Limit by school implementation" : "Batas dengan jurusan sekolah",
+    "Additional participant price" : "Harga peserta tambahan ",
+    "Leave blank to deactivate additional participants or fill in zero to make it free." : "Biarkan kosong untuk menonaktifkan peserta tambahan atau isi nol untuk membuatnya gratis.",
+    "Required!" : "Wajib Diisi!",
+
     "English": "Inggris",
     "Indonesian": "Bahasa Indonesia",
 

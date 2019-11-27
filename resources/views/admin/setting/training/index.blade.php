@@ -64,44 +64,40 @@
                                     <div class="tab-content no-padding" id="formSettingTabContent">
                                         @foreach ($forms as $form)
                                             <div class="tab-pane fade {{ ($loop->first?'active show':'') }}" id="form-setting-{{ strtolower(str_replace(' ', '-', $form->slug)) }}" role="tabpanel" aria-labelledby="form-setting-{{ $loop->iteration }}-tab">
-								                {{ Form::bsInlineRadio(null, __('Status?'), $form->status_slug, ['1' => __('Opened'), '0' => __('Closed')], setting($form->status_slug), ['required' => '']) }}
+								                {{ Form::bsInlineRadio(null, __('Status?').' *', $form->status_slug, ['1' => __('Opened'), '0' => __('Closed')], setting($form->status_slug), ['required' => '']) }}
                                                 <fieldset class="{{ $form->limiter_slug }}-set {{ (setting($form->status_slug)==1?'d-block':'d-none') }}">
                                                     <legend>{{ __('Limitation') }}</legend>
                                                     <hr>
                                                     <div class="row">
-                                                        {{ Form::bsSelect('col-12', __('Limiter'), $form->limiter_slug, $formLimiters, setting($form->limiter_slug), __('Select'), ['placeholder' => __('Select'), (setting($form->status_slug)==1?'required':'') => ''], [$registerredSum[$form->name]['total']. " Was registerred since last setting"]) }}
+                                                        {{ Form::bsSelect('col-12', __('Limiter').' *', $form->limiter_slug, $formLimiters, setting($form->limiter_slug), __('Select'), ['placeholder' => __('Select'), (setting($form->status_slug)==1?'required':'') => ''], [$registerredSum[$form->name]['total']. " Was registerred since last setting"]) }}
 
 								                        {{ Form::bsSelectRange('col-sm-6 ' . (setting($form->limiter_slug)=='Quota'||setting($form->limiter_slug)=='Both'?'d-block':'d-none'), __('Quota'), $form->quota_limit_slug, 1, 100, setting($form->quota_limit_slug), __('Select'), ['placeholder' => __('Select'), (setting($form->limiter_slug)=='Quota'||setting($form->limiter_slug)=='Both'?'required':'') => '']) }}
 
 								                        {{ Form::bsDatetime('col-sm-6 ' . (setting($form->limiter_slug)=='Datetime'||setting($form->limiter_slug)=='Both'?'d-block':'d-none'), __('Datetime'), $form->time_limit_slug, setting($form->time_limit_slug), __('Datetime'), [(setting($form->limiter_slug)=='Datetime'||setting($form->limiter_slug)=='Both'?'required':'') => '']) }}
                                                     </div>
 
-                                                    {{ Form::bsInlineRadio((setting($form->limiter_slug)=='Quota'||setting($form->limiter_slug)=='Both'?'d-block':'d-none'), __('Limit By School Based Condition ?'), $form->slug.'_school_based_limit', ['1' => __('Yes'), '0' => __('No')], (! empty(json_decode(setting($form->school_level_slug))) ? 1 : 0), ['required' => '']) }}
                                                     <fieldset class="{{$form->slug.'_school_based_limit'}}-set {{ (!empty(json_decode(setting($form->school_level_slug))) ?'d-block':'d-none') }}">
                                                         <legend>{{ __('School Based Limitation') }}</legend>
                                                         <hr>
                                                         <div class="row">
-                                                            {{ Form::bsSelect('col-12', __('Limit by school level'), $form->school_level_slug.'[]', $schoolLevels, collect(json_decode(setting($form->school_level_slug)))->toArray(), __('Select'), ['placeholder' => __('Select'), (setting($form->status_slug)==1?'required':'') => '', 'multiple' => '']) }}
+                                                            {{ Form::bsSelect('col-12', __('Limit by school level'), $form->school_level_slug.'[]', $schoolLevels, collect(json_decode(setting($form->school_level_slug)))->toArray(), __('Select'), ['placeholder' => __('Select'), 'multiple' => '']) }}
 
                                                             @foreach ($schoolLevels as $schoolLevel)
-                                                                {{ Form::bsSelectRange('col-sm-6 ' . (key_exists($schoolLevel, collect(json_decode(setting($form->limit_by_level_slug)))->toArray()) && setting($form->status_slug) == 1 ?'d-block':'d-none'), __($schoolLevel), $form->limit_by_level_slug.'['.$schoolLevel.']', 1, 100, (key_exists($schoolLevel, collect(json_decode(setting($form->limit_by_level_slug)))->toArray() )) ? collect(json_decode(setting($form->limit_by_level_slug)))->toArray()[$schoolLevel] : null, __('Select'), ['placeholder' => __('Select'), (key_exists($schoolLevel, collect(json_decode(setting($form->limit_by_level_slug)))->toArray()) && setting($form->status_slug) == 1 ?'required':'') => '']) }}
+                                                                {{ Form::bsSelectRange('col-sm-6 ' . (in_array($schoolLevel, collect(json_decode(setting($form->school_level_slug)))->toArray() ) ?'d-block':'d-none'), __($schoolLevel).' *', $form->limit_by_level_slug.'['.$schoolLevel.']', 1, 100, (key_exists($schoolLevel, collect(json_decode(setting($form->limit_by_level_slug)))->toArray() )) ? collect(json_decode(setting($form->limit_by_level_slug)))->toArray()[$schoolLevel] : null, __('Select'), ['placeholder' => __('Select'), (in_array($schoolLevel, collect(json_decode(setting($form->school_level_slug)))->toArray() ) ?'required':'') => '']) }}
                                                             @endforeach
                                                         </div>
+                                                            <fieldset class="{{$form->slug.'_school_implementation_limit'}}-set {{ (! empty(json_decode(setting($form->school_implementation_slug))) ?'d-block':'d-none') }}">
+                                                                <legend>{{ __('School implementation Limitation') }}</legend>
+                                                                <hr>
+                                                                <div class="row">
 
-                                                            {{ Form::bsInlineRadio(null, __('Limit By School Implementation?'), $form->slug.'_school_implementation_limit', ['1' => __('Yes'), '0' => __('No')], (! empty(json_decode(setting($form->school_implementation_slug))) ? 1 : 0), ['required' => '']) }}
+                                                                {{ Form::bsSelect('col-12', __('Limit by school implementation'), $form->school_implementation_slug."[]", $schoolImplementations, collect(json_decode(setting($form->school_implementation_slug)))->toArray(), __('Select'), ['placeholder' => __('Select'), 'multiple' => '']) }}
 
-                                                                <fieldset class="{{$form->slug.'_school_implementation_limit'}}-set {{ (! empty(json_decode(setting($form->school_implementation_slug))) ?'d-block':'d-none') }}">
-                                                                    <legend>{{ __('School implementation Limitation') }}</legend>
-                                                                    <hr>
-                                                                    <div class="row">
-
-                                                                    {{ Form::bsSelect('col-12', __('Limit by school implementation'), $form->school_implementation_slug."[]", $schoolImplementations, collect(json_decode(setting($form->school_implementation_slug)))->toArray(), __('Select'), ['placeholder' => __('Select'), (setting($form->status_slug)==1?'required':'') => '', 'multiple' => '']) }}
-
-                                                                    @foreach ($schoolImplementations as $implementation)
-                                                                        {{ Form::bsSelectRange('col-sm-4 ' . (in_array($implementation, collect(json_decode(setting($form->school_implementation_slug)))->toArray() )?'d-block':'d-none'), __($implementation), $form->limit_by_implementation_slug.'['.$implementation.']', 1, 100, key_exists($implementation, collect(json_decode(setting($form->limit_by_implementation_slug)))->toArray() ) ? collect(json_decode(setting($form->limit_by_implementation_slug)))->toArray()[$implementation]:null, __('Select'), ['placeholder' => __('Select'), (array_keys(explode(':', in_array($implementation, collect(json_decode(setting($form->limit_by_implementation_slug)))->toArray()  )), $implementation)?'required':'') => ''],[$registerredSum[$form->name][$implementation], 'registerred']) }}
-                                                                    @endforeach
-                                                                    </div>
-                                                                </fieldset>
+                                                                @foreach ($schoolImplementations as $implementation)
+                                                                    {{ Form::bsSelectRange('col-sm-4 ' . (in_array($implementation, collect(json_decode(setting($form->school_implementation_slug)))->toArray() )?'d-block':'d-none'), __($implementation).' *', $form->limit_by_implementation_slug.'['.$implementation.']', 1, 100, key_exists($implementation, collect(json_decode(setting($form->limit_by_implementation_slug)))->toArray() ) ? collect(json_decode(setting($form->limit_by_implementation_slug)))->toArray()[$implementation]:null, __('Select'), ['placeholder' => __('Select'), (array_keys(explode(':', in_array($implementation, collect(json_decode(setting($form->limit_by_implementation_slug)))->toArray()  )), $implementation)?'required':'') => ''],[$registerredSum[$form->name][$implementation], 'registerred']) }}
+                                                                @endforeach
+                                                                </div>
+                                                            </fieldset>
                                                     </fieldset>
                                                 </fieldset>
 
@@ -109,12 +105,12 @@
                                                     <legend>{{ __('Prices') }}</legend>
                                                     <hr>
                                                     <div class="row">
-                                                        {{ Form::bsText('col-12', __('Default (2 Participant)'), $form->default_participant_price_slug, setting($form->default_participant_price_slug), __('Exc : 8000000'), [(setting($form->status_slug)==1?'required':'') => '']) }}
+                                                        {{ Form::bsText('col-12', __('Default (2 Participant)').' *', $form->default_participant_price_slug, setting($form->default_participant_price_slug), __('Exc : 8000000'), [(setting($form->status_slug)==1?'required':'') => ''], [__('Leave zero to deactive this prices.')]) }}
 
                                                         {{ Form::bsText('col-12', __('Additional participant price'), $form->more_participant_slug, setting($form->more_participant_slug), __('Exc : 2000000'),[], [__("Leave blank to deactivate additional participants or fill in zero to make it free.")]) }}
 
-                                                        {{ Form::bsText('col-12', __('Prices outside the conditions'), $form->unimplementation_scholl_price_slug, setting($form->unimplementation_scholl_price_slug), __('Exc : 8000000'), [(setting($form->status_slug)==1?'required':'') => '']) }}
-								                       
+                                                        {{ Form::bsText('col-12', __('Prices outside the conditions').' *', $form->unimplementation_scholl_price_slug, setting($form->unimplementation_scholl_price_slug), __('Exc : 8000000'), [(setting($form->status_slug)==1?'required':'') => ''], [__('Leave zero to deactive this prices.')]) }}
+                                                        <span class="text-danger">* {{__('Required!')}}</span>
                                                     </div>
                                                 </fieldset>
                                             </div>
@@ -151,48 +147,35 @@
                     }
                 });
 
-                $('[name="{{$form->slug}}_school_based_limit"]').click(function () {
-                    if ($(this).val() == 1)
-                    {
-                        $(".{{$form->slug.'_school_based_limit'}}-set").removeClass('d-none').addClass('d-block');
-                        $('[name="{{$form->school_level_slug}}[]"]').prop('required', true).prop('disabled', false);
-                    }
-                    else {
-                        $(".{{$form->slug.'_school_based_limit'}}-set").removeClass('d-block').addClass('d-none');
-                        $('[name="{{$form->school_level_slug}}[]"]').prop('required', false).prop('disabled', true);
-                    }
-                });
-
-                $('[name="{{$form->slug}}_school_implementation_limit"]').click(function () {
-                    if ($(this).val() == 1)
-                    {
-                        $(".{{$form->slug.'_school_implementation_limit'}}-set").removeClass('d-none').addClass('d-block');
-                        $('[name="{{$form->school_implementation_slug}}[]"]').prop('required', true).prop('disabled', false);
-                    }
-                    else {
-                        $(".{{$form->slug.'_school_implementation_limit'}}-set").removeClass('d-block').addClass('d-none');
-                        $('[name="{{$form->school_implementation_slug}}[]"]').prop('required', false).prop('disabled', true);
-                    }
-                });
-
                 $('select[name="{{ $form->limiter_slug }}"]').change(function () {
                     $('select[name="{{ $form->quota_limit_slug }}"]').val(null).change();
                     $('select[name="{{ $form->quota_limit_slug }}"]').prop('required', false);
                     $('input[name="{{ $form->time_limit_slug }}"]').val('').prop('required', false);
                     $('select[name="{{ $form->quota_limit_slug }}"], input[name="{{ $form->time_limit_slug }}"]').parent().removeClass('d-block').addClass('d-none');
-                    $('[name="{{ $form->slug }}_school_based_limit"]').closest('.form-group').removeClass('d-block').addClass('d-none');
                     if ($(this).val() == 'Quota') {
                         $('select[name="{{ $form->quota_limit_slug }}"]').prop('required', true);
                         $('select[name="{{ $form->quota_limit_slug }}"]').parent().removeClass('d-none').addClass('d-block');
-                        $('[name="{{ $form->slug }}_school_based_limit"]').closest('.form-group').removeClass('d-none').addClass('d-block');
+                        $(".{{$form->slug.'_school_based_limit'}}-set").removeClass('d-none').addClass('d-block');
+                        $(".{{$form->slug.'_school_implementation_limit'}}-set").removeClass('d-none').addClass('d-block');
                     } else if ($(this).val() == 'Datetime') {
                         $('input[name="{{ $form->time_limit_slug }}"]').val('').prop('required', true);
                         $('input[name="{{ $form->time_limit_slug }}"]').parent().removeClass('d-none').addClass('d-block');
+                        $('input[name="{{ $form->time_limit_slug }}"]').val('').prop('required', true);
+                        $('input[name="{{ $form->time_limit_slug }}"]').parent().removeClass('d-none').addClass('d-block');
+                        @foreach ($schoolLevels as $schoolLevel)
+                            $('[name="{{ $form->limit_by_level_slug.'['.$schoolLevel.']' }}"]').val('').prop('disabled', true).prop('required', false);
+                            $('[name="{{ $form->limit_by_level_slug.'['.$schoolLevel.']' }}"]').closest('.form-group').removeClass('d-block').addClass('d-none');
+                        @endforeach
+                        @foreach ($schoolImplementations as $schoolImplementation)
+                            $('[name="{{ $form->limit_by_implementation_slug.'['.$schoolImplementation.']' }}"]').val('').prop('disabled', true).prop('required', false);
+                            $('[name="{{ $form->limit_by_implementation_slug.'['.$schoolImplementation.']' }}"]').closest('.form-group').removeClass('d-block').addClass('d-none');
+                        @endforeach
                     } else if ($(this).val() == 'Both') {
                         $('select[name="{{ $form->quota_limit_slug }}"]').prop('required', true);
                         $('input[name="{{ $form->time_limit_slug }}"]').val('').prop('required', true);
                         $('select[name="{{ $form->quota_limit_slug }}"], input[name="{{ $form->time_limit_slug }}"]').parent().removeClass('d-none').addClass('d-block');
-                        $('[name="{{ $form->slug }}_school_based_limit"]').closest('.form-group').removeClass('d-none').addClass('d-block');
+                        $(".{{$form->slug.'_school_based_limit'}}-set").removeClass('d-none').addClass('d-block');
+                        $(".{{$form->slug.'_school_implementation_limit'}}-set").removeClass('d-none').addClass('d-block');
                     }
                 });
 
@@ -200,14 +183,16 @@
                     let values = $(this).val();
                     @foreach ($schoolLevels as $schoolLevel)
                     if( ! inArray("<?= $schoolLevel; ?>", values)){
-            			$('[name="{{ $form->limit_by_level_slug }}[<?= $schoolLevel; ?>]"]').val(null).change().prop('required', false);
-            			$('[name="{{ $form->limit_by_level_slug }}[<?= $schoolLevel; ?>]"]').parent().removeClass('d-block').addClass('d-none');
-                    }
+                        $('[name="{{ $form->limit_by_level_slug }}[<?= $schoolLevel; ?>]"]').val(null).change().prop('required', false);
+                        $('[name="{{ $form->limit_by_level_slug }}[<?= $schoolLevel; ?>]"]').parent().removeClass('d-block').addClass('d-none');
+                        }
                     @endforeach
-
+                    
                     values.forEach(function(value){
-            			$('[name="{{ $form->limit_by_level_slug }}['+value+']"]').prop('required', true);
-            			$('[name="{{ $form->limit_by_level_slug }}['+value+']"]').parent().removeClass('d-none').addClass('d-block');
+                        if (! $('select[name="{{ $form->limiter_slug }}"]').val() == 'Datetime'){
+                            $('[name="{{ $form->limit_by_level_slug }}['+value+']"]').prop('required', true);
+                            $('[name="{{ $form->limit_by_level_slug }}['+value+']"]').parent().removeClass('d-none').addClass('d-block');
+                        }
             		});
                 });
 
@@ -222,8 +207,10 @@
             		@endforeach
 
             		values.forEach(function(value){
-            			$('[name="{{ $form->limit_by_implementation_slug }}['+value+']"]').prop('required', true);
-            			$('[name="{{ $form->limit_by_implementation_slug }}['+value+']"]').parent().removeClass('d-none').addClass('d-block');
+                        if (! $('select[name="{{ $form->limiter_slug }}"]').val() == 'Datetime'){
+                            $('[name="{{ $form->limit_by_implementation_slug }}['+value+']"]').prop('required', true);
+                            $('[name="{{ $form->limit_by_implementation_slug }}['+value+']"]').parent().removeClass('d-none').addClass('d-block');
+                        }
             		});
             	});
             @endforeach
