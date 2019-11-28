@@ -137,7 +137,7 @@
 								<legend>{{ __('Basic (ToT)') }}</legend>
 								{{ Form::bsText(null, __('Approval Code'), 'approval_code', $training->approval_code, __('Approval Code'), [], [__('Filled with AGP payment receipt number (example: MH0000001234).')]) }}
 
-								{{ Form::bsCheckboxList(null, __('Room Type'), 'room_type[]', $roomTypes, ( ! empty($training->room_type)?implode($training->room_type, ', '):[])) }}
+								{{ Form::bsCheckboxList(null, __('Room Type'), 'room_type[]', $roomTypes, ( ! empty($training->room_type)?explode($training->room_type, ', '):[])) }}
 
 								{{ Form::bsText(null, __('Room Size'), 'room_size', $training->room_size, __('Room Size'), [], [__('Example: 5x5x5 (LxWxH)'), __('In accordance with the provisions of the Axioo Construction Guidelines.')]) }}
 							</fieldset>
