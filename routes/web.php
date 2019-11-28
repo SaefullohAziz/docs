@@ -446,9 +446,8 @@ Route::get('download/{dir}/{file}', function ($dir, $file) {
 
 Route::get('check', function (\Illuminate\Http\Request $request) {
 	if (env('APP_ENV') == 'local') {
-		$setting = collect(json_decode(setting('training_settings')))->where('name', 'MikroTik')->first();
-		$user = \App\User::inRandomOrder()->first();
-		$data = \App\Training::quotaSetting($setting, $user);
+		$data = \DB::table('schools')->get();
+		$data = $data->toArray();
 		dd($data);
 	}
 });
