@@ -67,6 +67,14 @@ class School extends Model
     }
 
     /**
+     * The status that belong to the school.
+     */
+    public function status()
+    {
+        return $this->statuses()->whereRaw('NOT EXISTS (SELECT 1 FROM school_status_updates t2 WHERE t2.school_id = school_status_updates.school_id AND t2.created_at > school_status_updates.created_at)');
+    }
+
+    /**
      * Get the school pic for the school.
      */
     public function schoolPic()

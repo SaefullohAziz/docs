@@ -41,7 +41,13 @@ class HomeController extends Controller
             'statusMovements' => SchoolLevel::orderBy('created_at', 'asc')->select('id', 'name')->get()->each(function ($statusMovement) {
                 $statusMovement->load(['statusUpdates' => function ($query) {
                     $query->limit(20);
-                }, 'statusUpdates.school', 'statusUpdates.status', 'statusUpdates.staff']);
+                }, 'statusUpdates.school' => function ($school) {
+                    $school->select('id', 'name');
+                }, 'statusUpdates.status' => function ($status) {
+                    $status->select('id', 'name');
+                }, 'statusUpdates.staff' => function ($staff) {
+                    $staff->select('id', 'name');
+                }]);
             }),
             'schoolStatuses' => SchoolLevel::with(['statuses' => function ($status) {
                 $status->orderBy('order_by', 'asc')->select('id', 'school_level_id', 'name', 'order_by');
@@ -69,8 +75,8 @@ class HomeController extends Controller
                                 JOIN school_statuses ON school_status_updates.school_status_id = school_statuses.id 
                                 WHERE school_statuses.name = "No Respond CL" 
                                 AND STR_TO_DATE(school_status_updates.created_at, "%Y-%m-%d") >= (CURDATE() + INTERVAL 1 MONTH )
-                            )
-                        )')->limit(5)->get()->toArray(),
+                        )
+                    )')->limit(5)->select('id', 'name')->get()->toArray(),
                 ],
                 [
                     'name' => 'Submission',
@@ -78,7 +84,7 @@ class HomeController extends Controller
                         $query->where('type', 'ACP Getting started Pack (AGP) / Fast Track Program (FTP)')->whereHas('subsidyStatus.status', function ($query) {
                             $query->whereIn('name', ['Created', 'Processed']);
                         })->orderBy('created_at', 'desc');
-                    })->limit(5)->get()->toArray(),
+                    })->limit(5)->select('id', 'name')->get()->toArray(),
                 ],
                 [
                     'name' => 'Approved',
@@ -86,7 +92,7 @@ class HomeController extends Controller
                         $query->where('type', 'ACP Getting started Pack (AGP) / Fast Track Program (FTP)')->whereMonth('created_at', '>=', date('m', strtotime('-1 month')))->whereHas('subsidyStatus.status', function ($query) {
                             $query->where('name', 'Approved');
                         })->orderBy('created_at', 'desc');
-                    })->limit(5)->get()->toArray(),
+                    })->limit(5)->select('id', 'name')->get()->toArray(),
                 ],
                 [
                     'name' => 'Paid',
@@ -94,7 +100,7 @@ class HomeController extends Controller
                         $query->where('type', 'ACP Getting started Pack (AGP) / Fast Track Program (FTP)')->whereHas('subsidyStatus.status', function ($query) {
                             $query->where('name', 'Paid');
                         })->orderBy('created_at', 'desc');
-                    })->limit(5)->get()->toArray(),
+                    })->limit(5)->select('id', 'name')->get()->toArray(),
                 ],
                 [
                     'name' => 'Expired',
@@ -102,7 +108,7 @@ class HomeController extends Controller
                         $query->where('type', 'ACP Getting started Pack (AGP) / Fast Track Program (FTP)')->whereMonth('created_at', '<', date('m', strtotime('-1 month')))->whereHas('subsidyStatus.status', function ($query) {
                             $query->where('name', 'Approved');
                         })->orderBy('created_at', 'desc');
-                    })->limit(5)->get()->toArray(),
+                    })->limit(5)->select('id', 'name')->get()->toArray(),
                 ],
                 [
                     'name' => 'Rejected',
@@ -110,7 +116,7 @@ class HomeController extends Controller
                         $query->where('type', 'ACP Getting started Pack (AGP) / Fast Track Program (FTP)')->whereHas('subsidyStatus.status', function ($query) {
                             $query->where('name', 'Reject');
                         })->orderBy('created_at', 'desc');
-                    })->limit(5)->get()->toArray(),
+                    })->limit(5)->select('id', 'name')->get()->toArray(),
                 ],
             ],
             'schoolPerProvince' => Province::withCount('schools')->get()->toArray(),
