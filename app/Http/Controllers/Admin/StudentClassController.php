@@ -92,7 +92,7 @@ class StudentClassController extends Controller
                 route('admin.class.index') => __('Class'),
                 null => __('Create')
             ],
-            'schools' => School::has('implementation')->orderBy('name', 'asc')->pluck('name', 'id')->toArray(),
+            'schools' => School::has('implementations')->orderBy('name', 'asc')->pluck('name', 'id')->toArray(),
             'schoolYear' => schoolYear()
         ];
         return view('admin.class.create', $view);

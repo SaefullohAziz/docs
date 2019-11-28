@@ -91,7 +91,7 @@ class StudentClassController extends Controller
             'generation' => null,
             'schoolYear' => schoolYear()
         ];
-        $department = Department::find($school->implementation[0]->department->id);
+        $department = Department::find($school->implementations[0]->department->id);
         if ($school->implementations->count() == 1) {
             $addonView = [
                 'generation' => studentGeneration($school, $department),

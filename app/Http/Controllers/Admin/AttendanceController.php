@@ -149,7 +149,7 @@ class AttendanceController extends Controller
             'participantPositions' => $this->participantPositions,
             'transportations' => $this->transportations,
             'arrivalPoints' => $this->arrivalPoints,
-            'destinations' => School::has('visitationDestination')->orderBy('name', 'asc')->pluck('name', 'name')->toArray(),
+            'destinations' => School::has('visitationDestinations')->orderBy('name', 'asc')->pluck('name', 'name')->toArray(),
         ];
         return view('admin.attendance.create', $view);
     }
@@ -212,7 +212,7 @@ class AttendanceController extends Controller
             'participantPositions' => $this->participantPositions,
             'transportations' => $this->transportations,
             'arrivalPoints' => $this->arrivalPoints,
-            'destinations' => School::has('visitationDestination')->orderBy('name', 'asc')->pluck('name', 'name')->toArray(),
+            'destinations' => School::has('visitationDestinations')->orderBy('name', 'asc')->pluck('name', 'name')->toArray(),
             'contactPersons' => Teacher::whereHas('audience', function ($query) use ($attendance) {
                 $query->where('attendances.id', $attendance->id);
             })->orderBy('name', 'asc')->pluck('name', 'id')->toArray(),
@@ -247,7 +247,7 @@ class AttendanceController extends Controller
             'participantPositions' => $this->participantPositions,
             'transportations' => $this->transportations,
             'arrivalPoints' => $this->arrivalPoints,
-            'destinations' => School::has('visitationDestination')->orderBy('name', 'asc')->pluck('name', 'name')->toArray(),
+            'destinations' => School::has('visitationDestinations')->orderBy('name', 'asc')->pluck('name', 'name')->toArray(),
             'contactPersons' => Teacher::whereHas('audience', function ($query) use ($attendance) {
                 $query->where('attendances.id', $attendance->id);
             })->orderBy('name', 'asc')->pluck('name', 'id')->toArray(),
