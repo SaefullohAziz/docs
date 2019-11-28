@@ -121,7 +121,6 @@ class TrainingController extends Controller
     {
         $request->validate([
             'type' => 'required',
-            'implementation' => 'required',
         ]);
         if (auth()->user()->cant('preCreate', Training::class)) {
             return redirect()->route('training.create')->with('alert-danger', __($this->unauthorizedMessage) . ' ' . session('additionalMessage'));
