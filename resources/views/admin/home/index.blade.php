@@ -156,7 +156,7 @@
 												@for ($i=0; $i <= $count; $i++)
 													<tr style="{{ ($i>4?'display: none;':'') }}">
 														@for ($j=0; $j <= count($schoolStatus['statuses']); $j++)
-															<td>{{ (empty($schoolStatus['statuses'][$j]['schools'][$i])?'':$schoolStatus['statuses'][$j]['schools'][$i]['name']) }}</td>
+															<td>{{ (empty($schoolStatus['statuses'][$j]['schools'][$i])?'':link_to(route('admin.school.show', $schoolStatus['statuses'][$j]['schools'][$i]['id']), $schoolStatus['statuses'][$j]['schools'][$i]['name'], ['target' => '_blank'])) }}</td>
 														@endfor
 													</tr>
 												@endfor

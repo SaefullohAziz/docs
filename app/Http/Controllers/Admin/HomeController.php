@@ -33,17 +33,21 @@ class HomeController extends Controller
     {
         $view = [
             'title' => __('Home'),
-            'schoolComments' => SchoolLevel::orderBy('created_at', 'asc')->get()->each(function ($schoolComment) {
+            'schoolComments' => SchoolLevel::orderBy('created_at', 'asc')->select('id', 'name')->get()->each(function ($schoolComment) {
                 $schoolComment->load(['schoolComments' => function ($query) {
                     $query->latest('created_at')->limit(20);
                 }]);
             }),
-            'statusMovements' => SchoolLevel::orderBy('created_at', 'asc')->get()->each(function ($statusMovement) {
+            'statusMovements' => SchoolLevel::orderBy('created_at', 'asc')->select('id', 'name')->get()->each(function ($statusMovement) {
                 $statusMovement->load(['statusUpdates' => function ($query) {
                     $query->limit(20);
                 }, 'statusUpdates.school', 'statusUpdates.status', 'statusUpdates.staff']);
             }),
-            'schoolStatuses' => SchoolLevel::with(['statuses.schools'])->orderBy('created_at', 'asc')->get()->toArray(),
+            'schoolStatuses' => SchoolLevel::with(['statuses' => function ($status) {
+                $status->orderBy('order_by', 'asc')->select('id', 'school_level_id', 'name', 'order_by');
+            }, 'statuses.schools' => function ($school) {
+                $school->select('schools.id', 'name');
+            }])->orderBy('created_at', 'asc')->select('id', 'name')->get()->toArray(),
             'schoolFtps' => [
                 [
                     'name' => 'Candidate',
