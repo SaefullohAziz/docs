@@ -42,7 +42,7 @@
                 </div>
             </div>
             <div class="col-md-9">
-                {{ Form::open(['route' => 'admin.setting.training.store']) }}
+                {{ Form::open(['route' => 'admin.setting.role.store']) }}
                     <div class="card">
                         <div class="card-header">
                             <h4>{{ $title }}</h4>
