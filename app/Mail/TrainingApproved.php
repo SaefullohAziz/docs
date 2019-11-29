@@ -33,6 +33,8 @@ class TrainingApproved extends Mailable
     {
         return $this->markdown('mail.training.approved')
                 ->to(array_merge([$this->training->school->school_email, $this->training->pic[0]->email], $this->training->participants->pluck('email')->toArray()))
+                ->cc('informasi@axiooclassprogram.com', 'ACP')
+                ->bcc('ahmad.husen@mitraabadi.com', 'Ahmad Husen')
                 ->with([
                     'school' => $this->training->school->name,
                     'type' => $this->training->type,

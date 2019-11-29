@@ -32,6 +32,8 @@ class SchoolCreated extends Mailable
     {
         return $this->markdown('mail.school.created')
                 ->to([$this->school->school_email, $this->school->headmaster_email, $this->school->pic[0]->email])
+                ->cc('informasi@axiooclassprogram.com', 'ACP')
+                ->bcc('ahmad.husen@mitraabadi.com', 'Ahmad Husen')
                 ->with([
                     'url' => url('/'),
                     'code' => $this->school->code,
