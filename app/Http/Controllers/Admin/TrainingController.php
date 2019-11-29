@@ -189,6 +189,9 @@ class TrainingController extends Controller
             return redirect()->route('admin.training.index')->with('alert-danger', __($this->unauthorizedMessage));
         }
         $request->request->add(['booking_code' => Str::random(12)]);
+        $request->merge([
+            'room_type' => (empty($request->room_type)?null:implode(', ', $request->room_type))
+        ]);
         $training = Training::create($request->all());
         $training->approval_letter_of_commitment_fee = $this->uploadCommitmentLetter($training, $request);
         $training->selection_result = $this->uploadSelectionResult($training, $request);
@@ -265,6 +268,9 @@ class TrainingController extends Controller
             return redirect()->route('admin.training.index')->with('alert-danger', __($this->noPermission));
         }
         $request->request->add(['booking_code' => Str::random(12)]);
+        $request->merge([
+            'room_type' => (empty($request->room_type)?null:implode(', ', $request->room_type))
+        ]);
         $training->fill($request->all());
         $training->approval_letter_of_commitment_fee = $this->uploadCommitmentLetter($training, $request, $training->approval_letter_of_commitment_fee);
         $training->selection_result = $this->uploadSelectionResult($training, $request, $training->selection_result);

@@ -176,6 +176,9 @@ class TrainingController extends Controller
             'school_id' => auth()->user()->school->id,
             'booking_code' => Str::random(12),
         ]);
+        $request->merge([
+            'room_type' => (empty($request->room_type)?null:implode(', ', $request->room_type))
+        ]);
         $training = Training::create($request->all());
         $training->approval_letter_of_commitment_fee = $this->uploadCommitmentLetter($training, $request);
         $training->selection_result = $this->uploadSelectionResult($training, $request);
@@ -253,6 +256,9 @@ class TrainingController extends Controller
         $request->request->add([
             'school_id' => auth()->user()->school->id,
             'booking_code' => Str::random(12),
+        ]);
+        $request->merge([
+            'room_type' => (empty($request->room_type)?null:implode(', ', $request->room_type))
         ]);
         $training->fill($request->all());
         $training->approval_letter_of_commitment_fee = $this->uploadCommitmentLetter($training, $request, $training->approval_letter_of_commitment_fee);
