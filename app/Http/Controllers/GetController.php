@@ -127,6 +127,10 @@ class GetController extends Controller
         if ($request->ajax()) {
             $data = School::when( ! empty($request->level), function ($query) use ($request) {
                 $query->byLevel($request->level);
+            })->whereHas('status', function ($status) use ($request) {
+                $status->when( ! empty($request->status), function ($query) {
+                    $query->where('school_statuses.id', $request->status);
+                });
             })->orderBy('name', 'asc')->pluck('name', 'id')->toArray();
             return response()->json(['status' => true, 'result' => $data]);
         }
@@ -344,6 +348,17 @@ class GetController extends Controller
             if (count($data) == 0) {
                 return response()->json(['status' => false]);
             }
+            return response()->json(['status' => true, 'result' => $data]);
+        }
+    }
+
+    public function schoolStatusUpdate(Request $request)
+    {
+        if ($request->ajax()) {
+            $data = [
+                'school' => School::where('id', $request->school)->select('id', 'name')->first()->toArray(),
+                'statuses' => SchoolStatus::orderBy('order_by', 'asc')->pluck('name', 'id')->toArray(),
+            ];
             return response()->json(['status' => true, 'result' => $data]);
         }
     }
