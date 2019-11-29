@@ -136,7 +136,7 @@ class TrainingController extends Controller
     public function create()
     {
         if (auth()->user()->cant('create', Training::class)) {
-            return redirect()->route('training.index')->with('alert-danger', __($this->unauthorizedMessage));
+            return redirect()->route('training.index')->with('alert-danger', __($this->unauthorizedMessage) . ' ' . __('Your school does not meet the requirements and / or do not have teachers.'));
         }
         $view = [
             'title' => __('Register Training'),
