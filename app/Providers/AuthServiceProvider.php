@@ -118,6 +118,7 @@ class AuthServiceProvider extends ServiceProvider
                             request()->session()->flash('additionalMessage', __('Quota is full.') . ($quotaSetting['closestWaitedParticipant']?' ' . __('Please try again at ') . date('H:i:s', strtotime($quotaSetting['closestWaitedParticipant']->created_at . ' +3 hours')):''));
                             return setting($setting->quota_limit_slug) > $quotaSetting['quota'] ? setting($setting->quota_limit_slug) > $quotaSetting['waitedQuota'] : false;
                         } elseif (setting($setting->limiter_slug) == 'Datetime') {
+                            $isLimitedTime = date('Y-m-d H:i:s', strtotime(setting($setting->setting_created_at_slug))) >= date('Y-m-d H:i:s', strtotime(now()->toDateTimeString()));
                             if ( ! empty($quotaSetting['levels']) || ! empty($quotaSetting['departments'])) {
                                 request()->session()->flash('additionalMessage', __('Your school does not meet the requirements and / or registration time is up.'));
                                 return ($user->hasLevel($quotaSetting['levels']->toArray()) || $quotaSetting['implementedDepartment']) && $isLimitedTime;
@@ -125,6 +126,7 @@ class AuthServiceProvider extends ServiceProvider
                             request()->session()->flash('additionalMessage', __('Registration time is up.'));
                             return $isLimitedTime;
                         } elseif (setting($setting->limiter_slug) == 'Both') {
+                            $isLimitedTime = date('Y-m-d H:i:s', strtotime(setting($setting->setting_created_at_slug))) >= date('Y-m-d H:i:s', strtotime(now()->toDateTimeString()));
                             if ( ! empty($quotaSetting['levels']) || ! empty($quotaSetting['departments'])) {
                                 if ( ! empty($quotaSetting['levels']) xor ! empty($quotaSetting['departments'])) {
                                     if ( ! empty($quotaSetting['levels'])) {
