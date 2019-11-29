@@ -158,13 +158,11 @@
                         $(".{{$form->slug.'_school_based_limit'}}-set").removeClass('d-none').addClass('d-block');
                         $(".{{$form->slug.'_school_implementation_limit'}}-set").removeClass('d-none').addClass('d-block');
                         let level = $('select[name="{{ $form->school_level_slug }}[]"]').val();
-                        console.log(level);
                         level.forEach(function(value){
                             $('[name="{{ $form->limit_by_level_slug }}['+value+']"]').prop('required', true).prop('disabled', false);
                             $('[name="{{ $form->limit_by_level_slug }}['+value+']"]').parent().removeClass('d-none').addClass('d-block');
                         });
                         let implements = $('select[name="{{ $form->school_implementation_slug }}[]"]').val();
-                        console.log(implements);
                         implements.forEach(function(value){
                             $('[name="{{ $form->limit_by_implementation_slug }}['+value+']"]').prop('required', true).prop('disabled', false);
                             $('[name="{{ $form->limit_by_implementation_slug }}['+value+']"]').parent().removeClass('d-none').addClass('d-block');
@@ -202,7 +200,7 @@
                     
                     values.forEach(function(value){
                         if ($('select[name="{{ $form->limiter_slug }}"]').val() != 'Datetime'){
-                            $('[name="{{ $form->limit_by_level_slug }}['+value+']"]').prop('required', true);
+                            $('[name="{{ $form->limit_by_level_slug }}['+value+']"]').prop('required', true).prop('disabled', false);
                             $('[name="{{ $form->limit_by_level_slug }}['+value+']"]').parent().removeClass('d-none').addClass('d-block');
                         }
             		});
@@ -212,15 +210,15 @@
             		let values = $(this).val();
 
             		@foreach ($schoolImplementations as $implementation)
-                    if( ! inArray("<?= $implementation; ?>", values)){
-            			$('[name="{{ $form->limit_by_implementation_slug }}[<?= $implementation; ?>]"]').val(null).change().prop('required', false);
-            			$('[name="{{ $form->limit_by_implementation_slug }}[<?= $implementation; ?>]"]').parent().removeClass('d-block').addClass('d-none');
-                    }
+                        if( ! inArray("<?= $implementation; ?>", values)){
+                            $('[name="{{ $form->limit_by_implementation_slug }}[<?= $implementation; ?>]"]').val(null).change().prop('required', false);
+                            $('[name="{{ $form->limit_by_implementation_slug }}[<?= $implementation; ?>]"]').parent().removeClass('d-block').addClass('d-none');
+                        }
             		@endforeach
 
             		values.forEach(function(value){
                         if ($('select[name="{{ $form->limiter_slug }}"]').val() != 'Datetime'){
-                            $('[name="{{ $form->limit_by_implementation_slug }}['+value+']"]').prop('required', true);
+                            $('[name="{{ $form->limit_by_implementation_slug }}['+value+']"]').prop('required', true).prop('disabled', false);
                             $('[name="{{ $form->limit_by_implementation_slug }}['+value+']"]').parent().removeClass('d-none').addClass('d-block');
                         }
             		});
