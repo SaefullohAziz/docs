@@ -253,9 +253,10 @@ class AccountController extends Controller
                 return redirect()->route('account.index')->with('alert-danger', __($this->noPermission));
             }
         }
-        $request->merge(['password' => $user->password]);
         if ($request->filled('password')) {
             $request->merge(['password' => Hash::make($request->password)]);
+        } else {
+            $request->merge(['password' => $user->password]);
         }
         $user->fill($request->all());
         $user->save();
@@ -272,9 +273,10 @@ class AccountController extends Controller
      */
     public function updateSchool(StoreUser $request, User $user)
     {
-        $request->merge(['password' => $user->password]);
         if ($request->filled('password')) {
             $request->merge(['password' => Hash::make($request->password)]);
+        } else {
+            $request->merge(['password' => $user->password]);
         }
         $user->fill($request->except(['username', 'name']));
         $user->save();

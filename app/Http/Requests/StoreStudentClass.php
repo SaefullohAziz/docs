@@ -38,7 +38,7 @@ class StoreStudentClass extends FormRequest
             ],
             'department_id' => [
                 Rule::requiredIf(function () use ($school) {
-                    return $school->implementation->count() > 1;
+                    return $school->implementations->count() > 1;
                 }),
             ],
         ];

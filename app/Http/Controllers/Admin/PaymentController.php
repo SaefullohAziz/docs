@@ -132,6 +132,9 @@ class PaymentController extends Controller
                 ->editColumn('created_at', function($data) {
                     return (date('d-m-Y H:i:s', strtotime($data->created_at)));
                 })
+                ->editColumn('type', function($data) {
+                    return $data->type . ' ' . (empty($data->subsidy_type)?'':'('.link_to(route('admin.subsidy.show', $data->subsidy_id), $data->subsidy_type, ['target' => '_blank']).')') . (empty($data->training_type)?'':'('.link_to(route('admin.training.show', $data->training_id), $data->training_type, ['target' => '_blank']).')');
+                })
                 ->editColumn('payment_receipt', function($data) {
                     return '<a href="'.route('download', ['dir' => encrypt('payment/payment-receipt'), 'file' => encrypt($data->payment_receipt)]).'" class="btn btn-sm btn-success '.( ! isset($data->payment_receipt)?'disabled':'').'" title="'.__('Download').'" target="_blank"><i class="fa fa-file"></i>  '.__('Download').'</a>';
                 })
@@ -144,7 +147,7 @@ class PaymentController extends Controller
                 ->addColumn('action', function($data) {
                     return '<a class="btn btn-sm btn-success" href="'.route('admin.payment.show', $data->id).'" title="'.__("See detail").'"><i class="fa fa-eye"></i> '.__("See").'</a> <a class="btn btn-sm btn-warning" href="'.route('admin.payment.edit', $data->id).'" title="'.__("Edit").'"><i class="fa fa-edit"></i> '.__("Edit").'</a>';
                 })
-                ->rawColumns(['DT_RowIndex', 'payment_receipt', 'bank_account_book', 'action'])
+                ->rawColumns(['DT_RowIndex', 'type', 'payment_receipt', 'bank_account_book', 'action'])
                 ->make(true);
         }
     }

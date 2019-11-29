@@ -77,6 +77,13 @@
           <i class="far fa-list-alt"></i> <span>{{ __('Certification') }}</span>
         </a>
       </li>
+      <!-- Update -->
+      <li class="menu-header">{{ __('Update') }}</li>
+      <li class="{{ (request()->is('admin/update')||request()->is('admin/update/*')?'active':'') }}">
+        <a class="nav-link" href="{{ route('admin.update.index') }}">
+          <i class="fas fa-clipboard-list"></i> <span>{{ __('Update Data') }}</span>
+        </a>
+      </li>
       <!-- Setting -->
       <li class="menu-header">{{ __('Setting') }}</li>
       <li class="{{ (request()->is('admin/setting')||request()->is('admin/setting/*')?'active':'') }}">

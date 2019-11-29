@@ -59,6 +59,10 @@ return [
         'address' => env('MAIL_FROM_ADDRESS', 'hello@example.com'),
         'name' => env('MAIL_FROM_NAME', 'Example'),
     ],
+    'reply_to' => [
+        'address' => env('MAIL_REPLY_ADDRESS', 'hello@example.com'), 
+        'name' => env('MAIL_REPLY_NAME', 'Example'),
+    ],
 
     /*
     |--------------------------------------------------------------------------

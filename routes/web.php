@@ -369,6 +369,15 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->middleware(['auth:ad
 		'destroy',
 	]]);
 
+	// Update
+    Route::prefix('update')->name('update.')->group(function () {
+    	Route::get('/', 'UpdateController@index')->name('index');
+		Route::prefix('status')->name('status.')->group(function () {
+			Route::get('/', 'UpdateController@status')->name('index');
+			Route::post('/', 'UpdateController@statusStore')->name('store');
+		});
+    });
+
 	// Setting
     Route::prefix('setting')->name('setting.')->group(function () {
     	Route::get('/', 'SettingController@index')->name('index');
@@ -429,6 +438,7 @@ Route::prefix('get')->name('get.')->middleware(['auth:web,admin'])->group(functi
 	Route::post('pic', 'GetController@pic')->name('pic');
 	Route::post('student', 'GetController@student')->name('student');
 	Route::post('subExam', 'GetController@subExam')->name('subExam');
+	Route::post('schoolStatusUpdate', 'GetController@schoolStatusUpdate')->name('schoolStatusUpdate');
 });
 
 Route::get('locale/{locale}', function ($locale){
@@ -446,16 +456,13 @@ Route::get('download/{dir}/{file}', function ($dir, $file) {
 
 Route::get('check', function (\Illuminate\Http\Request $request) {
 	if (env('APP_ENV') == 'local') {
-		$setting = collect(json_decode(setting('training_settings')))->where('name', 'MikroTik')->first();
-		$user = \App\User::inRandomOrder()->first();
-		$data = \App\Training::quotaSetting($setting, $user);
+		$data = \App\School::where('id', '564dba5d-f825-4bb1-9211-3ad4555f5e62')->pluck('name', 'id')->toArray();
 		dd($data);
 	}
 });
 
-Route::get('mailable', function () {
+Route::get('mailable', function (\Illuminate\Http\Request $request) {
 	if (env('APP_ENV') == 'local') {
-		$training = \App\Training::has('payment')->inRandomOrder()->first();
-		return (new \App\Mail\TrainingApproved($training))->render();
+		return 'Yeay';
 	}
 });

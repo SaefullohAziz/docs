@@ -135,6 +135,6 @@ class Payment extends Model
      */
     public static function list(Request $request)
     {
-        return self::get($request)->select('payments.*', 'schools.name as school', 'schools.school_email', 'provinces.abbreviation', 'subsidies.type as subsidy_type', 'trainings.type as training_type', 'statuses.name as status', 'payment_statuses.created_at as statused_at', DB::raw('(CASE WHEN staffs.name IS NULL THEN users.name WHEN users.name IS NULL THEN staffs.name ELSE staffs.name END) AS status_by'));
+        return self::get($request)->select('payments.*', 'schools.name as school', 'schools.school_email', 'provinces.abbreviation', 'subsidies.id as subsidy_id', 'subsidies.type as subsidy_type', 'trainings.id as training_id', 'trainings.type as training_type', 'statuses.name as status', 'payment_statuses.created_at as statused_at', DB::raw('(CASE WHEN staffs.name IS NULL THEN users.name WHEN users.name IS NULL THEN staffs.name ELSE staffs.name END) AS status_by'));
     }
 }

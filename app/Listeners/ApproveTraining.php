@@ -30,7 +30,7 @@ class ApproveTraining
      */
     public function handle(TrainingApproved $event)
     {
-        $this->sendNotification($event->request);
+        // $this->sendNotification($event->request);
         $this->saveStatusBatch('Approved', 'Menyetujui pendaftaran training.', $event->request);
         $this->saveBatch($event->request);
     }

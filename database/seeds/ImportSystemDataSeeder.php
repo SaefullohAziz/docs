@@ -40,7 +40,7 @@ class ImportSystemDataSeeder extends Seeder
         ->where('schools.school_name', '!=', 'ACP')
         ->select('schools.*', 'pics.pic_name', 'pics.pic_position', 'pics.pic_phone_number', 'pics.pic_email', 'pics.created_at as pic_created_at', 'school_pics.created_at as school_pic_created_at')
         // ->inRandomOrder()
-        // ->limit(25)
+        // ->limit(15)
         ->get();
         $admin = \App\Admin\User::where('username', 'admin')->first();
         $faker = Faker::create('id_ID');
@@ -144,7 +144,7 @@ class ImportSystemDataSeeder extends Seeder
                     'username' => $user->username, 
                     'name' => $user->name, 
                     'email' => ($existUser?$schoolUserEmail:$user->email), 
-                    'password' => Hash::make('!Indo!Joss!'),
+                    'password' => Hash::make('Indonesia2017!'),
                 ]);
             }
             \App\User::setEventDispatcher($dispatcher);
@@ -1348,7 +1348,7 @@ class ImportSystemDataSeeder extends Seeder
     {
 		if ( ! empty($datetime)) {
 			if (checkdate(date('m', strtotime($datetime)), date('d', strtotime($datetime)), date('Y', strtotime($datetime)))) {
-				if (date('Y-m-d h:m:s', strtotime($datetime)) > date('Y-m-d h:m:s', 0)) {
+				if (date('Y-m-d H:i:s', strtotime($datetime)) > date('Y-m-d H:i:s', 0)) {
                     return $datetime;
 				}
 			}
