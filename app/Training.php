@@ -153,6 +153,11 @@ class Training extends Model
      */
     public static function quotaSetting($setting, $user)
     {
+        $levels = collect([]);
+        $levelLimitCount = null;
+        $departments = collect([]);
+        $implementedDepartment = null;
+        $departmentLimitCount = null;
         if (collect(json_decode(setting($setting->school_level_slug)))->count()) {
             $levels = collect([
                 'Dalam proses' => ['Dalam proses'],
@@ -224,11 +229,11 @@ class Training extends Model
             $status->where('name', 'Approved');
         })->get()->count();
         return (object) collect([
-            'levels' => $levels->count() ? $levels : collect([]),
-            'levelLimitCount' => $levelLimitCount ? $levelLimitCount : null,
-            'departments' => $departments->count() ? $departments : collect([]),
-            'implementedDepartment' => $implementedDepartment ? $implementedDepartment : null,
-            'departmentLimitCount' => $departmentLimitCount ? $departmentLimitCount : null,
+            'levels' => $levels->count() ? $levels : null,
+            'levelLimitCount' => $levelLimitCount,
+            'departments' => $departments->count() ? $departments : null,
+            'implementedDepartment' => $implementedDepartment,
+            'departmentLimitCount' => $departmentLimitCount,
             'quota' => $quota,
             'waitedQuota' => $waitedQuota,
             'closestWaitedParticipant' => $closestWaitedParticipant,

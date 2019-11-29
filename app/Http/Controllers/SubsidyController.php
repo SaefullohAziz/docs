@@ -42,6 +42,8 @@ class SubsidyController extends Controller
             'Angkatan 2' => 'Angkatan 2',
             'Angkatan 3' => 'Angkatan 3',
             'Angkatan 4' => 'Angkatan 4',
+            'Angkatan 5' => 'Angkatan 5',
+            'Angkatan 6' => 'Angkatan 6',
         ];
         $this->grades = [
             'Kelas 10' => 'Kelas 10',

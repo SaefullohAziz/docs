@@ -54,7 +54,7 @@ class TrainingPolicy
     public function preCreate(User $user)
     {
         $setting = collect(json_decode(setting('training_settings')))->where('name', request()->type)->first();
-        return $user->school->implementedDepartments->count() && \Gate::allows('create-' . $setting->slug . '-training');
+        return \Gate::allows('create-' . $setting->slug . '-training');
     }
 
     /**
@@ -76,7 +76,7 @@ class TrainingPolicy
      */
     public function create(User $user)
     {
-        return \Gate::allows('create-training') ? $user->school()->has('teachers')->first() : false;
+        return $user->school()->has('teachers')->first() && \Gate::allows('create-training');
     }
 
     /**

@@ -151,7 +151,7 @@ class TrainingController extends Controller
             'setting' => json_decode(setting('training_settings')),
         ];
 
-        if (session('type') && session('implementation')) {
+        if (session('type')) {
             $view = array_merge($view, ['type' => session('type'), 'implementation' => session('implementation')]);
             return view('training.create', $view);
         }
