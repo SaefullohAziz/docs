@@ -97,9 +97,10 @@ class AccountController extends Controller
     public function update(StoreUser $request)
     {
         $user = User::find(auth()->user()->id);
-        $request->merge(['password' => $user->password]);
         if ($request->filled('password')) {
             $request->merge(['password' => Hash::make($request->password)]);
+        } else {
+            $request->merge(['password' => $user->password]);
         }
         $user->fill($request->except(['username', 'name']));
         $user->save();
