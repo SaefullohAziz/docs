@@ -35,10 +35,10 @@ class PaymentController extends Controller
         parent::__construct();
         $this->table = 'payments';
         $this->types = [
-            // 'Subsidi' => 'Subsidi', 
+            'Subsidi' => 'Subsidi', 
             'Axioo Smart School Pack' => 'Axioo Smart School Pack', 
             'Axioo Smart Factory Support' => 'Axioo Smart Factory Support', 
-            // 'Commitment Fee' => 'Commitment Fee', 
+            'Commitment Fee' => 'Commitment Fee', 
             'Advance Training' => 'Advance Training', 
             'Biaya Pengiriman Mikrotik' => 'Biaya Pengiriman Mikrotik', 
             'Pembelian Produk' => 'Pembelian Produk', 
@@ -172,7 +172,14 @@ class PaymentController extends Controller
                 null => __('Create')
             ],
             'schools' => School::pluck('name', 'id')->toArray(),
-            'types' => $this->types,
+            'types' => [
+                'Axioo Smart School Pack' => 'Axioo Smart School Pack', 
+                'Axioo Smart Factory Support' => 'Axioo Smart Factory Support', 
+                'Advance Training' => 'Advance Training', 
+                'Biaya Pengiriman Mikrotik' => 'Biaya Pengiriman Mikrotik', 
+                'Pembelian Produk' => 'Pembelian Produk', 
+                'Lainnya (Ongkir, dsb)' => 'Lainnya (Ongkir, dsb)',
+            ],
             'methods' => $this->methods,
             'bankSenders' => $this->bankSenders,
             'banks' => $this->banks
@@ -249,7 +256,14 @@ class PaymentController extends Controller
                 null => __('Edit')
             ],
             'schools' => School::pluck('name', 'id')->toArray(),
-            'types' => $this->types,
+            'types' => [
+                'Axioo Smart School Pack' => 'Axioo Smart School Pack', 
+                'Axioo Smart Factory Support' => 'Axioo Smart Factory Support', 
+                'Advance Training' => 'Advance Training', 
+                'Biaya Pengiriman Mikrotik' => 'Biaya Pengiriman Mikrotik', 
+                'Pembelian Produk' => 'Pembelian Produk', 
+                'Lainnya (Ongkir, dsb)' => 'Lainnya (Ongkir, dsb)',
+            ],
             'methods' => $this->methods,
             'bankSenders' => $this->bankSenders,
             'banks' => $this->banks,

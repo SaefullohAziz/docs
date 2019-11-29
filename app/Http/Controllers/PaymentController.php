@@ -76,7 +76,10 @@ class PaymentController extends Controller
                 route('payment.index') => __('Payment'),
                 null => __('Data')
             ],
-            'types' => $this->types,
+            'types' => array_merge($this->types, [
+                'Subsidi' => 'Subsidi', 
+                'Commitment Fee' => 'Commitment Fee', 
+            ]),
             'statuses' => Status::byNames(['Created', 'Processed', 'Approved', 'Sent', 'Refunded'])->pluck('name', 'id')->toArray(),
             'subsidyPayments' => Payment::with(['paymentStatus.status'])->has('subsidy')->join('payment_statuses', 'payment_statuses.id', '=', DB::raw('(SELECT id FROM payment_statuses WHERE payment_statuses.payment_id = payments.id ORDER BY created_at DESC LIMIT 1)'))->join('statuses', 'payment_statuses.status_id', '=', 'statuses.id')->where('statuses.name', 'Published')->select('payments.*')->get(),
             'trainingPayments' => Payment::with(['paymentStatus.status'])->has('training')->join('payment_statuses', 'payment_statuses.id', '=', DB::raw('(SELECT id FROM payment_statuses WHERE payment_statuses.payment_id = payments.id ORDER BY created_at DESC LIMIT 1)'))->join('statuses', 'payment_statuses.status_id', '=', 'statuses.id')->where('statuses.name', 'Published')->select('payments.*')->get(),
