@@ -34,6 +34,7 @@ class SchoolCreated extends Mailable
                 ->to([$this->school->school_email, $this->school->headmaster_email, $this->school->pic[0]->email])
                 ->cc('informasi@axiooclassprogram.com', 'ACP')
                 ->bcc('ahmad.husen@mitraabadi.com', 'Ahmad Husen')
+                ->subject('Pendaftaran Sekolah')
                 ->with([
                     'url' => url('/'),
                     'code' => $this->school->code,
