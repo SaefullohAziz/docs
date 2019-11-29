@@ -200,7 +200,7 @@
                     
                     values.forEach(function(value){
                         if ($('select[name="{{ $form->limiter_slug }}"]').val() != 'Datetime'){
-                            $('[name="{{ $form->limit_by_level_slug }}['+value+']"]').prop('required', true);
+                            $('[name="{{ $form->limit_by_level_slug }}['+value+']"]').prop('required', true).prop('disabled', false);
                             $('[name="{{ $form->limit_by_level_slug }}['+value+']"]').parent().removeClass('d-none').addClass('d-block');
                         }
             		});
@@ -210,15 +210,15 @@
             		let values = $(this).val();
 
             		@foreach ($schoolImplementations as $implementation)
-                    if( ! inArray("<?= $implementation; ?>", values)){
-            			$('[name="{{ $form->limit_by_implementation_slug }}[<?= $implementation; ?>]"]').val(null).change().prop('required', false);
-            			$('[name="{{ $form->limit_by_implementation_slug }}[<?= $implementation; ?>]"]').parent().removeClass('d-block').addClass('d-none');
-                    }
+                        if( ! inArray("<?= $implementation; ?>", values)){
+                            $('[name="{{ $form->limit_by_implementation_slug }}[<?= $implementation; ?>]"]').val(null).change().prop('required', false);
+                            $('[name="{{ $form->limit_by_implementation_slug }}[<?= $implementation; ?>]"]').parent().removeClass('d-block').addClass('d-none');
+                        }
             		@endforeach
 
             		values.forEach(function(value){
                         if ($('select[name="{{ $form->limiter_slug }}"]').val() != 'Datetime'){
-                            $('[name="{{ $form->limit_by_implementation_slug }}['+value+']"]').prop('required', true);
+                            $('[name="{{ $form->limit_by_implementation_slug }}['+value+']"]').prop('required', true).prop('disabled', false);
                             $('[name="{{ $form->limit_by_implementation_slug }}['+value+']"]').parent().removeClass('d-none').addClass('d-block');
                         }
             		});
