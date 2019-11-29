@@ -7,6 +7,7 @@ use App\Subsidy;
 use App\Pic;
 use App\School;
 use App\Status;
+use App\StudentClass;
 use Illuminate\Http\Request;
 use App\Events\SubsidyCanceled;
 use App\Events\SubsidyRejected;
@@ -21,7 +22,6 @@ class SubsidyController extends Controller
 {
     private $table;
     private $types;
-    private $generations;
     private $grades;
 
     /**
@@ -39,14 +39,6 @@ class SubsidyController extends Controller
             'Notebook Assembling & Troubleshooting Training (NATT)' => 'Notebook Assembling & Troubleshooting Training (NATT)',
             'Axioo Smart Factory' => 'Axioo Smart Factory',
             'Axioo Next Year Support' => 'Axioo Next Year Support'
-        ];
-        $this->generations = [
-            'Angkatan 1' => 'Angkatan 1',
-            'Angkatan 2' => 'Angkatan 2',
-            'Angkatan 3' => 'Angkatan 3',
-            'Angkatan 4' => 'Angkatan 4',
-            'Angkatan 5' => 'Angkatan 5',
-            'Angkatan 6' => 'Angkatan 6',
         ];
         $this->grades = [
             'Kelas 10' => 'Kelas 10',
@@ -154,6 +146,7 @@ class SubsidyController extends Controller
             return redirect()->route('admin.subsidy.index')->with('alert-danger', __($this->unauthorizedMessage));
         }
         $view = [
+            'back' => route('admin.subsidy.index'),
             'title' => __('Create Subsidy'),
             'breadcrumbs' => [
                 route('admin.subsidy.index') => __('Subsidy'),
@@ -162,7 +155,7 @@ class SubsidyController extends Controller
             'schools' => School::pluck('name', 'id')->toArray(),
             'types' => $this->types,
             'studentYears' => ['Tahun ke-2' => 'Tahun ke-2', 'Tahun ke-3' => 'Tahun ke-3'],
-            'generations' => $this->generations,
+            'generations' => StudentClass::orderBy('generation', 'asc')->pluck('generation', 'generation')->unique()->toArray(),
             'grades' => $this->grades
         ];
         return view('admin.subsidy.create', $view);
@@ -203,6 +196,7 @@ class SubsidyController extends Controller
             return redirect()->route('admin.subsidy.index')->with('alert-danger', __($this->noPermission));
         }
         $view = [
+            'back' => route('admin.subsidy.index'),
             'title' => __('Subsidy Detail'),
             'breadcrumbs' => [
                 route('admin.subsidy.index') => __('Subsidy'),
@@ -211,9 +205,9 @@ class SubsidyController extends Controller
             'schools' => School::pluck('name', 'id')->toArray(),
             'types' => $this->types,
             'studentYears' => ['Tahun ke-2' => 'Tahun ke-2', 'Tahun ke-3' => 'Tahun ke-3'],
-            'generations' => $this->generations,
+            'generations' => StudentClass::orderBy('generation', 'asc')->pluck('generation', 'generation')->unique()->toArray(),
             'grades' => $this->grades,
-            'subsidy' => $subsidy
+            'data' => $subsidy
         ];
         return view('admin.subsidy.show', $view);
     }
@@ -230,6 +224,7 @@ class SubsidyController extends Controller
             return redirect()->route('admin.subsidy.index')->with('alert-danger', __($this->noPermission));
         }
         $view = [
+            'back' => route('admin.subsidy.index'),
             'title' => __('Edit Subsidy'),
             'breadcrumbs' => [
                 route('admin.subsidy.index') => __('Subsidy'),
@@ -238,9 +233,9 @@ class SubsidyController extends Controller
             'schools' => School::pluck('name', 'id')->toArray(),
             'types' => $this->types,
             'studentYears' => ['Tahun ke-2' => 'Tahun ke-2', 'Tahun ke-3' => 'Tahun ke-3'],
-            'generations' => $this->generations,
+            'generations' => StudentClass::orderBy('generation', 'asc')->pluck('generation', 'generation')->unique()->toArray(),
             'grades' => $this->grades,
-            'subsidy' => $subsidy
+            'data' => $subsidy
         ];
         return view('admin.subsidy.edit', $view);
     }
