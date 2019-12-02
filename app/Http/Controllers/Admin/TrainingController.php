@@ -18,6 +18,7 @@ use Illuminate\Support\Str;
 use DataTables;
 use Validator;
 use App\Exports\TrainingsExport;
+use App\Events\TrainingRegistered;
 
 class TrainingController extends Controller
 {
@@ -198,6 +199,7 @@ class TrainingController extends Controller
         $training->save();
         $this->saveParticipant($training, $request);
         $this->savePic($training, $request);
+        event(new TrainingRegistered($training));
         return redirect()->route('admin.payment.index')->with('alert-success', __($this->createdMessage) . ' ' . __('To complete this registration, please complete payment.'));
     }
 

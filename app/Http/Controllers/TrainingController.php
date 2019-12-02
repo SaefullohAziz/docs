@@ -14,7 +14,7 @@ use Illuminate\Support\Str;
 use DataTables;
 use Validator;
 use App\Exports\TrainingsExport;
-use App\Notifications\TrainingApproved;
+use App\Events\TrainingRegistered;
 
 class TrainingController extends Controller
 {
@@ -185,7 +185,7 @@ class TrainingController extends Controller
         $training->save();
         $this->saveParticipant($training, $request);
         $this->savePic($training, $request);
-        $this->sendNotification($training);
+        event(new TrainingRegistered($training));
         return redirect()->route('payment.index')->with('alert-success', __($this->createdMessage) . ' ' . __('To complete this registration, please complete payment.'));
     }
 
@@ -359,17 +359,6 @@ class TrainingController extends Controller
             ]);
         }
         $training->pic()->sync([$pic->id]);
-    }
-
-    /**
-     * Send notification
-     * 
-     * @param  \App\Training  $training
-     */
-    public function sendNotification($training)
-    {
-        $school = School::findOrFail($training->school->id);
-        $school->notify(new TrainingApproved($training));
     }
 
     /**

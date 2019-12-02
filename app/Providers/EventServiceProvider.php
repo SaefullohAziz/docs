@@ -18,6 +18,11 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
+        // School
+        'App\Events\SchoolRegistered' => [
+            'App\Listeners\CreateSchoolUserAccount',
+            'App\Listeners\RegisterSchool',
+        ],
         // Activity
         'App\Events\ActivityApproved' => [
             'App\Listeners\ApproveActivity',
@@ -37,6 +42,10 @@ class EventServiceProvider extends ServiceProvider
             'App\Listeners\CreateSubsidyPayment',
         ],
         // Training
+        'App\Events\TrainingRegistered' => [
+            'App\Listeners\CreateTrainingPayment',
+            'App\Listeners\RegisterTraining',
+        ],
         'App\Events\TrainingCanceled' => [
             'App\Listeners\CancelTraining',
         ],
@@ -44,7 +53,6 @@ class EventServiceProvider extends ServiceProvider
             'App\Listeners\ProcessTraining',
         ],
         'App\Events\TrainingApproved' => [
-            'App\Listeners\CreateTrainingPayment',
             'App\Listeners\ApproveTraining',
         ],
         // Attendance
