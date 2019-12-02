@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\School;
 use App\Teacher;
 use App\Student;
 use App\Activity;
@@ -12,6 +13,7 @@ use App\ExamReadiness;
 use App\Attendance;
 use App\Payment;
 use App\User;
+use App\Observers\SchoolObserver;
 use App\Observers\TeacherObserver;
 use App\Observers\StudentObserver;
 use App\Observers\ActivityObserver;
@@ -44,6 +46,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        School::observe(SchoolObserver::class);
         Teacher::observe(TeacherObserver::class);
         Student::observe(StudentObserver::class);
         Activity::observe(ActivityObserver::class);
