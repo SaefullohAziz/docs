@@ -48,6 +48,7 @@ class StudentsExport implements ShouldAutoSize, WithEvents
             ['column' => 'id', 'title' => 'id'], 
     		['column' => 'created_at', 'title' => 'Created At'], 
     		['column' => 'name', 'title' => 'Name'], 
+    		['column' => 'username', 'title' => 'Username'], 
     		['column' => 'nickname', 'title' => 'Nickname'],
     		['column' => 'school', 'title' => 'School'],
     		['column' => 'school_year', 'title' => 'School Year'],
