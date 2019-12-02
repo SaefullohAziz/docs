@@ -95,6 +95,7 @@
 				{ data: 'avatar', name: 'avatar', "orderable": false, 'searchable': false },
 				{ data: 'action', name: 'action', "orderable": false, 'searchable': false }
 			],
+			"order": [[ 1, 'desc' ]],
 			"columnDefs": [
 			{   
           		"targets": [ 0, -1 ], //last column

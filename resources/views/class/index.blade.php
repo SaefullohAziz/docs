@@ -88,6 +88,7 @@
 				{ data: 'department', name: 'departments.name' },
 				{ data: 'action', name: 'action' }
 			],
+			"order": [[ 1, 'desc' ]],
 			"columnDefs": [
 			{   
           		"targets": [ 0, -1 ], //last column
