@@ -107,19 +107,13 @@ class AttendanceController extends Controller
         if (auth()->user()->cant('create', Attendance::class)) {
             return redirect()->route('attendance.index')->with('alert-danger', __($this->unauthorizedMessage) . ' ' . __('Your school does not meet the requirements and / or has not added teachers to the system.'));
         }
-        $types = $this->types;
-        if (auth()->user()->status->order_by == '2a') {
-            $types = ['Visitasi' => 'Visitasi'];
-        } elseif (auth()->user()->status->order_by == '3a') {
-            $types = ['Audiensi' => 'Audiensi'];
-        }
         $view = [
             'title' => __('Create Attendance Confirmation'),
             'breadcrumbs' => [
                 route('attendance.index') => __('Attendance Confirmation'),
                 null => __('Create')
             ],
-            'types' => $types,
+            'types' => $this->types,
             'participants' => $this->participants,
             'participantPositions' => $this->participantPositions,
             'transportations' => $this->transportations,
