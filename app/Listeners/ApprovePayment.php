@@ -3,6 +3,8 @@
 namespace App\Listeners;
 
 use App\Payment;
+use App\Subsidy;
+use App\Training;
 use App\Status;
 use App\Events\PaymentApproved;
 use Illuminate\Queue\InteractsWithQueue;
@@ -43,6 +45,13 @@ class ApprovePayment
         foreach ($request->selectedData as $id) {
             $payment = Payment::find($id);
             saveStatus($payment, $status, $desc);
+            if ($payment->subsidy->count()) {
+                $subsidy = Subsidy::find($payment->subsidy[0]->id);
+                saveStatus($subsidy, 'Paid', 'Pelunasan pengajuan subsidi.');
+            } elseif ($payment->training->count()) {
+                $training = Training::find($payment->training[0]->id);
+                saveStatus($training, 'Paid', 'Pelunasan pendaftaran training.');
+            }
         }
     }
 }
