@@ -105,7 +105,7 @@ class AttendanceController extends Controller
     public function create()
     {
         if (auth()->user()->cant('create', Attendance::class)) {
-            return redirect()->route('attendance.index')->with('alert-danger', __($this->unauthorizedMessage));
+            return redirect()->route('attendance.index')->with('alert-danger', __($this->unauthorizedMessage) . ' ' . __('Your school does not meet the requirements and / or has not added teachers to the system.'));
         }
         $types = $this->types;
         if (auth()->user()->status->order_by == '2a') {
