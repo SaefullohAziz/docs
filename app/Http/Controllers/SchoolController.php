@@ -131,7 +131,7 @@ class SchoolController extends Controller
             'created_by' => 'school',
         ]);
         $this->uploadPhoto($school, $request);
-        $this->sendNotification($school);
+        // $this->sendNotification($school);
         return redirect(url()->previous())->with('alert-success', __('Thank you! Your registration has been successful. Please check your email for the next step.'));
     }
 
@@ -292,7 +292,7 @@ class SchoolController extends Controller
                     ->save();
                 $filename = 'photo_'.date('d_m_Y_H_i_s_').md5(uniqid(rand(), true)).'.'.$photo->extension();
                 $path = $photo->storeAs('public/school/photo/'.$school->id, $filename);
-                $school->photo()->create([
+                $school->photos()->create([
                     'name' => $school->id.'/'.$filename,
                 ]);
             }
