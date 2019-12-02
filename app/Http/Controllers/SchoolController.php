@@ -19,6 +19,7 @@ use App\Http\Requests\StoreJoinedSchoolSet;
 use Validator;
 use Spatie\Image\Image;
 use Spatie\Image\Manipulations;
+use App\Notifications\SchoolCreated;
 
 class SchoolController extends Controller
 {
@@ -130,6 +131,7 @@ class SchoolController extends Controller
             'created_by' => 'school',
         ]);
         $this->uploadPhoto($school, $request);
+        $this->sendNotification($school);
         return redirect(url()->previous())->with('alert-success', __('Thank you! Your registration has been successful. Please check your email for the next step.'));
     }
 
@@ -295,6 +297,17 @@ class SchoolController extends Controller
                 ]);
             }
         }
+    }
+
+    /**
+     * Send notification
+     * 
+     * @param  \App\Training  $school
+     */
+    public function sendNotification($school)
+    {
+        $school = School::findOrFail($school->id);
+        $school->notify(new SchoolCreated($school));
     }
 
     /**
