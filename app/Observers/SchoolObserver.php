@@ -26,7 +26,7 @@ class SchoolObserver
      */
     public function created(School $school)
     {
-        $this->createAccount($school);
+        // $this->createAccount($school);
         // $this->sendNotification($school);
     }
 

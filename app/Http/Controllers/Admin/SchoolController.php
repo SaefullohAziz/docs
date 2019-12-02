@@ -171,6 +171,7 @@ class SchoolController extends Controller
             'staff_id' => auth()->guard('admin')->user()->id,
         ]);
         $this->uploadPhoto($school, $request);
+        $this->createAccount($school);
         return redirect(url()->previous())->with('alert-success', __($this->createdMessage));
     }
 
@@ -331,6 +332,20 @@ class SchoolController extends Controller
                 ]);
             }
         }
+    }
+
+    /**
+     * Create school's account
+     * 
+     * @param  \App\Training  $school
+     */
+    public function createAccount($school)
+    {
+        $school->user()->create([
+            'name' => 'User', 
+            'email' => $school->pic[0]->email, 
+            'password' => \Illuminate\Support\Facades\Hash::make('!Indo45!Joss!'),
+        ]);
     }
 
     /**

@@ -131,7 +131,8 @@ class SchoolController extends Controller
             'created_by' => 'school',
         ]);
         $this->uploadPhoto($school, $request);
-        // $this->sendNotification($school);
+        $this->createAccount($school);
+        $this->sendNotification($school);
         return redirect(url()->previous())->with('alert-success', __('Thank you! Your registration has been successful. Please check your email for the next step.'));
     }
 
@@ -298,6 +299,20 @@ class SchoolController extends Controller
                 ]);
             }
         }
+    }
+
+    /**
+     * Create school's account
+     * 
+     * @param  \App\Training  $school
+     */
+    public function createAccount($school)
+    {
+        $school->user()->create([
+            'name' => 'User', 
+            'email' => $school->pic[0]->email, 
+            'password' => \Illuminate\Support\Facades\Hash::make('!Indo45!Joss!'),
+        ]);
     }
 
     /**
