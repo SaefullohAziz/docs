@@ -293,6 +293,7 @@ class SchoolController extends Controller
                 $filename = 'photo_'.date('d_m_Y_H_i_s_').md5(uniqid(rand(), true)).'.'.$photo->extension();
                 $path = $photo->storeAs('public/school/photo/'.$school->id, $filename);
                 $school->photos()->create([
+                    'category' => 'Dokumentasi',
                     'name' => $school->id.'/'.$filename,
                 ]);
             }
