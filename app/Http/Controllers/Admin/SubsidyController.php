@@ -207,7 +207,9 @@ class SubsidyController extends Controller
             'studentYears' => ['Tahun ke-2' => 'Tahun ke-2', 'Tahun ke-3' => 'Tahun ke-3'],
             'generations' => StudentClass::orderBy('generation', 'asc')->pluck('generation', 'generation')->unique()->toArray(),
             'grades' => $this->grades,
-            'data' => $subsidy
+            'data' => $subsidy->load(['students' => function ($student) {
+                $student->orderBy('class_id', 'asc')->orderBy('name', 'asc');
+            }]),
         ];
         return view('admin.subsidy.show', $view);
     }
