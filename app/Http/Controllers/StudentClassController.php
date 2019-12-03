@@ -85,7 +85,7 @@ class StudentClassController extends Controller
                 null => __('Create')
             ],
             'school' => $school,
-            'departments' => Department::whereHas('schoolImplementation', function ($query) use ($school) {
+            'departments' => Department::whereHas('schoolImplementations', function ($query) use ($school) {
                 $query->where('school_id', $school->id);
             })->pluck('name', 'id')->toArray(),
             'generation' => null,
