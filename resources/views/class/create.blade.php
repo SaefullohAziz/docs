@@ -33,7 +33,7 @@
 					<div class="row">
 						<div class="col-sm-6">
 							<fieldset>
-                                {{ Form::bsSelect(null, __('Department'), 'department_id', $departments, ($school->implementation->count()==1?$school->implementation[0]->department->id:old('department_id')), __('Select'), ['placeholder' => __('Select'), ($school->implementation->count()==1?'disabled':'required') => '']) }}
+                                {{ Form::bsSelect(null, __('Department'), 'department_id', $departments, ($school->implementations->count()==1?$school->implementations[0]->department->id:old('department_id')), __('Select'), ['placeholder' => __('Select'), ($school->implementations->count()==1?'disabled':'required') => '']) }}
 
                                 {{ Form::bsText(null, __('Generation'), 'generation', $generation, __('Generation'), ['disabled' => '']) }}
                             </fieldset>

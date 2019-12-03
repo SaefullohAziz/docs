@@ -88,7 +88,7 @@ class StudentClassPolicy
      */
     public function update(User $user, StudentClass $studentClass)
     {
-        return $studentClass->student->count() == 0;
+        return $studentClass->students->count() == 0;
     }
 
     /**
@@ -100,7 +100,7 @@ class StudentClassPolicy
      */
     public function adminUpdate(Staff $staff, StudentClass $studentClass)
     {
-        return $studentClass->student->count() == 0;
+        return $studentClass->students->count() == 0;
     }
 
     /**
