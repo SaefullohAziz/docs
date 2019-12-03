@@ -41,7 +41,7 @@
 			<div class="card-header">
 				@if(auth()->guard('admin')->user()->can('create students'))
 					<a href="{{ route('admin.class.student.create', $studentClass->id) }}" class="btn btn-icon btn-success" title="{{ __('Create') }}"><i class="fa fa-plus"></i></a>
-            		<button class="btn btn-icon btn-primary" title="{{ __('Import') }}" data-toggle="modal" data-target="#importModal">{{ __('Import') }}</button>
+            		<button class="btn btn-icon btn-primary" title="{{ __('Import') }}" data-toggle="modal" data-target="#importModal"><i class="fas fa-upload"></i></button>
 				@endif
 				<button class="btn btn-icon btn-secondary" title="{{ __('Filter') }}" data-toggle="modal" data-target="#filterModal"><i class="fa fa-filter"></i></button>
             	<button class="btn btn-icon btn-secondary" onclick="reloadTable()" title="{{ __('Refresh') }}"><i class="fa fa-sync"></i></i></button>
