@@ -13,6 +13,7 @@ use App\Http\Requests\StoreSubsidy;
 use DataTables;
 use Validator;
 use App\Exports\SubsidiesExport;
+use App\StudentClass;
 
 class SubsidyController extends Controller
 {
