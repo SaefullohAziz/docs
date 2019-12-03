@@ -12,12 +12,12 @@ class UpdatePermissionsSeeder extends Seeder
     public function run()
     {
         $data = [
-    		'access updates' => ['supersu', 'admin'],
-    		'access status updates' => ['supersu', 'admin'],
-    	];
-    	foreach ($data as $k => $v) {
-    		$permission = \Spatie\Permission\Models\Permission::firstOrCreate(['name' => $k, 'guard_name' => 'admin']);
-    		$permission->syncRoles($v, 'admin');
-		}
+          'access updates' => ['supersu', 'admin'],
+          'access status updates' => ['supersu', 'admin'],
+        ];
+        collect($data)->each(function ($item, $key) {
+            $permission = \Spatie\Permission\Models\Permission::firstOrCreate(['name' => $key, 'guard_name' => 'admin']);
+            $permission->syncRoles($item);
+        });
     }
 }

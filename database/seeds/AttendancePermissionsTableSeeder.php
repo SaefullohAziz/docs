@@ -22,9 +22,9 @@ class AttendancePermissionsTableSeeder extends Seeder
             'restore attendances' => ['supersu', 'admin'],
             'force_delete attendances' => ['supersu', 'admin']
     	];
-    	foreach ($data as $k => $v) {
-    		$permission = \Spatie\Permission\Models\Permission::firstOrCreate(['name' => $k, 'guard_name' => 'admin']);
-    		$permission->syncRoles($v, 'admin');
-    	}
+        collect($data)->each(function ($item, $key) {
+            $permission = \Spatie\Permission\Models\Permission::firstOrCreate(['name' => $key, 'guard_name' => 'admin']);
+            $permission->syncRoles($item);
+        });
     }
 }

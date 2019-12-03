@@ -21,10 +21,10 @@ class PaymentPermissionsTableSeeder extends Seeder
             'bin payments' => ['supersu', 'finance'],
             'restore payments' => ['supersu', 'finance'],
             'force_delete payments' => ['supersu', 'finance'],
-    	];
-    	foreach ($data as $k => $v) {
-    		$permission = \Spatie\Permission\Models\Permission::firstOrCreate(['name' => $k, 'guard_name' => 'admin']);
-    		$permission->syncRoles($v, 'admin');
-    	}
+        ];
+        collect($data)->each(function ($item, $key) {
+            $permission = \Spatie\Permission\Models\Permission::firstOrCreate(['name' => $key, 'guard_name' => 'admin']);
+            $permission->syncRoles($item);
+        });
     }
 }
