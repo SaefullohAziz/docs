@@ -331,6 +331,20 @@ class PaymentController extends Controller
             $payment->repayment = $request->repayment;
             $payment->invoice = $request->invoice;
             $payment->total = $request->total;
+            if ($payment->subsidy->count()) {
+                if ($payment->subsidy[0]->type == 'ACP Getting started Pack (AGP) / Fast Track Program (FTP)') {
+                    $payment->npwp_number = $request->npwp_number;
+                    $payment->npwp_on_behalf_of = $request->npwp_on_behalf_of;
+                    $payment->npwp_address = $request->npwp_address;
+                    $payment->npwp_file = $this->uploadNpwpFile($payment, $request, $payment->npwp_file);
+                }
+            } elseif ($payment->training->count()) {
+                $payment->commitment_letter = $this->uploadCommitmentLetter($payment, $request, $payment->commitment_letter);
+                $payment->receiver_bank_name = $request->receiver_bank_name;
+                $payment->receiver_bill_number = $request->receiver_bill_number;
+                $payment->receiver_on_behalf_of = $request->receiver_on_behalf_of;
+                $payment->bank_account_book = $this->uploadBankAccountBook($payment, $request, $payment->bank_account_book);
+            }
             if ($request->repayment == 'Paid in cash') {
                 $payment->date = $request->date;
                 $payment->method = $request->method;
@@ -340,6 +354,60 @@ class PaymentController extends Controller
         }
         $payment->save();
         return redirect(url()->previous())->with('alert-success', __($this->updatedMessage));
+    }
+
+    /**
+     * Upload payment letter
+     * 
+     * @param  \App\Payment  $payment
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string  $oldFile
+     * @return string
+     */
+    public function uploadNpwpFile($payment, Request $request, $oldFile = null)
+    {
+        if ($request->hasFile('npwp_file')) {
+            $filename = 'npwp_file_'.date('d_m_Y_H_i_s_').md5(uniqid(rand(), true)).'.'.$request->npwp_file->extension();
+            $path = $request->npwp_file->storeAs('public/payment/npwp/'.$payment->id, $filename);
+            return $payment->id.'/'.$filename;
+        }
+        return $oldFile;
+    }
+
+    /**
+     * Upload payment letter
+     * 
+     * @param  \App\Payment  $payment
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string  $oldFile
+     * @return string
+     */
+    public function uploadCommitmentLetter($payment, Request $request, $oldFile = null)
+    {
+        if ($request->hasFile('commitment_letter')) {
+            $filename = 'commitment_letter_'.date('d_m_Y_H_i_s_').md5(uniqid(rand(), true)).'.'.$request->commitment_letter->extension();
+            $path = $request->commitment_letter->storeAs('public/payment/commitment-letter/'.$payment->id, $filename);
+            return $payment->id.'/'.$filename;
+        }
+        return $oldFile;
+    }
+
+    /**
+     * Upload payment letter
+     * 
+     * @param  \App\Payment  $payment
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string  $oldFile
+     * @return string
+     */
+    public function uploadBankAccountBook($payment, Request $request, $oldFile = null)
+    {
+        if ($request->hasFile('bank_account_book')) {
+            $filename = 'bank_account_book_'.date('d_m_Y_H_i_s_').md5(uniqid(rand(), true)).'.'.$request->bank_account_book->extension();
+            $path = $request->bank_account_book->storeAs('public/payment/bank-account-book/'.$payment->id, $filename);
+            return $payment->id.'/'.$filename;
+        }
+        return $oldFile;
     }
 
     /**

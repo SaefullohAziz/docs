@@ -56,6 +56,7 @@
 								@endif
 							@endif
 							@if ($payment->training->count())
+								{{ Form::bsFile(null, __('Commitment Letter'), 'commitment_letter', null, [(empty($payment->commitment_letter)?'required':'') => ''], [__('File with PDF/JPG/PNG format up to 5MB.')]) }}
 								<fieldset>
 									<legend>{{ __('Return Account Information') }}</legend>
 									{{ Form::bsSelect(null, __('Bank Name'), 'receiver_bank_name', $bankSenders, $payment->receiver_bank_name, __('Select'), ['placeholder' => __('Select'), 'required' => '']) }}
