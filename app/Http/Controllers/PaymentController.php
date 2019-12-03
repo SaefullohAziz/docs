@@ -135,6 +135,7 @@ class PaymentController extends Controller
             return redirect()->route('payment.index')->with('alert-danger', __($this->unauthorizedMessage));
         }
         $view = [
+            'back' => route('payment.index'),
             'title' => __('Create Payment Confirmation'),
             'breadcrumbs' => [
                 route('payment.index') => __('Payment Confirmation'),
@@ -182,6 +183,7 @@ class PaymentController extends Controller
             return redirect()->route('payment.index')->with('alert-danger', __($this->noPermission));
         }
         $view = [
+            'back' => route('payment.index'),
             'title' => __('Payment Confirmation Detail'),
             'breadcrumbs' => [
                 route('payment.index') => __('Payment Confirmation'),
@@ -212,6 +214,7 @@ class PaymentController extends Controller
             return redirect()->route('payment.index')->with('alert-danger', __($this->noPermission));
         }
         $view = [
+            'back' => route('payment.index'),
             'title' => __('Edit Payment Confirmation'),
             'breadcrumbs' => [
                 route('payment.index') => __('Payment Confirmation'),
@@ -267,6 +270,7 @@ class PaymentController extends Controller
             return redirect()->route('payment.index')->with('alert-danger', __($this->noPermission) . ' ' . __('Payment confirmation past due.'));
         }
         $view = [
+            'back' => route('payment.index'),
             'title' => __('Fill Payment Confirmation'),
             'breadcrumbs' => [
                 route('payment.index') => __('Payment Confirmation'),

@@ -166,6 +166,7 @@ class PaymentController extends Controller
             return redirect()->route('admin.payment.index')->with('alert-danger', __($this->unauthorizedMessage));
         }
         $view = [
+            'back' => route('admin.payment.index'),
             'title' => __('Create Payment Confirmation'),
             'breadcrumbs' => [
                 route('admin.payment.index') => __('Payment Confirmation'),
@@ -223,11 +224,13 @@ class PaymentController extends Controller
             return redirect()->route('admin.payment.index')->with('alert-danger', __($this->noPermission));
         }
         $view = [
+            'back' => route('admin.payment.index'),
             'title' => __('Payment Confirmation Detail'),
             'breadcrumbs' => [
                 route('admin.payment.index') => __('Payment Confirmation'),
                 null => __('Detail')
             ],
+            'subtitle' => $payment->subsidy->count()?__('Subsidy').' '.$payment->subsidy[0]->type:__('Training').' '.$payment->training[0]->type,
             'schools' => School::pluck('name', 'id')->toArray(),
             'types' => $this->types,
             'methods' => $this->methods,
@@ -250,11 +253,13 @@ class PaymentController extends Controller
             return redirect()->route('admin.payment.index')->with('alert-danger', __($this->noPermission));
         }
         $view = [
+            'back' => route('admin.payment.index'),
             'title' => __('Edit Payment Confirmation'),
             'breadcrumbs' => [
                 route('admin.payment.index') => __('Payment Confirmation'),
                 null => __('Edit')
             ],
+            'subtitle' => $payment->subsidy->count()?__('Subsidy').' '.$payment->subsidy[0]->type:__('Training').' '.$payment->training[0]->type,
             'schools' => School::pluck('name', 'id')->toArray(),
             'types' => [
                 'Axioo Smart School Pack' => 'Axioo Smart School Pack', 
