@@ -45,8 +45,8 @@ class TrainingApproved extends Mailable
                     'bookingTime' => Carbon::parse($this->training->created_at)->format('d-m-Y H:i:s'),
                     'expiredTime' => Carbon::parse($this->training->created_at)->addHour(3)->format('d-m-Y H:i:s'),
                     // Bank Account
-                    'bank' => 'Mandiri',
-                    'bankAccountNumber' => '132-007-003-0003',
+                    'bank' => 'CIMB Niaga',
+                    'bankAccountNumber' => '861-10000-5500',
                     'bankAccountOnBehalfOf' => 'PT. Mabito Karya'
                 ]);
     }
