@@ -25,28 +25,25 @@ class ConfirmPayment extends FormRequest
     public function rules()
     {
         $payment = $this->route('payment');
-        $remainingPayment = ($payment->total)-($payment->installment->sum('total'));
         $rules = [
             'repayment' => [
                 Rule::requiredIf(function () use ($payment) {
-                    return $payment->subsidy()->count() && $payment->installment()->count() == 0;
+                    return $payment->subsidy()->count() && $payment->installments()->count() == 0;
                 }),
             ],
             'invoice' => [
                 Rule::requiredIf(function () use ($payment) {
-                    return $payment->subsidy()->count() && $payment->installment()->count() == 0;
+                    return $payment->subsidy()->count() && $payment->installments()->count() == 0;
                 }),
             ],
             'date' => ['required', 'date'],
             'total' => [
                 Rule::requiredIf(function () use ($payment) {
-                    return $payment->installment()->count() == 0 || $payment->training()->count();
+                    return $payment->installments()->count() == 0 && $payment->training()->count() == 0;
                 }),
             ],
             'method' => [
-                Rule::requiredIf(function () use ($payment) {
-                    return $payment->subsidy()->count();
-                }),
+                Rule::requiredIf($payment->subsidy()->count()),
             ],
             'bank_sender' => [
                 Rule::requiredIf(function () {
@@ -61,7 +58,8 @@ class ConfirmPayment extends FormRequest
                         return $this->get('repayment') == 'Paid in installment';
                     }
                 }),
-                function ($attribute, $value, $fail) use ($remainingPayment) {
+                function ($attribute, $value, $fail) use ($payment) {
+                    $remainingPayment = ($payment->total)-($payment->installments->sum('total'));
                     if ($value > $remainingPayment) {
                         $fail($attribute.' is invalid.');
                     }
@@ -70,34 +68,28 @@ class ConfirmPayment extends FormRequest
             // Subsidy: FTP
             'npwp_number' => [
                 Rule::requiredIf(function () use ($payment) {
-                    return $payment->subsidy()->count() && $payment->installment()->count() == 0;
+                    return $payment->subsidy()->count() && $payment->installments()->count() == 0;
                 }),
             ],
             'npwp_on_behalf_of' => [
                 Rule::requiredIf(function () use ($payment) {
-                    return $payment->subsidy()->count() && $payment->installment()->count() == 0;
+                    return $payment->subsidy()->count() && $payment->installments()->count() == 0;
                 }),
             ],
             'npwp_address' => [
                 Rule::requiredIf(function () use ($payment) {
-                    return $payment->subsidy()->count() && $payment->installment()->count() == 0;
+                    return $payment->subsidy()->count() && $payment->installments()->count() == 0;
                 }),
             ],
             // Training
             'receiver_bank_name' => [
-                Rule::requiredIf(function () use ($payment) {
-                    return $payment->training()->count();
-                }),
+                Rule::requiredIf($payment->training()->count()),
             ],
             'receiver_bill_number' => [
-                Rule::requiredIf(function () use ($payment) {
-                    return $payment->training()->count();
-                }),
+                Rule::requiredIf($payment->training()->count()),
             ],
             'receiver_on_behalf_of' => [
-                Rule::requiredIf(function () use ($payment) {
-                    return $payment->training()->count();
-                }),
+                Rule::requiredIf($payment->training()->count()),
             ],
         ];
         return $rules;

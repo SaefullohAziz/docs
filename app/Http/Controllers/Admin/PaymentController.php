@@ -230,7 +230,7 @@ class PaymentController extends Controller
                 route('admin.payment.index') => __('Payment Confirmation'),
                 null => __('Detail')
             ],
-            'subtitle' => $payment->subsidy->count()?__('Subsidy').' '.$payment->subsidy[0]->type:__('Training').' '.$payment->training[0]->type,
+            'subtitle' => $payment->subsidy->count()?__('Subsidy').' '.$payment->subsidy[0]->type:($payment->training->count()?__('Training').' '.$payment->training[0]->type:null),
             'schools' => School::pluck('name', 'id')->toArray(),
             'types' => $this->types,
             'methods' => $this->methods,
@@ -259,7 +259,7 @@ class PaymentController extends Controller
                 route('admin.payment.index') => __('Payment Confirmation'),
                 null => __('Edit')
             ],
-            'subtitle' => $payment->subsidy->count()?__('Subsidy').' '.$payment->subsidy[0]->type:__('Training').' '.$payment->training[0]->type,
+            'subtitle' => $payment->subsidy->count()?__('Subsidy').' '.$payment->subsidy[0]->type:($payment->training->count()?__('Training').' '.$payment->training[0]->type:null),
             'schools' => School::pluck('name', 'id')->toArray(),
             'types' => [
                 'Axioo Smart School Pack' => 'Axioo Smart School Pack', 
@@ -288,6 +288,9 @@ class PaymentController extends Controller
     {
         if ( ! auth()->guard('admin')->user()->can('update ' . $this->table)) {
             return redirect()->route('admin.payment.index')->with('alert-danger', __($this->noPermission));
+        }
+        if ($request->filled('type')) {
+            $request->merge(['type' => $payment->type]);
         }
         $request->merge([
             'date' => date('Y-m-d', strtotime($request->date)),

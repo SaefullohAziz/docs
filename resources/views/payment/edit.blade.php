@@ -33,11 +33,11 @@
 					<div class="row">
                         <div class="col-sm-6">
                             <fieldset>
-                                {{ Form::bsSelect(null, __('Type'), 'type', $types, $data->type, __('Select'), ['placeholder' => __('Select'), 'required' => '']) }}
+                                {{ Form::bsSelect(null, __('Type'), 'type', $types, $data->type, __('Select'), ['placeholder' => __('Select'), 'disabled' => '']) }}
 
 								{{ Form::bsText((empty($data->invoice)?'d-none':'d-block'), __('Invoice'), 'invoice', $data->invoice, __('Invoice'), []) }}
 
-								{{ Form::bsText(null, __('Payment Date'), 'date', (empty($data->date)?null:date('d-m-Y', strtotime($data->date))), __('DD-MM-YYYY'), ['required' => '']) }}
+								{{ Form::bsText(null, __('Payment Date'), 'date', (empty($data->date)?null:date('d-m-Y', strtotime($data->date))), 'DD-MM-YYYY', ['required' => '']) }}
                             </fieldset>
                         </div>
                         <div class="col-sm-6">

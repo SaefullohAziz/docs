@@ -26,11 +26,11 @@ class StorePayment extends FormRequest
     {
         $rules = [
             'school_id' => [
-                Rule::requiredIf(function () {
-                    return auth()->guard('admin')->check();
-                }),
+                Rule::requiredIf(auth()->guard('admin')->check()),
             ],
-            'type' => ['required'],
+            'type' => [
+                Rule::requiredIf($this->isMethod('post')),
+            ],
             'invoice' => [
                 Rule::requiredIf(function () {
                     if ( ! empty($this->get('type'))) {

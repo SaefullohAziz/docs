@@ -189,7 +189,7 @@ class PaymentController extends Controller
                 route('payment.index') => __('Payment Confirmation'),
                 null => __('Detail')
             ],
-            'subtitle' => $payment->subsidy->count()?__('Subsidy').' '.$payment->subsidy[0]->type:__('Training').' '.$payment->training[0]->type,
+            'subtitle' => $payment->subsidy->count()?__('Subsidy').' '.$payment->subsidy[0]->type:($payment->training->count()?__('Training').' '.$payment->training[0]->type:null),
             'types' => array_merge($this->types, [
                 'Subsidi' => 'Subsidi', 
                 'Commitment Fee' => 'Commitment Fee', 
@@ -220,7 +220,7 @@ class PaymentController extends Controller
                 route('payment.index') => __('Payment Confirmation'),
                 null => __('Edit')
             ],
-            'subtitle' => $payment->subsidy->count()?__('Subsidy').' '.$payment->subsidy[0]->type:__('Training').' '.$payment->training[0]->type,
+            'subtitle' => $payment->subsidy->count()?__('Subsidy').' '.$payment->subsidy[0]->type:($payment->training->count()?__('Training').' '.$payment->training[0]->type:null),
             'types' => array_merge($this->types, [
                 'Subsidi' => 'Subsidi', 
                 'Commitment Fee' => 'Commitment Fee', 
@@ -244,6 +244,9 @@ class PaymentController extends Controller
     {
         if (auth()->user()->cant('update', $payment)) {
             return redirect()->route('payment.index')->with('alert-danger', __($this->noPermission));
+        }
+        if ($request->filled('type')) {
+            $request->merge(['type' => $payment->type]);
         }
         $request->merge([
             'date' => date('Y-m-d', strtotime($request->date)),
@@ -288,7 +291,7 @@ class PaymentController extends Controller
             'methods' => $this->methods,
             'bankSenders' => $this->bankSenders,
             'banks' => $this->banks,
-            'payment' => $payment
+            'data' => $payment
         ];
         return view('payment.fill', $view);
     }
@@ -330,7 +333,7 @@ class PaymentController extends Controller
         if ($payment->installments()->count() == 0) {
             $payment->repayment = $request->repayment;
             $payment->invoice = $request->invoice;
-            $payment->total = $request->total;
+            $payment->total = (empty($request->total)?$payment->total:$request->total);
             if ($payment->subsidy->count()) {
                 if ($payment->subsidy[0]->type == 'ACP Getting started Pack (AGP) / Fast Track Program (FTP)') {
                     $payment->npwp_number = $request->npwp_number;
@@ -339,7 +342,6 @@ class PaymentController extends Controller
                     $payment->npwp_file = $this->uploadNpwpFile($payment, $request, $payment->npwp_file);
                 }
             } elseif ($payment->training->count()) {
-                $payment->commitment_letter = $this->uploadCommitmentLetter($payment, $request, $payment->commitment_letter);
                 $payment->receiver_bank_name = $request->receiver_bank_name;
                 $payment->receiver_bill_number = $request->receiver_bill_number;
                 $payment->receiver_on_behalf_of = $request->receiver_on_behalf_of;

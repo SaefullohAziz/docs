@@ -41,6 +41,32 @@
 
 								{{ Form::bsText(null, __('Payment Date'), 'date', (empty($data->date)?null:date('d-m-Y', strtotime($data->date))), __('DD-MM-YYYY'), ['disabled' => '']) }}
                             </fieldset>
+							@if ($data->subsidy->count())
+								@if ($data->subsidy[0]->type == 'ACP Getting started Pack (AGP) / Fast Track Program (FTP)')
+								<fieldset>
+									<legend>{{ __('AGP/FTP Only') }}</legend>
+									{{ Form::bsText(null, __('NPWP Number'), 'npwp_number', $data->npwp_number, __('NPWP Number'), ['disabled' => '']) }}
+
+									{{ Form::bsText(null, __('On Behalf of (NPWP)'), 'npwp_on_behalf_of', $data->npwp_on_behalf_of, __('On Behalf of (NPWP)'), ['disabled' => '']) }}
+
+									{{ Form::bsTextarea(null, __('Address (NPWP)'), 'npwp_address', $data->npwp_address, __('Address (NPWP)'), ['disabled' => '']) }}
+
+									{{ Form::bsUploadedFile(null, __('NPWP File'), 'npwp_file', 'payment/npwp', $data->npwp_file_, [], [__('File with PDF/JPG/PNG format up to 5MB.')]) }}
+								</fieldset>
+								@endif
+							@endif
+							@if ($data->training->count())
+								<fieldset>
+									<legend>{{ __('Return Account Information') }}</legend>
+									{{ Form::bsSelect(null, __('Bank Name'), 'receiver_bank_name', $bankSenders, $data->receiver_bank_name, __('Select'), ['placeholder' => __('Select'), 'disabled' => '']) }}
+
+									{{ Form::bsText(null, __('Bank Account Number'), 'receiver_bill_number', $data->receiver_bill_number, __('Bank Account Number'), ['disabled' => ''], [__('No punctuation or comma or strip. 10 digits minimum.')]) }}
+
+									{{ Form::bsText(null, __('On Behalf of'), 'receiver_on_behalf_of', $data->receiver_on_behalf_of, __('On Behalf of'), ['disabled' => ''], [__('As per the name on the account')]) }}
+
+									{{ Form::bsUploadedFile(null, __('Bank Account Book'), 'bank_account_book', 'payment/bank-account-book', $data->bank_account_book, [], [__('For the return process to run without problems, the photo must show the account number.'), __('File with PDF/JPG/PNG format up to 5MB.')]) }}
+								</fieldset>
+							@endif
                         </div>
                         <div class="col-sm-6">
 							<fieldset>
@@ -89,44 +115,4 @@
 		</div>
 	</div>
 </div>
-@endsection
-
-@section('script')
-<script>
-	$(document).ready(function () {
-		$('[name="date"]').keypress(function(e) {
-            e.preventDefault();
-        }).daterangepicker({
-        	locale: {format: 'DD-MM-YYYY'},
-        	singleDatePicker: true,
-      	});
-
-		var cleaveC = new Cleave('.currency', {
-        	numeral: true,
-            numeralThousandsGroupStyle: 'thousand'
-        });
-
-        $('select[name="type"]').change(function () {
-			if ($(this).val() == 'Biaya Pengiriman Mikrotik') {
-				$('input[name="invoice"]').prop('required', false).val('');
-				$('input[name="invoice"]').closest('.form-group').removeClass('d-block').addClass('d-none');
-	    	} else {
-				$('input[name="invoice"]').prop('required', true).val('');
-				$('input[name="invoice"]').closest('.form-group').removeClass('d-none').addClass('d-block');
-			}
-		});
-
-		$('select[name="method"]').change(function () {
-			if ($(this).val() == 'ATM') {
-				$('select[name="bank_sender"]').prop('required', true);
-				$('select[name="bank_sender"]').val(null).change();
-				$('select[name="bank_sender"]').closest('.form-group').removeClass('d-none').addClass('d-block');
-			} else {
-				$('select[name="bank_sender"]').prop('required', false);
-				$('select[name="bank_sender"]').val(null).change();
-				$('select[name="bank_sender"]').closest('.form-group').removeClass('d-block').addClass('d-none');
-			}
-		});
-	});
-</script>
 @endsection
