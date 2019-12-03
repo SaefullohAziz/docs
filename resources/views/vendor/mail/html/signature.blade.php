@@ -3,7 +3,7 @@
         <td colspan=2>
             {{ Illuminate\Mail\Markdown::parse($slot) }}
 
-            <p>Apabila ada pertanyaan atau kurang jelas Bapak / Ibu bisa menghubungi PIC ACP di <a href="wa.me/6285883045045">085883045045</a> pada jam operasional Senin s/d Sabtu Pk. 08.30 s/d 16.30 WIB.</p>  
+            <p>Apabila ada pertanyaan atau kurang jelas Bapak / Ibu bisa menghubungi PIC ACP di <a href="http://wa.me/6285883045045">085883045045</a> pada jam operasional Senin s/d Sabtu Pk. 08.30 s/d 16.30 WIB.</p>  
 
             <p>Salam Pendidikan.</p>
 
