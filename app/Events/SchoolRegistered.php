@@ -3,6 +3,7 @@
 namespace App\Events;
 
 use App\School;
+use Faker\Factory as Faker;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Broadcasting\PrivateChannel;
@@ -16,6 +17,7 @@ class SchoolRegistered
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public $school;
+    public $password;
 
     /**
      * Create a new event instance.
@@ -25,6 +27,8 @@ class SchoolRegistered
     public function __construct(School $school)
     {
         $this->school = $school;
+        $faker = Faker::create();
+        $this->password = $faker->password;
     }
 
     /**

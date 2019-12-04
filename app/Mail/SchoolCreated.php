@@ -12,15 +12,17 @@ class SchoolCreated extends Mailable
     use Queueable, SerializesModels;
 
     protected $school;
+    protected $password;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct($school)
+    public function __construct($school, $password)
     {
         $this->school = $school;
+        $this->password = $password;
     }
 
     /**
@@ -39,7 +41,7 @@ class SchoolCreated extends Mailable
                     'url' => url('/'),
                     'code' => $this->school->code,
                     'username' => $this->school->user->username,
-                    'password' => '!Indo45!Joss!',
+                    'password' => $this->password,
                 ]);
     }
 }

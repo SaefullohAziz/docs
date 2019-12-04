@@ -28,7 +28,7 @@ class RegisterSchool
      */
     public function handle(SchoolRegistered $event)
     {
-        $this->sendNotification($event->school);
+        $this->sendNotification($event->school, $event->password);
     }
 
     /**
@@ -36,9 +36,9 @@ class RegisterSchool
      * 
      * @param  \App\Training  $school
      */
-    public function sendNotification($school)
+    public function sendNotification($school, $password)
     {
         $school = School::findOrFail($school->id);
-        $school->notify(new SchoolCreated($school));
+        $school->notify(new SchoolCreated($school, $password));
     }
 }

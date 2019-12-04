@@ -13,15 +13,17 @@ class SchoolCreated extends Notification
     use Queueable;
 
     protected $school;
+    protected $password;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct($school)
+    public function __construct($school, $password)
     {
         $this->school = $school;
+        $this->password = $password;
     }
 
     /**
@@ -43,7 +45,7 @@ class SchoolCreated extends Notification
      */
     public function toMail($notifiable)
     {
-        return (new Mailable($this->school));
+        return (new Mailable($this->school, $this->password));
     }
 
     /**

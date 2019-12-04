@@ -29,7 +29,7 @@ class CreateSchoolUserAccount
         $event->school->user()->create([
             'name' => 'User', 
             'email' => $event->school->pic[0]->email, 
-            'password' => \Illuminate\Support\Facades\Hash::make('!Indo45!Joss!'),
+            'password' => \Illuminate\Support\Facades\Hash::make($event->password),
         ]);
     }
 }

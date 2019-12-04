@@ -94,6 +94,7 @@ class StudentController extends Controller
             return redirect()->route('admin.home')->with('alert-danger', __($this->noPermission));
         }
         $view = [
+            'back' => route('admin.class.index'),
             'title' => __('Student'),
             'subtitle' => $studentClass->generation . ' - ' .$studentClass->school_year. ', ' . $studentClass->department->name,
             'description' => $studentClass->school->name,
@@ -154,6 +155,7 @@ class StudentController extends Controller
 			$siblingNumbers[$i] = $i;
 		}
         $view = [
+            'back' => route('admin.class.student.index', $studentClass->id),
             'title' => __('Create Student'),
             'subtitle' => $studentClass->generation . ' - ' .$studentClass->school_year. ', ' . $studentClass->department->name,
             'description' => $studentClass->school->name,
@@ -217,6 +219,7 @@ class StudentController extends Controller
 			$siblingNumbers[$i] = $i;
 		}
         $view = [
+            'back' => route('admin.class.student.index', $studentClass->id),
             'title' => __('Student Detail'),
             'subtitle' => $studentClass->generation . ' - ' .$studentClass->school_year. ', ' . $studentClass->department->name,
             'description' => $studentClass->school->name,
@@ -261,6 +264,7 @@ class StudentController extends Controller
 			$siblingNumbers[$i] = $i;
 		}
         $view = [
+            'back' => route('admin.class.student.index', $studentClass->id),
             'title' => __('Edit Student'),
             'subtitle' => $studentClass->generation . ' - ' .$studentClass->school_year. ', ' . $studentClass->department->name,
             'description' => $studentClass->school->name,

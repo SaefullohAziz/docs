@@ -65,7 +65,15 @@ class StudentClassPolicy
      */
     public function createStudent(User $user, StudentClass $studentClass)
     {
-        return $studentClass->school_year == schoolYear() && empty($studentClass->closed_at);
+        if (empty($studentClass->closed_at)) {
+            if ($studentClass->school_year != schoolYear()) {
+                $studentClass->fill(['closed_at' => now()]);
+                $studentClass->save();
+                return false;
+            }
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -76,7 +84,15 @@ class StudentClassPolicy
      */
     public function adminCreateStudent(Staff $staff, StudentClass $studentClass)
     {
-        return $studentClass->school_year == schoolYear() && empty($studentClass->closed_at);
+        if (empty($studentClass->closed_at)) {
+            if ($studentClass->school_year != schoolYear()) {
+                $studentClass->closed_at = now();
+                $studentClass->save();
+                return false;
+            }
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -111,7 +127,15 @@ class StudentClassPolicy
      */
     public function updateStudent(User $user, StudentClass $studentClass)
     {
-        return $studentClass->school_year == schoolYear()?empty($studentClass->closed_at):null;
+        if (empty($studentClass->closed_at)) {
+            if ($studentClass->school_year != schoolYear()) {
+                $studentClass->closed_at = now();
+                $studentClass->save();
+                return false;
+            }
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -122,7 +146,15 @@ class StudentClassPolicy
      */
     public function adminUpdateStudent(Staff $staff, StudentClass $studentClass)
     {
-        return $studentClass->school_year == schoolYear()?empty($studentClass->closed_at):null;
+        if (empty($studentClass->closed_at)) {
+            if ($studentClass->school_year != schoolYear()) {
+                $studentClass->closed_at = now();
+                $studentClass->save();
+                return false;
+            }
+            return true;
+        }
+        return false;
     }
 
     /**

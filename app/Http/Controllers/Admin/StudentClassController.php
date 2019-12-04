@@ -87,6 +87,7 @@ class StudentClassController extends Controller
             return redirect()->route('admin.class.index')->with('alert-danger', __($this->noPermission));
         }
         $view = [
+            'back' => route('admin.class.index'),
             'title' => __('Create Class'),
             'breadcrumbs' => [
                 route('admin.class.index') => __('Class'),
@@ -139,6 +140,7 @@ class StudentClassController extends Controller
             return redirect()->route('admin.class.index')->with('alert-danger', __($this->noPermission));
         }
         $view = [
+            'back' => route('admin.class.index'),
             'title' => __('Class Detail'),
             'breadcrumbs' => [
                 route('admin.class.index') => __('Class'),
@@ -168,6 +170,7 @@ class StudentClassController extends Controller
             return redirect()->route('admin.class.index')->with('alert-danger', __($this->unauthorizedMessage) . ' ' . __('This class already has students.'));
         }
         $view = [
+            'back' => route('admin.class.index'),
             'title' => __('Edit Class'),
             'breadcrumbs' => [
                 route('admin.class.index') => __('Class'),

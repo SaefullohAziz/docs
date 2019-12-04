@@ -62,10 +62,10 @@ class SchoolController extends Controller
                 route('school.index') => __('School'),
                 null => __('Detail')
             ],
-            'provinces' => Province::pluck('name', 'name')->toArray(),
+            'provinces' => Province::orderBy('name', 'asc')->pluck('name', 'name')->toArray(),
             'regencies' => Regency::getByProvinceName($school->province)->pluck('name', 'name')->toArray(),
-            'policeNumbers' => PoliceNumber::pluck('name', 'name')->toArray(),
-            'departments' => array_merge(Department::pluck('name')->toArray(), [__('Other')]),
+            'policeNumbers' => PoliceNumber::orderBy('name', 'asc')->pluck('name', 'name')->toArray(),
+            'departments' => array_merge(Department::orderBy('name', 'asc')->pluck('name')->toArray(), [__('Other')]),
             'isoCertificates' => $this->isoCertificates,
             'references' => $this->references,
             'data' => $school,
@@ -94,10 +94,10 @@ class SchoolController extends Controller
         }
         $view = [
             'title' => __('Register School'),
-            'provinces' => Province::pluck('name', 'name')->toArray(),
-            'regencies' => Regency::pluck('name', 'name')->toArray(),
-            'policeNumbers' => PoliceNumber::pluck('name', 'name')->toArray(),
-            'departments' => array_merge(Department::pluck('name')->toArray(), [__('Other')]),
+            'provinces' => Province::orderBy('name', 'asc')->pluck('name', 'name')->toArray(),
+            'regencies' => Regency::orderBy('name', 'asc')->pluck('name', 'name')->toArray(),
+            'policeNumbers' => PoliceNumber::orderBy('name', 'asc')->pluck('name', 'name')->toArray(),
+            'departments' => array_merge(Department::orderBy('name', 'asc')->pluck('name')->toArray(), [__('Other')]),
             'isoCertificates' => $this->isoCertificates,
             'references' => $this->references
         ];
@@ -161,10 +161,10 @@ class SchoolController extends Controller
                 route('admin.school.index') => __('School'),
                 null => __('Edit')
             ],
-            'provinces' => Province::pluck('name', 'name')->toArray(),
+            'provinces' => Province::orderBy('name', 'asc')->pluck('name', 'name')->toArray(),
             'regencies' => Regency::getByProvinceName($school->province)->pluck('name', 'name')->toArray(),
-            'policeNumbers' => PoliceNumber::pluck('name', 'name')->toArray(),
-            'departments' => array_merge(Department::pluck('name')->toArray(), [__('Other')]),
+            'policeNumbers' => PoliceNumber::orderBy('name', 'asc')->pluck('name', 'name')->toArray(),
+            'departments' => array_merge(Department::orderBy('name', 'asc')->pluck('name')->toArray(), [__('Other')]),
             'isoCertificates' => $this->isoCertificates,
             'references' => $this->references,
             'data' => $school

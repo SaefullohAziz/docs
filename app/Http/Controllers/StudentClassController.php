@@ -79,6 +79,7 @@ class StudentClassController extends Controller
     {
         $school = School::find(auth()->user()->school->id);
         $view = [
+            'back' => route('class.index'),
             'title' => __('Create Class'),
             'breadcrumbs' => [
                 route('class.index') => __('Class'),
@@ -136,6 +137,7 @@ class StudentClassController extends Controller
     public function show(StudentClass $studentClass)
     {
         $view = [
+            'back' => route('class.index'),
             'title' => __('Class Detail'),
             'breadcrumbs' => [
                 route('class.index') => __('Class'),
@@ -161,6 +163,7 @@ class StudentClassController extends Controller
             return redirect()->route('class.index')->with('alert-danger', __($this->unauthorizedMessage) . ' ' . __('This class already has students.'));
         }
         $view = [
+            'back' => route('class.index'),
             'title' => __('Edit Class'),
             'breadcrumbs' => [
                 route('class.index') => __('Class'),

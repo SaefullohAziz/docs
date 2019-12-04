@@ -92,6 +92,7 @@ class StudentController extends Controller
     public function index(StudentClass $studentClass)
     {
         $view = [
+            'back' => route('class.index'),
             'title' => __('Student'),
             'subtitle' => $studentClass->generation . ' - ' .$studentClass->school_year. ', ' . $studentClass->department->name,
             'description' => $studentClass->school->name,
@@ -153,6 +154,7 @@ class StudentController extends Controller
 			$siblingNumbers[$i] = $i;
 		}
         $view = [
+            'back' => route('class.student.index', $studentClass->id),
             'title' => __('Create Student'),
             'subtitle' => $studentClass->generation . ' - ' .$studentClass->school_year. ', ' . $studentClass->department->name,
             'description' => $studentClass->school->name,
@@ -196,52 +198,6 @@ class StudentController extends Controller
     }
 
     /**
-     * Import student from Excel
-     * 
-     * @param  \Illuminate\Http\Request  $request
-     */
-    public function importExcel(StudentClass $studentClass, Request $request)
-    {        
-        // validasi file input
-        $this->validate($request, [
-            'import_file' => 'required|mimes:xls,xlsx'
-        ]);
-        
-        try {
-            $data = Excel::import(new StudentImport($studentClass), $request->file('import_file'));
-            return back()->with('alert-success', 'datas has been imported!');
-        } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
-            $failures = $e->failures();
-            $message = [];
-            $row = 0;
-            $attribute = [];
-            foreach ($failures as $failure) {
-                if ($row == $failure->row()) {
-                        $attribute[] = $failure->attribute();
-                }
-                else{
-                    $row++;
-                    if ($attribute) {
-                        $message[] = 'Error detected on row '. $failure->row() . ' on attribute ' . ucwords(implode(" , ", $attribute)) .' !';
-                    }
-                } 
-
-                // get last foreach
-                if( !next( $failures ) ) { 
-                    $message[] = 'Error detected on row '. $failure->row() . ' on attribute ' . ucwords(implode(" , ", $attribute)) .' !';
-                }
-
-            }
-            
-            session()->flash( 'import_file', [
-               'message' => $message
-              ]);
-            return back();
-        }
-
-    }
-
-    /**
      * Display the specified resource.
      *
      * @param  \App\Student  $student
@@ -259,6 +215,7 @@ class StudentController extends Controller
 			$siblingNumbers[$i] = $i;
 		}
         $view = [
+            'back' => route('class.student.index', $studentClass->id),
             'title' => __('Student Detail'),
             'subtitle' => $studentClass->generation . ' - ' .$studentClass->school_year. ', ' . $studentClass->department->name,
             'description' => $studentClass->school->name,
@@ -303,6 +260,7 @@ class StudentController extends Controller
 			$siblingNumbers[$i] = $i;
 		}
         $view = [
+            'back' => route('class.student.index', $studentClass->id),
             'title' => __('Edit Student'),
             'subtitle' => $studentClass->generation . ' - ' .$studentClass->school_year. ', ' . $studentClass->department->name,
             'description' => $studentClass->school->name,
@@ -370,6 +328,52 @@ class StudentController extends Controller
             return $student->id.'/'.$filename;
         }
         return $oldFile;
+    }
+
+    /**
+     * Import student from Excel
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     */
+    public function importExcel(StudentClass $studentClass, Request $request)
+    {        
+        // validasi file input
+        $this->validate($request, [
+            'import_file' => 'required|mimes:xls,xlsx'
+        ]);
+        
+        try {
+            $data = Excel::import(new StudentImport($studentClass), $request->file('import_file'));
+            return back()->with('alert-success', 'datas has been imported!');
+        } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
+            $failures = $e->failures();
+            $message = [];
+            $row = 0;
+            $attribute = [];
+            foreach ($failures as $failure) {
+                if ($row == $failure->row()) {
+                        $attribute[] = $failure->attribute();
+                }
+                else{
+                    $row++;
+                    if ($attribute) {
+                        $message[] = 'Error detected on row '. $failure->row() . ' on attribute ' . ucwords(implode(" , ", $attribute)) .' !';
+                    }
+                } 
+
+                // get last foreach
+                if( !next( $failures ) ) { 
+                    $message[] = 'Error detected on row '. $failure->row() . ' on attribute ' . ucwords(implode(" , ", $attribute)) .' !';
+                }
+
+            }
+            
+            session()->flash( 'import_file', [
+               'message' => $message
+              ]);
+            return back();
+        }
+
     }
 
     /**

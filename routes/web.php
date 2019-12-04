@@ -427,7 +427,6 @@ Route::prefix('get')->name('get.')->middleware(['auth:web,admin'])->group(functi
 	Route::post('staff', 'GetController@staff')->name('staff');
 	Route::post('schoolChart', 'GetController@schoolChart')->name('schoolChart');
 	Route::post('studentChart', 'GetController@studentChart')->name('studentChart');
-	Route::post('regency', 'GetController@regency')->name('regency');
 	Route::post('schoolStatus', 'GetController@schoolStatus')->name('schoolStatus');
 	Route::post('school', 'GetController@school')->name('school');
 	Route::post('teacher', 'GetController@teacher')->name('teacher');
@@ -440,6 +439,7 @@ Route::prefix('get')->name('get.')->middleware(['auth:web,admin'])->group(functi
 	Route::post('subExam', 'GetController@subExam')->name('subExam');
 	Route::post('schoolStatusUpdate', 'GetController@schoolStatusUpdate')->name('schoolStatusUpdate');
 });
+Route::post('get/regency', 'GetController@regency')->name('get.regency');
 
 Route::get('locale/{locale}', function ($locale){
     Session::put('locale', $locale);
@@ -456,8 +456,7 @@ Route::get('download/{dir}/{file}', function ($dir, $file) {
 
 Route::get('check', function (\Illuminate\Http\Request $request) {
 	if (env('APP_ENV') == 'local') {
-		$data = \App\School::where('id', '564dba5d-f825-4bb1-9211-3ad4555f5e62')->pluck('name', 'id')->toArray();
-		dd($data);
+		
 	}
 });
 
