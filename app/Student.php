@@ -108,7 +108,11 @@ class Student extends Model
                 $query->where('schools.id', auth()->user()->school->id);
             })->when(! empty($request->sspStatus), function ($query) use ($request) {
                 if ($request->sspStatus == 'yes'){
-                    $query->join('ssp_students', 'ssp_students.student_id', 'students.id');
+                    $query->whereExists( function ($query){
+                        $query->select(DB::raw(1))
+                        ->from('ssp_students')
+                        ->whereRaw('ssp_students.student_id = students.id');
+                    });
                 }elseif($request->sspStatus == 'no'){
                     $query->whereNotExists( function ($query){
                         $query->select(DB::raw(1))
