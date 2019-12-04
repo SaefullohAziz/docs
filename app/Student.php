@@ -132,6 +132,6 @@ class Student extends Model
      */
     public static function list(Request $request)
     {
-        return self::getList($request)->select('students.*', 'schools.name as school', 'provinces.abbreviation as province_abbreviation', 'student_classes.generation', 'student_classes.school_year', 'student_classes.grade', 'departments.name as department', 'school_levels.name as school_level');
+        return self::getList($request)->select('students.*', 'schools.name as school', 'provinces.abbreviation as province_abbreviation', 'student_classes.generation', 'student_classes.school_year', 'student_classes.grade', 'departments.name as department', 'school_levels.name as school_level', DB::RAW("(CASE WHEN NOT EXISTS ( SELECT student_id FROM ssp_students WHERE students.id = ssp_students.student_id) THEN 'No' ELSE 'Yes' END ) AS ssp"));
     }
 }

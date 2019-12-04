@@ -63,6 +63,7 @@
 								<th>{{ __('Generation') }}</th>
 								<th>{{ __('School Year') }}</th>
 								<th>{{ __('Phone Number') }}</th>
+								<th>{{ __('SSP Status') }}</th>
 								<th>{{ __('Action') }}</th>
 							</tr>
 						</thead>
@@ -112,6 +113,7 @@
 				{ data: 'generation', name: 'student_classes.generation' },
 				{ data: 'school_year', name: 'student_classes.school_year' },
 				{ data: 'phone_number', name: 'students.phone_number' },
+				{ data: 'ssp', name: 'ssp' },
 				{ data: 'action', name: 'action' }
 			],
 			"order": [[ 1, 'desc' ]],
