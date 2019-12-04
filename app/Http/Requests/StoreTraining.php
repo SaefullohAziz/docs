@@ -148,7 +148,8 @@ class StoreTraining extends FormRequest
             'school_id.required' => 'The school field is required.',
             'participant_id.required' => 'Participant is required for every training registration.',
             'participant_id.min' => 'Choose at least two participant.',
-            'participant_id.max' => 'The participant may not have more than :max persons.',
+            'participant_id.max' => 'The participants may not have more than :max people.',
+            'participant_id.size' => 'The participants can only be :size people.',
         ];
     }
 

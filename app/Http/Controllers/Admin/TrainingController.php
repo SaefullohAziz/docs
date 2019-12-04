@@ -200,7 +200,7 @@ class TrainingController extends Controller
         $this->saveParticipant($training, $request);
         $this->savePic($training, $request);
         event(new TrainingRegistered($training));
-        return redirect()->route('admin.payment.index')->with('alert-success', __($this->createdMessage) . ' ' . __('To complete this registration, please complete payment.'));
+        return redirect()->route('admin.payment.index')->with('alert-success', __($this->createdMessage) . ' ' . __('To complete this registration, please complete payment.') . ' ' . __('Please check your e-mail for more information.'));
     }
 
     /**
