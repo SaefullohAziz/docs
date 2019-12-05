@@ -433,7 +433,6 @@ Route::prefix('get')->name('get.')->middleware(['auth:web,admin'])->group(functi
 	Route::post('schoolChart', 'GetController@schoolChart')->name('schoolChart');
 	Route::post('studentChart', 'GetController@studentChart')->name('studentChart');
 	Route::post('schoolStatus', 'GetController@schoolStatus')->name('schoolStatus');
-	Route::post('get/regency', 'GetController@regency')->name('get.regency');
 	Route::post('school', 'GetController@school')->name('school');
 	Route::post('teacher', 'GetController@teacher')->name('teacher');
 	Route::post('generation', 'GetController@generation')->name('generation');
@@ -445,6 +444,7 @@ Route::prefix('get')->name('get.')->middleware(['auth:web,admin'])->group(functi
 	Route::post('subExam', 'GetController@subExam')->name('subExam');
 	Route::post('schoolStatusUpdate', 'GetController@schoolStatusUpdate')->name('schoolStatusUpdate');
 });
+Route::post('get/regency', 'GetController@regency')->name('get.regency');
 
 Route::get('locale/{locale}', function ($locale){
     Session::put('locale', $locale);
