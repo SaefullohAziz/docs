@@ -25,6 +25,22 @@ class ActivityLog extends Model
     }
 
     /**
+     * Get the users that owns the activity log.
+     */
+    public function users()
+    {
+        return $this->belongsTo('App\User', 'user_id');
+    }
+
+    /**
+     * Get the school that owns the activity log.
+     */
+    public function school()
+    {
+        return $this->belongsTo('App\School', 'school_id');
+    }
+
+    /**
      * Get the subsidy status for the activity log.
      */
     public function subsidyStatus()
