@@ -389,6 +389,11 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->middleware(['auth:ad
 			Route::get('/', 'SettingController@role')->name('index');
 			Route::post('/', 'SettingController@roleStore')->name('store');
 		});
+		Route::prefix('permission')->name('permission.')->group(function () {
+			Route::get('/', 'SettingController@permission')->name('index');
+			Route::post('/list', 'SettingController@permissionList')->name('list');
+			Route::post('/', 'SettingController@permissionStore')->name('store');
+		});
 		Route::prefix('form')->name('form.')->group(function () {
 			Route::get('/', 'SettingController@form')->name('index');
 			Route::post('/', 'SettingController@formStore')->name('store');
@@ -428,6 +433,7 @@ Route::prefix('get')->name('get.')->middleware(['auth:web,admin'])->group(functi
 	Route::post('schoolChart', 'GetController@schoolChart')->name('schoolChart');
 	Route::post('studentChart', 'GetController@studentChart')->name('studentChart');
 	Route::post('schoolStatus', 'GetController@schoolStatus')->name('schoolStatus');
+	Route::post('get/regency', 'GetController@regency')->name('get.regency');
 	Route::post('school', 'GetController@school')->name('school');
 	Route::post('teacher', 'GetController@teacher')->name('teacher');
 	Route::post('generation', 'GetController@generation')->name('generation');
@@ -439,7 +445,6 @@ Route::prefix('get')->name('get.')->middleware(['auth:web,admin'])->group(functi
 	Route::post('subExam', 'GetController@subExam')->name('subExam');
 	Route::post('schoolStatusUpdate', 'GetController@schoolStatusUpdate')->name('schoolStatusUpdate');
 });
-Route::post('get/regency', 'GetController@regency')->name('get.regency');
 
 Route::get('locale/{locale}', function ($locale){
     Session::put('locale', $locale);
@@ -456,7 +461,8 @@ Route::get('download/{dir}/{file}', function ($dir, $file) {
 
 Route::get('check', function (\Illuminate\Http\Request $request) {
 	if (env('APP_ENV') == 'local') {
-		
+		$data = \Illuminate\Support\Facades\Hash::make('rememberthat');
+		return $data;
 	}
 });
 
