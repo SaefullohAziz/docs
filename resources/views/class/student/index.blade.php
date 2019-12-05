@@ -155,7 +155,7 @@
 				<div class="modal-body">
 					<div class="container-fluid">
 						<div class="row">
-							{{ Form::bsSelect('col-12', __('SSP Status'), 'ssp_status', ['1' => __('Yes'), '0' => __('Not')], null, __('Select'), ['placeholder' => __('Select')]) }}
+							{{ Form::bsSelect('col-12', __('SSP Status'), 'ssp_status', ['yes' => __('Yes'), 'no' => __('Not')], null, __('Select'), ['placeholder' => __('Select')]) }}
 						</div>
 					</div>
 				</div>

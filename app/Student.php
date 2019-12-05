@@ -106,6 +106,20 @@ class Student extends Model
             ->join('school_levels', 'school_statuses.school_level_id', '=', 'school_levels.id')
             ->when(auth()->guard('web')->check(), function ($query) use ($request) {
                 $query->where('schools.id', auth()->user()->school->id);
+            })->when(! empty($request->sspStatus), function ($query) use ($request) {
+                if ($request->sspStatus == 'yes'){
+                    $query->whereExists( function ($query){
+                        $query->select(DB::raw(1))
+                        ->from('ssp_students')
+                        ->whereRaw('ssp_students.student_id = students.id');
+                    });
+                }elseif($request->sspStatus == 'no'){
+                    $query->whereNotExists( function ($query){
+                        $query->select(DB::raw(1))
+                        ->from('ssp_students')
+                        ->whereRaw('ssp_students.student_id = students.id');
+                    });
+                }
             })->when( ! empty($request->levels), function ($query) use ($request) {
             	$query->whereIn('school_levels.id', $request->levels);
             })->when( ! empty($request->level), function ($query) use ($request) {
