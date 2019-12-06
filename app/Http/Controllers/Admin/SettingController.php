@@ -8,6 +8,10 @@ use App\Training;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
+use DataTables;
 use Spatie\Image\Image;
 use Spatie\Image\Manipulations;
 
@@ -46,7 +50,7 @@ class SettingController extends Controller
                 'slug' => 'permission',
                 'description' => __('Role permission settings, such as manage data, CRUD, and approval.'),
                 'icon' => 'fas fa-th-list',
-                'url' => '#',
+                'url' => route('admin.setting.permission.index'),
             ],
             [
                 'title' => __('Form'),
@@ -194,6 +198,84 @@ class SettingController extends Controller
             $staff->syncRoles([$role->name]);
         }
         return redirect(url()->previous())->with('alert-success', __($this->updatedMessage));
+    }
+
+    /**
+     * Show permission settings page
+     *
+     * @return void
+     */
+    public function permission()
+    {
+        if ( ! auth()->guard('admin')->user()->can('access permission ' . $this->table)) {
+            return redirect()->route('admin.setting.index')->with('alert-danger', __($this->noPermission));
+        }
+        $view = [
+            'back' => route('admin.setting.index'),
+            'title' => __('Permission Settings'),
+            'breadcrumbs' => [
+                route('admin.setting.index') => __('Setting'),
+                route('admin.setting.permission.index') => __('Permission'),
+                null => __('Edit')
+            ],
+            'subtitle' => __('All About Permission Settings'),
+            'description' => __('You can adjust all permission settings here'),
+            'navs' => $this->settings,
+            'setting' => $this->settings->where('slug', 'permission')->first(),
+            'roles' => Role::orderBy('name', 'asc')->pluck('name', 'id')->toArray()
+        ];
+        return view('admin.setting.permission.index', $view);
+    }
+
+    /**
+     * Show permission list for datatable
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function permissionList(Request $request)
+    {
+        if ($request->ajax()) {
+            $permissions = DB::table('permissions')->orderBy('created_at', 'asc')->select('id', 'name', 'guard_name')->get();
+            return DataTables::of($permissions)
+                ->addIndexColumn()
+                ->editColumn('name', function($data) {
+                    return Str::title(str_replace('_', ' ', $data->name));
+                })
+                ->addColumn('roles', function($data) {
+                    $roles = DB::table('roles')->whereExists(function ($query) use ($data) {
+                        $query->select(DB::raw(1))
+                              ->from('role_has_permissions')
+                              ->whereRaw('role_has_permissions.role_id = roles.id')
+                              ->where('role_has_permissions.permission_id', $data->id);
+                    })->get()->pluck('name')->toArray();
+                    return Str::title(implode(', ', $roles));
+                })
+                ->addColumn('action', function($data) {
+                    return '<button class="btn btn-sm btn-warning" title="'.__("Edit").'" onclick="editPermission('.$data->id.')"><i class="fa fa-edit"></i> '.__("Edit").'</button>';
+                })
+                ->rawColumns(['DT_RowIndex', 'action'])
+                ->make(true);
+        }
+    }
+
+    /**
+     * Save permission settings
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function permissionStore(Request $request)
+    {
+        if ( ! auth()->guard('admin')->user()->can('access permission ' . $this->table)) {
+            return response()->json(['status' => false, 'message' => __($this->noPermission)], 422);
+        }
+        if ($request->ajax()) {
+            $roles = Role::whereIn('id', $request->roles)->pluck('name')->toArray();
+            $permission = Permission::find($request->permission);
+            $permission->syncRoles($roles);
+            return response()->json(['status' => true]);
+        }
     }
 
     /**

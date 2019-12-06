@@ -15,7 +15,10 @@ use App\StudentClass;
 use App\Student;
 use App\Department;
 use App\ExamType;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class GetController extends Controller
 {
@@ -359,6 +362,28 @@ class GetController extends Controller
                 'school' => School::where('id', $request->school)->select('id', 'name')->first()->toArray(),
                 'statuses' => SchoolStatus::orderBy('order_by', 'asc')->pluck('name', 'id')->toArray(),
             ];
+            return response()->json(['status' => true, 'result' => $data]);
+        }
+    }
+
+    public function role(Request $request)
+    {
+        if ($request->ajax()) {
+            $data = Role::when($request->filled('permission'), function ($query) use ($request) {
+                $query->whereHas('permissions', function ($permission) use ($request) {
+                    $permission->where('permissions.id', $request->permission);
+                });
+            })->select('id', DB::raw('CONCAT(UCASE(SUBSTRING(name, 1, 1)), LOWER(SUBSTRING(name, 2))) as name'))->get()->toArray();
+            return response()->json(['status' => true, 'result' => $data]);
+        }
+    }
+
+    public function permission(Request $request)
+    {
+        if ($request->ajax()) {
+            $data = Permission::with(['roles:id,name'])->when($request->filled('permission'), function ($query) use ($request) {
+                $query->where('id', $request->permission);
+            })->select('id', DB::raw('CONCAT(UCASE(SUBSTRING(name, 1, 1)), LOWER(SUBSTRING(name, 2))) as name'))->first()->toArray();
             return response()->json(['status' => true, 'result' => $data]);
         }
     }
