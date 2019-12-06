@@ -3,12 +3,27 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 use App\Traits\Uuids;
 use Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
 class SchoolLevel extends Model
 {
     use Uuids, HasRelationships;
+
+    /**
+     * The "booting" method of the model.
+     *
+     * @return void
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::addGlobalScope('order', function (Builder $builder) {
+            $builder->orderBy('order', 'asc');
+        });
+    }
     
 	/**
      * The attributes that are mass assignable.
