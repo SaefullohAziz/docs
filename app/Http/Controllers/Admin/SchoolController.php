@@ -210,6 +210,29 @@ class SchoolController extends Controller
             'isoCertificates' => $this->isoCertificates,
             'references' => $this->references,
             'data' => $school,
+            'activitieslists' => [
+                'statusUpdates' => [
+                    'title' => 'School progresses', 'variable' => 'progress', 'table' => null
+                ], 
+                'trainings' => [
+                    'title' =>'Trainings', 'variable' => 'training', 
+                    'table' => [
+                            'relation' => 'participants',
+                            'variable' => 'participant',
+                            'data' => ['name', 'position', 'phonenumber']
+                        ]
+                    ], 
+                'activities' => ['title' => 'Activities', 'variable' => 'activity', 'table' => null],
+                'studentClasses' => [
+                    'title' => 'Students', 'variable' => 'class', 
+                    'table' => [
+                            'relation' => 'students',
+                            'variable' => 'student',
+                            'data' => ['name', 'username', 'email']
+                        ]
+                    ],
+                'subsidies' => ['title' => 'Subsidies', 'variable' => 'subsidy', 'table' => null],
+            ],
             'documentCategories' => [
                 'Update Dokumen Persyaratan' => 'Update Dokumen Persyaratan', 
                 'Form Aplikasi & Komitmen' => 'Form Aplikasi & Komitmen', 

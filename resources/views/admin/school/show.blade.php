@@ -123,6 +123,136 @@
 
 		<div class="card card-primary" id="school-documents">
 			<div class="card-header">
+				<h4>{{ __('Activities') }}</h4>
+			</div>
+			<div class="card-body">
+				<div class="card">
+				@foreach ($activitieslists as $relation => $det)
+					<!-- {{ $det['title'] }} -->
+                    <div class="card-header border-botom border-primary">
+                    	<h4>{{ __($det['title']) }}</h4>
+						<div class="card-header-action">
+						<a data-collapse="#school-{{ $det['variable'] }}-collapse" class="btn btn-icon btn-info" href="#"><i class="fas fa-plus"></i></a>
+						</div>
+                    </div>
+                    <div class="collapse pl-3" id="school-{{ $det['variable'] }}-collapse" style="">
+						@php $i=1 @endphp
+						@php $no=1 @endphp
+						@foreach ($data->{$relation} as ${$det['variable']})
+							<div class="card-header border-botom">
+								@switch($relation)
+									@case('statusUpdates')
+										<h4>{{ __($progress->status->alias) }} @ {{ $progress->created_at }}</h4>
+										@break
+
+									@case('trainings')
+										<h4>{{ __($training->type) }} {{ '#'.$training->batch }} {{ '@ '.$training->created_at }}</h4>
+										@break
+
+									@case('activities')
+										<h4>{{ __($activity->type) }} @ {{ $activity->date }}</h4>
+										@break
+
+									@case('studentClasses')
+										<h4>{{ __($class->generation) }} {{ '@ '.$class->school_year }}</h4>
+										@break
+
+									@case('subsidies')
+										<h4>{{ __($subsidy->type) }} {{ '@ '.$subsidy->created_at }}</h4>
+										@break
+
+									@default
+								@endswitch
+								<div class="card-header-action">
+								<a data-collapse="#school-{{ $det['variable'] }}-{{$i}}-detail-collapse" class="btn btn-icon btn-info" href="#"><i class="fas fa-plus"></i></a>
+								</div>
+							</div>
+							<div class="collapse" id="school-{{ $det['variable'] }}-{{$i++}}-detail-collapse" style="">
+								<div class="card">
+									<div class="card-body">
+										@switch($relation)
+											@case('statusUpdates')
+												<p>{{ ! is_null($progress->updated_at) ? __('Updated at').' : '.$progress->updated_at : '' }}</p>
+												<p>{{ ! is_null($progress->staff_id) || ! is_null($progress->user_id) ? is_null($progress->staff_id) ? __('By').' : '.$progress->user->name : __('By').' : '.$progress->staff->name : ''  }}</p>
+												<p>{{ ! is_null($progress->detail) ? __('Detail').' : '.$progress->detail : ''}}</p>	
+												@break
+
+											@case('trainings')
+												<p>{{ ! is_null($training->updated_at) ? __('Updated at').' : '. $training->updated_at : '' }}</p>
+												<p>{{ ! is_null($training->date) ? __('Date').' : '.$training->date : '' }}</p>
+												<p>{{ ! is_null($training->until_date) ? __('Until date').' : '.$training->until_date : '' }}</p>
+												<p>{{ ! is_null($training->implementation) ? __('Implementation').' : '. $training->implementation : '' }}</p>
+												<p>{{ ! is_null($training->approval_code) ? __('Approval code').' : '. $training->approval_code : ''}}</p>
+												<p>{{ ! is_null($training->selection_result) ? __('Selection result').' : '. $training->selection_result : ''}}</p>
+												<p>{{ ! is_null($training->room_type) ? __('Room Type').' : '. $training->room_type : ''}}</p>
+												<p>{{ ! is_null($training->room_size) ? __('Room size').' : '. $training->room_size : ''}}</p>
+												<p>{{ ! is_null($training->booking_code) ? __('Booking code').' : '. $training->booking_code : ''}}</p>
+												<p>{{ ! is_null($training->detail) ? __('Detail').' : '. $training->detail : ''}}</p>
+												@break
+											@case('activities')
+												<p>{{ ! is_null($activity->updated_at) ? __('Updated at').' : '.$activity->updated_at : '' }}</p>
+												<p>{{ ! is_null($activity->implementer) ? __('Implementer').' : '.$activity->implementer : ''}}</p>	
+												<p>{{ ! is_null($activity->destination) ? __('Destination').' : '.$activity->destination : ''}}</p>	
+												<p>{{ ! is_null($activity->amount_of_teacher) ? __('Amount of teacher').' : '.$activity->amount_of_teacher : ''}}</p>
+												<p>{{ ! is_null($activity->amount_of_acp_student) ? __('Amount of ACP student').' : '.$activity->amount_of_acp_student : ''}}</p>
+												<p>{{ ! is_null($activity->amount_of_reguler_student) ? __('Amount of reguler student').' : '.$activity->amount_of_reguler_student : ''}}</p>
+												<p>{{ ! is_null($activity->amount_of_student) ? __('Amount of student').' : '.$activity->amount_of_student : ''}}</p>
+												<p>{{ ! is_null($activity->activity) ? __('Activity').' : '.$activity->activity : ''}}</p>
+												<p>{{ ! is_null($activity->activity_time) ? __('Activity time').' : '.$activity->activity_time : ''}}</p>
+												<p>{{ ! is_null($activity->period) ? __('Period').' : '.$activity->period : ''}}</p>
+												@break
+											@case('studentClasses')
+												<p>{{ ! is_null($class->updated_at) ? __('Updated at').' : '. $class->updated_at : '' }}</p>
+												<p>{{ ! is_null($class->closed_at) ? __('Closed at').' : '. $class->closed_at : '' }}</p>
+												<p>{{ ! is_null($class->grade) ? __('grade').' : '.$class->grade : '' }}</p>
+												@break
+
+											@case('subsidies')
+												<p>{{ ! is_null($subsidy->updated_at) ? __('Updated at').' : '. $subsidy->updated_at : '' }}</p>
+												<p>{{ ! is_null($subsidy->student_year) ? __('Student year').' : '. $subsidy->student_year : '' }}</p>
+												@break
+											@default
+										@endswitch
+										@if	(! is_null($det['table']))
+											<table class="table table-sm">
+												<thead>
+													<tr>
+														<th scope="col">#</th>
+														@foreach ($det['table']['data'] as $header)
+															<th scope="col" class='text-capitalize'>{{ __($header) }}</th>
+														@endforeach
+													</tr>
+												</thead>
+												<tbody>
+													@foreach (${$det['variable']}->{$det['table']['relation']} as ${$det['table']['variable']})
+													<tr>
+														<th scope="row">{{ $no++ }}</th>
+														@foreach ($det['table']['data'] as $header)
+															<td>{{ ${$det['table']['variable']}->{$header} }}</td>
+														@endforeach
+													</tr>
+														@if ($loop->last)
+															@php $no=1 @endphp
+														@endif
+													@endforeach
+												</tbody>
+											</table>
+										@endif
+									</div>
+								</div>
+							</div>
+							@if ($loop->last)
+								@php $i=1 @endphp
+							@endif
+						@endforeach
+                    </div>
+				@endforeach
+                </div>
+			</div>
+		</div>
+
+		<div class="card card-primary" id="school-documents">
+			<div class="card-header">
 				<h4>{{ __('Document') }}</h4>
 				<div class="card-header-action">
                     <div class="btn-group">
@@ -215,7 +345,7 @@
 		</div>
 
 		<div class="card card-primary chat-box" id="mychatbox">
-			<div class="card-header">
+			<div class="card-header border-botom">
 				<h4>{{ __('Comments') }}</h4>
 			</div>
 			<div class="card-body chat-content">
@@ -233,7 +363,7 @@
 					<div class="chat-item chat-left" style="">
 						<img src="{{ asset('storage/avatar/'.$comment->staff->avatar) }}">
 						<div class="chat-details">
-							<div class="chat-text">{ !! html_entity_decode($comment->message) !! }</div>
+							<div class="chat-text">{!! html_entity_decode($comment->message) !!}</div>
 							<div class="chat-time">{{ $comment->created_at }}</div>
 						</div>
 					</div>

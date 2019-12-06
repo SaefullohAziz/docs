@@ -55,6 +55,14 @@ class SchoolStatusUpdate extends Pivot
     }
 
     /**
+     * Get the staff that owns the status update.
+     */
+    public function user()
+    {
+        return $this->belongsTo('App\User', 'user_id');
+    }
+
+    /**
      * Get the attendance status for the school status update.
      */
     public function attendanceStatus()
