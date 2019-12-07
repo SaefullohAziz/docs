@@ -128,13 +128,28 @@ class GetController extends Controller
     public function school(Request $request)
     {
         if ($request->ajax()) {
-            $data = School::when( ! empty($request->level), function ($query) use ($request) {
+            $data = School::with(['statusUpdate.status.level'])->when($request->filled('level'), function ($query) use ($request) {
                 $query->byLevel($request->level);
             })->whereHas('status', function ($status) use ($request) {
-                $status->when( ! empty($request->status), function ($query) {
+                $status->when($request->filled('status'), function ($query) {
                     $query->where('school_statuses.id', $request->status);
                 });
-            })->orderBy('name', 'asc')->pluck('name', 'id')->toArray();
+            })->when($request->filled('search'), function ($query) use ($request) {
+                $query->where('name', 'LIKE', "%$request->search%");
+            })->when($request->filled('school'), function ($query) use ($request) {
+                $query->where('id', $request->school);
+            })->orderBy('name', 'asc');
+            if ($request->filled('school')) {
+                $data = $data->first();
+            } else {
+                $data = $data->pluck('name', 'id');
+            }
+            if ($request->filled('search')) {
+                $data = $data->map(function ($item, $key) {
+                    return ['id' => $key, 'text' => $item];
+                })->values();
+            }
+            $data = $data->toArray();
             return response()->json(['status' => true, 'result' => $data]);
         }
     }

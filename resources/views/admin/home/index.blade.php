@@ -36,6 +36,38 @@
 		@endif
 
 		<div class="row">
+			<div class="col-12">
+				<div class="card">
+					<div class="card-header">
+						<h4 class="card-title">{{ __('Search School') }}</h4>
+					</div>
+					<div class="card-body">
+						<div class="row">
+							<div class="col-12 col-sm-6 offset-sm-3">
+								<div class="form-group">
+									{{ Form::select('search_school', [], null, ['style' => 'width: 100%;', 'class' => 'remote-select2', 'placeholder' => __('School')]) }}
+								</div>
+							</div>
+							<div class="col-12">
+								<div class="table-responsive">
+									<table class="table table-sm table-striped search-school invisible">
+										<thead>
+											<tr>
+												<th>{{ __('Name') }}</th>
+												<th>{{ __('Level') }}</th>
+												<th>{{ __('Status') }}</th>
+											</tr>
+										</thead>
+										<tbody>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
 			<div class="col-sm-6">
 				<div class="card">
 					<div class="card-header">
@@ -255,6 +287,51 @@
 @section('script')
 	<script>
 		$(document).ready(function () {
+			$('.remote-select2').select2({
+				allowClear: true,
+				ajax: {
+					url: '{{ route('get.school') }}',
+					type: "POST",
+					dataType: 'json',
+					data: function (params) {
+						return {
+							_token: '{{ csrf_token() }}',
+							search: params.term,
+						}
+					},
+					processResults: function (data) {
+						return {
+							results: data.result,
+							pagination: {
+								more: false
+							}
+						};
+					},
+				},
+			});
+
+			$('select[name="search_school"]').change(function () {
+				$('.search-school tbody').html('');
+				$('.search-school').removeClass('visible').addClass('invisible');
+				if ($(this).val() != '') {
+					$.ajax({
+						url : "{{ route('get.school') }}",
+						type: "POST",
+						dataType: "JSON",
+						data: {"_token" : "{{ csrf_token() }}", "school": $(this).val()},
+						success: function(data)
+						{
+							$('.search-school tbody').append('<tr><td><a href="{{ url('admin/school') }}/'+data.result.id+'" target="_blank">'+data.result.name+'</a></td><td>'+data.result.status_update.status.level.name+'</td><td>'+data.result.status_update.status.name+'</td></tr>');
+							$('.search-school').removeClass('invisible').addClass('visible');
+						},
+						error: function (jqXHR, textStatus, errorThrown)
+						{
+							
+						}
+					});
+				}
+			});
+
 			$('[name="viewAllSchools"]').click(function () {
 				$('.schoolStatusesTable tbody tr:nth-child(n+6)').toggle();
 			});

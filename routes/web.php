@@ -443,6 +443,8 @@ Route::prefix('get')->name('get.')->middleware(['auth:web,admin'])->group(functi
 	Route::post('student', 'GetController@student')->name('student');
 	Route::post('subExam', 'GetController@subExam')->name('subExam');
 	Route::post('schoolStatusUpdate', 'GetController@schoolStatusUpdate')->name('schoolStatusUpdate');
+	Route::post('role', 'GetController@role')->name('role');
+	Route::post('permission', 'GetController@permission')->name('permission');
 });
 Route::post('get/regency', 'GetController@regency')->name('get.regency');
 
@@ -461,8 +463,14 @@ Route::get('download/{dir}/{file}', function ($dir, $file) {
 
 Route::get('check', function (\Illuminate\Http\Request $request) {
 	if (env('APP_ENV') == 'local') {
-		$data = \Illuminate\Support\Facades\Hash::make('rememberthat');
-		return $data;
+		$data = collect([
+			'a' => 'A',
+			'b' => 'B',
+			'c' => 'C'
+		])->map(function ($item, $key) {
+			return ['id' => $key, 'text' => $item];
+		})->values()->toArray();
+		dd($data);
 	}
 });
 
