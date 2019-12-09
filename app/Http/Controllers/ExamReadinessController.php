@@ -134,7 +134,7 @@ class ExamReadinessController extends Controller
                 route('exam.readiness.index') => __('Exam Readiness'),
                 null => __('Detail')
             ],
-            'schools' => School::orderBy('name', 'asc')->pluck('name', 'id')->toArray(),
+            'schools' => School::pluck('name', 'id')->toArray(),
             'types' => ExamType::orderBy('name', 'asc')->pluck('name', 'name')->toArray(),
             'generations' => StudentClass::orderBy('generation', 'asc')->pluck('generation', 'generation')->toArray(),
             'reference_schools' => School::has('ExamReadinessSchool')->pluck('name', 'name')->toArray(),

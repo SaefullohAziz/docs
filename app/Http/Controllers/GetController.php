@@ -138,7 +138,7 @@ class GetController extends Controller
                 $query->where('name', 'LIKE', "%$request->search%");
             })->when($request->filled('school'), function ($query) use ($request) {
                 $query->where('id', $request->school);
-            })->orderBy('name', 'asc');
+            });
             if ($request->filled('school')) {
                 $data = $data->first();
             } else {

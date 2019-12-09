@@ -45,7 +45,7 @@ class TeacherController extends Controller
                 null => 'Data'
             ],
             'levels' => SchoolLevel::pluck('name', 'id')->toArray(),
-            'schools' => School::orderBy('name', 'asc')->pluck('name', 'id')->toArray(),
+            'schools' => School::pluck('name', 'id')->toArray(),
         ];
         return view('admin.teacher.index', $view);
     }
@@ -93,7 +93,7 @@ class TeacherController extends Controller
                 route('admin.teacher.index') => __('Teacher'),
                 null => __('Create')
             ],
-            'schools' => School::orderBy('name', 'asc')->pluck('name', 'id')->toArray(),
+            'schools' => School::pluck('name', 'id')->toArray(),
         ];
         return view('admin.teacher.create', $view);
     }
@@ -138,7 +138,7 @@ class TeacherController extends Controller
                 route('admin.teacher.index') => __('Teacher'),
                 null => __('Detail')
             ],
-            'schools' => School::orderBy('name', 'asc')->pluck('name', 'id')->toArray(),
+            'schools' => School::pluck('name', 'id')->toArray(),
             'data' => $teacher
         ];
         return view('admin.teacher.show', $view);
@@ -161,7 +161,7 @@ class TeacherController extends Controller
                 route('admin.teacher.index') => __('Teacher'),
                 null => __('Edit')
             ],
-            'schools' => School::orderBy('name', 'asc')->pluck('name', 'id')->toArray(),
+            'schools' => School::pluck('name', 'id')->toArray(),
             'data' => $teacher
         ];
         return view('admin.teacher.edit', $view);

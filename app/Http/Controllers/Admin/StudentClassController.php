@@ -44,7 +44,7 @@ class StudentClassController extends Controller
                 null => 'Data'
             ],
             'levels' => SchoolLevel::pluck('name', 'id')->toArray(),
-            'schools' => School::orderBy('name', 'asc')->pluck('name', 'id')->toArray(),
+            'schools' => School::pluck('name', 'id')->toArray(),
             'generations' => StudentClass::pluck('generation', 'generation')->toArray(),
             'schoolYears' => StudentClass::pluck('school_year', 'school_year')->toArray(),
             'departments' => Department::pluck('name', 'id')->toArray(),
@@ -93,7 +93,7 @@ class StudentClassController extends Controller
                 route('admin.class.index') => __('Class'),
                 null => __('Create')
             ],
-            'schools' => School::has('implementations')->orderBy('name', 'asc')->pluck('name', 'id')->toArray(),
+            'schools' => School::has('implementations')->pluck('name', 'id')->toArray(),
             'schoolYear' => schoolYear()
         ];
         return view('admin.class.create', $view);
@@ -146,7 +146,7 @@ class StudentClassController extends Controller
                 route('admin.class.index') => __('Class'),
                 null => __('Detail')
             ],
-            'schools' => School::has('implementations')->orderBy('name', 'asc')->pluck('name', 'id')->toArray(),
+            'schools' => School::has('implementations')->pluck('name', 'id')->toArray(),
             'departments' => Department::whereHas('schoolImplementations', function ($query) use ($studentClass) {
                 $query->where('school_id', $studentClass->school_id);
             })->pluck('name', 'id')->toArray(),
@@ -176,7 +176,7 @@ class StudentClassController extends Controller
                 route('admin.class.index') => __('Class'),
                 null => __('Edit')
             ],
-            'schools' => School::has('implementations')->orderBy('name', 'asc')->pluck('name', 'id')->toArray(),
+            'schools' => School::has('implementations')->pluck('name', 'id')->toArray(),
             'departments' => Department::whereHas('schoolImplementations', function ($query) use ($studentClass) {
                 $query->where('school_id', $studentClass->school_id);
             })->pluck('name', 'id')->toArray(),

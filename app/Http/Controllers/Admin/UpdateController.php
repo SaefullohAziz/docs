@@ -78,7 +78,7 @@ class UpdateController extends Controller
             'navs' => $this->updates,
             'update' => $this->updates->where('slug', 'status')->first(),
             'levels' => SchoolLevel::pluck('name', 'id')->toArray(),
-            'schools' => School::orderBy('name', 'asc')->pluck('name', 'id')->toArray(),
+            'schools' => School::pluck('name', 'id')->toArray(),
         ];
         return view('admin.update.status.index', $view);
     }

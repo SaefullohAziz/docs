@@ -54,7 +54,7 @@ class ActivityController extends Controller
                 route('admin.activity.index') => __('Activity Submission'),
                 null => 'Data'
             ],
-            'schools' => School::orderBy('name', 'asc')->pluck('name', 'id')->toArray(),
+            'schools' => School::pluck('name', 'id')->toArray(),
             'types' => $this->types,
             'statuses' => $this->statuses,
         ];
@@ -110,7 +110,7 @@ class ActivityController extends Controller
                 route('admin.activity.index') => __('Activity Submission'),
                 null => __('Create')
             ],
-            'schools' => School::orderBy('name', 'asc')->pluck('name', 'id')->toArray(),
+            'schools' => School::pluck('name', 'id')->toArray(),
             'types' => $this->types,
         ];
         return view('admin.activity.create', $view);
@@ -163,7 +163,7 @@ class ActivityController extends Controller
                 route('admin.activity.index') => __('Activity Submission'),
                 null => __('Edit')
             ],
-            'schools' => School::orderBy('name', 'asc')->pluck('name', 'id')->toArray(),
+            'schools' => School::pluck('name', 'id')->toArray(),
             'types' => $this->types,
             'statuses' => $this->statuses,
             'data' => $activity,
@@ -188,7 +188,7 @@ class ActivityController extends Controller
                 route('admin.activity.index') => __('Activity Submission'),
                 null => __('Edit')
             ],
-            'schools' => School::orderBy('name', 'asc')->pluck('name', 'id')->toArray(),
+            'schools' => School::pluck('name', 'id')->toArray(),
             'types' => $this->types,
             'statuses' => $this->statuses,
             'data' => $activity

@@ -48,7 +48,7 @@ class ExamReadinessController extends Controller
                 route('admin.exam.readiness.index') => __('Exam Readiness'),
                 null => 'Data'
             ],
-            'schools' => School::orderBy('name', 'asc')->pluck('name', 'id')->toArray(),
+            'schools' => School::pluck('name', 'id')->toArray(),
             'types' => ExamType::orderBy('name', 'asc')->pluck('name', 'name')->toArray(),
         ];
 
@@ -99,7 +99,7 @@ class ExamReadinessController extends Controller
                 null => __('Bin')
             ],
             'subtitle' => __('Bin'),
-            'schools' => School::orderBy('name', 'asc')->pluck('name', 'id')->toArray(),
+            'schools' => School::pluck('name', 'id')->toArray(),
             'types' => ExamType::orderBy('name', 'asc')->pluck('name', 'name')->toArray(),
         ];
 
@@ -125,7 +125,7 @@ class ExamReadinessController extends Controller
                 route('admin.exam.readiness.index') => __('Exam Readiness'),
                 null => __('Create')
             ],
-            'schools' => School::orderBy('name', 'asc')->pluck('name', 'id')->toArray(),
+            'schools' => School::pluck('name', 'id')->toArray(),
             'types' => ExamType::orderBy('name', 'asc')->pluck('name', 'name')->toArray(),
             'generations' => StudentClass::orderBy('generation', 'asc')->pluck('generation', 'generation')->toArray(),
             'referenceSchools' => School::has('examReadinessSchool')->pluck('name', 'name')->toArray()
@@ -174,7 +174,7 @@ class ExamReadinessController extends Controller
                 route('admin.exam.readiness.index') => __('Exam Readiness'),
                 null => __('Detail')
             ],
-            'schools' => School::orderBy('name', 'asc')->pluck('name', 'id')->toArray(),
+            'schools' => School::pluck('name', 'id')->toArray(),
             'types' => ExamType::orderBy('name', 'asc')->pluck('name', 'name')->toArray(),
             'subTypes' => ExamType::where('name', $examReadiness->exam_type)->whereNotNull('sub_name')->pluck('sub_name', 'sub_name')->toArray(),
             'generations' => StudentClass::orderBy('generation', 'asc')->pluck('generation', 'generation')->toArray(),
@@ -201,7 +201,7 @@ class ExamReadinessController extends Controller
                 route('admin.exam.readiness.index') => __('Exam Readiness'),
                 null => __('Edit')
             ],
-            'schools' => School::orderBy('name', 'asc')->pluck('name', 'id')->toArray(),
+            'schools' => School::pluck('name', 'id')->toArray(),
             'types' => ExamType::orderBy('name', 'asc')->pluck('name', 'name')->toArray(),
             'subTypes' => ExamType::where('name', $examReadiness->exam_type)->whereNotNull('sub_name')->pluck('sub_name', 'sub_name')->toArray(),
             'generations' => StudentClass::orderBy('generation', 'asc')->pluck('generation', 'generation')->toArray(),

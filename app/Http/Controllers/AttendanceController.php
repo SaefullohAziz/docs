@@ -118,7 +118,7 @@ class AttendanceController extends Controller
             'participantPositions' => $this->participantPositions,
             'transportations' => $this->transportations,
             'arrivalPoints' => $this->arrivalPoints,
-            'destinations' => School::has('visitationDestinations')->orderBy('name', 'asc')->pluck('name', 'name')->toArray(),
+            'destinations' => School::has('visitationDestinations')->pluck('name', 'name')->toArray(),
         ];
         return view('attendance.create', $view);
     }
@@ -170,13 +170,13 @@ class AttendanceController extends Controller
                 route('attendance.index') => __('Attendance Confirmation'),
                 null => __('Detail')
             ],
-            'schools' => School::orderBy('name', 'asc')->pluck('name', 'id')->toArray(),
+            'schools' => School::pluck('name', 'id')->toArray(),
             'types' => $this->types,
             'participants' => $this->participants,
             'participantPositions' => $this->participantPositions,
             'transportations' => $this->transportations,
             'arrivalPoints' => $this->arrivalPoints,
-            'destinations' => School::has('visitationDestinations')->orderBy('name', 'asc')->pluck('name', 'name')->toArray(),
+            'destinations' => School::has('visitationDestinations')->pluck('name', 'name')->toArray(),
             'contactPersons' => Teacher::whereHas('audience', function ($query) use ($attendance) {
                 $query->where('attendances.id', $attendance->id);
             })->orderBy('name', 'asc')->pluck('name', 'id')->toArray(),
@@ -202,13 +202,13 @@ class AttendanceController extends Controller
                 route('attendance.index') => __('Attendance Confirmation'),
                 null => __('Edit')
             ],
-            'schools' => School::orderBy('name', 'asc')->pluck('name', 'id')->toArray(),
+            'schools' => School::pluck('name', 'id')->toArray(),
             'types' => $this->types,
             'participants' => $this->participants,
             'participantPositions' => $this->participantPositions,
             'transportations' => $this->transportations,
             'arrivalPoints' => $this->arrivalPoints,
-            'destinations' => School::has('visitationDestinations')->orderBy('name', 'asc')->pluck('name', 'name')->toArray(),
+            'destinations' => School::has('visitationDestinations')->pluck('name', 'name')->toArray(),
             'contactPersons' => Teacher::whereHas('audience', function ($query) use ($attendance) {
                 $query->where('attendances.id', $attendance->id);
             })->orderBy('name', 'asc')->pluck('name', 'id')->toArray(),

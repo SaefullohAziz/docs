@@ -63,7 +63,7 @@ class SubsidyController extends Controller
                 route('admin.subsidy.index') => __('Subsidy'),
                 null => __('Data')
             ],
-            'schools' => School::orderBy('name', 'asc')->pluck('name', 'id')->toArray(),
+            'schools' => School::pluck('name', 'id')->toArray(),
             'types' => $this->types,
             'statuses' => Status::byNames(['Created', 'Processed', 'Canceled', 'Approved', 'Payment', 'Paid', 'Sent'])->pluck('name', 'id')->toArray(),
         ];

@@ -124,7 +124,7 @@ class TeacherController extends Controller
                 route('teacher.index') => __('Teacher'),
                 null => __('Detail')
             ],
-            'schools' => School::orderBy('name', 'asc')->pluck('name', 'id')->toArray(),
+            'schools' => School::pluck('name', 'id')->toArray(),
             'data' => $teacher
         ];
         return view('teacher.show', $view);
@@ -144,7 +144,7 @@ class TeacherController extends Controller
                 route('teacher.index') => __('Teacher'),
                 null => __('Edit')
             ],
-            'schools' => School::orderBy('name', 'asc')->pluck('name', 'id')->toArray(),
+            'schools' => School::pluck('name', 'id')->toArray(),
             'data' => $teacher
         ];
         return view('teacher.edit', $view);
