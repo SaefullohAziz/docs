@@ -119,7 +119,9 @@ class HomeController extends Controller
                     })->limit(5)->select('id', 'name')->get()->toArray(),
                 ],
             ],
-            'schoolPerProvince' => Province::withCount('schools')->get()->toArray(),
+            'schoolPerProvince' => Province::withCount(['schools' => function ($school) {
+                $school->withoutGlobalScope('order');
+            }])->get()->toArray(),
             'islands' => Island::pluck('name', 'id')->toArray(),
             'provinces' => Province::pluck('name', 'id')->toArray(),
             'levels' => SchoolLevel::pluck('name', 'id')->toArray(),
