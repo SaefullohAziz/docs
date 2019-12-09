@@ -94,7 +94,9 @@ class PaymentPolicy
             if ($payment->subsidy->count() || $payment->training->count()) {
                 return $payment->paymentStatus->status->name == 'Published';
             }
+            return false;
         }
+        return false;
     }
 
     /**
