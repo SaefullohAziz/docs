@@ -12,7 +12,7 @@
 */
 
 // Auth
-Auth::routes(['register' => false, 'reset' => false]);
+Auth::routes(['register' => false]);
 
 // School
 Route::prefix('school')->name('school.')->group(function () {

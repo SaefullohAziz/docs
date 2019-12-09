@@ -52,17 +52,6 @@ class User extends Authenticatable implements HasMedia
     }
 
     /**
-     * Route notifications for the mail channel.
-     *
-     * @param  \Illuminate\Notifications\Notification  $notification
-     * @return string
-     */
-    public function routeNotificationForMail($notification)
-    {
-        return $this->school->email;
-    }
-
-    /**
      * Register media collection
      */
     public function registerMediaCollections()
