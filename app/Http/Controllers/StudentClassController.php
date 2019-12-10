@@ -124,7 +124,7 @@ class StudentClassController extends Controller
             'school_year' => schoolYear(),
             'grade' => 'Kelas 10'
         ]);
-        $school->studentClass()->firstOrCreate($request->except(['_token', 'submit']));
+        $school->studentClasses()->firstOrCreate($request->except(['_token', 'submit']));
         return redirect(url()->previous())->with('alert-success', __($this->createdMessage));
     }
 
