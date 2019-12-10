@@ -36,7 +36,7 @@ class HomeController extends Controller
             'schoolComments' => SchoolLevel::orderBy('created_at', 'asc')->select('id', 'name')->get()->each(function ($schoolComment) {
                 $schoolComment->load(['schoolComments' => function ($query) {
                     $query->latest('created_at')->limit(20);
-                }]);
+                }, 'schoolComments.school.statusUpdate.status']);
             }),
             'statusMovements' => SchoolLevel::orderBy('created_at', 'asc')->select('id', 'name')->get()->each(function ($statusMovement) {
                 $statusMovement->load(['statusUpdates' => function ($query) {

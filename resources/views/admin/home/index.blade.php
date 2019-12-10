@@ -94,6 +94,7 @@
 														<img alt="image" class="rounded-circle {{ $loop->odd?'order-2 ml-2':'mr-2' }}" width="50" src="{{ asset($comment->staff->avatar) }}">
 														<div class="media-body">
 															<div class="media-title mt-0 mb-0">{{ $comment->staff->name }}</div>
+															<div class="text-time mt-0 mb-0">{{ $comment->school->name }} &middot; {{ $comment->school->statusUpdate->status->name }}</div>
 															<div class="text-time mt-0 mb-0">{{ $comment->created_at }}</div>
 															<div class="media-description text-muted mt-0 mb-0">
 																{!! html_entity_decode($comment->message) !!}
