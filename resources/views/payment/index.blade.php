@@ -132,6 +132,10 @@
       			});
       		},
   		});
+		
+		@if (session('alert-success'))
+			swal("", "{{ session('alert-success') }}", "success");
+		@endif
 	});
 
 	function reloadTable() {
