@@ -17,6 +17,7 @@ class Controller extends BaseController
     protected $noPermission;
     protected $unauthorizedMessage;
     protected $restoredMessage;
+    protected $savedSettingMessage;
 
     public function __construct()
     {
@@ -26,5 +27,6 @@ class Controller extends BaseController
         $this->noPermission = __('You have no related permission.');
         $this->unauthorizedMessage = __('This action is unauthorized.');
         $this->restoredMessage = __('Data successfully restored.');
+        $this->savedSettingMessage = __('Settings saved successfully.');
     }
 }

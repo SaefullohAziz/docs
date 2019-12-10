@@ -274,7 +274,7 @@ class SettingController extends Controller
             $roles = Role::whereIn('id', $request->roles)->pluck('name')->toArray();
             $permission = Permission::find($request->permission);
             $permission->syncRoles($roles);
-            return response()->json(['status' => true]);
+            return response()->json(['status' => true, 'message' => __($this->savedSettingMessage)]);
         }
     }
 

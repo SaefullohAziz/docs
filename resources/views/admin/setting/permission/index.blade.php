@@ -42,6 +42,15 @@
                 </div>
             </div>
             <div class="col-md-9">
+
+                <div class="alert alert-success alert-dismissible show fade setting-alert d-none">
+                    <div class="alert-body">
+                        <button class="close" data-dismiss="alert">
+                            <span>&times;</span>
+                        </button>
+                    </div>
+                </div>
+
                 <div class="card">
                     <div class="card-header">
                         <h4>{{ $title }}</h4>
@@ -111,6 +120,10 @@
                     data: $('#edit-permission-form').serialize(),
                     success: function(data)
                     {
+                        if (data.status == true) {
+                            $('.setting-alert .alert-body').append(data.message);
+                            $('.setting-alert').removeClass('d-none').addClass('d-block');
+                        }
                         $('#editPermissionModal').modal('hide');
                         reloadTable();
                     },
@@ -129,6 +142,8 @@
             $('#edit-permission-form [name="permission"]').val('');
             $('#edit-permission-form [name="roles[]"]').val(null).change();
             $('.edit-permission-title').html('');
+            $('.setting-alert .alert-body').html('<button class="close" data-dismiss="alert"><span>&times;</span></button>');
+            $('.setting-alert').removeClass('d-block').addClass('d-none');
             $.ajax({
 	        	url : "{{ route('get.permission') }}",
 	        	type: "POST",
