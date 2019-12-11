@@ -60,27 +60,26 @@ class ResetPasswordController extends Controller
         // will update the password on an actual user model and persist it to the
         // database. Otherwise we will parse the error and return the response.
 
-        $user = User::where('email', $request->email)->where('deleted_at', NULL)->count();
-        $admin = Admin::where('email',$request->email )->where('deleted_at', NULL)->count();
+        $user = User::where('email', $request->email)->whereNull('deleted_at')->first();
+        $admin = Admin::where('email',$request->email )->whereNull('deleted_at')->first();
 
-        if ($user > 0) {
+        if ($user) {
             $response = $this->broker()->reset(
                 $this->credentials($request), function ($user, $password) {
                     $this->resetPassword($user, $password);
                 }
             );
-        }
-
-        if ($admin > 0) {
+        } elseif ($admin) {
             $response = $this->brokerAdmin()->reset(
                 $this->credentials($request), function ($admin, $password) {
                     $this->resetPasswordAdmin($admin, $password);
                 }
             );
+        } else {
+            $response = $this->broker()->sendResetLink(
+                $this->credentials($request)
+            );
         }
-        $response = $this->broker()->sendResetLink(
-            $this->credentials($request)
-        );
         // If the password was successfully reset, we will redirect the user back to
         // the application's home authenticated view. If there is an error we can
         // redirect them back to where they came from with their error message.

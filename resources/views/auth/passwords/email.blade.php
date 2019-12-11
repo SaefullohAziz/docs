@@ -25,7 +25,7 @@
 
                 <div class="form-group">
                   <div class="d-block">
-                    <label for="email">{{ __('E-Mail Address') }}</label>
+                    <label for="email">{{ __('E-Mail Or Username') }}</label>
                     <div class="float-right">
                       @if (Route::has('login'))
                       <a href="{{ route('login') }}" class="text-small">
@@ -34,7 +34,7 @@
                       @endif
                     </div>
                   </div>
-                  <input id="email" type="email" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" name="email" tabindex="1" value="{{ old('email') }}" required autofocus>
+                  <input id="email" type="text" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" name="email" tabindex="1" value="{{ old('email') }}" required autofocus>
 
                   @if ($errors->has('email'))
                     <span class="invalid-feedback" role="alert">

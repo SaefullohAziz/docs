@@ -37,31 +37,53 @@ class ForgotPasswordController extends Controller
     
     public function sendResetLinkEmail(Request $request)
     {
-        $this->validateEmail($request);
+        // $this->validateEmail($request);
 
         // We will send the password reset link to this user. Once we have attempted
         // to send the link, we will examine the response then see the message we
         // need to show to the user. Finally, we'll send out a proper response.
 
-        $user = User::where('email', $request->email)->whereNull('deleted_at')->count();
-        $admin = Admin::where('email', $request->email)->whereNull('deleted_at')->count();
+        $user = User::where('email', $request->email)->orWhere('username', $request->email)->whereNull('deleted_at')->first();
+        $admin = Admin::where('email', $request->email)->orWhere('username', $request->email)->whereNull('deleted_at')->first();
 
-        if ($user > 0) {
+        if ($user) {
+            $response = $this->broker()->sendResetLink(
+                ['email' => $user->email]
+            );
+        }elseif ($admin) {
+            $response = $this->brokerAdmin()->sendResetLink(
+                ['email' => $admin->email]
+            );
+        }else{
             $response = $this->broker()->sendResetLink(
                 $this->credentials($request)
             );
         }
-        if ($admin > 0) {
-            $response = $this->brokerAdmin()->sendResetLink(
-                $this->credentials($request)
-            );
-        }
-        $response = $this->broker()->sendResetLink(
-            $this->credentials($request)
-        );
         return $response == Password::RESET_LINK_SENT
                     ? $this->sendResetLinkResponse($request, $response)
                     : $this->sendResetLinkFailedResponse($request, $response);
+    }
+
+    /**
+     * Validate the email for the given request.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return void
+     */
+    protected function validateEmail(Request $request)
+    {
+        $request->validate(['email' => 'required']);
+    }
+
+    /**
+     * Get the needed authentication credentials from the request.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return array
+     */
+    protected function credentials(Request $request)
+    {
+        return $request->only(['email', 'username']);
     }
 
     public function broker()
