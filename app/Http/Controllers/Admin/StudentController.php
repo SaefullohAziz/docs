@@ -373,22 +373,22 @@ class StudentController extends Controller
         } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
             $failures = $e->failures();
             $message = [];
-            $row = 0;
+            $row = 2;
             $attribute = [];
             foreach ($failures as $failure) {
                 if ($row == $failure->row()) {
-                        $attribute[] = $failure->attribute();
+                    $attribute[] = $failure->attribute();
                 }
                 else{
                     $row++;
                     if ($attribute) {
-                        $message[] = 'Error detected on row '. $failure->row() . ' on attribute ' . ucwords(implode(" , ", $attribute)) .' !';
+                        $message[] = 'Error detected on row '. $row . ' on attribute ' . ucwords(implode(" , ", $attribute)) .' !';
                     }
                 } 
 
                 // get last foreach
                 if( !next( $failures ) ) { 
-                    $message[] = 'Error detected on row '. $failure->row() . ' on attribute ' . ucwords(implode(" , ", $attribute)) .' !';
+                    $message[] = 'Error detected on row '. $row . ' on attribute ' . ucwords(implode(" , ", $attribute)) .' !';
                 }
 
             }

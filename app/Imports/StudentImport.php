@@ -6,11 +6,14 @@ use App\Student;
 use App\StudentClass;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Illuminate\Validation\Rule;
+use Maatwebsite\Excel\Concerns\Importable;
 use Maatwebsite\Excel\Concerns\WithValidation;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
 class StudentImport implements ToModel, WithHeadingRow
 {
+    use Importable;
+
     public function __construct(StudentClass $studentClass)
     {
         $this->studentClass = $studentClass;
