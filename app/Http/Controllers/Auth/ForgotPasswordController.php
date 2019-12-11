@@ -83,7 +83,7 @@ class ForgotPasswordController extends Controller
      */
     protected function credentials(Request $request)
     {
-        return $request->only(['email', 'username']);
+        return $request->only('email');
     }
 
     public function broker()
