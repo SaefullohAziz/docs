@@ -129,6 +129,22 @@ class Status extends Model
     }
 
     /**
+     * Get the grant status for the status.
+     */
+    public function grantStatuses()
+    {
+        return $this->hasMany('App\GrantStatus');
+    }
+
+    /**
+     * The grant that belong to the status.
+     */
+    public function grants()
+    {
+        return $this->belongsToMany('App\Grant', 'grant_statuses')->using('App\GrantStatus')->withTimestamps();
+    }
+
+    /**
      * Scope a query to only include specific status of given names.
      *
      * @param  \Illuminate\Database\Eloquent\Builder  $query

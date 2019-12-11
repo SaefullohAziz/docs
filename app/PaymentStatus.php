@@ -11,31 +11,11 @@ class PaymentStatus extends Pivot
     use Uuids;
 
     /**
-     * The table associated with the model.
-     *
-     * @var string
-     */
-    protected $table = 'payment_statuses';
-
-    /**
      * The attributes that aren't mass assignable.
      *
      * @var array
      */
     protected $guarded = [];
-
-    /**
-     * The "booting" method of the model.
-     *
-     * @return void
-     */
-    protected static function boot()
-    {
-        parent::boot();
-        Pivot::creating(function($pivot) {
-            $pivot->id = (string) \Illuminate\Support\Str::uuid();
-        });
-    }
     
     /**
      * Get the payment that owns the payment status.

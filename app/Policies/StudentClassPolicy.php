@@ -54,7 +54,7 @@ class StudentClassPolicy
      */
     public function create(User $user)
     {
-        //
+        return $user->school->implementations->count();
     }
 
     /**

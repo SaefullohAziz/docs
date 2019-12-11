@@ -113,6 +113,22 @@ class Pic extends Model
     }
 
     /**
+     * Get the grant status for the pic.
+     */
+    public function grantPics()
+    {
+        return $this->hasMany('App\GrantPic');
+    }
+
+    /**
+     * The grant that belong to the pic.
+     */
+    public function grants()
+    {
+        return $this->belongsToMany('App\Grant', 'grant_pics')->using('App\GrantPic')->withTimestamps();
+    }
+
+    /**
      * Scope a query to only include specific pic of given school.
      *
      * @param  \Illuminate\Database\Eloquent\Builder  $query

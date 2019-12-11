@@ -231,6 +231,14 @@ class School extends Model
     }
 
     /**
+     * Get the grant for the school.
+     */
+    public function grants()
+    {
+        return $this->hasMany('App\Grant');
+    }
+
+    /**
      * Get the user for the school.
      */
     public function user()

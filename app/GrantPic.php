@@ -6,20 +6,20 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 use App\Traits\Uuids;
 
-class DocumentPic extends Pivot
+class GrantPic extends Pivot
 {
     use Uuids;
     
     /**
-     * Get the document that owns the document pic.
+     * Get the grant that owns the grant pic.
      */
-    public function document()
+    public function grant()
     {
-        return $this->belongsTo('App\Document');
+        return $this->belongsTo('App\Grant');
     }
 
     /**
-     * Get the pic that owns the document pic.
+     * Get the pic that owns the grant pic.
      */
     public function pic()
     {
