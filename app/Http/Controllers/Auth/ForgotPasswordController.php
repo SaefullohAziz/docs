@@ -43,8 +43,8 @@ class ForgotPasswordController extends Controller
         // to send the link, we will examine the response then see the message we
         // need to show to the user. Finally, we'll send out a proper response.
 
-        $user = User::where('email', $request->email)->where('deleted_at', NULL)->count();
-        $admin = Admin::where('email',$request->email )->where('deleted_at', NULL)->count();
+        $user = User::where('email', $request->email)->whereNull('deleted_at')->count();
+        $admin = Admin::where('email', $request->email)->whereNull('deleted_at')->count();
 
         if ($user > 0) {
             $response = $this->broker()->sendResetLink(
@@ -56,6 +56,9 @@ class ForgotPasswordController extends Controller
                 $this->credentials($request)
             );
         }
+        $response = $this->broker()->sendResetLink(
+            $this->credentials($request)
+        );
         return $response == Password::RESET_LINK_SENT
                     ? $this->sendResetLinkResponse($request, $response)
                     : $this->sendResetLinkFailedResponse($request, $response);
