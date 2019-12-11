@@ -10,7 +10,7 @@ use Maatwebsite\Excel\Concerns\Importable;
 use Maatwebsite\Excel\Concerns\WithValidation;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
-class StudentImport implements ToModel, WithHeadingRow
+class StudentImport implements ToModel, WithValidation, WithHeadingRow
 {
     use Importable;
 
