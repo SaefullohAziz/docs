@@ -169,9 +169,14 @@ class ResetPasswordController extends Controller
      * @param string $token
      * @return void
      */
-    public function showResetForm($token = null)
+    public function showResetForm(Request $request, $token = null)
     {
-        return view('auth.passwords.reset', ['title' => 'Reset Password', 'token' => $token]);
+        $view = [
+            'title' => 'Reset Password',
+            'token' => $token,
+            'email' => $request->email
+        ];
+        return view('auth.passwords.reset', $view);
     }
 
     public function broker()
