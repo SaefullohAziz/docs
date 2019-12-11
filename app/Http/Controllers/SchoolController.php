@@ -237,7 +237,6 @@ class SchoolController extends Controller
             return redirect()->route('home')->with('alert-danger', __($this->unauthorizedMessage));
         }
         $school = School::find(auth()->user()->school->id);
-        $school->implementations()->delete();
         $department = Department::find($request->department);
         if ( ! $department) {
             $department = Department::firstOrCreate([
@@ -245,14 +244,18 @@ class SchoolController extends Controller
                 'abbreviation' => $request->other_department
             ]);
         }
-        $pic = Pic::create([
-            'name' => $request->name,
-            'position' => $request->position,
-            'phone_number' => $request->phone_number,
-            'email' => $request->email
-        ]);
-        $school->pic()->attach($pic->id);
-        $school->implementations()->create(['department_id' => $department->id]);
+        if ($school->implementations->count() < 1) {
+            $school->implementations()->create(['department_id' => $department->id]);
+        }
+        if ($school->pic->count() < 2) {
+            $pic = Pic::create([
+                'name' => $request->name,
+                'position' => $request->position,
+                'phone_number' => $request->phone_number,
+                'email' => $request->email
+            ]);
+            $school->pic()->attach($pic->id);
+        }
         return redirect()->route('home')->with('alert-success', __($this->updatedMessage));
     }
 
