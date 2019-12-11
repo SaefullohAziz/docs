@@ -126,4 +126,19 @@ class User extends Authenticatable implements HasMedia
         }
         return false;
     }
+
+    /**
+     * Determine user's school status
+     */
+    public function hadStatus($statuses)
+    {
+        if ( ! is_array($statuses)) {
+            $statuses = explode(',', str_replace(', ', ',', $statuses));
+        }
+        $selectedStatuses = \App\SchoolStatus::whereHas('level', function ($level) {
+            $level->where('type', 'level');
+        })->orderBy('order_by', 'asc')->pluck('order_by')->toArray();
+        $status = collect($statuses)->max();
+        return $this->school->statusUpdate->status->order_by > $status;
+    }
 }

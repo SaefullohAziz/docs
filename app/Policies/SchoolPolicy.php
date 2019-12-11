@@ -77,7 +77,7 @@ class SchoolPolicy
      */
     public function set(User $user)
     {
-        if ($user->hasStatus(['4a'])) {
+        if ($user->hadStatus(['4a'])) {
             return $user->school->pic->count() < 2 || $user->school->implementations->count() < 1;
         }
     }
