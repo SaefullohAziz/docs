@@ -17,7 +17,7 @@ class Subsidy extends Model
      *
      * @var array
      */
-    protected $fillable = ['school_id', 'type', 'submission_letter'];
+    protected $fillable = ['school_id', 'type', 'qty', 'submission_letter'];
 
     /**
      * Get the school that owns the subsidy.

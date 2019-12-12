@@ -36,6 +36,8 @@
                                 <legend>{{ __('Data') }}</legend>
                                 {{ Form::bsSelect(null, __('Type'), 'type', $types, old('type'), __('Select'), ['placeholder' => __('Select'), 'required' => '']) }}
 
+                                {{ Form::bsText(null, __('Quantities'), 'qty', old('qty'), __('0'), ['required' => '']) }}
+
                                 {{ Form::bsFile(null, __('Submission Letter'), 'submission_letter', old('submission_letter'), ['required' => ''], [__('File with PDF/JPG/PNG format up to 5MB.')]) }}
                             </fieldset>
                             <fieldset class="{{ (old('type')=='Student Starter Pack (SSP)'?'d-block':'d-none') }}">
@@ -101,14 +103,20 @@
 			if ($(this).val() == 'Student Starter Pack (SSP)') {
 	    		$('select[name="student"]').closest('fieldset').removeClass('d-none').addClass('d-block');
 	    		$('select[name="student_year"]').closest('fieldset').removeClass('d-block').addClass('d-none');
-	    		$('[name="report"], [name="student_year"]').prop('required', false);
+	    		$('[name="report"], [name="student_year"]').prop('required', false).prop('disabled', false);
+	    		$('[name="qty"]').parent().removeClass('d-none').addClass('d-block');
+				$('[name="qty"]').prop('required', true).prop('disabled', false);
 	    	} else if ($(this).val() == 'Axioo Next Year Support') {
 	    		$('select[name="student_year"]').closest('fieldset').removeClass('d-none').addClass('d-block');
 	    		$('select[name="student"]').closest('fieldset').removeClass('d-block').addClass('d-none');
-	    		$('[name="report"], [name="student_year"]').prop('required', true);
+	    		$('[name="report"], [name="student_year"]').prop('required', true).prop('disabled', false);
+			} else if ($(this).val() == 'Notebook Assembling & Troubleshooting Training (NATT)') {
+				$('[name="qty"]').parent().removeClass('d-none').addClass('d-block');
+				$('[name="qty"]').prop('required', true).prop('disabled', false);
 	    	} else {
 	    		$('select[name="student"], select[name="student_year"]').closest('fieldset').removeClass('d-block').addClass('d-none');
-	    		$('[name="report"], [name="student_year"]').prop('required', false);
+	    		$('[name="qty"]').parent().removeClass('d-block').addClass('d-none');
+	    		$('[name="report"], [name="student_year"], [name="qty"]').prop('required', false).prop('disabled', true);
 	    	}
 		});
 
