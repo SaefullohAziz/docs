@@ -408,7 +408,7 @@ class SubsidyController extends Controller
      */
     public function export(Request $request)
     {
-        return (new SubsidiesExport($request))->download('subsidy-'.date('d-m-Y-h-m-s').'.xlsx');
+        return (new SubsidiesExport($request))->download('subsidy-'.date('d-m-Y-h-i-s').'.xlsx');
     }
 
     /**

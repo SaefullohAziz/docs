@@ -36,5 +36,6 @@ class DatabaseSeeder extends Seeder
         $this->call(TrainingSettingsSeeder::class);
         $this->call(ExamReadinessSettingsSeeder::class);
         $this->call(UpdatePermissionsSeeder::class);
+        $this->call(GrantPermissionsSeeder::class);
     }
 }

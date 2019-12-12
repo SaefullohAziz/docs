@@ -12,6 +12,7 @@ use App\Training;
 use App\ExamReadiness;
 use App\Attendance;
 use App\Payment;
+use App\Grant;
 use App\User;
 use App\Observers\SchoolObserver;
 use App\Observers\TeacherObserver;
@@ -23,6 +24,7 @@ use App\Observers\TrainingObserver;
 use App\Observers\ExamReadinessObserver;
 use App\Observers\AttendanceObserver;
 use App\Observers\PaymentObserver;
+use App\Observers\GrantObserver;
 use App\Observers\UserObserver;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
@@ -56,6 +58,7 @@ class AppServiceProvider extends ServiceProvider
         ExamReadiness::observe(ExamReadinessObserver::class);
         Attendance::observe(AttendanceObserver::class);
         Payment::observe(PaymentObserver::class);
+        Grant::observe(GrantObserver::class);
         User::observe(UserObserver::class);
     }
 }

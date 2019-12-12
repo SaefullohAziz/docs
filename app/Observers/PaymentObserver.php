@@ -3,7 +3,6 @@
 namespace App\Observers;
 
 use App\Payment;
-use App\Status;
 
 class PaymentObserver
 {

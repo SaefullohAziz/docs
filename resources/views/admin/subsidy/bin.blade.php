@@ -44,7 +44,6 @@
 								<th>{{ __('Submission Letter') }}</th>
 								<th>{{ __('Report') }}</th>
 								<th>{{ __('Status') }}</th>
-								<th>{{ __('Action') }}</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -88,7 +87,6 @@
 				{ data: 'submission_letter', name: 'subsidies.submission_letter' },
 				{ data: 'report', name: 'subsidies.report' },
 				{ data: 'status', name: 'statuses.name' },
-				{ data: 'action', name: 'action', 'searchable': false },
 			],
 			"columnDefs": [
 			{   

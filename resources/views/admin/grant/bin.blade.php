@@ -40,10 +40,7 @@
 								</th>
 								<th>{{ __('Created At') }}</th>
 								<th>{{ __('School') }}</th>
-								<th>{{ __('Type') }}</th>
-								<th>{{ __('Commitment Letter') }}</th>
-                                <th>{{ __('Selection Result') }}</th>
-								<th>{{ __('Batch') }}</th>
+								<th>{{ __('Level') }}</th>
 								<th>{{ __('Status') }}</th>
 							</tr>
 						</thead>
@@ -53,12 +50,12 @@
 				</div>
 			</div>
 			<div class="card-footer bg-whitesmoke">
-				@if (auth()->guard('admin')->user()->can('restore trainings'))
+				@can('restore grants', 'admin')
 					<button class="btn btn-warning btn-sm" name="restoreData" title="{{ __('Restore') }}">{{ __('Restore') }}</button>
-				@endif
-				@if (auth()->guard('admin')->user()->can('force_delete trainings'))
+				@endcan
+				@can('force_delete grants', 'admin')
 					<button class="btn btn-danger btn-sm" name="deleteData" title="{{ __('Delete Permanently') }}">{{ __('Delete Permanently') }}</button>
-				@endif
+				@endcan
 			</div>
 		</div>
 
@@ -74,7 +71,7 @@
 			processing: true,
 			serverSide: true,
 			"ajax": {
-				"url": "{{ route('admin.training.binList') }}",
+				"url": "{{ route('admin.grant.binList') }}",
 				"type": "POST",
 				"data": function (d) {
 		          d._token = "{{ csrf_token() }}";
@@ -83,12 +80,9 @@
 			columns: [
 				{ data: 'DT_RowIndex', name: 'DT_RowIndex', 'searchable': false },
 				{ data: 'created_at', name: 'created_at' },
-                { data: 'school', name: 'schools.name' },
-				{ data: 'type', name: 'trainings.type' },
-				{ data: 'approval_letter_of_commitment_fee', name: 'trainings.approval_letter_of_commitment_fee' },
-				{ data: 'selection_result', name: 'trainings.selection_result' },
-				{ data: 'batch', name: 'trainings.batch' },
-				{ data: 'status', name: 'statuses.name' },
+				{ data: 'school', name: 'schools.name' },
+				{ data: 'level', name: 'school_levels.name' },
+				{ data: 'status', name: 'grant_statuses.name' },
 			],
 			"columnDefs": [
 			{   
@@ -108,7 +102,7 @@
       				$('[name="selectedData[]"]').iCheck('uncheck');
       			});
       		},
-		});
+  		});
 
         $('[name="restoreData"]').click(function(event) {
             if ($('[name="selectedData[]"]:checked').length > 0) {
@@ -126,10 +120,10 @@
                 .then((willRestore) => {
                     if (willRestore) {
                         $.ajax({
-                            url : "{{ route('admin.training.restore') }}",
+                            url : "{{ route('admin.grant.restore') }}",
                             type: "POST",
                             dataType: "JSON",
-                            data: {"selectedData" : selectedData, "_token" : "{{ csrf_token() }}"},
+                            data: {"_token" : "{{ csrf_token() }}", "selectedData" : selectedData},
                             success: function(data)
                             {
                                 reloadTable();
@@ -166,10 +160,10 @@
                 .then((willDelete) => {
                     if (willDelete) {
                         $.ajax({
-                            url : "{{ route('admin.training.destroyPermanently') }}",
+                            url : "{{ route('admin.grant.destroyPermanently') }}",
                             type: "DELETE",
                             dataType: "JSON",
-                            data: {"selectedData" : selectedData, "_token" : "{{ csrf_token() }}"},
+                            data: {"_token" : "{{ csrf_token() }}", "selectedData" : selectedData},
                             success: function(data)
                             {
                                 reloadTable();

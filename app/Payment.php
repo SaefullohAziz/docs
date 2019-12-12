@@ -129,7 +129,7 @@ class Payment extends Model
     }
 
     /**
-     * Show training list for datatable
+     * Show main list for datatable
      * 
      * @param  \Illuminate\Http\Request  $request
      */

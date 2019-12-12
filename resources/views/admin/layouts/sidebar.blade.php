@@ -71,6 +71,12 @@
           <li class="{{ (request()->is('admin/payment')||request()->is('admin/payment/*')?'active':'') }}"><a class="nav-link" href="{{ route('admin.payment.index') }}">{{ __('Payment') }}</a></li>
         </ul>
       </li>
+      <!-- Exam: readiness -->
+      <li class="{{ (request()->is('admin/grant')||request()->is('admin/grant/*')?'active':'') }}">
+        <a class="nav-link" href="{{ route('admin.grant.index') }}">
+          <i class="fas fa-gifts"></i> <span>{{ __('Grant') }}</span>
+        </a>
+      </li>
       <!-- Certification -->
       <li>
         <a class="nav-link" href="http://certificate.axiooclassprogram.org" target="blank">

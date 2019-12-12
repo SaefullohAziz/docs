@@ -45,7 +45,6 @@
                                 <th>{{ __('Bank Account Book') }}</th>
 								<th>{{ __('NPWP') }}</th>
 								<th>{{ __('Status') }}</th>
-								<th>{{ __('Action') }}</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -90,7 +89,6 @@
 				{ data: 'bank_account_book', name: 'payments.bank_account_book' },
 				{ data: 'npwp_number', name: 'payments.npwp_number' },
 				{ data: 'status', name: 'statuses.name' },
-				{ data: 'action', name: 'action', 'searchable': false },
 			],
 			"columnDefs": [
 			{   

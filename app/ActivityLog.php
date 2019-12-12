@@ -71,4 +71,12 @@ class ActivityLog extends Model
     {
         return $this->hasOne('App\PaymentStatus', 'log_id');
     }
+
+    /**
+     * Get the grant status for the activity log.
+     */
+    public function grantStatus()
+    {
+        return $this->hasOne('App\GrantStatus', 'log_id');
+    }
 }

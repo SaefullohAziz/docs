@@ -369,6 +369,20 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->middleware(['auth:ad
 		'destroy',
 	]]);
 
+	// Grant
+	Route::prefix('grant')->name('grant.')->group(function () {
+    	Route::post('list', 'GrantController@list')->name('list');
+    	Route::post('export', 'GrantController@export')->name('export');
+    	Route::delete('destroy', 'GrantController@destroy')->name('destroy');
+		Route::get('bin', 'GrantController@bin')->name('bin');
+		Route::post('binList', 'GrantController@list')->name('binList');
+		Route::post('restore', 'GrantController@restore')->name('restore');
+		Route::delete('destroyPermanently', 'GrantController@destroyPermanently')->name('destroyPermanently');
+    });
+	Route::resource('grant', 'GrantController', ['except' => [
+		'destroy',
+	]]);
+
 	// Update
     Route::prefix('update')->name('update.')->group(function () {
     	Route::get('/', 'UpdateController@index')->name('index');
@@ -463,13 +477,9 @@ Route::get('download/{dir}/{file}', function ($dir, $file) {
 
 Route::get('check', function (\Illuminate\Http\Request $request) {
 	if (env('APP_ENV') == 'local') {
-		$data = collect([
-			'a' => 'A',
-			'b' => 'B',
-			'c' => 'C'
-		])->map(function ($item, $key) {
-			return ['id' => $key, 'text' => $item];
-		})->values()->toArray();
+		$data = \App\SchoolStatus::whereHas('level', function ($level) {
+            $level->where('type', 'level');
+        })->orderBy('order_by', 'asc')->pluck('order_by')->toArray();
 		dd($data);
 	}
 });
