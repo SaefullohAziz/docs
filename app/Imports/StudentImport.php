@@ -6,11 +6,14 @@ use App\Student;
 use App\StudentClass;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Illuminate\Validation\Rule;
+use Maatwebsite\Excel\Concerns\Importable;
 use Maatwebsite\Excel\Concerns\WithValidation;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
-class StudentImport implements ToModel, WithHeadingRow
+class StudentImport implements ToModel, WithValidation, WithHeadingRow
 {
+    use Importable;
+
     public function __construct(StudentClass $studentClass)
     {
         $this->studentClass = $studentClass;
@@ -73,30 +76,30 @@ class StudentImport implements ToModel, WithHeadingRow
     public function rules(): array
     {
         return [
-            'name' => Rule::in(['required']),
-            'nickname' => Rule::in(['required']),
-            'province' => Rule::in(['required']),
-            'nisn' => Rule::in(['required', 'digits:10', 'unique:students,nisn']),
-            'email' => Rule::in(['required', 'email', 'unique:students,email']),
-            'gender' => Rule::in(['required']),
-            'father_earning_nominal' => Rule::in(['numeric']),
-            'mother_name' => Rule::in(['required']),
-            'mother_earning_nominal' => Rule::in(['numeric']),
-            'religion' => Rule::in(['required']),
-            'blood_type' => Rule::in(['required']),
-            'special_need' => Rule::in(['required']),
-            'distance' => Rule::in(['numeric']),
-            'height' => Rule::in(['required', 'integer']),
-            'weight' => Rule::in(['required', 'integer']),
-            'dateofbirth' => Rule::in(['required']),
-            'address' => Rule::in(['required']),
-            'phone_number' => Rule::in(['required', 'numeric', 'digits_between:8,11', 'unique:students,phone_number']),
-            'computer_basic_score' => Rule::in(['integer']),
-            'intelligence_score' => Rule::in(['integer']),
-            'reasoning_score' => Rule::in(['integer']),
-            'analogy_score' => Rule::in(['integer']),
-            'numerical_score' => Rule::in(['integer']),
-            'terms' => Rule::in(['required']),
+            'name' => ['required'],
+            'nickname' => ['required'],
+            'province' => ['required'],
+            'nisn' => ['required', 'digits:10', 'unique:students,nisn'],
+            'email' => ['required', 'email', 'unique:students,email'],
+            'gender' => ['required'],
+            'father_earning_nominal' => ['numeric'],
+            'mother_name' => ['required'],
+            'mother_earning_nominal' => ['numeric'],
+            'religion' => ['required'],
+            'blood_type' => ['required'],
+            'special_need' => ['required'],
+            'distance' => ['numeric'],
+            'height' => ['required', 'integer'],
+            'weight' => ['required', 'integer'],
+            'dateofbirth' => ['required'],
+            'address' => ['required'],
+            'phone_number' => ['required', 'numeric', 'digits_between:8,11', 'unique:students,phone_number'],
+            'computer_basic_score' => ['integer'],
+            'intelligence_score' => ['integer'],
+            'reasoning_score' => ['integer'],
+            'analogy_score' => ['integer'],
+            'numerical_score' => ['integer'],
+            'terms' => ['required'],
         ];
     }
 }
