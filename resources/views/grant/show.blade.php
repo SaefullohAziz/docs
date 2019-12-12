@@ -33,8 +33,6 @@
 					<div class="row">
 						<div class="col-sm-6">
 							<fieldset>
-                                {{ Form::bsSelect(null, __('School'), 'school_id', $schools, $data->school_id, __('Select'), ['placeholder' => __('Select'), 'disabled' => '']) }}
-
                                 {{ Form::bsInlineRadio(null, __('Menerima Syarat dan Ketentuan Pendistribusian Hibah Bahan Praktek Siswa'), 'requirement', ['2' => __('Yes'), '1' => __('No')], $data->requirement, ['disabled' => '']) }}
 
 								{{ Form::bsTextarea(null, __('Address'), 'address', $data->school->address, __('Address'), ['disabled' => '']) }}

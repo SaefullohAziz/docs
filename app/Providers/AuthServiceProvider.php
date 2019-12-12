@@ -12,6 +12,7 @@ use App\Training;
 use App\ExamReadiness;
 use App\Attendance;
 use App\Payment;
+use App\Grant;
 use App\Policies\SchoolPolicy;
 use App\Policies\TeacherPolicy;
 use App\Policies\StudentClassPolicy;
@@ -22,6 +23,7 @@ use App\Policies\TrainingPolicy;
 use App\Policies\ExamReadinessPolicy;
 use App\Policies\AttendancePolicy;
 use App\Policies\PaymentPolicy;
+use App\Policies\GrantPolicy;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
@@ -43,6 +45,7 @@ class AuthServiceProvider extends ServiceProvider
         ExamReadiness::class => ExamReadinessPolicy::class,
         Attendance::class => AttendancePolicy::class,
         Payment::class => PaymentPolicy::class,
+        Grant::class => GrantPolicy::class,
     ];
 
     /**

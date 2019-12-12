@@ -103,6 +103,15 @@ Route::middleware(['auth'])->group(function () {
 			Route::resource('payment', 'PaymentController', ['except' => [
 				'destroy',
 			]]);
+
+			// Grant
+			Route::prefix('grant')->name('grant.')->group(function () {
+				Route::post('list', 'GrantController@list')->name('list');
+				// Route::delete('destroy', 'GrantController@destroy')->name('destroy');
+			});
+			Route::resource('grant', 'GrantController', ['except' => [
+				'edit', 'update', 'destroy',
+			]]);
 		});
 	
 		Route::middleware(['level:Dalam proses'])->group(function () {
