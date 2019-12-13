@@ -100,6 +100,7 @@
 			$('select[name="generation"]').val(null).change();
 			$('.students').html('');
 			$('select[name="student"]').html('<option value="">{{ __('Select') }}</option>');
+			$('select[name="student"], select[name="student_year"]').closest('fieldset').removeClass('d-block').addClass('d-none');
 			if ($(this).val() == 'Student Starter Pack (SSP)') {
 	    		$('select[name="student"]').closest('fieldset').removeClass('d-none').addClass('d-block');
 	    		$('select[name="student_year"]').closest('fieldset').removeClass('d-block').addClass('d-none');
