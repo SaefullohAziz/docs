@@ -105,6 +105,13 @@ class StoreSubsidy extends FormRequest
                     }),
                     'email',
                 ],
+                'qty' => [
+                    Rule::requiredIf(function () {
+                        if ( ! empty($this->get('type'))) {
+                            return $this->get('type') == 'Student Starter Pack (SSP)' OR $this->get('type') == 'Notebook Assembling & Troubleshooting Training (NATT)';
+                        }
+                    }),
+                ],
             ];
             $rules = array_merge($rules, $addonRules);
         }
