@@ -99,7 +99,6 @@ class StudentImport implements ToModel, WithValidation, WithHeadingRow
             'reasoning_score' => ['integer'],
             'analogy_score' => ['integer'],
             'numerical_score' => ['integer'],
-            'terms' => ['required'],
         ];
     }
 }
