@@ -106,7 +106,7 @@
 				{ data: 'generation', name: 'student_classes.generation' },
 				{ data: 'school_year', name: 'student_classes.school_year' },
 				{ data: 'phone_number', name: 'students.phone_number' },
-				{ data: 'action', name: 'action' }
+				{ data: 'action', name: 'action', 'searchable': false }
 			],
 			"order": [[ 1, 'desc' ]],
 			"columnDefs": [
