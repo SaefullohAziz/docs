@@ -64,7 +64,7 @@
 				@endif
 				@if (auth()->guard('admin')->user()->can('approval activities'))
 					<!-- <button class="btn btn-light btn-sm" name="cancelData" title="{{ __('Cancel') }}">{{ __('Cancel') }}</button> -->
-					<!-- <button class="btn btn-light btn-sm" name="rejectData" title="{{ __('Reject') }}">{{ __('Reject') }}</button> -->
+					<button class="btn btn-light btn-sm" name="rejectData" title="{{ __('Reject') }}">{{ __('Reject') }}</button>
 					<button class="btn btn-light btn-sm" name="approveData" title="{{ __('Approve') }}">{{ __('Approve') }}</button>
 				@endif
 				@if (auth()->guard('admin')->user()->can('delete activities'))
@@ -170,7 +170,46 @@
 			});
 		});
 
-		// Approve data action
+		$('[name="rejectData"]').click(function(event) {
+			if ($('[name="selectedData[]"]:checked').length > 0) {
+				event.preventDefault();
+				var selectedData = $('[name="selectedData[]"]:checked').map(function(){
+					return $(this).val();
+				}).get();
+				swal({
+					title: '{{ __("Are you sure you want to reject selected data?") }}',
+					text: '',
+					icon: 'warning',
+					buttons: ['{{ __("Cancel") }}', true],
+					dangerMode: true,
+				})
+				.then((willAprove) => {
+					if (willAprove) {
+						$.ajax({
+							url : "{{ route('admin.activity.reject') }}",
+							type: "POST",
+							dataType: "JSON",
+							data: {"_token" : "{{ csrf_token() }}", "selectedData" : selectedData},
+							success: function(data)
+							{
+								reloadTable();
+							},
+							error: function (jqXHR, textStatus, errorThrown)
+							{
+								if (JSON.parse(jqXHR.responseText).status) {
+									swal("{{ __('Failed!') }}", '{{ __("Data cannot be updated.") }}', "warning");
+								} else {
+									swal(JSON.parse(jqXHR.responseText).message, "", "error");
+								}
+							}
+						});
+					}
+				});
+			} else {
+				swal("{{ __('Please select a data..') }}", "", "warning");
+			}
+		});
+
 		$('[name="approveData"]').click(function(event) {
 			if ($('[name="selectedData[]"]:checked').length > 0) {
 				event.preventDefault();

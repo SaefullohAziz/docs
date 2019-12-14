@@ -316,6 +316,22 @@ class ActivityController extends Controller
      * 
      * @param  \Illuminate\Http\Request  $request
      */
+    public function reject(Request $request)
+    {
+        if ($request->ajax()) {
+            if ( ! auth()->guard('admin')->user()->can('approval ' . $this->table)) {
+                return response()->json(['status' => false, 'message' => __($this->noPermission)], 422);
+            }
+            event(new ActivityRejected($request));
+            return response()->json(['status' => true, 'message' => __($this->updatedMessage)]);
+        }
+    }
+
+    /**
+     * Approve activity
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     */
     public function approve(Request $request)
     {
         if ($request->ajax()) {

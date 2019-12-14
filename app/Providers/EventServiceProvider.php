@@ -24,6 +24,9 @@ class EventServiceProvider extends ServiceProvider
             'App\Listeners\RegisterSchool',
         ],
         // Activity
+        'App\Events\ActivityRejected' => [
+            'App\Listeners\RejectActivity',
+        ],
         'App\Events\ActivityApproved' => [
             'App\Listeners\ApproveActivity',
         ],
