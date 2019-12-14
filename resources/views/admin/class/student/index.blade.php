@@ -113,7 +113,7 @@
 				{ data: 'generation', name: 'student_classes.generation' },
 				{ data: 'school_year', name: 'student_classes.school_year' },
 				{ data: 'phone_number', name: 'students.phone_number' },
-				{ data: 'ssp', name: 'ssp' },
+				{ data: 'ssp', name: 'ssp', 'searchable': false },
 				{ data: 'action', name: 'action' }
 			],
 			"order": [[ 1, 'desc' ]],
