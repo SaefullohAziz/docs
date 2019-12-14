@@ -37,10 +37,8 @@ class StoreJoinedSchoolSet extends FormRequest
                 'required',
                 'email',
                 'unique:schools,school_email',
-                'unique:schools,headmaster_email',
                 'unique:schools,dealer_email',
                 'unique:pics,email',
-                'unique:teachers,email',
                 'unique:students,email',
             ],
         ];
