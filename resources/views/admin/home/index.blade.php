@@ -37,7 +37,7 @@
 
 		<div class="row">
 			<div class="col-12">
-				<div class="card">
+				<div class="card shadow-sm">
 					<div class="card-header">
 						<h4 class="card-title">{{ __('Search School') }}</h4>
 					</div>
@@ -69,7 +69,7 @@
 			</div>
 
 			<div class="col-sm-6">
-				<div class="card">
+				<div class="card shadow-sm">
 					<div class="card-header">
 						<h4 class="card-title">{{ __('Latest Comment') }}</h4>
 					</div>
@@ -113,7 +113,7 @@
 			</div>
 
 			<div class="col-sm-6">
-				<div class="card">
+				<div class="card shadow-sm">
 					<div class="card-header">
 						<h4 class="card-title">{{ __('Status Movement') }}</h4>
 					</div>
@@ -153,7 +153,7 @@
 			</div>
 
 			<div class="col-sm-8">
-				<div class="card">
+				<div class="card shadow-sm">
 					<div class="card-header">
 						<h4 class="card-title">{{ __('School Status') }}</h4>
 						<div class="card-header-action">
@@ -204,7 +204,7 @@
 			</div>
 
 			<div class="col-sm-4">
-				<div class="card">
+				<div class="card shadow-sm">
 					<div class="card-header">
 						<h4 class="card-title">{{ __('School FTP') }}</h4>
 					</div>
@@ -238,7 +238,7 @@
 			</div>
 
 			<div class="col-12">
-				<div class="card">
+				<div class="card shadow-sm">
 					<div class="card-header">
 						<h4 class="card-title">{{ __('School Statistic') }}</h4>
 						<div class="card-header-action">
@@ -260,7 +260,7 @@
 			</div>
 
 			<div class="col-sm-6">
-				<div class="card">
+				<div class="card shadow-sm">
 					<div class="card-header">
 						<h4 class="card-title">{{ __('Student Statistic') }}</h4>
 						<div class="card-header-action">
