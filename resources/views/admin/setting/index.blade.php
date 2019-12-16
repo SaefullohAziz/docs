@@ -29,7 +29,7 @@
         <div class="row">
             @foreach ($settings as $setting)
                 <div class="col-lg-6">
-                    <div class="card card-large-icons">
+                    <div class="card card-large-icons shadow-sm">
                         <div class="card-icon bg-primary text-white">
                             <i class="{{ $setting['icon'] }}"></i>
                         </div>
