@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Pivot;
-use App\Traits\Uuids;
+use Datakrama\Eloquid\Traits\Uuids;
 
 class SubsidyPayment extends Pivot
 {

@@ -10,7 +10,7 @@ use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 use Spatie\MediaLibrary\File;
 use Spatie\MediaLibrary\Models\Media;
 use Spatie\Image\Manipulations;
-use App\Traits\Uuids;
+use Datakrama\Eloquid\Traits\Uuids;
 
 class User extends Authenticatable implements HasMedia
 {

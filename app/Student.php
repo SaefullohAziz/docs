@@ -5,7 +5,7 @@ namespace App;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
-use App\Traits\Uuids;
+use Datakrama\Eloquid\Traits\Uuids;
 use Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
 class Student extends Model

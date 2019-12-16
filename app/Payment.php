@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Traits\Uuids;
+use Datakrama\Eloquid\Traits\Uuids;
 
 class Payment extends Model
 {

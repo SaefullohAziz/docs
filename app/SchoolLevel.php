@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
-use App\Traits\Uuids;
+use Datakrama\Eloquid\Traits\Uuids;
 use Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
 class SchoolLevel extends Model

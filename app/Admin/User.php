@@ -15,7 +15,7 @@ use Spatie\MediaLibrary\File;
 use Spatie\MediaLibrary\Models\Media;
 use Spatie\Image\Manipulations;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Traits\Uuids;
+use Datakrama\Eloquid\Traits\Uuids;
 
 class User extends Authenticatable implements HasMedia
 {

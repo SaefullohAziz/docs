@@ -4,7 +4,8 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Pivot;
-use App\Traits\Uuids;
+use Znck\Eloquent\Traits\BelongsToThrough;
+use Datakrama\Eloquid\Traits\Uuids;
 
 class SchoolStatusUpdate extends Pivot
 {
@@ -24,6 +25,14 @@ class SchoolStatusUpdate extends Pivot
     public function status()
     {
         return $this->belongsTo('App\SchoolStatus', 'school_status_id', 'id');
+    }
+
+    /**
+     * Get the level that owns the status update.
+     */
+    public function level()
+    {
+        return $this->belongsToThrough('App\SchoolLevel', 'App\SchoolStatus');
     }
 
     /**

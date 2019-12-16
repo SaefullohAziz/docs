@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
-use App\Traits\Uuids;
+use Datakrama\Eloquid\Traits\Uuids;
 
 class SchoolStatus extends Model
 {

@@ -3,7 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Traits\Uuids;
+use Datakrama\Eloquid\Traits\Uuids;
 
 class SchoolCommentAttachment extends Model
 {
