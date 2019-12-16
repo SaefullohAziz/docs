@@ -137,13 +137,16 @@ class TrainingController extends Controller
                     }
                     return '<a href="'.route('download', ['dir' => encrypt('training/commitment-letter'), 'file' => encrypt($file)]).'" class="btn btn-sm btn-success '.( ! isset($data->approval_letter_of_commitment_fee)?'disabled':'').'" title="'.__('Download').'" target="_blank"><i class="fa fa-file"></i>  '.__('Download').'</a>';
                 })
+                ->editColumn('school', function($data) {
+                    return '<a href="' . route('admin.school.show', $data->school_id) . '" class="btn">'. $data->school .'</a>';
+                })
                 ->editColumn('status', function($data) {
                     return $data->status.' by '.$data->status_by;
                 })
                 ->addColumn('action', function($data) {
                     return '<a class="btn btn-sm btn-success" href="'.route('admin.training.show', $data->id).'" title="'.__("See detail").'"><i class="fa fa-eye"></i> '.__("See").'</a> <a class="btn btn-sm btn-warning" href="'.route('admin.training.edit', $data->id).'" title="'.__("Edit").'"><i class="fa fa-edit"></i> '.__("Edit").'</a>';
                 })
-                ->rawColumns(['DT_RowIndex', 'selection_result', 'approval_letter_of_commitment_fee', 'action'])
+                ->rawColumns(['DT_RowIndex', 'school', 'selection_result', 'approval_letter_of_commitment_fee', 'action'])
                 ->make(true);
         }
     }
