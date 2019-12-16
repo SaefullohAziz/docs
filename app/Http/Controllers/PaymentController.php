@@ -359,7 +359,7 @@ class PaymentController extends Controller
             }
         }
         $payment->save();
-        return redirect(url()->previous())->with('alert-success', __($this->updatedMessage));
+        return redirect()->route('payment.index')->with('alert-success', __($this->updatedMessage));
     }
 
     /**

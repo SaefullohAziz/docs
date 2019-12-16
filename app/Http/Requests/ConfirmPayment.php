@@ -46,7 +46,7 @@ class ConfirmPayment extends FormRequest
                 Rule::requiredIf($payment->subsidy()->count()),
             ],
             'bank_sender' => [
-                Rule::requiredIf(function () {
+                Rule::requiredIf(function () use ($payment) {
                     if ( ! empty($this->get('method'))) {
                         return $this->get('method') == 'ATM' || $payment->training()->count();
                     }
@@ -68,17 +68,17 @@ class ConfirmPayment extends FormRequest
             // Subsidy: FTP
             'npwp_number' => [
                 Rule::requiredIf(function () use ($payment) {
-                    return $payment->subsidy()->count() && $payment->installments()->count() == 0;
+                    return ($payment->subsidy()->count() && $payment->subsidy[0]->type == 'ACP Getting started Pack (AGP) / Fast Track Program (FTP)') && $payment->installments()->count() == 0;
                 }),
             ],
             'npwp_on_behalf_of' => [
                 Rule::requiredIf(function () use ($payment) {
-                    return $payment->subsidy()->count() && $payment->installments()->count() == 0;
+                    return ($payment->subsidy()->count() && $payment->subsidy[0]->type == 'ACP Getting started Pack (AGP) / Fast Track Program (FTP)') && $payment->installments()->count() == 0;
                 }),
             ],
             'npwp_address' => [
                 Rule::requiredIf(function () use ($payment) {
-                    return $payment->subsidy()->count() && $payment->installments()->count() == 0;
+                    return ($payment->subsidy()->count() && $payment->subsidy[0]->type == 'ACP Getting started Pack (AGP) / Fast Track Program (FTP)') && $payment->installments()->count() == 0;
                 }),
             ],
             // Training
