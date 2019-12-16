@@ -15,6 +15,9 @@ class VisitationDestination extends Model
      * @var array
      */
     protected $guarded = [];
+
+
+    protected $fillable = ['school_id'];
     
     /**
      * Get the school that owns the visitation destination.

@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Admin\User as Staff;
 use App\Department;
+use App\VisitationDestination as Destination;
 use App\Training;
+use App\School;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Spatie\Permission\Models\Role;
@@ -72,6 +74,13 @@ class SettingController extends Controller
                 'description' => __('Exam readiness settings, such as reference school.'),
                 'icon' => 'fas fa-book-reader',
                 'url' => route('admin.setting.exam.readiness.index'),
+            ],
+            [
+                'title' => __('Visitation Destination'),
+                'slug' => 'destination',
+                'description' => __('Change visitation destination.'),
+                'icon' => 'fas fa-map-marked-alt',
+                'url' => route('admin.setting.destination.index'),
             ],
         ]);
     }
@@ -446,6 +455,60 @@ class SettingController extends Controller
             return redirect()->route('admin.setting.index')->with('alert-danger', __($this->noPermission));
         }
         setting($request->except(['_token']))->save();
+        return redirect(url()->previous())->with('alert-success', __($this->updatedMessage));
+    }
+
+    /**
+     * Show Visitation destination settings page
+     */
+    public function destination()
+    {   
+        // if ( ! auth()->guard('admin')->user()->can('access exam_readiness ' . $this->table)) {
+        //     return redirect()->route('admin.setting.index')->with('alert-danger', __($this->noPermission));
+        // }
+        $view = [
+            'back' => route('admin.setting.index'),
+            'title' => __('Visitation destination Settings'),
+            'breadcrumbs' => [
+                route('admin.setting.index') => __('Setting'),
+                route('admin.setting.destination.index') => __('Visitation destination'),
+                null => __('Edit')
+            ],
+            'subtitle' => __('All About Visitation destination Settings'),
+            'description' => __('You can adjust all Visitation destination settings here'),
+            'navs' => $this->settings,
+            'schools' => School::whereHas('statusUpdate.status.level', function ($subQuery) {
+                $subQuery->where('school_levels.name', 'B')->orWhere('school_levels.name', 'A');
+            })->doesntHave('visitationDestinations')->pluck('name', 'id'),
+            'destinations' => Destination::join('schools', 'school_id', 'schools.id')->pluck('schools.name', 'visitation_destinations.id'),
+            'setting' => $this->settings->where('slug', 'destination')->first(),
+        ];
+        return view('admin.setting.destination.index', $view);
+    }
+
+    /**
+     * Save Visitation destination settings into database
+     */
+    public function destinationStore(Request $request)
+    {
+        if ( ! auth()->guard('admin')->user()->can('access form ' . $this->table)) {
+            return redirect()->route('admin.setting.index')->with('alert-danger', __($this->noPermission));
+        }
+        foreach ($request->school_id as $school_id) {
+            Destination::create(['school_id' => $school_id]);
+        }
+        return redirect(url()->previous())->with('alert-success', __($this->updatedMessage));
+    }
+    
+    /**
+     * Save Visitation destination settings into database
+     */
+    public function destinationDestroy(Request $request)
+    {
+        if ( ! auth()->guard('admin')->user()->can('access form ' . $this->table)) {
+            return redirect()->route('admin.setting.index')->with('alert-danger', __($this->noPermission));
+        }
+        Destination::destroy($request->destination_id);
         return redirect(url()->previous())->with('alert-success', __($this->updatedMessage));
     }
 }
