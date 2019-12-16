@@ -9,6 +9,7 @@
 	"Edit": "Edit",
 	"Detail": "Detail",
     "Save": "Simpan",
+    "Assign": "Tetapkan",
     "Cancel": "Batal",
     "Back": "Kembali",
     "Filter": "Filter",
@@ -434,6 +435,11 @@
 
     "Ready to provide transportation and accommodation for the MikroTik Trainer team.": "Siap menyediakan transportasi dan akomodasi tim Trainer MikroTik.",
     
+    "Change visitation destination." : "Ubah tujuan kunjungan.",
+    "School to be assigned as destination" : "Sekolah yang akan ditetapkan sebagai tujuan",
+    "School has been assigned as destination" : "Sekolah yang sudah ditetapkan sebagai tujuan",
+    "Visitation destination Settings" : "Pengaturan tujuan kunjungan",
+
     "Required!" : "Wajib Diisi!",
     "English": "Inggris",
     "Indonesian": "Bahasa Indonesia",

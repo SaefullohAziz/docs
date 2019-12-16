@@ -431,6 +431,12 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->middleware(['auth:ad
 				Route::post('/', 'SettingController@examReadinessStore')->name('store');
 			});
 		});
+		Route::prefix('destination')->name('destination.')->group(function () {
+			Route::get('/', 'SettingController@destination')->name('index');
+			Route::post('/list', 'SettingController@destinationList')->name('list');
+			Route::post('/', 'SettingController@destinationStore')->name('store');
+			Route::delete('/', 'SettingController@destinationDestroy')->name('destroy');
+		});
     });
 
     // Account
