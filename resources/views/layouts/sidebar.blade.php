@@ -90,6 +90,12 @@
           <i class="far fa-list-alt"></i> <span>{{ __('Certification') }}</span>
         </a>
       </li>
+      <!-- Service -->
+      <li>
+        <a class="nav-link" href="https://service.mitraabadi.info/" target="blank">
+          <i class="fas fa-laptop"></i> <span>{{ __('Service (RMA)') }}</span>
+        </a>
+      </li>
       <!-- Account -->
       <li class="menu-header">{{ __('User') }}</li>
       <li class="{{ (request()->is('account')||request()->is('account/*')?'active':'') }}">
