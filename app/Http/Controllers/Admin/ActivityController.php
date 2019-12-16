@@ -81,12 +81,15 @@ class ActivityController extends Controller
                 ->editColumn('submission_letter', function($data) {
                     return '<a href="'.route('download', ['dir' => encrypt('activity/submission-letter'), 'file' => encrypt($data->submission_letter)]).'" class="btn btn-sm btn-success '.( ! isset($data->submission_letter)?'disabled':'').'" title="'.__('Download').'" target="_blank"><i class="fa fa-file"></i>  '.__('Download').'</a>';
                 })
+                ->editColumn('school', function($data) {
+                    return '<a href="' . route('admin.school.show', $data->school_id) . '" class="btn">'. $data->school .'</a>';
+                })
                 ->addColumn('action', function($data) {
                     return '<a class="btn btn-sm btn-success" href="'.route('admin.activity.show', $data->id).'" title="'.__("See detail").'"><i class="fa fa-eye"></i> '.__("See").'</a> <a class="btn btn-sm btn-warning" href="'.route('admin.activity.edit', $data->id).'" title="'.__("Edit").'"><i class="fa fa-edit"></i> '.__("Edit").'</a>';
                 })->editColumn('status', function($data) {
                     return $data->status;
                 })
-                ->rawColumns(['DT_RowIndex', 'submission_letter', 'action'])
+                ->rawColumns(['DT_RowIndex', 'school', 'submission_letter', 'action'])
                 ->make(true);
         }
     }
