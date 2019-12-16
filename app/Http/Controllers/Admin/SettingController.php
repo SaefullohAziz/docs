@@ -463,9 +463,9 @@ class SettingController extends Controller
      */
     public function destination()
     {   
-        // if ( ! auth()->guard('admin')->user()->can('access exam_readiness ' . $this->table)) {
-        //     return redirect()->route('admin.setting.index')->with('alert-danger', __($this->noPermission));
-        // }
+        if ( ! auth()->guard('admin')->user()->can('access visitation_destination ' . $this->table)) {
+            return redirect()->route('admin.setting.index')->with('alert-danger', __($this->noPermission));
+        }
         $view = [
             'back' => route('admin.setting.index'),
             'title' => __('Visitation destination Settings'),
@@ -491,7 +491,7 @@ class SettingController extends Controller
      */
     public function destinationStore(Request $request)
     {
-        if ( ! auth()->guard('admin')->user()->can('access form ' . $this->table)) {
+        if ( ! auth()->guard('admin')->user()->can('access visitation_destination ' . $this->table)) {
             return redirect()->route('admin.setting.index')->with('alert-danger', __($this->noPermission));
         }
         foreach ($request->school_id as $school_id) {
@@ -505,7 +505,7 @@ class SettingController extends Controller
      */
     public function destinationDestroy(Request $request)
     {
-        if ( ! auth()->guard('admin')->user()->can('access form ' . $this->table)) {
+        if ( ! auth()->guard('admin')->user()->can('access visitation_destination ' . $this->table)) {
             return redirect()->route('admin.setting.index')->with('alert-danger', __($this->noPermission));
         }
         Destination::destroy($request->destination_id);

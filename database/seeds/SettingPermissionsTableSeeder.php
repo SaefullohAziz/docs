@@ -19,6 +19,7 @@ class SettingPermissionsTableSeeder extends Seeder
     		'access form settings' => ['supersu', 'admin'],
     		'access training settings' => ['supersu', 'admin'],
     		'access exam_readiness settings' => ['supersu', 'admin'],
+    		'access visitation_destination settings' => ['supersu', 'admin'],
     	];
         collect($data)->each(function ($item, $key) {
             $permission = \Spatie\Permission\Models\Permission::firstOrCreate(['name' => $key, 'guard_name' => 'admin']);
