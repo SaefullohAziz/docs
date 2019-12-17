@@ -127,10 +127,14 @@ class StudentController extends Controller
                 ->editColumn('created_at', function($data) {
                     return (date('d-m-Y H:i:s', strtotime($data->created_at)));
                 })
+                ->editColumn('school', function($data) {
+                    return '<a href="' . route('admin.school.show', $data->school_id) . '">'. $data->school .'</a>';
+                    
+                })
                 ->addColumn('action', function($data) use ($studentClass) {
                     return '<a class="btn btn-sm btn-success" href="'.route('admin.class.student.show', ['studentClass' => $studentClass->id, 'student' => $data->id]).'" title="'.__("See detail").'"><i class="fa fa-eye"></i> '.__("See").'</a> <a class="btn btn-sm btn-warning" href="'.route('admin.class.student.edit', ['studentClass' => $studentClass->id, 'student' => $data->id]).'" title="'.__("Edit").'"><i class="fa fa-edit"></i> '.__("Edit").'</a>';
                 })
-                ->rawColumns(['DT_RowIndex', 'action'])
+                ->rawColumns(['DT_RowIndex', 'school', 'action'])
                 ->make(true);
         }
     }
