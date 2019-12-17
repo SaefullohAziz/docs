@@ -76,13 +76,19 @@ class AccountController extends Controller
                     }
                     return '<img src="'.asset($user->avatar).'" height="30" width="auto" alt="">';
                 })
+                ->editColumn('institution', function($data) {
+                    return $data->type == 'School'
+                        ? '<a href="' . route('admin.school.show', $data->school_id) . '" class="btn">'. $data->institution .'</a>'
+                        : $data->institution ;
+                    
+                })
                 ->addColumn('action', function($data) {
                     if ($data->type == 'School') {
                         return '<a class="btn btn-sm btn-success" href="'.route('admin.account.school.show', $data->id).'" title="'.__('See detail').'"><i class="fa fa-eye"></i> '.__('See').'</a> <a class="btn btn-sm btn-warning" href="'.route('admin.account.school.edit', $data->id).'" title="'.__('Edit').'"><i class="fa fa-edit"></i> '.__('Edit').'</a>';
                     }
                     return '<a class="btn btn-sm btn-success" href="'.route('admin.account.show', $data->id).'" title="'.__('See detail').'"><i class="fa fa-eye"></i> '.__('See').'</a> <a class="btn btn-sm btn-warning" href="'.route('admin.account.edit', $data->id).'" title="'.__('Edit').'"><i class="fa fa-edit"></i> '.__('Edit').'</a>';
                 })
-                ->rawColumns(['DT_RowIndex', 'avatar', 'action'])
+                ->rawColumns(['DT_RowIndex', 'institution', 'avatar', 'action'])
                 ->make(true);
         }
     }

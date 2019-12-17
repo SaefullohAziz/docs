@@ -112,8 +112,8 @@ class User extends Authenticatable implements HasMedia
      */
     public static function get(Request $request)
     {
-        $staffs = DB::table('staffs')->selectRaw('id, "Staff" as type, "Self Company" as institution, username, name, email, email_verified_at, created_at');
-        $users = DB::table('users')->join('schools', 'users.school_id', '=', 'schools.id')->selectRaw('users.id, "School" as type, schools.name as institution, users.username, users.name, users.email, users.email_verified_at, users.created_at');
+        $staffs = DB::table('staffs')->selectRaw('id, "Staff" as type, "Self Company" as institution, username, name, email, email_verified_at, created_at, "#" as school_id');
+        $users = DB::table('users')->join('schools', 'users.school_id', '=', 'schools.id')->selectRaw('users.id, "School" as type, schools.name as institution, users.username, users.name, users.email, users.email_verified_at, users.created_at, users.school_id as school_id');
         $results = $users->union($staffs)->get();
         if ($request->type == 'Staff') {
             $results = $staffs->get();
