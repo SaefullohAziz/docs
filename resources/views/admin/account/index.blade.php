@@ -90,7 +90,7 @@
 				{ data: 'type', name: 'type', 'searchable': false },
 				{ data: 'username', name: 'username' },
 				{ data: 'name', name: 'name' },
-				{ data: 'institution', name: 'institution', 'searchable': false },
+				{ data: 'institution', name: 'institution' },
 				{ data: 'email', name: 'email' },
 				{ data: 'avatar', name: 'avatar', "orderable": false, 'searchable': false },
 				{ data: 'action', name: 'action', "orderable": false, 'searchable': false }

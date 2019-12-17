@@ -114,11 +114,11 @@ class User extends Authenticatable implements HasMedia
     {
         $staffs = DB::table('staffs')->selectRaw('id, "Staff" as type, "Self Company" as institution, username, name, email, email_verified_at, created_at');
         $users = DB::table('users')->join('schools', 'users.school_id', '=', 'schools.id')->selectRaw('users.id, "School" as type, schools.name as institution, users.username, users.name, users.email, users.email_verified_at, users.created_at');
-        $results = $users->union($staffs);
+        $results = $users->union($staffs)->get();
         if ($request->type == 'Staff') {
-            $results = $staffs;
+            $results = $staffs->get();
         } elseif ($request->type == 'School') {
-            $results = $users;
+            $results = $users->get();
         }
         return $results;
     }
