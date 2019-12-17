@@ -19,6 +19,9 @@ class Subsidy extends Model
      */
     protected $fillable = ['school_id', 'type', 'qty', 'submission_letter'];
 
+    // Date instance fields
+    protected $dates = ['created_at', 'updated_at'];
+
     /**
      * Get the school that owns the subsidy.
      */
@@ -138,6 +141,6 @@ class Subsidy extends Model
      */
     public static function list(Request $request)
     {
-        return self::get($request)->select('subsidies.*', 'schools.name as school', 'schools.school_email', 'provinces.abbreviation', 'pics.id as pic_id', 'pics.name as pic_name', 'pics.position as pic_position', 'pics.email as pic_email', 'pics.phone_number as pic_phone_number', 'statuses.name as status', 'subsidy_statuses.paid_at', 'subsidy_statuses.invoice', 'subsidy_statuses.starting_price', 'subsidy_statuses.paid_installment', 'subsidy_statuses.lack_of_price', 'subsidy_statuses.created_at as statused_at', DB::raw('(CASE WHEN staffs.name IS NULL THEN users.name WHEN users.name IS NULL THEN staffs.name ELSE staffs.name END) AS status_by'));
+        return self::get($request)->select('subsidies.*', 'schools.name as school', 'schools.school_email', 'provinces.abbreviation', 'pics.id as pic_id', 'pics.name as pic_name', 'pics.position as pic_position', 'pics.email as pic_email', 'pics.phone_number as pic_phone_number', 'statuses.name as status', 'subsidy_statuses.paid_at', 'subsidy_statuses.invoice', 'subsidy_statuses.starting_price', 'subsidy_statuses.paid_installment', 'subsidy_statuses.lack_of_price', 'subsidy_statuses.created_at as statused_at', DB::raw('(CASE WHEN staffs.name IS NULL THEN users.name WHEN users.name IS NULL THEN staffs.name ELSE staffs.name END) AS status_by'), 'subsidy_statuses.created_at AS status_at');
     }
 }
